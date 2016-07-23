@@ -1,1 +1,3 @@
 An AngularJS Noteshare client
+
+https://omarfouad.com[Advanced AngularJS structure with Gulp, Node and Browserify]

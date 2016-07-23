@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Noteshare angular client",
   "main": "index.js",
+  "repository": "https://github.com/jxxcarlson/ns_angular",
   "scripts": {
     "test": "karma"
   },
@@ -12,7 +13,12 @@
   "author": "James Carlson",
   "license": "MIT",
   "devDependencies": {
+    "browserify": "^13.0.1",
     "gulp": "^3.9.1",
-    "gulp-connect": "^4.2.0"
+    "gulp-connect": "^4.2.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "angular": "^1.5.8"
   }
 }
