@@ -1,0 +1,18 @@
+{
+  "name": "ns_angular",
+  "version": "1.0.0",
+  "description": "Noteshare angular client",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma"
+  },
+  "keywords": [
+    "noteshare"
+  ],
+  "author": "James Carlson",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^4.2.0"
+  }
+}
