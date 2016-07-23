@@ -1,0 +1,44 @@
+<div class="row">
+
+  <div class="col-md-2" >
+      <div style="margin-left:1em;">
+
+          <h3>Documents</h3>
+          <p ng-repeat="doc in docArray"><a href="#/editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+
+        </div>
+  </div>
+
+  <div class="col-md-4">
+      <div style="margin-left:1em;">
+        <input ng-model="editableTitle" type="text" id="editableTitle">
+        <button ng-click="updateDocument()">Save</button></p>
+        <textarea ng-model="editText" rows="30" style="width:90%;"></textarea>
+      </div>
+  </div>
+
+  <div class="col-md-4">
+
+    <!-- http://www.infragistics.com/community/blogs/dhananjay_kumar/archive/2015/06/29/how-to-work-with-the-bootstrap-dropdown-in-angularjs.aspx -->
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Subject
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#">Physics</a></li>
+            <li><a href="#">Math</a></li>
+            <li><a href="#">Chemistry</a></li>
+            <li><a href="#">Hindi</a></li>
+        </ul>
+    </div>
+
+    <div style="margin-left:1em;">
+      <h3>{{ title }}</h3>
+      <div style="width:90%;" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div>
+  </div>
+
+
+</div>
+
+</div>

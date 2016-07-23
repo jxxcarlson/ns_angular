@@ -1,14 +1,71 @@
-<!DOCTYPE html>
-<html lang="en" ng-app="app">
-<head>
-	<meta charset="UTF-8">
-	<title>My App XXX</title>
-	<script src="/js/main.js"></script>
-</head>
-<body>
-	<div ng-controller="MainController">
-		<h1>Ho ho ho!</h1>
-		<p>{{message}}
-	</div>
-</body>
-</html>
+<!-- index.html -->
+    <!DOCTYPE html>
+  <html ng-app="noteshareApp">
+    <head>
+      <!-- CSS REFERENCE: http://getbootstrap.com/css/ -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- SCROLLS -->
+      <!-- load bootstrap and fontawesome via CDN -->
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+      <link rel="stylesheet" href="style/style.css" />
+
+
+      <!-- SPELLS -->
+      <!-- load angular and angular route via CDN -->
+      // <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+      // <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+      <script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+      <script src="js/main.js"></script>
+    </head>
+    <body ng-controller="MainController">
+
+        <!-- HEADER AND NAVBAR -->
+        <header>
+            <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Noteshare.io</a>
+                </div>
+
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="#documents">DOCUMENTS</a></li>
+                    <li><a href="#newdocument">New</a></li>
+                    <li><a href="#editdocument">Edit</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-center" style="margin-left:3em;">
+                  <form class="form-horizontal" style="margin-top:14px;">
+                    <div class="form-group">
+                      <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
+                      <div ng-controller="searchController">
+                        <input ng-enter="doSearch(  )" ng-model="searchText" placeholder=" search ..."/>
+                      </div>
+                      <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
+
+                    </div>
+                  </form>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+                    <li><a href="#about"><i class="fa fa-comment"></i> About</a></li>
+                </ul>
+            </div>
+            </nav>
+        </header>
+
+        <!-- MAIN CONTENT AND INJECTED VIEWS -->
+        <!-- MAIN CONTENT AND INJECTED VIEWS -->
+        <div id="main">
+            <!-- angular templating -->
+            <!-- this is where content will be injected -->
+            <div ng-view></div>
+
+        </div>
+
+    </body>
+    </html>
