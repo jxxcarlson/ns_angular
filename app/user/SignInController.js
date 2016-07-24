@@ -1,10 +1,10 @@
-    module.exports = function($scope, $localStorage, UserApiService) {
+    module.exports = function($scope, $localStorage, UserApiService, UserService) {
         
         $scope.submit = function() {
           UserApiService.login($scope.username, $scope.password)
           .then(
                 function (result) {
-                  if ($localStorage.loginStatus == 200) {
+                  if (UserService.loginStatus() == 200) {
                     $scope.message = 'Success!'
                   } else {
                     $scope.message = 'Sorry'

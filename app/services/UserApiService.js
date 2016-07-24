@@ -12,6 +12,7 @@ module.exports = function($http, $q, $localStorage) {
                 console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
                 $localStorage.accessToken = data['token']
                 $localStorage.loginStatus = data['status']
+                $localStorage.username = username
 
                 // promise is returned
                 return deferred.promise;

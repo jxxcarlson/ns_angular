@@ -34,7 +34,7 @@ https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a
 
 
 
-},{"./directives":4,"./documents":7,"./services":10,"./topLevel":11,"./user":14,"angular":18,"angular-route":16}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":7,"./services":10,"./topLevel":11,"./user":15,"angular":19,"angular-route":17}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -268,7 +268,7 @@ app.controller('DocumentTypeController', function ($scope) {
 
     $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
 });
-},{"./DocumentsController":5,"./NewDocumentController":6,"angular":18}],8:[function(require,module,exports){
+},{"./DocumentsController":5,"./NewDocumentController":6,"angular":19}],8:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
       var deferred = $q.defer();
@@ -283,6 +283,7 @@ module.exports = function($http, $q, $localStorage) {
                 console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
                 $localStorage.accessToken = data['token']
                 $localStorage.loginStatus = data['status']
+                $localStorage.username = username
 
                 // promise is returned
                 return deferred.promise;
@@ -339,7 +340,7 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./UserApiService":8,"./foo":9,"angular":18}],11:[function(require,module,exports){
+},{"./UserApiService":8,"./foo":9,"angular":19}],11:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -413,14 +414,14 @@ app.controller('aboutController', function($scope, foo) {
 
 
     
-},{"angular":18}],12:[function(require,module,exports){
-    module.exports = function($scope, $localStorage, UserApiService) {
+},{"angular":19}],12:[function(require,module,exports){
+    module.exports = function($scope, $localStorage, UserApiService, UserService) {
         
         $scope.submit = function() {
           UserApiService.login($scope.username, $scope.password)
           .then(
                 function (result) {
-                  if ($localStorage.loginStatus == 200) {
+                  if (UserService.loginStatus() == 200) {
                     $scope.message = 'Success!'
                   } else {
                     $scope.message = 'Sorry'
@@ -463,10 +464,29 @@ module.exports = [
       }
     ]
 },{}],14:[function(require,module,exports){
+module.exports = function($localStorage) {
+
+
+ this.loginStatus = function() {
+    return $localStorage.loginStatus;
+  }
+ 
+ this.username = function() {
+    return $localStorage.username;
+  }
+ 
+  this.accessToken = function() {
+        return $localStorage.accessToken;
+  }
+
+ 
+}
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
+app.service('UserService', require('./UserService'))
 app.controller('signupController', require('./SignUpController'))
 app.controller('SigninController', require('./SignInController'))
 
@@ -474,7 +494,7 @@ app.controller('SigninController', require('./SignInController'))
 
 
 
-},{"./SignInController":12,"./SignUpController":13,"angular":18}],15:[function(require,module,exports){
+},{"./SignInController":12,"./SignUpController":13,"./UserService":14,"angular":19}],16:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1545,11 +1565,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":15}],17:[function(require,module,exports){
+},{"./angular-route":16}],18:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33318,8 +33338,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":17}]},{},[1]);
+},{"./angular":18}]},{},[1]);
