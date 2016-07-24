@@ -1,5 +1,20 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
+
+'use strict'
+
+var angular = require('angular');
+require('angular-route');
+
+var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
+
+require('./services')
+require('./directives')
+require('./user')
+require('./documents')
+require('./topLevel')
+
+
 /**
 
 Modularization references:
@@ -15,184 +30,52 @@ https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a
 
 **/
 
-'use strict'
-
-var angular = require('angular');
-require('angular-route');
-
-var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
-
-require('./services')
-require('./directives')
 
 
 
- 
 
-    // configure our routes
-    app.config(function($routeProvider) {
-        $routeProvider
-
-            // route for the home page
-            .when('/', {
-                templateUrl : 'pages/home.html',
-                controller  : 'MainController'
+},{"./directives":4,"./documents":7,"./services":10,"./topLevel":11,"./user":14,"angular":18,"angular-route":16}],2:[function(require,module,exports){
+module.exports = function( $parse ) {
+   return {
+       restrict: 'A',
+       link: function( $scope, elem, attrs ) {
+          elem.ready(function(){
+            $scope.$apply(function(){
+                var func = $parse(attrs.elemReady);
+                func($scope);
             })
+          })
+       }
+    }
+}
+},{}],3:[function(require,module,exports){
 
-            // route for the about page
-            .when('/about', {
-                templateUrl : 'pages/about.html',
-                controller  : 'aboutController'
-            })
+    /*
+This directive allows us to pass a function in on an enter key to do what we want.
+http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
 
+That’s it.  Now just add ng-enter="myFunction()" to any element in your partial
+that detects keystrokes. This has helped me a ton and added a lot of easy
+functionality to an already great AngularJS system.  If you have any other
+great directives or AngularJS tips please leave them below in the comments.
+ */
+ module.exports = function() {
+    return function(scope, element, attrs) {
+        element.bind("keydown keypress", function(event) {
+            if(event.which === 13) {
+                scope.$apply(function(){
+                    scope.$eval(attrs.ngEnter, {'event': event});
+                });
 
-            .when('/newdocument', {
-                templateUrl : 'pages/newdocument.html',
-                controller  : 'newDocumentController'
-            })
-
-            // route for the contact page
-            .when('/documents', {
-                templateUrl : 'pages/documents.html',
-                controller  : 'documentsController'
-            })
-
-            .when('/documents/:id', {
-                templateUrl : 'pages/documents.html',
-                controller  : 'documentsController'
-            })
-
-
-            .when('/editdocument', {
-                templateUrl : 'pages/editdocument.html',
-                controller  : 'editDocumentController'
-            })
-
-            .when('/editdocument/:id', {
-                templateUrl : 'pages/editdocument.html',
-                controller  : 'editDocumentController'
-            })
-
-            .when('/signup', {
-                templateUrl : 'pages/signup.html',
-                controller  : 'signupController'
-            });
-    });
-
-    // create the controller and inject Angular's $scope
-    app.controller('MainController', function($scope, $http, foo) {
-      foo.myFunc('MainController')
-    });
-
-    /* REFERENCE: https://github.com/gsklee/ngStorage */
-    app.controller('searchController', [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
-        $scope.doSearch = function(){
-            console.log('Search text: ' + $scope.searchText);
-            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
-            .then(function(response){
-              console.log(response.data['status'])
-              console.log('Number of documents: ' + response.data['document_count'])
-              var jsonData = response.data
-              var documents = jsonData['documents']
-              $localStorage.documents = documents
-            });
-
-      };
-    }]);
-
-
-    app.controller('aboutController', function($scope, foo) {
-        $scope.message = 'Look! I am an about page ....';
-        foo.myFunc('aboutController')
-
-    });
-
-
-    app.controller('SigninController',
-
-      function($scope, $localStorage, UserApiService) {
-        $scope.submit = function() {
-          UserApiService.login($scope.username, $scope.password)
-          .then(
-                function (result) {
-                  if ($localStorage.loginStatus == 200) {
-                    $scope.message = 'Success!'
-                  } else {
-                    $scope.message = 'Sorry'
-                  }
-                    // promise was fullfilled (regardless of outcome)
-                    // checks for information will be peformed here
-                },
-                function (error) {
-                    // handle errors here
-                    // console.log(error.statusText);
-                    console.log('ERROR!');
-                }
-            );
-        }
-      });
-
-
-    app.controller('signupController', [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
-        $scope.submit = function() {
-          var parameter = JSON.stringify({username:$scope.username, email:$scope.email, password: $scope.password, password_confirmation: $scope.passwordConfirmation});
-          console.log(parameter);
-
-          $http.post('http://localhost:2300/v1/users/create', parameter)
-          .then(function(response){
-            if (response.data['status'] == 200) {
-              $scope.message = 'Success!'
-              $localStorage.access_token = response.data['token']
-            } else {
-              $scope.message = response.data['error']
+                event.preventDefault();
             }
-            console.log('status = ' + String(response.data['status']))
-          });
-
-
-        }
-      }
-    ]);
-
-
-    app.controller('newDocumentController', [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
-        $scope.submit = function() {
-
-          console.log('CREATE DOCUMENT')
-          console.log("create new document: " + $scope.title)
-
-          var access_token = $localStorage.access_token
-          console.log("TOKEN: " + String(access_token))
-
-          var parameter = JSON.stringify({title:$scope.title, token:access_token });
-          console.log('parameter: ' + parameter);
-
-          $http.post('http://localhost:2300/v1/documents', parameter)
-          .then(function(response){
-            if (response.data['status'] == 200) {
-              $scope.message = 'Success!'
-            } else {
-              $scope.message = response.data['error']
-            }
-            console.log('status = ' + String(response.data['status']))
-          });
-
-
-        }
-      }
-    ]);
+        });
+    };
+}
+},{}],4:[function(require,module,exports){
+angular.module('noteshareApp').directive('ngEnter', require('./enterOnKeyPress'))
+angular.module('noteshareApp').directive( 'elemReady', require('./elemReady'))
+},{"./elemReady":2,"./enterOnKeyPress":3}],5:[function(require,module,exports){
 
     /*
     REFERENCE: https://github.com/gsklee/ngStorage
@@ -204,7 +87,7 @@ require('./directives')
     using $routeParams.paramName. Additionally, any query string passed
     in URL can be accessed in controller using $routeParams.variableName
     */
-    app.controller('documentsController', [
+    module.exports = [
       '$scope',
       '$localStorage',
       '$routeParams',
@@ -241,7 +124,47 @@ require('./directives')
           $localStorage.renderedText = document['rendered_text']
 
         });
-    }]);
+    }]
+},{}],6:[function(require,module,exports){
+module.exports = [
+      '$scope',
+      '$http',
+      '$localStorage',
+      function($scope, $http, $localStorage) {
+        $scope.submit = function() {
+
+          console.log('CREATE DOCUMENT')
+          console.log("create new document: " + $scope.title)
+
+          var access_token = $localStorage.access_token
+          console.log("TOKEN: " + String(access_token))
+
+          var parameter = JSON.stringify({title:$scope.title, token:access_token });
+          console.log('parameter: ' + parameter);
+
+          $http.post('http://localhost:2300/v1/documents', parameter)
+          .then(function(response){
+            if (response.data['status'] == 200) {
+              $scope.message = 'Success!'
+            } else {
+              $scope.message = response.data['error']
+            }
+            console.log('status = ' + String(response.data['status']))
+          });
+
+
+        }
+      }
+    ]
+},{}],7:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+app.controller('newDocumentController', require('./NewDocumentController'))
+app.controller('documentsController', require('./DocumentsController'))
+// app.controller('editDocumentController', require('./EditDocumentController'))
+
 
     app.controller('editDocumentController', [
     '$scope',
@@ -321,54 +244,31 @@ require('./directives')
 
 }]);
 
+ /* REFERENCE: https://github.com/gsklee/ngStorage */
+    app.controller('searchController', [
+      '$scope',
+      '$http',
+      '$localStorage',
+      function($scope, $http, $localStorage) {
+        $scope.doSearch = function(){
+            console.log('Search text: ' + $scope.searchText);
+            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+            .then(function(response){
+              console.log(response.data['status'])
+              console.log('Number of documents: ' + response.data['document_count'])
+              var jsonData = response.data
+              var documents = jsonData['documents']
+              $localStorage.documents = documents
+            });
+
+      };
+    }]);
+
 app.controller('DocumentTypeController', function ($scope) {
 
     $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
 });
-
-
-},{"./directives":4,"./services":7,"angular":11,"angular-route":9}],2:[function(require,module,exports){
-module.exports = function( $parse ) {
-   return {
-       restrict: 'A',
-       link: function( $scope, elem, attrs ) {
-          elem.ready(function(){
-            $scope.$apply(function(){
-                var func = $parse(attrs.elemReady);
-                func($scope);
-            })
-          })
-       }
-    }
-}
-},{}],3:[function(require,module,exports){
-
-    /*
-This directive allows us to pass a function in on an enter key to do what we want.
-http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
-
-That’s it.  Now just add ng-enter="myFunction()" to any element in your partial
-that detects keystrokes. This has helped me a ton and added a lot of easy
-functionality to an already great AngularJS system.  If you have any other
-great directives or AngularJS tips please leave them below in the comments.
- */
- module.exports = function() {
-    return function(scope, element, attrs) {
-        element.bind("keydown keypress", function(event) {
-            if(event.which === 13) {
-                scope.$apply(function(){
-                    scope.$eval(attrs.ngEnter, {'event': event});
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-}
-},{}],4:[function(require,module,exports){
-angular.module('noteshareApp').directive('ngEnter', require('./enterOnKeyPress'))
-angular.module('noteshareApp').directive( 'elemReady', require('./elemReady'))
-},{"./elemReady":2,"./enterOnKeyPress":3}],5:[function(require,module,exports){
+},{"./DocumentsController":5,"./NewDocumentController":6,"angular":18}],8:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
       var deferred = $q.defer();
@@ -420,7 +320,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -428,7 +328,7 @@ module.exports = function($http, $q, $localStorage) {
             return val;
         }
     }
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -439,7 +339,142 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./UserApiService":5,"./foo":6,"angular":11}],8:[function(require,module,exports){
+},{"./UserApiService":8,"./foo":9,"angular":18}],11:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+    // configure our routes
+
+app.config(function($routeProvider) {
+    $routeProvider
+
+        // route for the home page
+        .when('/', {
+            templateUrl : 'pages/home.html',
+            controller  : 'MainController'
+        })
+
+        // route for the about page
+        .when('/about', {
+            templateUrl : 'pages/about.html',
+            controller  : 'aboutController'
+        })
+
+
+        .when('/newdocument', {
+            templateUrl : 'pages/newdocument.html',
+            controller  : 'newDocumentController'
+        })
+
+        // route for the contact page
+        .when('/documents', {
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
+        })
+
+        .when('/documents/:id', {
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
+        })
+
+
+        .when('/editdocument', {
+            templateUrl : 'pages/editdocument.html',
+            controller  : 'editDocumentController'
+        })
+
+        .when('/editdocument/:id', {
+            templateUrl : 'pages/editdocument.html',
+            controller  : 'editDocumentController'
+        })
+
+        .when('/signup', {
+            templateUrl : 'pages/signup.html',
+            controller  : 'signupController'
+        });
+});
+
+
+
+// create the controller and inject Angular's $scope
+app.controller('MainController', function($scope, $http, foo) {
+  foo.myFunc('MainController')
+});
+
+
+
+
+app.controller('aboutController', function($scope, foo) {
+    $scope.message = 'Look! I am an about page ....';
+    foo.myFunc('aboutController')
+
+});
+
+
+    
+},{"angular":18}],12:[function(require,module,exports){
+    module.exports = function($scope, $localStorage, UserApiService) {
+        
+        $scope.submit = function() {
+          UserApiService.login($scope.username, $scope.password)
+          .then(
+                function (result) {
+                  if ($localStorage.loginStatus == 200) {
+                    $scope.message = 'Success!'
+                  } else {
+                    $scope.message = 'Sorry'
+                  }
+                    // promise was fullfilled (regardless of outcome)
+                    // checks for information will be peformed here
+                },
+                function (error) {
+                    // handle errors here
+                    // console.log(error.statusText);
+                    console.log('ERROR!');
+                }
+            );
+        }
+      }
+
+},{}],13:[function(require,module,exports){
+module.exports = [
+      '$scope',
+      '$http',
+      '$localStorage',
+      function($scope, $http, $localStorage) {
+        $scope.submit = function() {
+          var parameter = JSON.stringify({username:$scope.username, email:$scope.email, password: $scope.password, password_confirmation: $scope.passwordConfirmation});
+          console.log(parameter);
+
+          $http.post('http://localhost:2300/v1/users/create', parameter)
+          .then(function(response){
+            if (response.data['status'] == 200) {
+              $scope.message = 'Success!'
+              $localStorage.access_token = response.data['token']
+            } else {
+              $scope.message = response.data['error']
+            }
+            console.log('status = ' + String(response.data['status']))
+          });
+
+
+        }
+      }
+    ]
+},{}],14:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+app.controller('signupController', require('./SignUpController'))
+app.controller('SigninController', require('./SignInController'))
+
+
+
+
+
+},{"./SignInController":12,"./SignUpController":13,"angular":18}],15:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1510,11 +1545,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],9:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":8}],10:[function(require,module,exports){
+},{"./angular-route":15}],17:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33283,8 +33318,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],11:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":10}]},{},[1]);
+},{"./angular":17}]},{},[1]);
