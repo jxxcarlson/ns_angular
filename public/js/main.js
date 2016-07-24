@@ -386,29 +386,50 @@ app.controller('aboutController', function($scope, foo) {
       }
 
 },{}],12:[function(require,module,exports){
+
+
 module.exports = [
       '$scope',
       '$http',
       '$localStorage',
-      function($scope, $http, $localStorage) {
+      'UserService',
+      function($scope, $http, $localStorage, UserService) {
+          
         $scope.submit = function() {
-          var parameter = JSON.stringify({username:$scope.username, email:$scope.email, password: $scope.password, password_confirmation: $scope.passwordConfirmation});
-          console.log(parameter);
+            
+          var validation = UserService.validateNewUser($scope.username, $scope.email, $scope.password, $scope.passwordConfirmation)
+          console.log('validaion: ' + validation)
+          
+          if (validation != 'OK') 
+              { $scope.message = validation
+                console.log('Password and confirmation do not match')
+              }
+            else {
+                
+                console.log('Password and confirmation match')    
+                var parameter = JSON.stringify({username:$scope.username, email:$scope.email, 
+                                        password: $scope.password, password_confirmation: $scope.passwordConfirmation});
 
-          $http.post('http://localhost:2300/v1/users/create', parameter)
-          .then(function(response){
-            if (response.data['status'] == 200) {
-              $scope.message = 'Success!'
-              $localStorage.access_token = response.data['token']
-            } else {
-              $scope.message = response.data['error']
-            }
-            console.log('status = ' + String(response.data['status']))
-          });
 
 
-        }
-      }
+
+                console.log(parameter);
+
+              $http.post('http://localhost:2300/v1/users/create', parameter)
+              .then(function(response){
+                if (response.data['status'] == 200) {
+                  $scope.message = 'Success!'
+                  $localStorage.access_token = response.data['token']
+                } else {
+                  $scope.message = response.data['error']
+                }
+                console.log('status = ' + String(response.data['status']))
+              }); 
+        
+                
+            } // else
+        } // $scope.submit
+      } // function
     ]
 },{}],13:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
@@ -478,6 +499,50 @@ module.exports = function($localStorage) {
   this.accessToken = function() {
         return $localStorage.accessToken;
   }
+  
+  this.validateNewUser = function(username, email, password, passwordConfirmation) {
+    
+      // Validate username        
+      var userNameIsValid = /[a-z][a-z0-9]+$/.test(username)
+      
+      if (!userNameIsValid) {
+          
+          return 'Username must be like "joe123": only lowercase letters and numbers, beginning with letter'
+      }
+      
+      // Valid email
+      var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      var emailValid = emailRegex.test(email)
+      
+      if (!emailValid) {
+          
+          return 'Email should be like "joe123@foo.io" - username@domain'
+      }
+      
+      // Validate password
+      if ( password == undefined ) {
+          
+          return 'Password cannot be blank'
+      }
+      
+      if ( password.length < 8 ) {
+          
+          return 'Password must have at least 8 characters'
+      }
+      
+      if ( password.length > 16 ) {
+          
+          return 'Password cannot have more than 16 characters'
+      }
+      
+      
+      if (password != passwordConfirmation) {
+          
+          return 'Sorry, password and confirmation do not match'
+      }
+      
+      return 'OK'
+  }
 
  
 }
@@ -486,9 +551,9 @@ module.exports = function($localStorage) {
 
 var app = require('angular').module('noteshareApp');
 
-app.service('UserApiService', require('./UserApiService'));
-
+app.service('UserApiService', require('./UserApiService')); 
 app.service('UserService', require('./UserService'))
+
 app.controller('signupController', require('./SignUpController'))
 app.controller('SigninController', require('./SignInController'))
 
