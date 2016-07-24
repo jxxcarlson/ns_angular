@@ -24,13 +24,7 @@ var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 require('./services')
 
 
-    app.service('foo', function() {
-        this.myFunc = function (x) {
-            var val = 'foobar: ' + x;
-            console.log(val)
-            return val;
-        }
-    });
+
 
 
 
@@ -71,6 +65,7 @@ great directives or AngularJS tips please leave them below in the comments.
     }
 })
 
+ 
 
     // configure our routes
     app.config(function($routeProvider) {

@@ -25,13 +25,7 @@ var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 require('./services')
 
 
-    app.service('foo', function() {
-        this.myFunc = function (x) {
-            var val = 'foobar: ' + x;
-            console.log(val)
-            return val;
-        }
-    });
+
 
 
 
@@ -72,6 +66,7 @@ great directives or AngularJS tips please leave them below in the comments.
     }
 })
 
+ 
 
     // configure our routes
     app.config(function($routeProvider) {
@@ -371,7 +366,7 @@ app.controller('DocumentTypeController', function ($scope) {
 });
 
 
-},{"./services":3,"angular":7,"angular-route":5}],2:[function(require,module,exports){
+},{"./services":4,"angular":8,"angular-route":6}],2:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
       var deferred = $q.defer();
@@ -424,16 +419,25 @@ module.exports = function($http, $q, $localStorage) {
               ........
     */
 },{}],3:[function(require,module,exports){
+   module.exports = function() {
+        this.myFunc = function (x) {
+            var val = 'foobar: ' + x;
+            console.log(val)
+            return val;
+        }
+    }
+},{}],4:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
- app.service('UserApiService', require('./UserApiService'));
+app.service('UserApiService', require('./UserApiService'));
+app.service('foo', require('./foo'))
 
 
 
 
-},{"./UserApiService":2,"angular":7}],4:[function(require,module,exports){
+},{"./UserApiService":2,"./foo":3,"angular":8}],5:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1504,11 +1508,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":4}],6:[function(require,module,exports){
+},{"./angular-route":5}],7:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33277,8 +33281,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":6}]},{},[1]);
+},{"./angular":7}]},{},[1]);
