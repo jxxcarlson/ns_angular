@@ -1,42 +1,15 @@
-/*
-require('angular')
-var MainController = require('./controllers/MainController')
 
-var app = angular.module('app', [])
-app.controller('MainController', ['$scope', MainController])
-*/
+'use strict'
 
-// app.js
+var angular = require('angular');
+require('angular-route');
 
-    // create the module and name it noteshareApp
-        // also include ngRoute for all our routing needs
-    var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
+var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
+require('./services')
 
-    /*
-       REFERENCES (PROMISES)
-       http://wildermuth.com/2013/8/3/JavaScript_Promises
-       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
-       https://docs.angularjs.org/api/ng/service/$q
-       
-       NOTE: for requests to the server to succeed, one needs
-       the proper entry in apps/application.rb of the Hanami server corde:
-       
-       module Api
-        class Application < Hanami::Application
-            configure do
-                # https://gitter.im/hanami/chat/archives/2016/02/12
-                # Include gem 'rack-cors', :require => 'rack/cors'
-                middleware.use Rack::Cors do
-                    allow do
-                        origins 'localhost:4000', '127.0.0.1:4000', '0.0.0.0:9000'
-                        resource '*', headers: :any, methods: [:get, :post, :patch, :options]
-                    end
-                end
-              ........
-    */
-
-    noteshareApp.service('UserApiService', function($http, $q, $localStorage) {
+/***
+    app.service('UserApiService', function($http, $q, $localStorage) {
 
       var deferred = $q.defer();
 
@@ -63,10 +36,35 @@ app.controller('MainController', ['$scope', MainController])
         }
 
       });
+      
+***/
 
-    noteshareApp.service('foo', function() {
+    /*
+       REFERENCES (PROMISES)
+       http://wildermuth.com/2013/8/3/JavaScript_Promises
+       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
+       https://docs.angularjs.org/api/ng/service/$q
+       
+       NOTE: for requests to the server to succeed, one needs
+       the proper entry in apps/application.rb of the Hanami server corde:
+       
+       module Api
+        class Application < Hanami::Application
+            configure do
+                # https://gitter.im/hanami/chat/archives/2016/02/12
+                # Include gem 'rack-cors', :require => 'rack/cors'
+                middleware.use Rack::Cors do
+                    allow do
+                        origins 'localhost:4000', '127.0.0.1:4000', '0.0.0.0:9000'
+                        resource '*', headers: :any, methods: [:get, :post, :patch, :options]
+                    end
+                end
+              ........
+    */
+
+    app.service('foo', function() {
         this.myFunc = function (x) {
-            val = 'foobar: ' + x;
+            var val = 'foobar: ' + x;
             console.log(val)
             return val;
         }
@@ -113,7 +111,7 @@ great directives or AngularJS tips please leave them below in the comments.
 
 
     // configure our routes
-    noteshareApp.config(function($routeProvider) {
+    app.config(function($routeProvider) {
         $routeProvider
 
             // route for the home page
@@ -163,12 +161,12 @@ great directives or AngularJS tips please leave them below in the comments.
     });
 
     // create the controller and inject Angular's $scope
-    noteshareApp.controller('MainController', function($scope, $http, foo) {
+    app.controller('MainController', function($scope, $http, foo) {
       foo.myFunc('MainController')
     });
 
     /* REFERENCE: https://github.com/gsklee/ngStorage */
-    noteshareApp.controller('searchController', [
+    app.controller('searchController', [
       '$scope',
       '$http',
       '$localStorage',
@@ -188,14 +186,14 @@ great directives or AngularJS tips please leave them below in the comments.
     }]);
 
 
-    noteshareApp.controller('aboutController', function($scope, foo) {
+    app.controller('aboutController', function($scope, foo) {
         $scope.message = 'Look! I am an about page ....';
         foo.myFunc('aboutController')
 
     });
 
 
-    noteshareApp.controller('SigninController',
+    app.controller('SigninController',
 
       function($scope, $localStorage, UserApiService) {
         $scope.submit = function() {
@@ -220,7 +218,7 @@ great directives or AngularJS tips please leave them below in the comments.
       });
 
 
-    noteshareApp.controller('signupController', [
+    app.controller('signupController', [
       '$scope',
       '$http',
       '$localStorage',
@@ -246,7 +244,7 @@ great directives or AngularJS tips please leave them below in the comments.
     ]);
 
 
-    noteshareApp.controller('newDocumentController', [
+    app.controller('newDocumentController', [
       '$scope',
       '$http',
       '$localStorage',
@@ -287,7 +285,7 @@ great directives or AngularJS tips please leave them below in the comments.
     using $routeParams.paramName. Additionally, any query string passed
     in URL can be accessed in controller using $routeParams.variableName
     */
-    noteshareApp.controller('documentsController', [
+    app.controller('documentsController', [
       '$scope',
       '$localStorage',
       '$routeParams',
@@ -326,7 +324,7 @@ great directives or AngularJS tips please leave them below in the comments.
         });
     }]);
 
-    noteshareApp.controller('editDocumentController', [
+    app.controller('editDocumentController', [
     '$scope',
     '$localStorage',
     '$routeParams',
@@ -404,7 +402,7 @@ great directives or AngularJS tips please leave them below in the comments.
 
 }]);
 
-noteshareApp.controller('DocumentTypeController', function ($scope) {
+app.controller('DocumentTypeController', function ($scope) {
 
     $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
 });
