@@ -34,7 +34,7 @@ https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a
 
 
 
-},{"./directives":4,"./documents":7,"./services":10,"./topLevel":11,"./user":15,"angular":19,"angular-route":17}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":7,"./services":9,"./topLevel":10,"./user":15,"angular":19,"angular-route":17}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -269,59 +269,6 @@ app.controller('DocumentTypeController', function ($scope) {
     $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
 });
 },{"./DocumentsController":5,"./NewDocumentController":6,"angular":19}],8:[function(require,module,exports){
-module.exports = function($http, $q, $localStorage) {
-
-      var deferred = $q.defer();
-
-        this.login = function(username, password) {
-          return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-
-                var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
-
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        ;
-        }
-
-      }
-
-
-  /*
-       REFERENCES (PROMISES)
-       http://wildermuth.com/2013/8/3/JavaScript_Promises
-       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
-       https://docs.angularjs.org/api/ng/service/$q
-       
-       NOTE: for requests to the server to succeed, one needs
-       the proper entry in apps/application.rb of the Hanami server corde:
-       
-       module Api
-        class Application < Hanami::Application
-            configure do
-                # https://gitter.im/hanami/chat/archives/2016/02/12
-                # Include gem 'rack-cors', :require => 'rack/cors'
-                middleware.use Rack::Cors do
-                    allow do
-                        origins 'localhost:4000', '127.0.0.1:4000', '0.0.0.0:9000'
-                        resource '*', headers: :any, methods: [:get, :post, :patch, :options]
-                    end
-                end
-              ........
-    */
-},{}],9:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -329,18 +276,18 @@ module.exports = function($http, $q, $localStorage) {
             return val;
         }
     }
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
-app.service('UserApiService', require('./UserApiService'));
+
 app.service('foo', require('./foo'))
 
 
 
 
-},{"./UserApiService":8,"./foo":9,"angular":19}],11:[function(require,module,exports){
+},{"./foo":8,"angular":19}],10:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -414,7 +361,7 @@ app.controller('aboutController', function($scope, foo) {
 
 
     
-},{"angular":19}],12:[function(require,module,exports){
+},{"angular":19}],11:[function(require,module,exports){
     module.exports = function($scope, $localStorage, UserApiService, UserService) {
         
         $scope.submit = function() {
@@ -438,7 +385,7 @@ app.controller('aboutController', function($scope, foo) {
         }
       }
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = [
       '$scope',
       '$http',
@@ -463,6 +410,59 @@ module.exports = [
         }
       }
     ]
+},{}],13:[function(require,module,exports){
+module.exports = function($http, $q, $localStorage) {
+
+      var deferred = $q.defer();
+
+        this.login = function(username, password) {
+          return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        ;
+        }
+
+      }
+
+
+  /*
+       REFERENCES (PROMISES)
+       http://wildermuth.com/2013/8/3/JavaScript_Promises
+       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
+       https://docs.angularjs.org/api/ng/service/$q
+       
+       NOTE: for requests to the server to succeed, one needs
+       the proper entry in apps/application.rb of the Hanami server corde:
+       
+       module Api
+        class Application < Hanami::Application
+            configure do
+                # https://gitter.im/hanami/chat/archives/2016/02/12
+                # Include gem 'rack-cors', :require => 'rack/cors'
+                middleware.use Rack::Cors do
+                    allow do
+                        origins 'localhost:4000', '127.0.0.1:4000', '0.0.0.0:9000'
+                        resource '*', headers: :any, methods: [:get, :post, :patch, :options]
+                    end
+                end
+              ........
+    */
 },{}],14:[function(require,module,exports){
 module.exports = function($localStorage) {
 
@@ -486,6 +486,8 @@ module.exports = function($localStorage) {
 
 var app = require('angular').module('noteshareApp');
 
+app.service('UserApiService', require('./UserApiService'));
+
 app.service('UserService', require('./UserService'))
 app.controller('signupController', require('./SignUpController'))
 app.controller('SigninController', require('./SignInController'))
@@ -494,7 +496,7 @@ app.controller('SigninController', require('./SignInController'))
 
 
 
-},{"./SignInController":12,"./SignUpController":13,"./UserService":14,"angular":19}],16:[function(require,module,exports){
+},{"./SignInController":11,"./SignUpController":12,"./UserApiService":13,"./UserService":14,"angular":19}],16:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
