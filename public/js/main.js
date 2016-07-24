@@ -339,7 +339,7 @@ app.config(function($routeProvider) {
 
         .when('/signup', {
             templateUrl : 'pages/signup.html',
-            controller  : 'signupController'
+            controller  : 'SignupController'
         });
 });
 
@@ -388,7 +388,33 @@ app.controller('aboutController', function($scope, foo) {
 },{}],12:[function(require,module,exports){
 
 
-module.exports = [
+module.exports = function($scope, $localStorage, UserApiService, UserService) {
+        
+        $scope.submit = function() {
+          UserApiService.newUser($scope.username, $scope.email, $scope.password)
+          .then(
+                function (result) {
+                  if (UserService.loginStatus() == 200) {
+                    $scope.message = 'Success!'
+                  } else {
+                    $scope.message = 'Sorry'
+                  }
+                    // promise was fullfilled (regardless of outcome)
+                    // checks for information will be peformed here
+                },
+                function (error) {
+                    // handle errors here
+                    // console.log(error.statusText);
+                    console.log('ERROR!');
+                }
+            );
+        }
+      }
+    
+    
+ /*   
+    
+    [
       '$scope',
       '$http',
       '$localStorage',
@@ -409,10 +435,6 @@ module.exports = [
                 console.log('Password and confirmation match')    
                 var parameter = JSON.stringify({username:$scope.username, email:$scope.email, 
                                         password: $scope.password, password_confirmation: $scope.passwordConfirmation});
-
-
-
-
                 console.log(parameter);
 
               $http.post('http://localhost:2300/v1/users/create', parameter)
@@ -431,13 +453,41 @@ module.exports = [
         } // $scope.submit
       } // function
     ]
+    */
 },{}],13:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
-      var deferred = $q.defer();
+        var deferred = $q.defer();
 
         this.login = function(username, password) {
           return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        ;
+        }
+        
+        this.newUser = function(username, email, password) {
+            
+          var parameter = JSON.stringify({username:username, email:email, password: password});
+          console.log(parameter);
+          return $http.post('http://localhost:2300/v1/users/create', parameter)
+          
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -554,7 +604,7 @@ var app = require('angular').module('noteshareApp');
 app.service('UserApiService', require('./UserApiService')); 
 app.service('UserService', require('./UserService'))
 
-app.controller('signupController', require('./SignUpController'))
+app.controller('SignupController', require('./SignUpController'))
 app.controller('SigninController', require('./SignInController'))
 
 

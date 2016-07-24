@@ -49,7 +49,7 @@ app.config(function($routeProvider) {
 
         .when('/signup', {
             templateUrl : 'pages/signup.html',
-            controller  : 'signupController'
+            controller  : 'SignupController'
         });
 });
 
