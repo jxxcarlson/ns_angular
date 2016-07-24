@@ -23,48 +23,9 @@ require('angular-route');
 var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 require('./services')
+require('./directives')
 
 
-
-
-
-
-    /*
-This directive allows us to pass a function in on an enter key to do what we want.
-http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
-
-That’s it.  Now just add ng-enter="myFunction()" to any element in your partial
-that detects keystrokes. This has helped me a ton and added a lot of easy
-functionality to an already great AngularJS system.  If you have any other
-great directives or AngularJS tips please leave them below in the comments.
- */
- angular.module('noteshareApp').directive('ngEnter', function() {
-    return function(scope, element, attrs) {
-        element.bind("keydown keypress", function(event) {
-            if(event.which === 13) {
-                scope.$apply(function(){
-                    scope.$eval(attrs.ngEnter, {'event': event});
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-});
-
- angular.module('noteshareApp').directive( 'elemReady', function( $parse ) {
-   return {
-       restrict: 'A',
-       link: function( $scope, elem, attrs ) {
-          elem.ready(function(){
-            $scope.$apply(function(){
-                var func = $parse(attrs.elemReady);
-                func($scope);
-            })
-          })
-       }
-    }
-})
 
  
 
@@ -366,7 +327,48 @@ app.controller('DocumentTypeController', function ($scope) {
 });
 
 
-},{"./services":4,"angular":8,"angular-route":6}],2:[function(require,module,exports){
+},{"./directives":4,"./services":7,"angular":11,"angular-route":9}],2:[function(require,module,exports){
+module.exports = function( $parse ) {
+   return {
+       restrict: 'A',
+       link: function( $scope, elem, attrs ) {
+          elem.ready(function(){
+            $scope.$apply(function(){
+                var func = $parse(attrs.elemReady);
+                func($scope);
+            })
+          })
+       }
+    }
+}
+},{}],3:[function(require,module,exports){
+
+    /*
+This directive allows us to pass a function in on an enter key to do what we want.
+http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
+
+That’s it.  Now just add ng-enter="myFunction()" to any element in your partial
+that detects keystrokes. This has helped me a ton and added a lot of easy
+functionality to an already great AngularJS system.  If you have any other
+great directives or AngularJS tips please leave them below in the comments.
+ */
+ module.exports = function() {
+    return function(scope, element, attrs) {
+        element.bind("keydown keypress", function(event) {
+            if(event.which === 13) {
+                scope.$apply(function(){
+                    scope.$eval(attrs.ngEnter, {'event': event});
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+}
+},{}],4:[function(require,module,exports){
+angular.module('noteshareApp').directive('ngEnter', require('./enterOnKeyPress'))
+angular.module('noteshareApp').directive( 'elemReady', require('./elemReady'))
+},{"./elemReady":2,"./enterOnKeyPress":3}],5:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
       var deferred = $q.defer();
@@ -418,7 +420,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -426,7 +428,7 @@ module.exports = function($http, $q, $localStorage) {
             return val;
         }
     }
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -437,7 +439,7 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./UserApiService":2,"./foo":3,"angular":8}],5:[function(require,module,exports){
+},{"./UserApiService":5,"./foo":6,"angular":11}],8:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1508,11 +1510,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":5}],7:[function(require,module,exports){
+},{"./angular-route":8}],10:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33281,8 +33283,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":7}]},{},[1]);
+},{"./angular":10}]},{},[1]);

@@ -22,48 +22,9 @@ require('angular-route');
 var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 require('./services')
+require('./directives')
 
 
-
-
-
-
-    /*
-This directive allows us to pass a function in on an enter key to do what we want.
-http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
-
-That’s it.  Now just add ng-enter="myFunction()" to any element in your partial
-that detects keystrokes. This has helped me a ton and added a lot of easy
-functionality to an already great AngularJS system.  If you have any other
-great directives or AngularJS tips please leave them below in the comments.
- */
- angular.module('noteshareApp').directive('ngEnter', function() {
-    return function(scope, element, attrs) {
-        element.bind("keydown keypress", function(event) {
-            if(event.which === 13) {
-                scope.$apply(function(){
-                    scope.$eval(attrs.ngEnter, {'event': event});
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-});
-
- angular.module('noteshareApp').directive( 'elemReady', function( $parse ) {
-   return {
-       restrict: 'A',
-       link: function( $scope, elem, attrs ) {
-          elem.ready(function(){
-            $scope.$apply(function(){
-                var func = $parse(attrs.elemReady);
-                func($scope);
-            })
-          })
-       }
-    }
-})
 
  
 
