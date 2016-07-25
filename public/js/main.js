@@ -237,25 +237,25 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
     } // else 
 }
 },{}],8:[function(require,module,exports){
-  module.exports = function($scope, $localStorage, $routeParams, $http, $sce) {
+  module.exports = function($scope, $routeParams, $http, $sce, DocumentService, UserService) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
         if ($routeParams.id != undefined) {
             id = $routeParams.id
         } else {
-            id = $localStorage.currentDocumentID;
+            id = DocumentService.documentId();
         }
 
 
         $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
         /* Initial values: */
-        $scope.title = $localStorage.title
-        $scope.editableTitle = $scope.title
-        $scope.text = $localStorage.text
-        $scope.editText = $localStorage.text
-        $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
-        $scope.docArray = $localStorage.documents
+        $scope.title = DocumentService.title()
+        $scope.editableTitle = DocumentService.title()
+        $scope.text = DocumentService.text()
+        $scope.editText = DocumentService.text()
+        $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+        $scope.docArray = DocumentService.documentList()
 
         /* Get most recent version from server */
         $http.get('http://localhost:2300/v1/documents/' + id  )
@@ -267,18 +267,18 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
 
                 /* Update local storage */
-                $localStorage.currentDocumentID = document['id']
-                $localStorage.title = document['title']
-                console.log('I set $localStorage.title to ' + $localStorage.title)
-                $localStorage.text = document['text']
-                $localStorage.renderedText = document['rendered_text']
+                DocumentService.setDocumentId(document['id'])
+                DocumentService.setTitle(document['title'])
+                DocumentService.setText(document['text'])
+                DocumentService.setRenderedText(document['rendered_text'])
+                console.log('I set the title to ' + DocumentService.title())
             })
 
         /* updateDocument */
         $scope.updateDocument = function() {
             console.log('Update document ' + id + ', text = ' + $scope.editText)
 
-            var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: $localStorage.access_token });
+            var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: UserService.accessToken() });
 
             console.log('parameter:' + parameter);
 
@@ -289,9 +289,10 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
                         var document = response.data['document']
 
                         /* Update local storage */
-                        $localStorage.currentDocumentID = document['id']
-                        $localStorage.rendered_text = document['rendered_text']
-                        $localStorage.title = document['title']
+                        DocumentService.setDocumentId(document['id'])
+                        DocumentService.setTitle(document['title'])
+                        DocumentService.setText(document['text'])                          
+                        DocumentService.setRenderedText(document['rendered_text'])
 
                         /* Update $scope */
                         $scope.title = document['title']
@@ -361,7 +362,6 @@ var app = require('angular').module('noteshareApp');
 
 app.service('DocumentApiService', require('./DocumentApiService')); 
 app.service('DocumentService', require('./DocumentService')); 
-
 
 app.controller('newDocumentController', require('./NewDocumentController'))
 app.controller('documentsController', require('./DocumentsController'))
