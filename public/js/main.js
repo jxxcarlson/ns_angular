@@ -17,7 +17,7 @@ require('./topLevel')
 
 /**
 
-Modularization references:
+MODULARIZATION
 
 >>> Google: split angularjs into files node browserify
 
@@ -28,13 +28,17 @@ Modularization references:
 
 https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a4a6917#.m95vfp6g3
 
+TESTING
+
+http://jasmine.github.io/2.0/introduction.html
+
 **/
 
 
 
 
 
-},{"./directives":4,"./documents":7,"./services":9,"./topLevel":10,"./user":15,"angular":19,"angular-route":17}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":10,"./services":12,"./topLevel":13,"./user":18,"angular":22,"angular-route":20}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -76,56 +80,163 @@ great directives or AngularJS tips please leave them below in the comments.
 angular.module('noteshareApp').directive('ngEnter', require('./enterOnKeyPress'))
 angular.module('noteshareApp').directive( 'elemReady', require('./elemReady'))
 },{"./elemReady":2,"./enterOnKeyPress":3}],5:[function(require,module,exports){
+module.exports = function($http, $q, DocumentService) {
 
-    /*
-    REFERENCE: https://github.com/gsklee/ngStorage
+        var deferred = $q.defer();
 
-    For example, URL’s like /route/12345?a=2&b=3 will match the route /route
-    with id 12345 and query string variables a & b. Now those values can
-    be accessed in controller code using $routeParams service. Any parameter
-    [preceded by ':'] in route can be accessed in controller by it’s name
-    using $routeParams.paramName. Additionally, any query string passed
-    in URL can be accessed in controller using $routeParams.variableName
-    */
-    module.exports = [
-      '$scope',
-      '$localStorage',
-      '$routeParams',
-      '$http',
-      '$sce',
-
-      function($scope, $localStorage, $routeParams, $http, $sce ) {
-
-        var id;
-        if ($routeParams.id != undefined) {
-            id = $routeParams.id
-        } else {
-            id = $localStorage.currentDocumentID;
+        this.getDocument = function(id) {
+          return  $http.get('http://localhost:2300/v1/documents/' + id  )
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var data = response.data
+                var document = data['document']
+                console.log('I updated localStorage for ' + document['title'])
+                DocumentService.setTitle( document['title'] )
+                DocumentService.setDocumentId( document['id'] )
+                
+                DocumentService.setText( document['text'] )
+                DocumentService.setRenderedText( document['rendered_text'] )
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
         }
-        /* Initial values: */
-        $scope.text = $localStorage.text
-        $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
-        $scope.docArray = $localStorage.documents
+        
+        
+        this.search = function(searchText) {
+          return  $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                console.log(response.data['status'])
+                console.log('Number of documents: ' + response.data['document_count'])
+                var jsonData = response.data
+                var documents = jsonData['documents']
+                DocumentService.setDocumentList( documents )
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        }
+        
+        
+        
+        /*
+        this.newUser = function(username, email, password) {
+            
+          var parameter = JSON.stringify({username:username, email:email, password: password});
+          console.log(parameter);
+          return $http.post('http://localhost:2300/v1/users/create', parameter)
+          
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
 
-        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
 
-        console.log('Document id: ' + id)
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        ;
+        }
+        */
 
-        $http.get('http://localhost:2300/v1/documents/' + id  )
-        .then(function(response){
-          var document = response.data['document']
-          $scope.title = document['title']
-          $scope.text = document['text']
-          $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-
-          $localStorage.currentDocumentID = document['id']
-          $localStorage.title = $scope.title
-          $localStorage.text = $scope.text
-          $localStorage.renderedText = document['rendered_text']
-
-        });
-    }]
+      }
 },{}],6:[function(require,module,exports){
+module.exports = function($localStorage) {
+    
+    this.setDocumentId = function(id) { $localStorage.documentId = id }
+    this.documentId = function() { return $localStorage.documentId }
+    
+    this.setTitle = function(title) { $localStorage.title = title}
+    this.title = function() { return $localStorage.title }
+    
+    this.setText = function(text) { $localStorage.text = text }
+    this.text = function() { return $localStorage.text }
+    
+    this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
+    this.renderedText = function() { return $localStorage.renderedText }
+    
+    this.setDocumentList = function(array) { $localStorage.documentList = array}
+    this.documentList = function() { return $localStorage.documentList }
+    
+    this.documentCount = function() { return $localStorage.documentList.length }
+       
+}
+},{}],7:[function(require,module,exports){
+
+/*
+GET /documents
+GET /documents/:id
+
+REFERENCE: https://github.com/gsklee/ngStorage
+
+For example, URL’s like /route/12345?a=2&b=3 will match the route /route
+with id 12345 and query string variables a & b. Now those values can
+be accessed in controller code using $routeParams service. Any parameter
+[preceded by ':'] in route can be accessed in controller by it’s name
+using $routeParams.paramName. Additionally, any query string passed
+in URL can be accessed in controller using $routeParams.variableName
+*/
+module.exports = function($scope, $routeParams, $sce, DocumentApiService, DocumentService) {
+
+    console.log('DocumentsController, $routeParams.id = ' + $routeParams.id)
+    var id;
+    if ($routeParams.id == undefined) { // Request was GET /documents
+        id = DocumentService.documentId()
+        console.log('(1) Document id: ' + id)
+        $scope.title = DocumentService.title()
+        $scope.text = DocumentService.text()
+        $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
+        $scope.docArray = DocumentService.documentList()
+        $scope.documentCount = DocumentService.documentCount()
+        console.log('XX. Number of documents: ' + DocumentService.documentCount())
+        
+    } else { // Request was GET /documents/:id
+        
+        console.log('II, DocumentsController, $routeParams.id = ' + $routeParams.id)
+        
+        id = $routeParams.id
+        console.log('II. Document id: ' + id)
+        DocumentApiService.getDocument(id)
+        .then(
+            function (response) {
+                $scope.title = DocumentService.title()
+                $scope.text = DocumentService.text()
+                $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+                $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
+                $scope.docArray = DocumentService.documentList()
+                $scope.numberOfDocuments = DocumentService.documentCount()
+            },
+            function (error) {
+                // handle errors here
+                // console.log(error.statusText);
+                console.log('ERROR!');
+            }
+        );
+        
+    } // else 
+}
+},{}],8:[function(require,module,exports){
 module.exports = [
       '$scope',
       '$http',
@@ -156,13 +267,34 @@ module.exports = [
         }
       }
     ]
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+module.exports = function($scope, $http, DocumentService) {
+        $scope.doSearch = function(){
+            console.log('Search text: ' + $scope.searchText);
+            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+            .then(function(response){
+              console.log(response.data['status'])
+              console.log('Number of documents: ' + response.data['document_count'])
+              var jsonData = response.data
+              var documents = jsonData['documents']
+              DocumentService.setDocumentList(documents)
+            });
+
+      };
+    }
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
+app.service('DocumentApiService', require('./DocumentApiService')); 
+app.service('DocumentService', require('./DocumentService')); 
+
+
 app.controller('newDocumentController', require('./NewDocumentController'))
 app.controller('documentsController', require('./DocumentsController'))
+app.controller('searchController', require('./SearchController'))
+
 // app.controller('editDocumentController', require('./EditDocumentController'))
 
 
@@ -245,30 +377,13 @@ app.controller('documentsController', require('./DocumentsController'))
 }]);
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
-    app.controller('searchController', [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
-        $scope.doSearch = function(){
-            console.log('Search text: ' + $scope.searchText);
-            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
-            .then(function(response){
-              console.log(response.data['status'])
-              console.log('Number of documents: ' + response.data['document_count'])
-              var jsonData = response.data
-              var documents = jsonData['documents']
-              $localStorage.documents = documents
-            });
 
-      };
-    }]);
 
 app.controller('DocumentTypeController', function ($scope) {
 
     $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
 });
-},{"./DocumentsController":5,"./NewDocumentController":6,"angular":19}],8:[function(require,module,exports){
+},{"./DocumentApiService":5,"./DocumentService":6,"./DocumentsController":7,"./NewDocumentController":8,"./SearchController":9,"angular":22}],11:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -276,7 +391,7 @@ app.controller('DocumentTypeController', function ($scope) {
             return val;
         }
     }
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -287,7 +402,7 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./foo":8,"angular":19}],10:[function(require,module,exports){
+},{"./foo":11,"angular":22}],13:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -361,7 +476,7 @@ app.controller('aboutController', function($scope, foo) {
 
 
     
-},{"angular":19}],11:[function(require,module,exports){
+},{"angular":22}],14:[function(require,module,exports){
     module.exports = function($scope, $localStorage, UserApiService, UserService) {
         
         $scope.submit = function() {
@@ -385,7 +500,7 @@ app.controller('aboutController', function($scope, foo) {
         }
       }
 
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -454,7 +569,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],13:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -464,13 +579,11 @@ module.exports = function($http, $q, $localStorage) {
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
-
                 var data = response.data
                 console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
                 $localStorage.accessToken = data['token']
                 $localStorage.loginStatus = data['status']
                 $localStorage.username = username
-
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -534,7 +647,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function($localStorage) {
 
 
@@ -596,7 +709,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -611,7 +724,7 @@ app.controller('SigninController', require('./SignInController'))
 
 
 
-},{"./SignInController":11,"./SignUpController":12,"./UserApiService":13,"./UserService":14,"angular":19}],16:[function(require,module,exports){
+},{"./SignInController":14,"./SignUpController":15,"./UserApiService":16,"./UserService":17,"angular":22}],19:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1682,11 +1795,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":16}],18:[function(require,module,exports){
+},{"./angular-route":19}],21:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33455,8 +33568,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":18}]},{},[1]);
+},{"./angular":21}]},{},[1]);

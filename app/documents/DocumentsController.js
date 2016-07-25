@@ -1,49 +1,54 @@
 
-    /*
-    REFERENCE: https://github.com/gsklee/ngStorage
+/*
+GET /documents
+GET /documents/:id
 
-    For example, URL’s like /route/12345?a=2&b=3 will match the route /route
-    with id 12345 and query string variables a & b. Now those values can
-    be accessed in controller code using $routeParams service. Any parameter
-    [preceded by ':'] in route can be accessed in controller by it’s name
-    using $routeParams.paramName. Additionally, any query string passed
-    in URL can be accessed in controller using $routeParams.variableName
-    */
-    module.exports = [
-      '$scope',
-      '$localStorage',
-      '$routeParams',
-      '$http',
-      '$sce',
+REFERENCE: https://github.com/gsklee/ngStorage
 
-      function($scope, $localStorage, $routeParams, $http, $sce ) {
+For example, URL’s like /route/12345?a=2&b=3 will match the route /route
+with id 12345 and query string variables a & b. Now those values can
+be accessed in controller code using $routeParams service. Any parameter
+[preceded by ':'] in route can be accessed in controller by it’s name
+using $routeParams.paramName. Additionally, any query string passed
+in URL can be accessed in controller using $routeParams.variableName
+*/
+module.exports = function($scope, $routeParams, $sce, DocumentApiService, DocumentService) {
 
-        var id;
-        if ($routeParams.id != undefined) {
-            id = $routeParams.id
-        } else {
-            id = $localStorage.currentDocumentID;
-        }
-        /* Initial values: */
-        $scope.text = $localStorage.text
-        $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
-        $scope.docArray = $localStorage.documents
-
+    console.log('DocumentsController, $routeParams.id = ' + $routeParams.id)
+    var id;
+    if ($routeParams.id == undefined) { // Request was GET /documents
+        id = DocumentService.documentId()
+        console.log('(1) Document id: ' + id)
+        $scope.title = DocumentService.title()
+        $scope.text = DocumentService.text()
+        $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
-
-        console.log('Document id: ' + id)
-
-        $http.get('http://localhost:2300/v1/documents/' + id  )
-        .then(function(response){
-          var document = response.data['document']
-          $scope.title = document['title']
-          $scope.text = document['text']
-          $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-
-          $localStorage.currentDocumentID = document['id']
-          $localStorage.title = $scope.title
-          $localStorage.text = $scope.text
-          $localStorage.renderedText = document['rendered_text']
-
-        });
-    }]
+        $scope.docArray = DocumentService.documentList()
+        $scope.documentCount = DocumentService.documentCount()
+        console.log('XX. Number of documents: ' + DocumentService.documentCount())
+        
+    } else { // Request was GET /documents/:id
+        
+        console.log('II, DocumentsController, $routeParams.id = ' + $routeParams.id)
+        
+        id = $routeParams.id
+        console.log('II. Document id: ' + id)
+        DocumentApiService.getDocument(id)
+        .then(
+            function (response) {
+                $scope.title = DocumentService.title()
+                $scope.text = DocumentService.text()
+                $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+                $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
+                $scope.docArray = DocumentService.documentList()
+                $scope.numberOfDocuments = DocumentService.documentCount()
+            },
+            function (error) {
+                // handle errors here
+                // console.log(error.statusText);
+                console.log('ERROR!');
+            }
+        );
+        
+    } // else 
+}

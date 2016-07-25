@@ -16,7 +16,7 @@ require('./topLevel')
 
 /**
 
-Modularization references:
+MODULARIZATION
 
 >>> Google: split angularjs into files node browserify
 
@@ -26,6 +26,10 @@ Modularization references:
 >>> https://github.com/twilson63/angular-browserify-example
 
 https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a4a6917#.m95vfp6g3
+
+TESTING
+
+http://jasmine.github.io/2.0/introduction.html
 
 **/
 

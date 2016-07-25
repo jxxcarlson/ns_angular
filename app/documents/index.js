@@ -2,8 +2,14 @@
 
 var app = require('angular').module('noteshareApp');
 
+app.service('DocumentApiService', require('./DocumentApiService')); 
+app.service('DocumentService', require('./DocumentService')); 
+
+
 app.controller('newDocumentController', require('./NewDocumentController'))
 app.controller('documentsController', require('./DocumentsController'))
+app.controller('searchController', require('./SearchController'))
+
 // app.controller('editDocumentController', require('./EditDocumentController'))
 
 
@@ -86,24 +92,7 @@ app.controller('documentsController', require('./DocumentsController'))
 }]);
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
-    app.controller('searchController', [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
-        $scope.doSearch = function(){
-            console.log('Search text: ' + $scope.searchText);
-            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
-            .then(function(response){
-              console.log(response.data['status'])
-              console.log('Number of documents: ' + response.data['document_count'])
-              var jsonData = response.data
-              var documents = jsonData['documents']
-              $localStorage.documents = documents
-            });
 
-      };
-    }]);
 
 app.controller('DocumentTypeController', function ($scope) {
 
