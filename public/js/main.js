@@ -38,7 +38,7 @@ http://jasmine.github.io/2.0/introduction.html
 
 
 
-},{"./directives":4,"./documents":10,"./services":12,"./topLevel":13,"./user":18,"angular":22,"angular-route":20}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":11,"./services":13,"./topLevel":14,"./user":19,"angular":23,"angular-route":21}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -237,74 +237,7 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
     } // else 
 }
 },{}],8:[function(require,module,exports){
-module.exports = [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
-        $scope.submit = function() {
-
-          console.log('CREATE DOCUMENT')
-          console.log("create new document: " + $scope.title)
-
-          var access_token = $localStorage.access_token
-          console.log("TOKEN: " + String(access_token))
-
-          var parameter = JSON.stringify({title:$scope.title, token:access_token });
-          console.log('parameter: ' + parameter);
-
-          $http.post('http://localhost:2300/v1/documents', parameter)
-          .then(function(response){
-            if (response.data['status'] == 200) {
-              $scope.message = 'Success!'
-            } else {
-              $scope.message = response.data['error']
-            }
-            console.log('status = ' + String(response.data['status']))
-          });
-
-
-        }
-      }
-    ]
-},{}],9:[function(require,module,exports){
-module.exports = function($scope, $http, DocumentService) {
-        $scope.doSearch = function(){
-            console.log('Search text: ' + $scope.searchText);
-            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
-            .then(function(response){
-              console.log(response.data['status'])
-              console.log('Number of documents: ' + response.data['document_count'])
-              var jsonData = response.data
-              var documents = jsonData['documents']
-              DocumentService.setDocumentList(documents)
-            });
-
-      };
-    }
-},{}],10:[function(require,module,exports){
-'use strict';
-
-var app = require('angular').module('noteshareApp');
-
-app.service('DocumentApiService', require('./DocumentApiService')); 
-app.service('DocumentService', require('./DocumentService')); 
-
-
-app.controller('newDocumentController', require('./NewDocumentController'))
-app.controller('documentsController', require('./DocumentsController'))
-app.controller('searchController', require('./SearchController'))
-
-// app.controller('editDocumentController', require('./EditDocumentController'))
-
-
-    app.controller('editDocumentController', [
-    '$scope',
-    '$localStorage',
-    '$routeParams',
-    '$http',
-    '$sce',
-    function($scope, $localStorage, $routeParams, $http, $sce) {
+  module.exports = function($scope, $localStorage, $routeParams, $http, $sce) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -374,16 +307,71 @@ app.controller('searchController', require('./SearchController'))
                 })
         }
 
-}]);
+}
+},{}],9:[function(require,module,exports){
+module.exports = [
+      '$scope',
+      '$http',
+      '$localStorage',
+      function($scope, $http, $localStorage) {
+        $scope.submit = function() {
+
+          console.log('CREATE DOCUMENT')
+          console.log("create new document: " + $scope.title)
+
+          var access_token = $localStorage.access_token
+          console.log("TOKEN: " + String(access_token))
+
+          var parameter = JSON.stringify({title:$scope.title, token:access_token });
+          console.log('parameter: ' + parameter);
+
+          $http.post('http://localhost:2300/v1/documents', parameter)
+          .then(function(response){
+            if (response.data['status'] == 200) {
+              $scope.message = 'Success!'
+            } else {
+              $scope.message = response.data['error']
+            }
+            console.log('status = ' + String(response.data['status']))
+          });
+
+
+        }
+      }
+    ]
+},{}],10:[function(require,module,exports){
+module.exports = function($scope, $http, DocumentService) {
+        $scope.doSearch = function(){
+            console.log('Search text: ' + $scope.searchText);
+            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+            .then(function(response){
+              console.log(response.data['status'])
+              console.log('Number of documents: ' + response.data['document_count'])
+              var jsonData = response.data
+              var documents = jsonData['documents']
+              DocumentService.setDocumentList(documents)
+            });
+
+      };
+    }
+},{}],11:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+app.service('DocumentApiService', require('./DocumentApiService')); 
+app.service('DocumentService', require('./DocumentService')); 
+
+
+app.controller('newDocumentController', require('./NewDocumentController'))
+app.controller('documentsController', require('./DocumentsController'))
+app.controller('searchController', require('./SearchController'))
+app.controller('editDocumentController', require('./EditController'))
+
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-
-app.controller('DocumentTypeController', function ($scope) {
-
-    $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
-});
-},{"./DocumentApiService":5,"./DocumentService":6,"./DocumentsController":7,"./NewDocumentController":8,"./SearchController":9,"angular":22}],11:[function(require,module,exports){
+},{"./DocumentApiService":5,"./DocumentService":6,"./DocumentsController":7,"./EditController":8,"./NewDocumentController":9,"./SearchController":10,"angular":23}],12:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -391,7 +379,7 @@ app.controller('DocumentTypeController', function ($scope) {
             return val;
         }
     }
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -402,7 +390,7 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./foo":11,"angular":22}],13:[function(require,module,exports){
+},{"./foo":12,"angular":23}],14:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -476,7 +464,7 @@ app.controller('aboutController', function($scope, foo) {
 
 
     
-},{"angular":22}],14:[function(require,module,exports){
+},{"angular":23}],15:[function(require,module,exports){
     module.exports = function($scope, $localStorage, UserApiService, UserService) {
         
         $scope.submit = function() {
@@ -500,7 +488,7 @@ app.controller('aboutController', function($scope, foo) {
         }
       }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -569,7 +557,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -647,7 +635,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function($localStorage) {
 
 
@@ -709,7 +697,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -724,7 +712,7 @@ app.controller('SigninController', require('./SignInController'))
 
 
 
-},{"./SignInController":14,"./SignUpController":15,"./UserApiService":16,"./UserService":17,"angular":22}],19:[function(require,module,exports){
+},{"./SignInController":15,"./SignUpController":16,"./UserApiService":17,"./UserService":18,"angular":23}],20:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1795,11 +1783,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":19}],21:[function(require,module,exports){
+},{"./angular-route":20}],22:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33568,8 +33556,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":21}]},{},[1]);
+},{"./angular":22}]},{},[1]);
