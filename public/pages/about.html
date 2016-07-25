@@ -1,6 +1,16 @@
 <!-- about.html -->
     <div class="jumbotron text-center">
+        
         <h1>About Noteshare (beta)</h1>
 
         <p>{{ message }}</p>
+        
+        
+        <div ng-controller="stageController">
+          <div repeat-hello-world="{{repeat}}"></div>
+        </div>
+        
+        <div repeat-hello-world="{{repeat}}">
+        REPEAT
+        </div>
     </div>

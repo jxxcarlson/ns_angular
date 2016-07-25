@@ -3,7 +3,7 @@
   <div class="col-md-2" >
       <div style="margin-left:1em;">
 
-          <h3>Documents</h3>
+          <h3>{{ documentCount }} Documents</h3>
           <p ng-repeat="doc in docArray"><a href="#/editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
 
         </div>
@@ -35,7 +35,11 @@
 
     <div style="margin-left:1em;">
       <h3>{{ title }}</h3>
-      <div style="width:90%;" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div>
+        
+      <!-- <div style="width:90%;" ng-if="renderedText()" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div> -->
+      <div style="width:90%;" ng-bind-html="renderedText()" id="rendered_text"></div>
+        
+        
   </div>
 
 

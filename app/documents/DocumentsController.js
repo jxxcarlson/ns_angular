@@ -22,9 +22,14 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
         $scope.title = DocumentService.title()
         $scope.text = DocumentService.text()
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        
+        $scope.$watch(function(scope) { 
+            return scope.renderedText },
+            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+        );
+        
         console.log('XX. Number of documents: ' + DocumentService.documentCount())
         
     } else { // Request was GET /documents/:id
@@ -39,9 +44,13 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
                 $scope.title = DocumentService.title()
                 $scope.text = DocumentService.text()
                 $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-                $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
                 $scope.docArray = DocumentService.documentList()
                 $scope.numberOfDocuments = DocumentService.documentCount()
+                
+                $scope.$watch(function(scope) { 
+                    return scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
             },
             function (error) {
                 // handle errors here

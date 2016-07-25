@@ -1,2 +1,11 @@
-angular.module('noteshareApp').directive('ngEnter', require('./enterOnKeyPress'))
-angular.module('noteshareApp').directive( 'elemReady', require('./elemReady'))
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+app.directive('ngEnter', require('./enterOnKeyPress'))
+
+app.directive('elemReady', require('./elemReady'))
+
+
+  
+

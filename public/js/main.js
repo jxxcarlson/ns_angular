@@ -26,11 +26,51 @@ MODULARIZATION
 >>> https://blog.codecentric.de/en/2014/08/angularjs-browserify/
 >>> https://github.com/twilson63/angular-browserify-example
 
+ORGANIZING CODE
+
+https://medium.com/opinionated-angularjs/scalable-code-organization-in-angularjs-9f01b594bf06#.gsrzlad9h
+
 https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a4a6917#.m95vfp6g3
 
 TESTING
 
+https://www.smashingmagazine.com/2014/10/introduction-to-unit-testing-in-angularjs/
+
+https://karma-runner.github.io/latest/intro/installation.html
+https://www.npmjs.com/package/karma
+
+https://github.com/sitepoint-editors/angular-js-unit-testing-services-controllers-providers/blob/master/tests/serviceSpec.js
+
+http://www.bradoncode.com/blog/2015/02/27/karma-tutorial/
 http://jasmine.github.io/2.0/introduction.html
+
+CONTROLLERS
+
+http://www.w3schools.com/angular/angular_controllers.asp
+
+DIRECTIVES
+
+https://www.sitepoint.com/practical-guide-angularjs-directives/
+
+SERVICES
+
+http://www.w3schools.com/angular/angular_services.asp
+http://www.ng-newsletter.com/posts/beginner2expert-services.html
+http://blog.thoughtram.io/angular/2015/07/07/service-vs-factory-once-and-for-all.html
+https://docs.angularjs.org/guide/services
+http://stackoverflow.com/questions/13013772/how-do-i-test-an-angularjs-service-with-jasmine
+
+WATCH
+
+http://tutorials.jenkov.com/angularjs/watch-digest-apply.html
+
+CORS
+
+http://stackoverflow.com/questions/23823010/how-to-enable-cors-in-angularjs
+http://stackoverflow.com/questions/29547003/angularjs-no-access-control-allow-origin-header-is-present-on-the-requested-r
+
+NG-STORAGE
+https://www.npmjs.com/package/ng-storage
 
 **/
 
@@ -45,6 +85,7 @@ module.exports = function( $parse ) {
        link: function( $scope, elem, attrs ) {
           elem.ready(function(){
             $scope.$apply(function(){
+                console.log('EXECUTING ELEMENT READY')
                 var func = $parse(attrs.elemReady);
                 func($scope);
             })
@@ -77,9 +118,19 @@ great directives or AngularJS tips please leave them below in the comments.
     };
 }
 },{}],4:[function(require,module,exports){
-angular.module('noteshareApp').directive('ngEnter', require('./enterOnKeyPress'))
-angular.module('noteshareApp').directive( 'elemReady', require('./elemReady'))
-},{"./elemReady":2,"./enterOnKeyPress":3}],5:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+app.directive('ngEnter', require('./enterOnKeyPress'))
+
+app.directive('elemReady', require('./elemReady'))
+
+
+  
+
+
+},{"./elemReady":2,"./enterOnKeyPress":3,"angular":23}],5:[function(require,module,exports){
 module.exports = function($http, $q, DocumentService) {
 
         var deferred = $q.defer();
@@ -206,9 +257,14 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
         $scope.title = DocumentService.title()
         $scope.text = DocumentService.text()
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        
+        $scope.$watch(function(scope) { 
+            return scope.renderedText },
+            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+        );
+        
         console.log('XX. Number of documents: ' + DocumentService.documentCount())
         
     } else { // Request was GET /documents/:id
@@ -223,9 +279,13 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
                 $scope.title = DocumentService.title()
                 $scope.text = DocumentService.text()
                 $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-                $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
                 $scope.docArray = DocumentService.documentList()
                 $scope.numberOfDocuments = DocumentService.documentCount()
+                
+                $scope.$watch(function(scope) { 
+                    return scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
             },
             function (error) {
                 // handle errors here
@@ -237,7 +297,7 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
     } // else 
 }
 },{}],8:[function(require,module,exports){
-  module.exports = function($scope, $routeParams, $http, $sce, DocumentService, UserService) {
+  module.exports = function($scope, $routeParams, $http, $sce, $timeout, DocumentService, UserService) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -246,9 +306,8 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
         } else {
             id = DocumentService.documentId();
         }
-
-
-        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
+    
+        
         /* Initial values: */
         $scope.title = DocumentService.title()
         $scope.editableTitle = DocumentService.title()
@@ -256,6 +315,7 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
         $scope.editText = DocumentService.text()
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
+        $scope.documentCount = DocumentService.documentCount()
 
         /* Get most recent version from server */
         $http.get('http://localhost:2300/v1/documents/' + id  )
@@ -265,6 +325,11 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+               
+                $scope.$watch(function(scope) { 
+                    return scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
 
                 /* Update local storage */
                 DocumentService.setDocumentId(document['id'])
@@ -298,6 +363,11 @@ module.exports = function($scope, $routeParams, $sce, DocumentApiService, Docume
                         $scope.title = document['title']
                         $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         $scope.message = 'Success!'
+                        
+                        $scope.$watch(function(scope) { 
+                            return scope.renderedText },
+                            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                        );
 
                     } else {
                         $scope.message = response.data['error']
@@ -461,6 +531,8 @@ app.controller('aboutController', function($scope, foo) {
     foo.myFunc('aboutController')
 
 });
+
+app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     

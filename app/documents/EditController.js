@@ -1,4 +1,4 @@
-  module.exports = function($scope, $routeParams, $http, $sce, DocumentService, UserService) {
+  module.exports = function($scope, $routeParams, $http, $sce, $timeout, DocumentService, UserService) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -7,9 +7,8 @@
         } else {
             id = DocumentService.documentId();
         }
-
-
-        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
+    
+        
         /* Initial values: */
         $scope.title = DocumentService.title()
         $scope.editableTitle = DocumentService.title()
@@ -17,6 +16,7 @@
         $scope.editText = DocumentService.text()
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
+        $scope.documentCount = DocumentService.documentCount()
 
         /* Get most recent version from server */
         $http.get('http://localhost:2300/v1/documents/' + id  )
@@ -26,6 +26,11 @@
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+               
+                $scope.$watch(function(scope) { 
+                    return scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
 
                 /* Update local storage */
                 DocumentService.setDocumentId(document['id'])
@@ -59,6 +64,11 @@
                         $scope.title = document['title']
                         $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         $scope.message = 'Success!'
+                        
+                        $scope.$watch(function(scope) { 
+                            return scope.renderedText },
+                            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                        );
 
                     } else {
                         $scope.message = response.data['error']

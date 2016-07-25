@@ -69,5 +69,7 @@ app.controller('aboutController', function($scope, foo) {
 
 });
 
+app.controller('stageController', function ($scope) { $scope.repeat = 5; });
+
 
     
