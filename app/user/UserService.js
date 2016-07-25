@@ -1,6 +1,15 @@
 module.exports = function($localStorage) {
 
 
+ this.clear = function() {
+     
+     $localStorage.loginStatus = undefined
+     $localStorage.username = undefined
+     $localStorage.accessToken = undefined
+ 
+ }   
+ 
+ 
  this.loginStatus = function() {
     return $localStorage.loginStatus;
   }

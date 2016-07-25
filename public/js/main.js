@@ -78,7 +78,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":4,"./documents":11,"./services":13,"./topLevel":14,"./user":19,"angular":23,"angular-route":21}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":11,"./services":13,"./topLevel":14,"./user":20,"angular":24,"angular-route":22}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -130,7 +130,7 @@ app.directive('elemReady', require('./elemReady'))
   
 
 
-},{"./elemReady":2,"./enterOnKeyPress":3,"angular":23}],5:[function(require,module,exports){
+},{"./elemReady":2,"./enterOnKeyPress":3,"angular":24}],5:[function(require,module,exports){
 module.exports = function($http, $q, DocumentService) {
 
         var deferred = $q.defer();
@@ -438,7 +438,7 @@ app.controller('editDocumentController', require('./EditController'))
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./DocumentApiService":5,"./DocumentService":6,"./DocumentsController":7,"./EditController":8,"./NewDocumentController":9,"./SearchController":10,"angular":23}],12:[function(require,module,exports){
+},{"./DocumentApiService":5,"./DocumentService":6,"./DocumentsController":7,"./EditController":8,"./NewDocumentController":9,"./SearchController":10,"angular":24}],12:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -457,7 +457,7 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./foo":12,"angular":23}],14:[function(require,module,exports){
+},{"./foo":12,"angular":24}],14:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -538,8 +538,16 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"angular":23}],15:[function(require,module,exports){
+},{"angular":24}],15:[function(require,module,exports){
     module.exports = function($scope, $localStorage, UserApiService, UserService) {
+        
+        $scope.username = UserService.username
+        
+        if (UserService.username) {
+            $scope.signinStatus = 'Signed in as ' + UserService.username()
+        } else {
+            $scope.signinStatus = 'No one signed'
+        }
         
         $scope.submit = function() {
           UserApiService.login($scope.username, $scope.password)
@@ -563,6 +571,17 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
       }
 
 },{}],16:[function(require,module,exports){
+module.exports = function($scope, UserService) {
+
+        $scope.onButton1Click = function() {
+            // UserService.clear()
+            //$scope.username = UserService.username()
+        }
+
+        
+}
+
+},{}],17:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -631,7 +650,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -709,10 +728,19 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function($localStorage) {
 
 
+ this.clear = function() {
+     
+     $localStorage.loginStatus = undefined
+     $localStorage.username = undefined
+     $localStorage.accessToken = undefined
+ 
+ }   
+ 
+ 
  this.loginStatus = function() {
     return $localStorage.loginStatus;
   }
@@ -771,7 +799,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -781,12 +809,13 @@ app.service('UserService', require('./UserService'))
 
 app.controller('SignupController', require('./SignUpController'))
 app.controller('SigninController', require('./SignInController'))
+app.controller('SignOutController', require('./SignOutController'))
 
 
 
 
 
-},{"./SignInController":15,"./SignUpController":16,"./UserApiService":17,"./UserService":18,"angular":23}],20:[function(require,module,exports){
+},{"./SignInController":15,"./SignOutController":16,"./SignUpController":17,"./UserApiService":18,"./UserService":19,"angular":24}],21:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1857,11 +1886,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":20}],22:[function(require,module,exports){
+},{"./angular-route":21}],23:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33630,8 +33659,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":22}]},{},[1]);
+},{"./angular":23}]},{},[1]);
