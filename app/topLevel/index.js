@@ -9,8 +9,13 @@ app.config(function($routeProvider) {
 
         // route for the home page
         .when('/', {
-            templateUrl : 'pages/home.html',
-            controller  : 'MainController'
+            templateUrl : 'pages/signin.html',
+            controller  : 'SigninController'
+        })
+    
+        .when('/signin', {
+            templateUrl : 'pages/signin.html',
+            controller  : 'SigninController'
         })
 
         // route for the about page
@@ -54,9 +59,9 @@ app.config(function($routeProvider) {
 });
 
 
-
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, foo) {
+    $scope.message = 'This is the home page'
   foo.myFunc('MainController')
 });
 

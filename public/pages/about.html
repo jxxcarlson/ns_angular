@@ -1,16 +1,10 @@
 <!-- about.html -->
-    <div class="jumbotron text-center">
+    <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
         
         <h1>About Noteshare (beta)</h1>
 
         <p>{{ message }}</p>
         
         
-        <div ng-controller="stageController">
-          <div repeat-hello-world="{{repeat}}"></div>
-        </div>
-        
-        <div repeat-hello-world="{{repeat}}">
-        REPEAT
-        </div>
+    
     </div>
