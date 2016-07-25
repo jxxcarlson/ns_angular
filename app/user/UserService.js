@@ -5,6 +5,7 @@ module.exports = function($localStorage) {
     return $localStorage.loginStatus;
   }
  
+ 
  this.username = function() {
     return $localStorage.username;
   }
