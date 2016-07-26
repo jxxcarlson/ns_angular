@@ -59,6 +59,10 @@ http://blog.thoughtram.io/angular/2015/07/07/service-vs-factory-once-and-for-all
 https://docs.angularjs.org/guide/services
 http://stackoverflow.com/questions/13013772/how-do-i-test-an-angularjs-service-with-jasmine
 
+SCOPES
+
+http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html  << GOOD
+
 WATCH
 
 http://tutorials.jenkov.com/angularjs/watch-digest-apply.html

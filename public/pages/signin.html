@@ -1,8 +1,8 @@
 <div ng-controller='UserController'>
-Name: <input ng-model="username">
+<p ng-model="signedIn"></p>
 
     <!-- SIGN OUT FORM -->  
-    <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">        
+    <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
         <h1>Signed in as {{username}}</h1> 
         <br /> 
         <div ng-controller="SignOutController">
@@ -12,7 +12,7 @@ Name: <input ng-model="username">
     <!-- END SIGN OUT FORM -->
 
     <!-- SIGN IN FORM -->  
-    <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">    
+    <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;"> 
         <div ng-hide="userStatus == 'signedIn'"> 
             <h1>Sign in</h1> 
 

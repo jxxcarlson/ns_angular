@@ -1,4 +1,4 @@
-    module.exports = function($scope, $localStorage, UserApiService, UserService) {
+    module.exports = function($route, $scope, $localStorage, UserApiService, UserService) {
         
         
         
@@ -17,7 +17,7 @@
                     UserService.signin()
                     $scope.username = UserService.username
                     $scope.signedIn = UserService.signedIn
-                    $scope.reloadRoute = function() { $route.reload(); }
+                    $timeout($route.reload(),100)
                    
                   } else {
                     $scope.message = 'Sorry'

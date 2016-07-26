@@ -60,6 +60,10 @@ http://blog.thoughtram.io/angular/2015/07/07/service-vs-factory-once-and-for-all
 https://docs.angularjs.org/guide/services
 http://stackoverflow.com/questions/13013772/how-do-i-test-an-angularjs-service-with-jasmine
 
+SCOPES
+
+http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html  << GOOD
+
 WATCH
 
 http://tutorials.jenkov.com/angularjs/watch-digest-apply.html
@@ -539,7 +543,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"angular":25}],15:[function(require,module,exports){
-    module.exports = function($scope, $localStorage, UserApiService, UserService) {
+    module.exports = function($route, $scope, $localStorage, UserApiService, UserService) {
         
         
         
@@ -558,7 +562,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     UserService.signin()
                     $scope.username = UserService.username
                     $scope.signedIn = UserService.signedIn
-                    $scope.reloadRoute = function() { $route.reload(); }
+                    $timeout($route.reload(),100)
                    
                   } else {
                     $scope.message = 'Sorry'
@@ -576,15 +580,16 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
       }
 
 },{}],16:[function(require,module,exports){
-module.exports = function($scope, UserService) {
+module.exports = function($scope, $route, UserService) {
 
-    console.log('Sign out ...')           
-    $scope.signout = function() { UserService.signout(); console.log('SIGNING OUT ...') }
+    console.log('Sign out ...')
+    
+    $scope.signout = function() { UserService.signout(); $route.reload(); console.log('SIGNING OUT ...') }
     
     $scope.username = UserService.username()
     $scope.signedIn = UserService.signedIn
     
-    $scope.reloadRoute = function() { $route.reload(); }
+      
         
 }
 
