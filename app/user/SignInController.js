@@ -17,6 +17,7 @@
                     UserService.signin()
                     $scope.username = UserService.username
                     $scope.signedIn = UserService.signedIn
+                    $scope.reloadRoute = function() { $route.reload(); }
                    
                   } else {
                     $scope.message = 'Sorry'

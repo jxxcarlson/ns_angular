@@ -5,5 +5,7 @@ module.exports = function($scope, UserService) {
     
     $scope.username = UserService.username()
     $scope.signedIn = UserService.signedIn
+    
+    $scope.reloadRoute = function() { $route.reload(); }
         
 }

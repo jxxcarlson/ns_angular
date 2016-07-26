@@ -558,6 +558,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     UserService.signin()
                     $scope.username = UserService.username
                     $scope.signedIn = UserService.signedIn
+                    $scope.reloadRoute = function() { $route.reload(); }
                    
                   } else {
                     $scope.message = 'Sorry'
@@ -582,6 +583,8 @@ module.exports = function($scope, UserService) {
     
     $scope.username = UserService.username()
     $scope.signedIn = UserService.signedIn
+    
+    $scope.reloadRoute = function() { $route.reload(); }
         
 }
 

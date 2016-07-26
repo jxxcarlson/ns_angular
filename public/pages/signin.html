@@ -1,51 +1,41 @@
 <div ng-controller='UserController'>
-
+Name: <input ng-model="username">
 
     <!-- SIGN OUT FORM -->  
-    <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;"> 
-        
+    <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">        
         <h1>Signed in as {{username}}</h1> 
-    
-
         <br /> 
-
         <div ng-controller="SignOutController">
             <button ng-click="signout()">Sign out</button> 
         </div>   
-
     </div>  
-    <!-- /SIGN OUT FORM -->
+    <!-- END SIGN OUT FORM -->
 
-    <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
-      
-          
-     <!-- SIGN IN FORM -->      
-     <div ng-hide="userStatus == 'signedIn'"> 
-        <h1>Sign in</h1> 
-         
-         <form ng-submit="submit()">
+    <!-- SIGN IN FORM -->  
+    <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">    
+        <div ng-hide="userStatus == 'signedIn'"> 
+            <h1>Sign in</h1> 
 
-            <div class="form-group">
-              <label for="username">User name</label>
-              <input type="text" class="form-control" id="username" ng-model="username" placeholder="Like jjones, at least rour characters, letters and numerals only">
-            </div>
+             <form ng-submit="submit()">
 
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="text" class="form-control" id="password" ng-model="password" placeholder="Like 'Abc.def!123' - at least eight characters, no spaces">
-            </div>
+                <div class="form-group">
+                    <label for="username">User name</label>
+                    <input type="text" class="form-control" id="username" ng-model="username" placeholder="Like jjones, at least rour characters, letters and numerals only">
+                </div>
 
-            <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="text" class="form-control" id="password" ng-model="password" placeholder="Like 'Abc.def!123' - at least eight characters, no spaces">
+                </div>
 
+                <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
+            </form>
 
-        </form>
-          
-        <br/><br/>
-        <!-- <p> {{ message }} </p> -->
-        <a href="#signup"><i class="fa fa-signup"></i>Need an account?</a>     
-    </div> 
-    <!-- /SIGN IN FORM -->       
-    
-   </div>
+            <br/><br/>
+            <!-- <p> {{ message }} </p> -->
+            <a href="#signup"><i class="fa fa-signup"></i>Need an account?</a>     
+        </div>      
+    </div>
+    <!-- /SIGN IN FORM -->  
         
 </div>
