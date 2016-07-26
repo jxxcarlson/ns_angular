@@ -55,6 +55,11 @@ app.config(function($routeProvider) {
         .when('/signup', {
             templateUrl : 'pages/signup.html',
             controller  : 'SignupController'
+        })
+    
+        .when('/images', {
+            templateUrl : 'pages/image.html',
+            controller  : 'ImageController'
         });
 });
 
