@@ -290,7 +290,7 @@ module.exports = [
       }
     ]
 },{}],8:[function(require,module,exports){
-module.exports = function($scope, $http, DocumentService, DocumentApiService) {
+module.exports = function($scope, $route, $location, $http, DocumentService, DocumentApiService) {
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
             $http.get('http://localhost:2300/v1/documents' + '?scope=' + $scope.searchText  )
@@ -303,8 +303,10 @@ module.exports = function($scope, $http, DocumentService, DocumentApiService) {
               
               var id = documents[0]['id']
               DocumentApiService.getDocument(id)
-              
-              
+              .then(function(response) {
+                $location.path('/documents')
+                $route.reload()       
+              }) 
             });
 
       };
