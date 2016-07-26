@@ -1,11 +1,23 @@
     module.exports = function($scope, $localStorage, UserApiService, UserService) {
         
+        
+        
+        if (UserService.username) {
+            $scope.signinStatus = 'Signed in as ' + UserService.username()
+        } else {
+            $scope.signinStatus = 'No one signed'
+        }
+        
         $scope.submit = function() {
           UserApiService.login($scope.username, $scope.password)
           .then(
                 function (result) {
                   if (UserService.loginStatus() == 200) {
                     $scope.message = 'Success!'
+                    UserService.signin()
+                    $scope.username = UserService.username
+                    $scope.signedIn = UserService.signedIn
+                   
                   } else {
                     $scope.message = 'Sorry'
                   }

@@ -7,6 +7,8 @@ app.service('UserService', require('./UserService'))
 
 app.controller('SignupController', require('./SignUpController'))
 app.controller('SigninController', require('./SignInController'))
+app.controller('SignOutController', require('./SignOutController'))
+app.controller('UserController', require('./UserController'))
 
 
 
