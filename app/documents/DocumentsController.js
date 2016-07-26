@@ -12,49 +12,29 @@ be accessed in controller code using $routeParams service. Any parameter
 using $routeParams.paramName. Additionally, any query string passed
 in URL can be accessed in controller using $routeParams.variableName
 */
-module.exports = function($scope, $routeParams, $sce, DocumentApiService, DocumentService) {
+
+
+module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, DocumentService, DocumentRouteService) {
 
     console.log('DocumentsController, $routeParams.id = ' + $routeParams.id)
-    var id;
-    if ($routeParams.id == undefined) { // Request was GET /documents
-        id = DocumentService.documentId()
-        console.log('(1) Document id: ' + id)
-        $scope.title = DocumentService.title()
-        $scope.text = DocumentService.text()
-        $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-        $scope.docArray = DocumentService.documentList()
-        $scope.documentCount = DocumentService.documentCount()
-        
-        console.log('XX. Number of documents: ' + DocumentService.documentCount())
-        
-    } else { // Request was GET /documents/:id
-        
-        console.log('II, DocumentsController, $routeParams.id = ' + $routeParams.id)
-        
-        id = $routeParams.id
-        console.log('II. Document id: ' + id)
-        DocumentApiService.getDocument(id)
-        .then(
-            function (response) {
-                $scope.title = DocumentService.title()
-                $scope.text = DocumentService.text()
-                $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-                $scope.docArray = DocumentService.documentList()
-                $scope.numberOfDocuments = DocumentService.documentCount()
-                
-            },
-            function (error) {
-                // handle errors here
-                // console.log(error.statusText);
-                console.log('ERROR!');
-            }
-        );
-
-        
-    } // else
+    console.log('DocumentsController, search = ' + $routeParams.search)
+    console.log('DocumentsController, URL = ' + $location.absUrl())
+    console.log('DocumentsController, QS = ' + JSON.stringify($location.search()))
+    
+    var id = $routeParams.id;
+    var queryString =  $location.search()
+    // https://docs.angularjs.org/api/ng/service/$location
+    
+    // Process the given route
+    if (id == undefined) { 
+        DocumentRouteService.getDocumentList($scope) } 
+    else { 
+        DocumentRouteService.getDocument($scope, id)     
+    } 
     
     $scope.$watch(function(scope) { 
         return scope.renderedText },
         function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
     );
+    
 }

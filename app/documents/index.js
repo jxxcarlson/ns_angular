@@ -4,6 +4,7 @@ var app = require('angular').module('noteshareApp');
 
 app.service('DocumentApiService', require('./DocumentApiService')); 
 app.service('DocumentService', require('./DocumentService')); 
+app.service('DocumentRouteService', require('./DocumentRouteService')); 
 
 app.controller('newDocumentController', require('./NewDocumentController'))
 app.controller('documentsController', require('./DocumentsController'))
