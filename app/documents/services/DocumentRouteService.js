@@ -13,7 +13,6 @@ module.exports = function(DocumentService, DocumentApiService, $sce) {
     
     this.getDocument = function(scope, id) {
         
-        console.log('II. Document id: ' + id)
         DocumentApiService.getDocument(id)
         .then(
             function (response) {

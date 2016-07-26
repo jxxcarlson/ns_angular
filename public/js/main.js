@@ -82,7 +82,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":4,"./documents":12,"./services":14,"./topLevel":15,"./user":22,"angular":26,"angular-route":24}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":9,"./services":14,"./topLevel":15,"./user":22,"angular":26,"angular-route":24}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -135,144 +135,6 @@ app.directive('elemReady', require('./elemReady'))
 
 
 },{"./elemReady":2,"./enterOnKeyPress":3,"angular":26}],5:[function(require,module,exports){
-module.exports = function($http, $q, DocumentService) {
-
-        var deferred = $q.defer();
-
-        this.getDocument = function(id) {
-          return  $http.get('http://localhost:2300/v1/documents/' + id  )
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-                var data = response.data
-                var document = data['document']
-                console.log('I updated localStorage for ' + document['title'])
-                DocumentService.setTitle( document['title'] )
-                DocumentService.setDocumentId( document['id'] )
-                
-                DocumentService.setText( document['text'] )
-                DocumentService.setRenderedText( document['rendered_text'] )
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        }
-        
-        
-        this.search = function(searchText) {
-          return  $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-                console.log(response.data['status'])
-                console.log('Number of documents: ' + response.data['document_count'])
-                var jsonData = response.data
-                var documents = jsonData['documents']
-                DocumentService.setDocumentList( documents )
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        }
-        
-        
-        
-        /*
-        this.newUser = function(username, email, password) {
-            
-          var parameter = JSON.stringify({username:username, email:email, password: password});
-          console.log(parameter);
-          return $http.post('http://localhost:2300/v1/users/create', parameter)
-          
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-
-                var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
-
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        ;
-        }
-        */
-
-      }
-},{}],6:[function(require,module,exports){
-module.exports = function(DocumentService, DocumentApiService, $sce) {
-
-    this.getDocumentList = function(scope) {
-        
-        scope.title = DocumentService.title()
-        scope.text = DocumentService.text()
-        scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-        scope.docArray = DocumentService.documentList()
-        scope.documentCount = DocumentService.documentCount()
-        
-    }
-    
-    
-    this.getDocument = function(scope, id) {
-        
-        console.log('II. Document id: ' + id)
-        DocumentApiService.getDocument(id)
-        .then(
-            function (response) {
-                scope.title = DocumentService.title()
-                scope.text = DocumentService.text()
-                scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-                scope.docArray = DocumentService.documentList()
-                scope.numberOfDocuments = DocumentService.documentCount()
-                
-            },
-            function (error) {
-                // handle errors here
-                // console.log(error.statusText);
-                console.log('ERROR!');
-            }
-        );
-
-    }
-}
-},{}],7:[function(require,module,exports){
-module.exports = function($localStorage) {
-    
-    this.setDocumentId = function(id) { $localStorage.documentId = id }
-    this.documentId = function() { return $localStorage.documentId }
-    
-    this.setTitle = function(title) { $localStorage.title = title}
-    this.title = function() { return $localStorage.title }
-    
-    this.setText = function(text) { $localStorage.text = text }
-    this.text = function() { return $localStorage.text }
-    
-    this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
-    this.renderedText = function() { return $localStorage.renderedText }
-    
-    this.setDocumentList = function(array) { $localStorage.documentList = array}
-    this.documentList = function() { return $localStorage.documentList }
-    
-    this.documentCount = function() { return $localStorage.documentList.length }
-       
-}
-},{}],8:[function(require,module,exports){
 
 /*
 GET /documents
@@ -313,7 +175,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     );
     
 }
-},{}],9:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
   module.exports = function($scope, $routeParams, $http, $sce, $timeout, DocumentService, UserService) {
 
         var id;
@@ -396,7 +258,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         }
 
 }
-},{}],10:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = [
       '$scope',
       '$http',
@@ -427,39 +289,187 @@ module.exports = [
         }
       }
     ]
-},{}],11:[function(require,module,exports){
-module.exports = function($scope, $http, DocumentService) {
+},{}],8:[function(require,module,exports){
+module.exports = function($scope, $http, DocumentService, DocumentApiService) {
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
-            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+            $http.get('http://localhost:2300/v1/documents' + '?scope=' + $scope.searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of documents: ' + response.data['document_count'])
               var jsonData = response.data
               var documents = jsonData['documents']
               DocumentService.setDocumentList(documents)
+              
+              var id = documents[0]['id']
+              DocumentApiService.getDocument(id)
+              
+              
             });
 
       };
     }
-},{}],12:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
-app.service('DocumentApiService', require('./DocumentApiService')); 
-app.service('DocumentService', require('./DocumentService')); 
-app.service('DocumentRouteService', require('./DocumentRouteService')); 
+app.service('DocumentApiService', require('./services/DocumentApiService')); 
+app.service('DocumentService', require('./services//DocumentService')); 
+app.service('DocumentRouteService', require('./services//DocumentRouteService')); 
 
-app.controller('newDocumentController', require('./NewDocumentController'))
-app.controller('documentsController', require('./DocumentsController'))
-app.controller('searchController', require('./SearchController'))
-app.controller('editDocumentController', require('./EditController'))
+app.controller('newDocumentController', require('./controllers/NewDocumentController'))
+app.controller('documentsController', require('./controllers/DocumentsController'))
+app.controller('searchController', require('./controllers/SearchController'))
+app.controller('editDocumentController', require('./controllers/EditController'))
 
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./DocumentApiService":5,"./DocumentRouteService":6,"./DocumentService":7,"./DocumentsController":8,"./EditController":9,"./NewDocumentController":10,"./SearchController":11,"angular":26}],13:[function(require,module,exports){
+},{"./controllers/DocumentsController":5,"./controllers/EditController":6,"./controllers/NewDocumentController":7,"./controllers/SearchController":8,"./services//DocumentRouteService":11,"./services//DocumentService":12,"./services/DocumentApiService":10,"angular":26}],10:[function(require,module,exports){
+module.exports = function($http, $q, DocumentService) {
+
+        var deferred = $q.defer();
+
+        this.getDocument = function(id) {
+          return  $http.get('http://localhost:2300/v1/documents/' + id  )
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var data = response.data
+                var document = data['document']
+                console.log('I updated localStorage for ' + document['title'])
+                DocumentService.setTitle( document['title'] )
+                DocumentService.setDocumentId( document['id'] )
+                
+                DocumentService.setText( document['text'] )
+                DocumentService.setRenderedText( document['rendered_text'] )
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        }
+        
+        
+        this.search = function(searchText) {
+          return  $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                console.log(response.data['status'])
+                console.log('Number of documents: ' + response.data['document_count'])
+                var jsonData = response.data
+                var documents = jsonData['documents']
+                DocumentService.setDocumentList( documents )
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        }
+        
+        
+        
+        /*
+        this.newUser = function(username, email, password) {
+            
+          var parameter = JSON.stringify({username:username, email:email, password: password});
+          console.log(parameter);
+          return $http.post('http://localhost:2300/v1/users/create', parameter)
+          
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        ;
+        }
+        */
+
+      }
+},{}],11:[function(require,module,exports){
+module.exports = function(DocumentService, DocumentApiService, $sce) {
+
+    this.getDocumentList = function(scope) {
+        
+        scope.title = DocumentService.title()
+        scope.text = DocumentService.text()
+        scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+        scope.docArray = DocumentService.documentList()
+        scope.documentCount = DocumentService.documentCount()
+        
+    }
+    
+    
+    this.getDocument = function(scope, id) {
+        
+        DocumentApiService.getDocument(id)
+        .then(
+            function (response) {
+                scope.title = DocumentService.title()
+                scope.text = DocumentService.text()
+                scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+                scope.docArray = DocumentService.documentList()
+                scope.numberOfDocuments = DocumentService.documentCount()
+                
+            },
+            function (error) {
+                // handle errors here
+                // console.log(error.statusText);
+                console.log('ERROR!');
+            }
+        );
+
+    }
+}
+},{}],12:[function(require,module,exports){
+module.exports = function($localStorage) {
+    
+    this.setDocumentId = function(id) { $localStorage.documentId = id }
+    this.documentId = function() { return $localStorage.documentId }
+    
+    this.setTitle = function(title) { $localStorage.title = title}
+    this.title = function() { return $localStorage.title }
+    
+    this.setText = function(text) { $localStorage.text = text }
+    this.text = function() { return $localStorage.text }
+    
+    this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
+    this.renderedText = function() { return $localStorage.renderedText }
+    
+    this.setDocumentList = function(array) { 
+        $localStorage.documentList = array
+        var id = array[0]['id']
+        console.log('FIRST ELEMENT = ' + JSON.stringify(array[0]))
+        console.log('ID OF FIRST ELEMENT = ' + id)
+        $localStorage.documentId = id
+    }
+    this.documentList = function() { return $localStorage.documentList }
+    
+    this.documentCount = function() { return $localStorage.documentList.length }
+       
+}
+},{}],13:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
