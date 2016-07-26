@@ -1,9 +1,9 @@
 module.exports = function($scope, UserService) {
 
-        $scope.onButton1Click = function() {
-            // UserService.clear()
-            //$scope.username = UserService.username()
-        }
-
+    console.log('Sign out ...')           
+    $scope.signout = function() { UserService.signout(); console.log('SIGNING OUT ...') }
+    
+    $scope.username = UserService.username()
+    $scope.signedIn = UserService.signedIn
         
 }

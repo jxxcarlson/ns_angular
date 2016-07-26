@@ -1,14 +1,21 @@
 module.exports = function($localStorage) {
 
+ this.signedIn = null    
 
- this.clear = function() {
+ this.signout = function() {
      
-     $localStorage.loginStatus = undefined
-     $localStorage.username = undefined
-     $localStorage.accessToken = undefined
+     console.log('SIGNING OUT')
+     $localStorage.loginStatus = 'signedOut'
+     $localStorage.username = ''
+     $localStorage.accessToken = ''
+     this.signedIn = null
+ }  
  
- }   
  
+ this.signin = function() {
+     
+     this.signedIn = 'yes'
+ }
  
  this.loginStatus = function() {
     return $localStorage.loginStatus;
