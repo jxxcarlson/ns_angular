@@ -1,6 +1,7 @@
 module.exports = function($scope, $route, $location, $http, DocumentService, DocumentApiService) {
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
+            
             $http.get('http://localhost:2300/v1/documents' + '?scope=' + $scope.searchText  )
             .then(function(response){
               console.log(response.data['status'])

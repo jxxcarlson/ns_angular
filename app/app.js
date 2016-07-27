@@ -7,11 +7,15 @@ require('angular-route');
 
 var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
+require('./topLevel')
+
 require('./services')
 require('./directives')
+
 require('./user')
 require('./documents')
-require('./topLevel')
+require('./images')
+
 
 
 /**
@@ -25,6 +29,11 @@ MODULARIZATION
 >>> https://blog.codecentric.de/en/2014/08/angularjs-browserify/
 >>> https://github.com/twilson63/angular-browserify-example
 
+>>> GOOD >>> http://henriquat.re/modularizing-angularjs/modularizing-angular-applications/modularizing-angular-applications.html
+>>> http://henriquat.re/
+
+^^^ GOOD::: REQUIRING VS BROSERIFYING: http://developer.telerik.com/featured/requiring-vs-browerifying-angular/
+
 ORGANIZING CODE
 
 https://medium.com/opinionated-angularjs/scalable-code-organization-in-angularjs-9f01b594bf06#.gsrzlad9h
@@ -33,7 +42,14 @@ https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a
 
 TESTING
 
+^^^ BRADONCODE: http://www.bradoncode.com/blog/2015/02/27/karma-tutorial/
+
 https://www.smashingmagazine.com/2014/10/introduction-to-unit-testing-in-angularjs/
+::: https://github.com/mhevery/jasmine-node
+::: http://blog.teamtreehouse.com/26017-2
+::: http://webpack.github.io/docs/motivation.html
+::: COMMON JS ::: http://www.commonjs.org/   
+    :::   http://arstechnica.com/business/2009/12/commonjs-effort-sets-javascript-on-path-for-world-domination/
 
 https://karma-runner.github.io/latest/intro/installation.html
 https://www.npmjs.com/package/karma
@@ -50,6 +66,7 @@ http://www.w3schools.com/angular/angular_controllers.asp
 DIRECTIVES
 
 https://www.sitepoint.com/practical-guide-angularjs-directives/
+child controlers >>> https://rclayton.silvrback.com/parent-child-controller-communication
 
 SERVICES
 
@@ -58,6 +75,14 @@ http://www.ng-newsletter.com/posts/beginner2expert-services.html
 http://blog.thoughtram.io/angular/2015/07/07/service-vs-factory-once-and-for-all.html
 https://docs.angularjs.org/guide/services
 http://stackoverflow.com/questions/13013772/how-do-i-test-an-angularjs-service-with-jasmine
+
+VIEW
+
+toggle >> http://jsfiddle.net/geniuscarrier/tKZjZ/
+
+QUERY STRINGS
+
+http://www.suleski.name/getting-query-string-parameters-with-angularjs/
 
 SCOPES
 

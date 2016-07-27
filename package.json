@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/jxxcarlson/ns_angular",
   "scripts": {
-    "test": "karma"
+    "test": "./node_modules/karma/bin/karma start karma.conf.js"
   },
   "keywords": [
     "noteshare"
@@ -13,13 +13,21 @@
   "author": "James Carlson",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "^13.0.1",
+    "angular": "^1.5.8",
+    "browserify": "^13.1.0",
     "gulp": "^3.9.1",
     "gulp-connect": "^4.2.0",
-    "vinyl-source-stream": "^1.1.0"
+    "karma-browserify": "^5.1.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0",
+    "webpack": "^1.13.1"
   },
   "dependencies": {
     "angular": "^1.5.8",
-    "angular-route": "^1.5.8"
+    "angular-route": "^1.5.8",
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.5"
   }
 }

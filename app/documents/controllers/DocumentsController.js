@@ -27,8 +27,10 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     
     // Process the given route
     if (id == undefined) { 
+        console.log('1. GETTING DOCUMENT LIST')
         DocumentRouteService.getDocumentList($scope) } 
     else { 
+        console.log('2. GETTING DOCUMENT, ID = ', id)
         DocumentRouteService.getDocument($scope, id)     
     } 
     

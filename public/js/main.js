@@ -8,11 +8,15 @@ require('angular-route');
 
 var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
+require('./topLevel')
+
 require('./services')
 require('./directives')
+
 require('./user')
 require('./documents')
-require('./topLevel')
+require('./images')
+
 
 
 /**
@@ -26,6 +30,11 @@ MODULARIZATION
 >>> https://blog.codecentric.de/en/2014/08/angularjs-browserify/
 >>> https://github.com/twilson63/angular-browserify-example
 
+>>> GOOD >>> http://henriquat.re/modularizing-angularjs/modularizing-angular-applications/modularizing-angular-applications.html
+>>> http://henriquat.re/
+
+^^^ GOOD::: REQUIRING VS BROSERIFYING: http://developer.telerik.com/featured/requiring-vs-browerifying-angular/
+
 ORGANIZING CODE
 
 https://medium.com/opinionated-angularjs/scalable-code-organization-in-angularjs-9f01b594bf06#.gsrzlad9h
@@ -34,7 +43,14 @@ https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a
 
 TESTING
 
+^^^ BRADONCODE: http://www.bradoncode.com/blog/2015/02/27/karma-tutorial/
+
 https://www.smashingmagazine.com/2014/10/introduction-to-unit-testing-in-angularjs/
+::: https://github.com/mhevery/jasmine-node
+::: http://blog.teamtreehouse.com/26017-2
+::: http://webpack.github.io/docs/motivation.html
+::: COMMON JS ::: http://www.commonjs.org/   
+    :::   http://arstechnica.com/business/2009/12/commonjs-effort-sets-javascript-on-path-for-world-domination/
 
 https://karma-runner.github.io/latest/intro/installation.html
 https://www.npmjs.com/package/karma
@@ -51,6 +67,7 @@ http://www.w3schools.com/angular/angular_controllers.asp
 DIRECTIVES
 
 https://www.sitepoint.com/practical-guide-angularjs-directives/
+child controlers >>> https://rclayton.silvrback.com/parent-child-controller-communication
 
 SERVICES
 
@@ -59,6 +76,14 @@ http://www.ng-newsletter.com/posts/beginner2expert-services.html
 http://blog.thoughtram.io/angular/2015/07/07/service-vs-factory-once-and-for-all.html
 https://docs.angularjs.org/guide/services
 http://stackoverflow.com/questions/13013772/how-do-i-test-an-angularjs-service-with-jasmine
+
+VIEW
+
+toggle >> http://jsfiddle.net/geniuscarrier/tKZjZ/
+
+QUERY STRINGS
+
+http://www.suleski.name/getting-query-string-parameters-with-angularjs/
 
 SCOPES
 
@@ -82,7 +107,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":4,"./documents":9,"./services":14,"./topLevel":15,"./user":22,"angular":26,"angular-route":24}],2:[function(require,module,exports){
+},{"./directives":4,"./documents":9,"./images":15,"./services":20,"./topLevel":21,"./user":28,"angular":32,"angular-route":30}],2:[function(require,module,exports){
 module.exports = function( $parse ) {
    return {
        restrict: 'A',
@@ -134,7 +159,7 @@ app.directive('elemReady', require('./elemReady'))
   
 
 
-},{"./elemReady":2,"./enterOnKeyPress":3,"angular":26}],5:[function(require,module,exports){
+},{"./elemReady":2,"./enterOnKeyPress":3,"angular":32}],5:[function(require,module,exports){
 
 /*
 GET /documents
@@ -164,8 +189,10 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     
     // Process the given route
     if (id == undefined) { 
+        console.log('1. GETTING DOCUMENT LIST')
         DocumentRouteService.getDocumentList($scope) } 
     else { 
+        console.log('2. GETTING DOCUMENT, ID = ', id)
         DocumentRouteService.getDocument($scope, id)     
     } 
     
@@ -293,6 +320,7 @@ module.exports = [
 module.exports = function($scope, $route, $location, $http, DocumentService, DocumentApiService) {
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
+            
             $http.get('http://localhost:2300/v1/documents' + '?scope=' + $scope.searchText  )
             .then(function(response){
               console.log(response.data['status'])
@@ -328,7 +356,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DocumentsController":5,"./controllers/EditController":6,"./controllers/NewDocumentController":7,"./controllers/SearchController":8,"./services//DocumentRouteService":11,"./services//DocumentService":12,"./services/DocumentApiService":10,"angular":26}],10:[function(require,module,exports){
+},{"./controllers/DocumentsController":5,"./controllers/EditController":6,"./controllers/NewDocumentController":7,"./controllers/SearchController":8,"./services//DocumentRouteService":11,"./services//DocumentService":12,"./services/DocumentApiService":10,"angular":32}],10:[function(require,module,exports){
 module.exports = function($http, $q, DocumentService) {
 
         var deferred = $q.defer();
@@ -472,6 +500,261 @@ module.exports = function($localStorage) {
        
 }
 },{}],13:[function(require,module,exports){
+module.exports = function($scope, $route, $location, $http, ImageService, ImageApiService) {
+        $scope.doImageSearch = function(){
+            console.log('Search text: ' + $scope.searchText);
+            
+            $http.get('http://localhost:2300/v1/images' + '?scope=' + $scope.searchText  )
+            .then(function(response){
+              console.log(response.data['status'])
+              console.log('Number of images: ' + response.data['image_count'])
+              var jsonData = response.data
+              var images = jsonData['images']
+              ImageService.setImageList(images)
+              
+              
+              var id = images[0]['id']
+              console.log('id = ' + id)
+              ImageApiService.getImage(id)
+              .then(function(response) {
+                 $location.path('/images')
+                 $route.reload()       
+               })
+              
+              
+            });
+
+      };
+    }
+},{}],14:[function(require,module,exports){
+
+/*
+GET /images
+GET /images/:id
+
+REFERENCE: https://github.com/gsklee/ngStorage
+
+For example, URL’s like /route/12345?a=2&b=3 will match the route /route
+with id 12345 and query string variables a & b. Now those values can
+be accessed in controller code using $routeParams service. Any parameter
+[preceded by ':'] in route can be accessed in controller by it’s name
+using $routeParams.paramName. Additionally, any query string passed
+in URL can be accessed in controller using $routeParams.variableName
+*/
+
+
+module.exports = function($scope, $routeParams, $location, ImageRouteService, ImageService) {
+// module.exports = function($scope, $location, $routeParams, ImageApiService, ImageService, ImageRouteService) {
+// module.exports = function() {
+    
+    console.log('ImagesController')
+
+    /*
+    console.log('ImagesController, $routeParams.id = ' + $routeParams.id)
+    console.log('ImagesController, search = ' + $routeParams.search)
+    console.log('ImagesController, URL = ' + $location.absUrl())
+    console.log('ImagesController, QS = ' + JSON.stringify($location.search()))
+   */
+    
+    
+    var id = $routeParams.id;
+    var queryString =  $location.search()
+    // https://docs.angularjs.org/api/ng/service/$location
+    
+    
+    // Process the given route
+    if (id == undefined) { 
+        $scope.foo = 'bar'
+        ImageRouteService.getImageList($scope) 
+    } 
+    else { 
+        ImageRouteService.getImage($scope, id)     
+    } 
+    
+    
+    $scope.imageUrl = ImageService.url()
+    $scope.imageStorageUrl = ImageService.storageUrl()
+    $scope.imageCount = ImageService.count()
+    $scope.imageList = ImageService.imageList()
+    $scope.imageTitle = ImageService.title()
+    $scope.imageId = ImageService.id()
+    
+    console.log('IMAGE URL = ' + ImageService.url())
+    console.log('IMAGE STORAGE URL = ' + ImageService.storageUrl())
+    console.log('IMAGE COUNT = ' + $scope.imageList.length)
+    
+}
+},{}],15:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('noteshareApp');
+
+app.controller('ImagesController', require('./controllers/ImagesController'))
+app.controller('ImageSearchController', require('./controllers/ImageSearchController'))
+
+app.service('ImageApiService', require('./services/ImageApiService')); 
+app.service('ImageRouteService', require('./services/ImageRouteService')); 
+app.service('ImageService', require('./services/ImageService')); 
+
+
+},{"./controllers/ImageSearchController":13,"./controllers/ImagesController":14,"./services/ImageApiService":16,"./services/ImageRouteService":17,"./services/ImageService":18,"angular":32}],16:[function(require,module,exports){
+module.exports = function($http, $q, ImageService) {
+
+        var deferred = $q.defer();
+
+        this.getImage = function(id) {
+             
+        console.log('Image API service says id = ' + id)
+        
+          return  $http.get('http://localhost:2300/v1/images/' + id  )
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var data = response.data
+                var image = data['image']
+                ImageService.setTitle( image['title'] )
+                ImageService.setId( image['id'] )
+                ImageService.setUrl( image['url'] )
+                ImageService.setStorageUrl( image['storage_url'] )
+                
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+            
+            
+        }
+        
+        
+        this.search = function(searchText) {
+          return  $http.get('http://localhost:2300/v1/images' + '?' + $scope.searchText  )
+          .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                console.log(response.data['status'])
+                console.log('Number of images: ' + response.data['image_count'])
+                var jsonData = response.data
+                var images = jsonData['images']
+                // ImageService.setImageList( images )
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        }
+    
+
+      }
+},{}],17:[function(require,module,exports){
+
+module.exports = function(ImageService, ImageApiService) {
+    
+
+    this.getImageList = function(scope) {
+        
+        console.log('ImageRouteService: getImageList')
+        console.log('foo: ', scope.foo)
+        /*
+        scope.title = ImageService.title()
+        scope.imageArray = ImageService.ImageList()
+        scope.ImageCount = ImageService.ImageCount()
+        */
+    }
+    
+    
+    this.getImage = function(scope, id) {
+        
+        console.log('ImageRouteService: getImage')
+        console.log('foo: ', scope.foo)
+        
+        
+        ImageApiService.getImage(id)
+        .then(
+            function (response) {
+                ImageService.updateScope(scope)
+                // scope.title = ImageService.title()
+                // scope.imageArray = ImageService.imageList()
+                // scope.numberOfImages = ImageService.count()
+                
+                
+            },
+            function (error) {
+                // handle errors here
+                // console.log(error.statusText);
+                console.log('ERROR!');
+            }
+        );
+        
+
+    }
+}
+},{}],18:[function(require,module,exports){
+module.exports = function($localStorage) {
+    
+    
+    this.setId = function(id) { $localStorage.imageId = id }
+    this.id = function() { return $localStorage.imageId }
+    
+    this.setTitle = function(title) { $localStorage.imageTitle = title}
+    this.title = function() { return $localStorage.imageTitle }  
+    
+    this.setUrl = function(url) { $localStorage.imageUrl = url}
+    this.url = function() { return $localStorage.imageUrl }
+    
+    this.setStorageUrl = function(storageUrl) { $localStorage.imageStorageUrl = storageUrl}
+    this.storageUrl = function() { return $localStorage.imageStorageUrl }  
+    
+    
+    this.setImageList = function(array) { 
+        
+        
+        $localStorage.imageList = array
+        var firstImage =  array[0]
+        var id = firstImage['id']
+        var title = firstImage['title']
+        var url = firstImage['url']
+        var storageUrl = firstImage['storage_url']
+        
+        console.log('FIRST ELEMENT = ' + JSON.stringify(firstImage))
+        console.log('ID OF FIRST ELEMENT = ' + id)
+        console.log('TITLE OF FIRST ELEMENT = ' + title)
+        console.log('URL OF FIRST ELEMENT = ' + url)
+        console.log('STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
+        
+        
+        $localStorage.imageId = id
+        $localStorage.imageUrl = url
+        $localStorage.imageStorageUrl = storageUrl
+        $localStorage.title = title
+        
+    }
+    
+    this.imageList = function() { return $localStorage.imageList }
+    
+    this.count = function() { return $localStorage.imageList.length }
+    
+   
+    this.updateScope = function(scope) {
+
+        scope.imageId = this.id()
+        scope.imageTitle = this.title()
+        scope.imageUrl = this.url()
+        scope.imageStorageUrl = this.storageUrl()
+        scope.imageList = this.imageList()
+       
+    }
+    
+       
+}
+},{}],19:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -479,7 +762,7 @@ module.exports = function($localStorage) {
             return val;
         }
     }
-},{}],14:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -490,7 +773,7 @@ app.service('foo', require('./foo'))
 
 
 
-},{"./foo":13,"angular":26}],15:[function(require,module,exports){
+},{"./foo":19,"angular":32}],21:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -551,9 +834,16 @@ app.config(function($routeProvider) {
         })
     
         .when('/images', {
-            templateUrl : 'pages/image.html',
-            controller  : 'ImageController'
-        });
+            templateUrl : 'pages/images.html',
+            controller  : 'ImagesController'
+        })
+    
+        .when('/images/:id', {
+            templateUrl : 'pages/images.html',
+            controller  : 'ImagesController'
+        })
+    
+    ;
 });
 
 
@@ -576,7 +866,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"angular":26}],16:[function(require,module,exports){
+},{"angular":32}],22:[function(require,module,exports){
     module.exports = function($route, $scope, $localStorage, UserApiService, UserService) {
         
         
@@ -613,7 +903,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
         }
       }
 
-},{}],17:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function($scope, $route, UserService) {
 
     console.log('Sign out ...')
@@ -627,7 +917,7 @@ module.exports = function($scope, $route, UserService) {
         
 }
 
-},{}],18:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -696,7 +986,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],19:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -774,7 +1064,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],20:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -787,7 +1077,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],21:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function($localStorage) {
 
  this.signedIn = null    
@@ -866,7 +1156,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],22:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -883,7 +1173,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":16,"./SignOutController":17,"./SignUpController":18,"./UserApiService":19,"./UserController":20,"./UserService":21,"angular":26}],23:[function(require,module,exports){
+},{"./SignInController":22,"./SignOutController":23,"./SignUpController":24,"./UserApiService":25,"./UserController":26,"./UserService":27,"angular":32}],29:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1954,11 +2244,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],24:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":23}],25:[function(require,module,exports){
+},{"./angular-route":29}],31:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33727,8 +34017,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],26:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":25}]},{},[1]);
+},{"./angular":31}]},{},[1]);

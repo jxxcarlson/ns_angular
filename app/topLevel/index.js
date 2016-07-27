@@ -58,9 +58,16 @@ app.config(function($routeProvider) {
         })
     
         .when('/images', {
-            templateUrl : 'pages/image.html',
-            controller  : 'ImageController'
-        });
+            templateUrl : 'pages/images.html',
+            controller  : 'ImagesController'
+        })
+    
+        .when('/images/:id', {
+            templateUrl : 'pages/images.html',
+            controller  : 'ImagesController'
+        })
+    
+    ;
 });
 
 

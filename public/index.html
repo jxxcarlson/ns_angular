@@ -43,6 +43,7 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-center" style="margin-left:3em;">
+                    
                   <form class="form-horizontal" style="margin-top:14px;">
                     <div class="form-group">
                       <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
@@ -53,6 +54,19 @@
 
                     </div>
                   </form>
+                    
+                   <form class="form-horizontal" style="margin-top:14px;">
+                    <div class="form-group">
+                      <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
+                      <div ng-controller="ImageSearchController">
+                        <input ng-enter="doImageSearch(  )" ng-model="searchText" placeholder=" image search ..."/>
+                      </div>
+                      <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
+
+                    </div>
+                  </form>    
+                    
+                    
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
