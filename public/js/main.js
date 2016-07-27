@@ -185,20 +185,26 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     
     var id = $routeParams.id;
     var queryString =  $location.search()
+    // var documentKind;
     // https://docs.angularjs.org/api/ng/service/$location
     
     // Process the given route
     if (id == undefined) { 
         console.log('1. GETTING DOCUMENT LIST')
-        DocumentRouteService.getDocumentList($scope) } 
+        DocumentRouteService.getDocumentList($scope) }
+        //documentKind = DocumentService.kind()
+        
     else { 
         console.log('2. GETTING DOCUMENT, ID = ', id)
         DocumentRouteService.getDocument($scope, id)     
+        // documentKind = DocumentService.kind()
     } 
+    var documentKind = DocumentService.kind()
     
     $scope.$watch(function(scope) { 
         return scope.renderedText },
-        function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+        // DocumentService.reloadMathJax(documentKind)         
+        function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("DOC CONTROLLER: reloadMathJax called"); }
     );
     
 }
@@ -234,7 +240,8 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
                
                 $scope.$watch(function(scope) { 
                     return scope.renderedText },
-                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    // function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    DocumentService.refreshMathJax
                 );
 
                 /* Update local storage */
@@ -272,7 +279,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
                         
                         $scope.$watch(function(scope) { 
                             return scope.renderedText },
-                            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT 2: reloadMathJax called"); }
                         );
 
                     } else {
@@ -368,12 +375,7 @@ module.exports = function($http, $q, DocumentService) {
                 deferred.resolve(response.data);
                 var data = response.data
                 var document = data['document']
-                console.log('I updated localStorage for ' + document['title'])
-                DocumentService.setTitle( document['title'] )
-                DocumentService.setDocumentId( document['id'] )
-                
-                DocumentService.setText( document['text'] )
-                DocumentService.setRenderedText( document['rendered_text'] )
+                DocumentService.update(document)
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -484,6 +486,9 @@ module.exports = function($localStorage) {
     this.setText = function(text) { $localStorage.text = text }
     this.text = function() { return $localStorage.text }
     
+    this.setKind= function(kind) { $localStorage.documentKind = kind }
+    this.kind = function() { return $localStorage.documentKind }
+    
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
@@ -497,7 +502,29 @@ module.exports = function($localStorage) {
     this.documentList = function() { return $localStorage.documentList }
     
     this.documentCount = function() { return $localStorage.documentList.length }
-       
+    
+    
+    this.update = function(document) {
+        
+        this.setTitle( document['title'] )
+        this.setDocumentId( document['id'] )       
+        this.setText( document['text'] )
+        this.setRenderedText( document['rendered_text'] )
+        this.setKind( document['kind'])
+        
+    }
+    
+    this.reloadMathJax = function(documentKind) {
+        
+        // if ($localStorage.documentKind == 'asciidoctor-latex') {
+        // if (this.kind() == 'asciidoctor-latex') {
+        if (true) {
+        // if (documentKind == 'asciidoctor-latex') {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
+                console.log("XX DOC CONTROLLER: reloadMathJax called");  
+        }
+    }
+      
 }
 },{}],13:[function(require,module,exports){
 module.exports = function($scope, $route, $location, $http, ImageService, ImageApiService) {

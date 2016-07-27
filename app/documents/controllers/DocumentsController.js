@@ -23,20 +23,26 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     
     var id = $routeParams.id;
     var queryString =  $location.search()
+    // var documentKind;
     // https://docs.angularjs.org/api/ng/service/$location
     
     // Process the given route
     if (id == undefined) { 
         console.log('1. GETTING DOCUMENT LIST')
-        DocumentRouteService.getDocumentList($scope) } 
+        DocumentRouteService.getDocumentList($scope) }
+        //documentKind = DocumentService.kind()
+        
     else { 
         console.log('2. GETTING DOCUMENT, ID = ', id)
         DocumentRouteService.getDocument($scope, id)     
+        // documentKind = DocumentService.kind()
     } 
+    var documentKind = DocumentService.kind()
     
     $scope.$watch(function(scope) { 
         return scope.renderedText },
-        function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+        // DocumentService.reloadMathJax(documentKind)         
+        function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("DOC CONTROLLER: reloadMathJax called"); }
     );
     
 }

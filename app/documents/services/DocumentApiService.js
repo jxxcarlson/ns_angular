@@ -9,12 +9,7 @@ module.exports = function($http, $q, DocumentService) {
                 deferred.resolve(response.data);
                 var data = response.data
                 var document = data['document']
-                console.log('I updated localStorage for ' + document['title'])
-                DocumentService.setTitle( document['title'] )
-                DocumentService.setDocumentId( document['id'] )
-                
-                DocumentService.setText( document['text'] )
-                DocumentService.setRenderedText( document['rendered_text'] )
+                DocumentService.update(document)
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
