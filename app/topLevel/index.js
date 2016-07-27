@@ -67,6 +67,13 @@ app.config(function($routeProvider) {
             controller  : 'ImagesController'
         })
     
+
+        .when('/imageupload', {
+            templateUrl : 'pages/imageupload.html',
+            controller  : 'ImageUploadController'
+        })
+        
+    
     ;
 });
 
