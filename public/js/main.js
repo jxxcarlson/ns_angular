@@ -215,6 +215,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         }
     }
     
+    // XX: Needed?
     $scope.$watch(function(scope) { 
         return scope.renderedText },
         // DocumentService.reloadMathJax(documentKind)         
@@ -252,6 +253,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                
+                // XX: reload MathJax is needed here
                 $scope.$watch(function(scope) { 
                     return scope.renderedText },
                     function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
@@ -268,7 +270,6 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
 
         /* updateDocument */
         $scope.updateDocument = function() {
-            console.log('Update document ' + id + ', text = ' + $scope.editText)
 
             var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: UserService.accessToken() });
 
@@ -291,10 +292,9 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
                         $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         $scope.message = 'Success!'
                         
-                        $scope.$watch(function(scope) { 
-                            return scope.renderedText },
-                            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT 2: reloadMathJax called"); }
-                        );
+                        
+                        // XX: Is this needed?
+                        
 
                     } else {
                         $scope.message = response.data['error']
@@ -353,13 +353,22 @@ module.exports = function($scope, $route, $location, $http, DocumentService, Doc
               var id = documents[0]['id']
               DocumentApiService.getDocument(id)
               .then(function(response) {
+                
+                
+                // XX: THIS IS NEEDED (RE reloadMathJax here)
+                $scope.$watch(function(scope) { 
+                    return $scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
+                  
                 $location.path('/documents')
-                $route.reload()       
+                $route.reload()
+                
               }) 
             });
 
       };
-    }
+    }                                      
 },{}],10:[function(require,module,exports){
 'use strict';
 
@@ -477,6 +486,11 @@ module.exports = function(DocumentService, DocumentApiService, $sce) {
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
+                
+                scope.$watch(function(scope) { 
+                    return scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
                 
             },
             function (error) {

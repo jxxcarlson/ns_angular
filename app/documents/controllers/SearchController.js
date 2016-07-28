@@ -13,10 +13,19 @@ module.exports = function($scope, $route, $location, $http, DocumentService, Doc
               var id = documents[0]['id']
               DocumentApiService.getDocument(id)
               .then(function(response) {
+                
+                
+                // XX: THIS IS NEEDED (RE reloadMathJax here)
+                $scope.$watch(function(scope) { 
+                    return $scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
+                  
                 $location.path('/documents')
-                $route.reload()       
+                $route.reload()
+                
               }) 
             });
 
       };
-    }
+    }                                      

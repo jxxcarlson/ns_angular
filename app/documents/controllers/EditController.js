@@ -27,6 +27,7 @@
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                
+                // XX: reload MathJax is needed here
                 $scope.$watch(function(scope) { 
                     return scope.renderedText },
                     function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
@@ -43,7 +44,6 @@
 
         /* updateDocument */
         $scope.updateDocument = function() {
-            console.log('Update document ' + id + ', text = ' + $scope.editText)
 
             var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: UserService.accessToken() });
 
@@ -66,10 +66,9 @@
                         $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         $scope.message = 'Success!'
                         
-                        $scope.$watch(function(scope) { 
-                            return scope.renderedText },
-                            function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT 2: reloadMathJax called"); }
-                        );
+                        
+                        // XX: Is this needed?
+                        
 
                     } else {
                         $scope.message = response.data['error']

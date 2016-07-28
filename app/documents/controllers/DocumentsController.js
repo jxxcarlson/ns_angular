@@ -29,6 +29,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         }
     }
     
+    // XX: Needed?
     $scope.$watch(function(scope) { 
         return scope.renderedText },
         // DocumentService.reloadMathJax(documentKind)         

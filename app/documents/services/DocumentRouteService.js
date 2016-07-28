@@ -22,6 +22,11 @@ module.exports = function(DocumentService, DocumentApiService, $sce) {
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
                 
+                scope.$watch(function(scope) { 
+                    return scope.renderedText },
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
+                
             },
             function (error) {
                 // handle errors here
