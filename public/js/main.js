@@ -185,41 +185,24 @@ app.directive('file', require('./File'))
 
 },{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":36}],6:[function(require,module,exports){
 
-/*
-GET /documents
-GET /documents/:id
+// ROUTES PROCESSED:
+// GET /documents
+// GET /documents/:id
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-For example, URL’s like /route/12345?a=2&b=3 will match the route /route
-with id 12345 and query string variables a & b. Now those values can
-be accessed in controller code using $routeParams service. Any parameter
-[preceded by ':'] in route can be accessed in controller by it’s name
-using $routeParams.paramName. Additionally, any query string passed
-in URL can be accessed in controller using $routeParams.variableName
-*/
-
-
 module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, DocumentService, DocumentRouteService) {
 
-    console.log('DocumentsController, $routeParams.id = ' + $routeParams.id)
-    console.log('DocumentsController, search = ' + $routeParams.search)
-    console.log('DocumentsController, URL = ' + $location.absUrl())
-    console.log('DocumentsController, QS = ' + JSON.stringify($location.search()))
-    
+ 
     var id = $routeParams.id;
     var queryString =  $location.search()
-    // var documentKind;
-    // https://docs.angularjs.org/api/ng/service/$location
     
     // Process the given route
     if (id == undefined) { 
-        console.log('1. GETTING DOCUMENT LIST')
         DocumentRouteService.getDocumentList($scope) }
         //documentKind = DocumentService.kind()
         
     else { 
-        console.log('2. GETTING DOCUMENT, ID = ', id)
         DocumentRouteService.getDocument($scope, id)     
         // documentKind = DocumentService.kind()
     } 
@@ -228,8 +211,6 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {
-        // if (doc['id'] == 11 ) {
-        // if (true ) {
             return { "background-color" : "#fee" }
         }
     }
@@ -361,7 +342,7 @@ module.exports = function($scope, $route, $location, $http, DocumentService, Doc
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get('http://localhost:2300/v1/documents' + '?scope=' + $scope.searchText  )
+            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of documents: ' + response.data['document_count'])

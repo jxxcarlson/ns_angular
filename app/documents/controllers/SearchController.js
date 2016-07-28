@@ -2,7 +2,7 @@ module.exports = function($scope, $route, $location, $http, DocumentService, Doc
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get('http://localhost:2300/v1/documents' + '?scope=' + $scope.searchText  )
+            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of documents: ' + response.data['document_count'])
