@@ -22,7 +22,11 @@ module.exports = function($localStorage) {
         console.log('ID OF FIRST ELEMENT = ' + id)
         $localStorage.documentId = id
     }
-    this.documentList = function() { return $localStorage.documentList }
+    this.documentList = function() { 
+        
+        return $localStorage.documentList 
+    
+    }
     
     this.documentCount = function() { return $localStorage.documentList.length }
     

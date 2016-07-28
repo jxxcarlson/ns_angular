@@ -1,4 +1,5 @@
-  module.exports = function($scope, $routeParams, $http, $sce, $timeout, DocumentService, UserService) {
+  module.exports = function($scope, $routeParams, $http, $sce, $timeout, 
+                             DocumentService, UserService, MathJaxService) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -26,12 +27,10 @@
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-               
-                // XX: reload MathJax is needed here
-                $scope.$watch(function(scope) { 
-                    return scope.renderedText },
-                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
-                    // DocumentService.refreshMathJax
+            
+                 $scope.$watch(function(scope) { 
+                    return $scope.renderedText },
+                    MathJaxService.reload('EditController')              
                 );
 
                 /* Update local storage */

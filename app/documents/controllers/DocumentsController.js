@@ -5,7 +5,8 @@
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, DocumentService, DocumentRouteService) {
+module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, 
+                           DocumentService, DocumentRouteService, MathJaxService) {
 
  
     var id = $routeParams.id;
@@ -29,11 +30,9 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         }
     }
     
-    // XX: Needed?
     $scope.$watch(function(scope) { 
-        return scope.renderedText },
-        // DocumentService.reloadMathJax(documentKind)         
-        function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("DOC CONTROLLER: reloadMathJax called"); }
+        return $scope.renderedText },
+        MathJaxService.reload('DocumentController')              
     );
-    
+
 }

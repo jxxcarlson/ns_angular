@@ -10,6 +10,7 @@ module.exports = function($http, $q, DocumentService) {
                 var data = response.data
                 var document = data['document']
                 DocumentService.update(document)
+                
                 // promise is returned
                 return deferred.promise;
             }, function (response) {

@@ -107,7 +107,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":10,"./images":17,"./services":24,"./topLevel":25,"./user":32,"angular":36,"angular-route":34}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":10,"./images":18,"./services":25,"./topLevel":26,"./user":33,"angular":37,"angular-route":35}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -183,7 +183,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":36}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":37}],6:[function(require,module,exports){
 
 // ROUTES PROCESSED:
 // GET /documents
@@ -191,7 +191,8 @@ app.directive('file', require('./File'))
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, DocumentService, DocumentRouteService) {
+module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, 
+                           DocumentService, DocumentRouteService, MathJaxService) {
 
  
     var id = $routeParams.id;
@@ -215,16 +216,15 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         }
     }
     
-    // XX: Needed?
     $scope.$watch(function(scope) { 
-        return scope.renderedText },
-        // DocumentService.reloadMathJax(documentKind)         
-        function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("DOC CONTROLLER: reloadMathJax called"); }
+        return $scope.renderedText },
+        MathJaxService.reload('DocumentController')              
     );
-    
+
 }
 },{}],7:[function(require,module,exports){
-  module.exports = function($scope, $routeParams, $http, $sce, $timeout, DocumentService, UserService) {
+  module.exports = function($scope, $routeParams, $http, $sce, $timeout, 
+                             DocumentService, UserService, MathJaxService) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -252,12 +252,10 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-               
-                // XX: reload MathJax is needed here
-                $scope.$watch(function(scope) { 
-                    return scope.renderedText },
-                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
-                    // DocumentService.refreshMathJax
+            
+                 $scope.$watch(function(scope) { 
+                    return $scope.renderedText },
+                    MathJaxService.reload('EditController')              
                 );
 
                 /* Update local storage */
@@ -338,7 +336,8 @@ module.exports = [
       }
     ]
 },{}],9:[function(require,module,exports){
-module.exports = function($scope, $route, $location, $http, DocumentService, DocumentApiService) {
+module.exports = function($scope, $route, $location, $http, 
+                           DocumentService, DocumentApiService, MathJaxService) {
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
             
@@ -358,7 +357,8 @@ module.exports = function($scope, $route, $location, $http, DocumentService, Doc
                 // XX: THIS IS NEEDED (RE reloadMathJax here)
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    // function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    MathJaxService.reload('SearchController')              
                 );
                   
                 $location.path('/documents')
@@ -377,6 +377,7 @@ var app = require('angular').module('noteshareApp');
 app.service('DocumentApiService', require('./services/DocumentApiService')); 
 app.service('DocumentService', require('./services//DocumentService')); 
 app.service('DocumentRouteService', require('./services//DocumentRouteService')); 
+app.service('MathJaxService', require('./services/MathJaxService')); 
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))
@@ -386,7 +387,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"angular":36}],11:[function(require,module,exports){
+},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"angular":37}],11:[function(require,module,exports){
 module.exports = function($http, $q, DocumentService) {
 
         var deferred = $q.defer();
@@ -399,6 +400,7 @@ module.exports = function($http, $q, DocumentService) {
                 var data = response.data
                 var document = data['document']
                 DocumentService.update(document)
+                
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -463,7 +465,7 @@ module.exports = function($http, $q, DocumentService) {
 
       }
 },{}],12:[function(require,module,exports){
-module.exports = function(DocumentService, DocumentApiService, $sce) {
+module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxService) {
 
     this.getDocumentList = function(scope) {
         
@@ -472,6 +474,11 @@ module.exports = function(DocumentService, DocumentApiService, $sce) {
         scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         scope.docArray = DocumentService.documentList()
         scope.documentCount = DocumentService.documentCount()
+        
+        scope.$watch(function(local_scope) { 
+                    return local_scope.renderedText },
+                    MathJaxService.reload('DocumentRouteService: getDocumentList')              
+                );
         
     }
     
@@ -490,6 +497,11 @@ module.exports = function(DocumentService, DocumentApiService, $sce) {
                 scope.$watch(function(scope) { 
                     return scope.renderedText },
                     function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                );
+                
+                scope.$watch(function(local_scope) { 
+                    return local_scope.renderedText },
+                    MathJaxService.reload('DocumentRouteService: getDocument')              
                 );
                 
             },
@@ -527,7 +539,11 @@ module.exports = function($localStorage) {
         console.log('ID OF FIRST ELEMENT = ' + id)
         $localStorage.documentId = id
     }
-    this.documentList = function() { return $localStorage.documentList }
+    this.documentList = function() { 
+        
+        return $localStorage.documentList 
+    
+    }
     
     this.documentCount = function() { return $localStorage.documentList.length }
     
@@ -555,6 +571,20 @@ module.exports = function($localStorage) {
       
 }
 },{}],14:[function(require,module,exports){
+module.exports = function(DocumentService) {
+    
+    this.reload = function(message) {
+        if (DocumentService.kind() == 'asciidoctor-latex') {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
+            console.log(message + ": reloadMathJax called"); 
+        } else {
+            console.log(message + ": skipping MathJax reload");
+        }
+        
+    }
+    
+}
+},{}],15:[function(require,module,exports){
 module.exports = function($scope, $route, $location, $http, ImageService, ImageApiService) {
         $scope.doImageSearch = function(){
             console.log('Search text: ' + $scope.searchText);
@@ -581,7 +611,7 @@ module.exports = function($scope, $route, $location, $http, ImageService, ImageA
 
       };
     }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
  // module.exports =  function(){
 
  module.exports =  function($scope, $http){
@@ -614,7 +644,7 @@ module.exports = function($scope, $route, $location, $http, ImageService, ImageA
             
             
 }
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 
 /*
 GET /images
@@ -672,7 +702,7 @@ module.exports = function($scope, $routeParams, $location, ImageRouteService, Im
     console.log('IMAGE COUNT = ' + $scope.imageList.length)
     
 }
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -686,7 +716,7 @@ app.service('ImageRouteService', require('./services/ImageRouteService'));
 app.service('ImageService', require('./services/ImageService')); 
 
 
-},{"./controllers/ImageSearchController":14,"./controllers/ImageUploadController":15,"./controllers/ImagesController":16,"./services/ImageApiService":18,"./services/ImageRouteService":19,"./services/ImageService":20,"angular":36}],18:[function(require,module,exports){
+},{"./controllers/ImageSearchController":15,"./controllers/ImageUploadController":16,"./controllers/ImagesController":17,"./services/ImageApiService":19,"./services/ImageRouteService":20,"./services/ImageService":21,"angular":37}],19:[function(require,module,exports){
 module.exports = function($http, $q, ImageService) {
 
         var deferred = $q.defer();
@@ -742,7 +772,7 @@ module.exports = function($http, $q, ImageService) {
     
 
       }
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 module.exports = function(ImageService, ImageApiService) {
     
@@ -785,7 +815,7 @@ module.exports = function(ImageService, ImageApiService) {
 
     }
 }
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -843,7 +873,7 @@ module.exports = function($localStorage) {
     
        
 }
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // http://www.tutorialspoint.com/angularjs/angularjs_upload_file.htm
 
 module.exports = function ($http) {
@@ -868,7 +898,7 @@ module.exports = function ($http) {
 
     
  }
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function(file) { 
 
   // Get The PreSigned URL
@@ -889,7 +919,7 @@ module.exports = function(file) {
     });
 
 }
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -897,7 +927,7 @@ module.exports = function(file) {
             return val;
         }
     }
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -910,7 +940,7 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 
-},{"./FileUpload":21,"./PSFileUpload":22,"./foo":23,"angular":36}],25:[function(require,module,exports){
+},{"./FileUpload":22,"./PSFileUpload":23,"./foo":24,"angular":37}],26:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1010,7 +1040,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"angular":36}],26:[function(require,module,exports){
+},{"angular":37}],27:[function(require,module,exports){
     module.exports = function($route, $scope, $localStorage, UserApiService, UserService) {
         
         
@@ -1047,7 +1077,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
         }
       }
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = function($scope, $route, UserService) {
 
     console.log('Sign out ...')
@@ -1061,7 +1091,7 @@ module.exports = function($scope, $route, UserService) {
         
 }
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -1130,7 +1160,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -1208,7 +1238,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -1221,7 +1251,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = function($localStorage) {
 
  this.signedIn = null    
@@ -1300,7 +1330,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1317,7 +1347,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":26,"./SignOutController":27,"./SignUpController":28,"./UserApiService":29,"./UserController":30,"./UserService":31,"angular":36}],33:[function(require,module,exports){
+},{"./SignInController":27,"./SignOutController":28,"./SignUpController":29,"./UserApiService":30,"./UserController":31,"./UserService":32,"angular":37}],34:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -2388,11 +2418,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":33}],35:[function(require,module,exports){
+},{"./angular-route":34}],36:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -34161,8 +34191,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":35}]},{},[1]);
+},{"./angular":36}]},{},[1]);

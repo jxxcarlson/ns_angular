@@ -1,4 +1,5 @@
-module.exports = function($scope, $route, $location, $http, DocumentService, DocumentApiService) {
+module.exports = function($scope, $route, $location, $http, 
+                           DocumentService, DocumentApiService, MathJaxService) {
         $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
             
@@ -18,7 +19,8 @@ module.exports = function($scope, $route, $location, $http, DocumentService, Doc
                 // XX: THIS IS NEEDED (RE reloadMathJax here)
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    // function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    MathJaxService.reload('SearchController')              
                 );
                   
                 $location.path('/documents')
