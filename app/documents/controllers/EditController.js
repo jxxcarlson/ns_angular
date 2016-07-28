@@ -29,8 +29,8 @@
                
                 $scope.$watch(function(scope) { 
                     return scope.renderedText },
-                    // function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
-                    DocumentService.refreshMathJax
+                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    // DocumentService.refreshMathJax
                 );
 
                 /* Update local storage */
