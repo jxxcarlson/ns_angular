@@ -39,6 +39,15 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
     } 
     var documentKind = DocumentService.kind()
     
+    
+    $scope.docStyle = function(doc) {
+        if (doc['id'] == DocumentService.documentId() ) {
+        // if (doc['id'] == 11 ) {
+        // if (true ) {
+            return { "background-color" : "#fee" }
+        }
+    }
+    
     $scope.$watch(function(scope) { 
         return scope.renderedText },
         // DocumentService.reloadMathJax(documentKind)         
