@@ -9,4 +9,6 @@ app.controller('ImageUploadController', require('./controllers/ImageUploadContro
 app.service('ImageApiService', require('./services/ImageApiService')); 
 app.service('ImageRouteService', require('./services/ImageRouteService')); 
 app.service('ImageService', require('./services/ImageService')); 
+app.service('ImageSearchService', require('./services/ImageSearchService')); 
+
 

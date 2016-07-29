@@ -20,6 +20,14 @@ require('./images')
 
 /**
 
+EDITOR
+
+WOW! >>> https://github.com/sachinchoolur/angular-trix
+     >>> http://plnkr.co/edit/hSzwlzUmRQoUtZJke2C4?p=preview
+>>> https://github.com/fraywing/textAngular
+>>> https://vitalets.github.io/angular-xeditable/
+>>> https://docs.angularjs.org/api/ng/directive/textarea
+
 MODULARIZATION
 
 >>> Google: split angularjs into files node browserify

@@ -21,6 +21,14 @@ require('./images')
 
 /**
 
+EDITOR
+
+WOW! >>> https://github.com/sachinchoolur/angular-trix
+     >>> http://plnkr.co/edit/hSzwlzUmRQoUtZJke2C4?p=preview
+>>> https://github.com/fraywing/textAngular
+>>> https://vitalets.github.io/angular-xeditable/
+>>> https://docs.angularjs.org/api/ng/directive/textarea
+
 MODULARIZATION
 
 >>> Google: split angularjs into files node browserify
@@ -107,7 +115,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":10,"./images":19,"./services":26,"./topLevel":27,"./user":34,"angular":38,"angular-route":36}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":10,"./images":19,"./services":27,"./topLevel":28,"./user":35,"angular":39,"angular-route":37}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -183,7 +191,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":38}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":39}],6:[function(require,module,exports){
 
 // ROUTES PROCESSED:
 // GET /documents
@@ -388,7 +396,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":38}],11:[function(require,module,exports){
+},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":39}],11:[function(require,module,exports){
 module.exports = function($http, $q, DocumentService) {
 
         var deferred = $q.defer();
@@ -733,9 +741,11 @@ app.controller('ImageUploadController', require('./controllers/ImageUploadContro
 app.service('ImageApiService', require('./services/ImageApiService')); 
 app.service('ImageRouteService', require('./services/ImageRouteService')); 
 app.service('ImageService', require('./services/ImageService')); 
+app.service('ImageSearchService', require('./services/ImageSearchService')); 
 
 
-},{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageService":22,"angular":38}],20:[function(require,module,exports){
+
+},{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":39}],20:[function(require,module,exports){
 module.exports = function($http, $q, ImageService) {
 
         var deferred = $q.defer();
@@ -835,6 +845,28 @@ module.exports = function(ImageService, ImageApiService) {
     }
 }
 },{}],22:[function(require,module,exports){
+module.exports = function($http, ImageService, ImageApiService) {
+    
+    this.find = function(searchText){
+            console.log('Search text: ' + searchText);
+            
+            $http.get('http://localhost:2300/v1/images' + '?scope=' + searchText  )
+            .then(function(response){
+              console.log(response.data['status'])
+              console.log('Number of images: ' + response.data['image_count'])
+              var jsonData = response.data
+              var images = jsonData['images']
+              ImageService.setImageList(images)
+              
+              
+              var id = images[0]['id']
+              console.log('id = ' + id)
+              ImageApiService.getImage(id)
+            })
+        }
+}
+                  
+},{}],23:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -892,7 +924,7 @@ module.exports = function($localStorage) {
     
        
 }
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // http://www.tutorialspoint.com/angularjs/angularjs_upload_file.htm
 
 module.exports = function ($http) {
@@ -917,7 +949,7 @@ module.exports = function ($http) {
 
     
  }
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function(file) { 
 
   // Get The PreSigned URL
@@ -938,7 +970,7 @@ module.exports = function(file) {
     });
 
 }
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -946,7 +978,7 @@ module.exports = function(file) {
             return val;
         }
     }
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -959,7 +991,7 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 
-},{"./FileUpload":23,"./PSFileUpload":24,"./foo":25,"angular":38}],27:[function(require,module,exports){
+},{"./FileUpload":24,"./PSFileUpload":25,"./foo":26,"angular":39}],28:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1059,7 +1091,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"angular":38}],28:[function(require,module,exports){
+},{"angular":39}],29:[function(require,module,exports){
     module.exports = function($route, $scope, $location, $localStorage, UserApiService, UserService, SearchService) {
         
         
@@ -1097,7 +1129,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
         }
       }
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = function($scope, $route, UserService) {
 
     console.log('Sign out ...')
@@ -1111,7 +1143,7 @@ module.exports = function($scope, $route, UserService) {
         
 }
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -1180,7 +1212,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -1258,7 +1290,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -1271,7 +1303,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function($localStorage) {
 
  this.signedIn = null    
@@ -1350,7 +1382,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1367,7 +1399,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":28,"./SignOutController":29,"./SignUpController":30,"./UserApiService":31,"./UserController":32,"./UserService":33,"angular":38}],35:[function(require,module,exports){
+},{"./SignInController":29,"./SignOutController":30,"./SignUpController":31,"./UserApiService":32,"./UserController":33,"./UserService":34,"angular":39}],36:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -2438,11 +2470,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":35}],37:[function(require,module,exports){
+},{"./angular-route":36}],38:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -34211,8 +34243,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":37}]},{},[1]);
+},{"./angular":38}]},{},[1]);
