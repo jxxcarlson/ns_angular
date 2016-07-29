@@ -15,10 +15,9 @@
                   if (UserService.loginStatus() == 200) {
                     $scope.message = 'Success!'
                     UserService.signin()
-                    $scope.username = UserService.username
+                    $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
-                    $timeout($route.reload(),100)
-                   
+                    $route.reload()
                   } else {
                     $scope.message = 'Sorry'
                   }
