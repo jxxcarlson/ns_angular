@@ -25,9 +25,19 @@ EDITOR
 
 WOW! >>> https://github.com/sachinchoolur/angular-trix
      >>> http://plnkr.co/edit/hSzwlzUmRQoUtZJke2C4?p=preview
+     
 >>> https://github.com/fraywing/textAngular
 >>> https://vitalets.github.io/angular-xeditable/
 >>> https://docs.angularjs.org/api/ng/directive/textarea
+
+FILE UPLOAD
+Cheyne Wallace post, new version: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
+http://stackoverflow.com/questions/31590424/cant-upload-files-to-amazon-s3-using-angularjs-with-pre-signed-url
+
+// LOOKS PROMISING >>> DRAG AND DROP UPLOADS ALSO!
+// NG-FILE-UPLOAD  >>> https://github.com/danialfarid/ng-file-upload/wiki/Direct-S3-upload-and-Node-signing-example
+//                 >>> https://github.com/danialfarid/ng-file-upload
+//                 >>> https://angular-file-upload.appspot.com/
 
 MODULARIZATION
 
@@ -645,8 +655,8 @@ module.exports = function($scope, $route, $location, $http, ImageService, ImageA
 // module.exports =  function($scope){
      
      console.log('Image Uploader yada yada!')
-
- $scope.upload = function(file) { 
+     
+$scope.upload = function(file) { 
 
        
   console.log('About to upload file ... ')
@@ -667,7 +677,45 @@ module.exports = function($scope, $route, $location, $http, ImageService, ImageA
       alert("Presigned URL could cnot be obtained");
     });
 
-}
+}     
+     
+$scope.uploadXX = function (file) {
+    console.log("WebUploadCtrl upload");
+    console.log("WebUploadCtrl sending S3sign request");
+    var query = {
+        filename: file.name,
+        type: file.type
+    };
+    $http.post('http://localhost:2300/v1/presigned', query).success(function(response) {
+        console.log("WebUploadCtrl s3sign response received");
+        var s3ResponseParams = response;
+        console.log("WebUploadCtrl upload  AWSAccessKeyId: " + response.AWSAccessKeyId);
+        console.log("WebUploadCtrl upload  signature: " + response.Signature);
+        $scope.upload = Upload.upload({
+                url: s3ResponseParams.url, //s3Url
+                transformRequest: function(data, headersGetter) {
+                    var headers = headersGetter();
+                    delete headers.Authorization;
+                    return data;
+                },
+                fields: s3ResponseParams.fields, //credentials
+                method: 'POST',
+                file: file
+            }).progress(function(evt) {
+                $scope.progressPerCent = parseInt(100.0 * evt.loaded / evt.total);
+                console.log('progress: ' + $scope.progressPerCent);
+            }).success(function(data, status, headers, config) {
+                // file is uploaded successfully
+                console.log('file ' + config.file.name + 'is uploaded successfully. Response: ' + data);                
+
+            }).error(function() {
+                // Some error has occured
+                console.log('Error uploading to S3');
+          });
+    });
+};     
+
+ 
             
             
 }
@@ -951,13 +999,29 @@ module.exports = function ($http) {
  }
 },{}],25:[function(require,module,exports){
 
+// Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/
+// Demo: http://cheynewallace.github.io/angular-s3-upload/
+// Source: https://github.com/cheynewallace/angular-s3-upload
+// 
+// Cheyne Wallace post, new version: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
+
+// RUBY STUFF:
 // http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
 // http://docs.aws.amazon.com/sdk-for-ruby/latest/DeveloperGuide/aws-ruby-sdk-s3-recipe-set-item-props.html
 
 // http://stackoverflow.com/questions/31590424/cant-upload-files-to-amazon-s3-using-angularjs-with-pre-signed-url
 // http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
-// https://github.com/danialfarid/ng-file-upload/wiki/Direct-S3-upload-and-Node-signing-example
+
+// LOOKS PROMISING >>> DRAG AND DROP UPLOADS ALSO!
+// NG-FILE-UPLOAD  >>> https://github.com/danialfarid/ng-file-upload/wiki/Direct-S3-upload-and-Node-signing-example
+//                 >>> https://github.com/danialfarid/ng-file-upload
+//                 >>> https://angular-file-upload.appspot.com/
+
+
 // http://stackoverflow.com/questions/34573315/angularjs-image-upload-to-s3
+
+// Technical, good? 
+// >>> http://www.bennadel.com/blog/2693-uploading-files-to-amazon-s3-using-pre-signed-query-string-authentication-urls.htm
 
 module.exports = function(file) { 
 

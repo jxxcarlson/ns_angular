@@ -24,9 +24,19 @@ EDITOR
 
 WOW! >>> https://github.com/sachinchoolur/angular-trix
      >>> http://plnkr.co/edit/hSzwlzUmRQoUtZJke2C4?p=preview
+     
 >>> https://github.com/fraywing/textAngular
 >>> https://vitalets.github.io/angular-xeditable/
 >>> https://docs.angularjs.org/api/ng/directive/textarea
+
+FILE UPLOAD
+Cheyne Wallace post, new version: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
+http://stackoverflow.com/questions/31590424/cant-upload-files-to-amazon-s3-using-angularjs-with-pre-signed-url
+
+// LOOKS PROMISING >>> DRAG AND DROP UPLOADS ALSO!
+// NG-FILE-UPLOAD  >>> https://github.com/danialfarid/ng-file-upload/wiki/Direct-S3-upload-and-Node-signing-example
+//                 >>> https://github.com/danialfarid/ng-file-upload
+//                 >>> https://angular-file-upload.appspot.com/
 
 MODULARIZATION
 
