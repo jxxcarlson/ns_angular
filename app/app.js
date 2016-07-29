@@ -15,6 +15,7 @@ require('./directives')
 require('./user')
 require('./documents')
 require('./images')
+require('./search')
 
 
 

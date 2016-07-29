@@ -1,9 +1,11 @@
 module.exports = function($scope, $route, $location, $http, 
-                           DocumentService, DocumentApiService, MathJaxService) {
+                           DocumentService, DocumentApiService, MathJaxService, QueryParser) {
         $scope.doSearch = function(){
-            console.log('Search text: ' + $scope.searchText);
             
-            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+            var query = QueryParser.parse($scope.searchText)
+            console.log('query = ' + query)
+            
+            $http.get('http://localhost:2300/v1/documents' + '?' + query  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of documents: ' + response.data['document_count'])
