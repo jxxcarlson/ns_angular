@@ -1,4 +1,4 @@
-    module.exports = function($route, $scope, $localStorage, UserApiService, UserService) {
+    module.exports = function($route, $scope, $location, $localStorage, UserApiService, UserService, SearchService) {
         
         
         
@@ -17,6 +17,8 @@
                     UserService.signin()
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
+                    SearchService.query('scope=user.' + UserService.username())
+                    $location.path('/documents')
                     $route.reload()
                   } else {
                     $scope.message = 'Sorry'

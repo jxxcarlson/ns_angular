@@ -588,7 +588,7 @@ module.exports = function(DocumentService) {
 },{}],15:[function(require,module,exports){
 module.exports = function($http, DocumentApiService, DocumentService) {
    
-    this.find = function(searchText) {
+    this.query = function(searchText) {
 
         $http.get('http://localhost:2300/v1/documents' + '?' + searchText  )
         .then(function(response){
@@ -1060,7 +1060,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"angular":38}],28:[function(require,module,exports){
-    module.exports = function($route, $scope, $localStorage, UserApiService, UserService) {
+    module.exports = function($route, $scope, $location, $localStorage, UserApiService, UserService, SearchService) {
         
         
         
@@ -1079,6 +1079,8 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     UserService.signin()
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
+                    SearchService.query('scope=user.' + UserService.username())
+                    $location.path('/documents')
                     $route.reload()
                   } else {
                     $scope.message = 'Sorry'

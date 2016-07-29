@@ -1,6 +1,6 @@
 module.exports = function($http, DocumentApiService, DocumentService) {
    
-    this.find = function(searchText) {
+    this.query = function(searchText) {
 
         $http.get('http://localhost:2300/v1/documents' + '?' + searchText  )
         .then(function(response){
