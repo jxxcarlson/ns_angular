@@ -847,7 +847,7 @@ module.exports = function(ImageService, ImageApiService) {
 },{}],22:[function(require,module,exports){
 module.exports = function($http, ImageService, ImageApiService) {
     
-    this.find = function(searchText){
+    this.query = function(searchText){
             console.log('Search text: ' + searchText);
             
             $http.get('http://localhost:2300/v1/images' + '?scope=' + searchText  )
@@ -950,13 +950,25 @@ module.exports = function ($http) {
     
  }
 },{}],25:[function(require,module,exports){
+
+// http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
+// http://docs.aws.amazon.com/sdk-for-ruby/latest/DeveloperGuide/aws-ruby-sdk-s3-recipe-set-item-props.html
+
+// http://stackoverflow.com/questions/31590424/cant-upload-files-to-amazon-s3-using-angularjs-with-pre-signed-url
+// http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
+// https://github.com/danialfarid/ng-file-upload/wiki/Direct-S3-upload-and-Node-signing-example
+// http://stackoverflow.com/questions/34573315/angularjs-image-upload-to-s3
+
 module.exports = function(file) { 
 
   // Get The PreSigned URL
   $http.post('/presigned',{ filename: file.name, type: file.type })
     .success(function(resp) {
       // Perform The Push To S3
-      $http.put(resp.url, file, {headers: {'Content-Type': file.type}})
+      console.log('foo')
+      $http.put(resp.url, file, 
+                {headers: {'Content-Type': file.type}}
+               )
         .success(function(resp) {
           //Finally, We're done
           alert('Upload Done!')
@@ -1092,7 +1104,8 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"angular":39}],29:[function(require,module,exports){
-    module.exports = function($route, $scope, $location, $localStorage, UserApiService, UserService, SearchService) {
+    module.exports = function($route, $scope, $location, 
+                               UserApiService, UserService, SearchService, ImageSearchService) {
         
         
         
@@ -1111,6 +1124,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     UserService.signin()
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
+                    ImageSearchService.query('scope=all')
                     SearchService.query('scope=user.' + UserService.username())
                     $location.path('/documents')
                     $route.reload()

@@ -1,6 +1,6 @@
 module.exports = function($http, ImageService, ImageApiService) {
     
-    this.find = function(searchText){
+    this.query = function(searchText){
             console.log('Search text: ' + searchText);
             
             $http.get('http://localhost:2300/v1/images' + '?scope=' + searchText  )

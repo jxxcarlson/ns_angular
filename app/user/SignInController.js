@@ -1,4 +1,5 @@
-    module.exports = function($route, $scope, $location, $localStorage, UserApiService, UserService, SearchService) {
+    module.exports = function($route, $scope, $location, 
+                               UserApiService, UserService, SearchService, ImageSearchService) {
         
         
         
@@ -17,6 +18,7 @@
                     UserService.signin()
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
+                    ImageSearchService.query('scope=all')
                     SearchService.query('scope=user.' + UserService.username())
                     $location.path('/documents')
                     $route.reload()
