@@ -15,9 +15,18 @@
   "devDependencies": {
     "angular": "^1.5.8",
     "browserify": "^13.1.0",
+    "cli": "^0.11.2",
+    "cors": "^2.7.1",
     "gulp": "^3.9.1",
     "gulp-connect": "^4.2.0",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-notify": "^2.2.0",
+    "gulp-notify-growl": "^1.0.2",
+    "htmlparser2": "^3.9.1",
+    "jshint-stylish": "^2.2.0",
     "karma-browserify": "^5.1.0",
+    "shelljs": "^0.7.3",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0",
     "webpack": "^1.13.1"
