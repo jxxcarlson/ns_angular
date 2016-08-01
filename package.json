@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "angular": "^1.5.8",
+    "angular-hotkeys": "^1.7.0",
     "angular-route": "^1.5.8",
     "jasmine-core": "^2.2.0",
     "karma": "^0.12.31",

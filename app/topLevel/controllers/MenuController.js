@@ -1,4 +1,6 @@
-module.exports = function ($scope, $log, $location, $route, UserService, MathJaxService, SearchService) {
+module.exports = function ($scope, $log, $location, $route, 
+                            UserService, MathJaxService, SearchService,
+                            hotkeys) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -57,5 +59,23 @@ module.exports = function ($scope, $log, $location, $route, UserService, MathJax
                             MathJaxService.reload('public documents')
                         })
   }
+  
+  /////
+  
+  
+  // You can pass it an object.  This hotkey will not be unbound unless manually removed
+  // using the hotkeys.del() method
+  hotkeys.add({
+    combo: 'alt+e',
+      description: 'blah blah',
+      callback: function() {
+          console.log('EDIT DOCUMENT ...')
+          $location.path('/editdocument')
+          $route.reload()
+      }
+  });
+
+    
+  /////
   
 }

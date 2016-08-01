@@ -6,7 +6,9 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 'ngFileUpload', , 'ui.bootstrap',  'ngAnimate']);
+var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 
+                                          'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
+                                         'cfp.hotkeys']);
 
 require('./topLevel')
 
@@ -1153,7 +1155,9 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 },{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":42}],30:[function(require,module,exports){
-module.exports = function ($scope, $log, $location, $route, UserService, MathJaxService, SearchService) {
+module.exports = function ($scope, $log, $location, $route, 
+                            UserService, MathJaxService, SearchService,
+                            hotkeys) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -1178,7 +1182,6 @@ module.exports = function ($scope, $log, $location, $route, UserService, MathJax
     
   $scope.userDocuments = function(){
 
-    console.log('KKKK: ' + UserService.username())
     $location.path('/documents')
                     
     SearchService.query('scope=user.' + UserService.username()).then(
@@ -1187,7 +1190,51 @@ module.exports = function ($scope, $log, $location, $route, UserService, MathJax
                             $route.reload() 
                             MathJaxService.reload('user documents')
                         })
-  }    
+  } 
+  
+  
+  $scope.allDocuments = function(){
+
+    $location.path('/documents')
+                    
+    SearchService.query('scope=all').then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('all documents')
+                        })
+  }
+  
+  $scope.publicDocuments = function(){
+
+    $location.path('/documents')
+                    
+    SearchService.query('scope=public').then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('public documents')
+                        })
+  }
+  
+  /////
+  
+  
+  // You can pass it an object.  This hotkey will not be unbound unless manually removed
+  // using the hotkeys.del() method
+  hotkeys.add({
+    combo: 'alt+e',
+      description: 'blah blah',
+      callback: function() {
+          console.log('EDIT DOCUMENT ...')
+          $location.path('/editdocument')
+          $route.reload()
+      }
+  });
+
+    
+  /////
+  
 }
 },{}],31:[function(require,module,exports){
 'use strict';

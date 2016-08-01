@@ -5,7 +5,9 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 'ngFileUpload', , 'ui.bootstrap',  'ngAnimate']);
+var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 
+                                          'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
+                                         'cfp.hotkeys']);
 
 require('./topLevel')
 
