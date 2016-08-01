@@ -15,6 +15,7 @@
       <!-- load angular and angular route via CDN -->
          
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
    
       <!-- Issue with ngStorage -- have to load as above, not with var angular = require('angular'); --
@@ -25,6 +26,7 @@
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
       <script src="js/ng-file-upload.min.js"></script>    
+      <script src="js/ui-bootstrap.js"></script>    
       <script src="js/main.js"></script>
     </head>
     <body ng-controller="MainController">
@@ -39,11 +41,29 @@
 
                 <ul class="nav navbar-nav navbar-left">
                     <li><a href="#documents">DOCUMENTS</a></li>
-                    <li><a href="#newdocument">New</a></li>
                     <li><a href="#editdocument">Edit</a></li>
+                    <li style="margin-top:10px;">
+                        <div ng-controller="MenuController">
+                            <div class="btn-group" uib-dropdown is-open="status.isopen">
+                              <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                                Tools <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                                <li role="menuitem"><a href="#newdocument">New Document</a></li>
+                                <li role="menuitem"><a href="#">Another action</a></li>
+                                <li role="menuitem"><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li role="menuitem"><a href="#images">Images</a></li>
+                                <li role="menuitem"><a href="#imageupload">Upload image</a></li>
+                              </ul>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-center" style="margin-left:3em;">
+                    
+                    
                    
                     <li>   
                       <form class="form-horizontal" style="margin-top:14px;">
@@ -76,8 +96,6 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#signin"><i class="fa fa-home"></i> Home</a></li>
-                    <li><a href="#images"><i class="fa fa-home"></i> Images</a></li>
-                    <li><a href="#imageupload"><i class="fa fa-home"></i> Upload image</a></li>
                     <li><a href="#about"><i class="fa fa-comment"></i> About</a></li>
                 </ul>
             </div>

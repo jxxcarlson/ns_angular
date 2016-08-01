@@ -6,7 +6,7 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 'ngFileUpload']);
+var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 'ngFileUpload', , 'ui.bootstrap',  'ngAnimate']);
 
 require('./topLevel')
 
@@ -21,6 +21,10 @@ require('./search')
 
 
 /**
+
+MENU
+
+>>> https://angular-ui.github.io/bootstrap/ 
 
 EDITOR
 
@@ -126,7 +130,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":10,"./images":19,"./search":24,"./services":29,"./topLevel":30,"./user":37,"angular":41,"angular-route":39}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":10,"./images":19,"./search":24,"./services":29,"./topLevel":31,"./user":38,"angular":42,"angular-route":40}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -202,7 +206,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":41}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":42}],6:[function(require,module,exports){
 
 // ROUTES PROCESSED:
 // GET /documents
@@ -409,7 +413,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":41}],11:[function(require,module,exports){
+},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":42}],11:[function(require,module,exports){
 module.exports = function($http, $q, DocumentService) {
 
         var deferred = $q.defer();
@@ -811,7 +815,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":41}],20:[function(require,module,exports){
+},{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":42}],20:[function(require,module,exports){
 module.exports = function($http, $q, ImageService) {
 
         var deferred = $q.defer();
@@ -997,7 +1001,7 @@ var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":25,"angular":41}],25:[function(require,module,exports){
+},{"./services/QueryParser":25,"angular":42}],25:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -1142,10 +1146,37 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 
-},{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":41}],30:[function(require,module,exports){
+},{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":42}],30:[function(require,module,exports){
+module.exports = function ($scope, $log) {
+  $scope.items = [
+    'The first choice!',
+    'And another choice for you.',
+    'but wait! A third!'
+  ];
+
+  $scope.status = {
+    isopen: false
+  };
+
+  $scope.toggled = function(open) {
+    $log.log('Dropdown is now: ', open);
+  };
+
+  $scope.toggleDropdown = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.status.isopen = !$scope.status.isopen;
+  };
+
+  $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
+}
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
+
+
+app.controller('MenuController', require('./controllers/MenuController'))
 
     // configure our routes
 
@@ -1242,7 +1273,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"angular":41}],31:[function(require,module,exports){
+},{"./controllers/MenuController":30,"angular":42}],32:[function(require,module,exports){
     module.exports = function($route, $scope, $location, 
                                UserApiService, UserService, SearchService, ImageSearchService) {
         
@@ -1282,7 +1313,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
         }
       }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function($scope, $route, UserService) {
 
     console.log('Sign out ...')
@@ -1296,7 +1327,7 @@ module.exports = function($scope, $route, UserService) {
         
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, UserApiService, UserService) {
@@ -1365,7 +1396,7 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       } // function
     ]
     */
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -1443,7 +1474,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -1456,7 +1487,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function($localStorage) {
 
  this.signedIn = null    
@@ -1535,7 +1566,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1552,7 +1583,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":31,"./SignOutController":32,"./SignUpController":33,"./UserApiService":34,"./UserController":35,"./UserService":36,"angular":41}],38:[function(require,module,exports){
+},{"./SignInController":32,"./SignOutController":33,"./SignUpController":34,"./UserApiService":35,"./UserController":36,"./UserService":37,"angular":42}],39:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -2623,11 +2654,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":38}],40:[function(require,module,exports){
+},{"./angular-route":39}],41:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -34396,8 +34427,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":40}]},{},[1]);
+},{"./angular":41}]},{},[1]);

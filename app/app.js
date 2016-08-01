@@ -5,7 +5,7 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 'ngFileUpload']);
+var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 'ngFileUpload', , 'ui.bootstrap',  'ngAnimate']);
 
 require('./topLevel')
 
@@ -20,6 +20,10 @@ require('./search')
 
 
 /**
+
+MENU
+
+>>> https://angular-ui.github.io/bootstrap/ 
 
 EDITOR
 

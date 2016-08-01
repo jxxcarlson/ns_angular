@@ -2,6 +2,9 @@
 
 var app = require('angular').module('noteshareApp');
 
+
+app.controller('MenuController', require('./controllers/MenuController'))
+
     // configure our routes
 
 app.config(function($routeProvider) {
