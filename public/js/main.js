@@ -615,7 +615,9 @@ module.exports = function($http, DocumentApiService, DocumentService) {
    
     this.query = function(searchText) {
 
-        $http.get('http://localhost:2300/v1/documents' + '?' + searchText  )
+        var request = 'http://localhost:2300/v1/documents' + '?' + searchText
+        console.log('REQUEST ' + request)
+        $http.get(request)
         .then(function(response){
           console.log(response.data['status'])
           console.log('Number of documents: ' + response.data['document_count'])
@@ -1147,7 +1149,7 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 },{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":42}],30:[function(require,module,exports){
-module.exports = function ($scope, $log) {
+module.exports = function ($scope, $log, $location, $route, UserService, SearchService) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -1169,6 +1171,15 @@ module.exports = function ($scope, $log) {
   };
 
   $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
+    
+  $scope.userDocuments = function(){
+
+    console.log('KKKK: ' + UserService.username())
+    
+    SearchService.query('scope=user.' + UserService.username())
+    $location.path('/documents')
+    $route.reload()     
+  }    
 }
 },{}],31:[function(require,module,exports){
 'use strict';

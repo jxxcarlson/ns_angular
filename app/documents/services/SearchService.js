@@ -2,7 +2,9 @@ module.exports = function($http, DocumentApiService, DocumentService) {
    
     this.query = function(searchText) {
 
-        $http.get('http://localhost:2300/v1/documents' + '?' + searchText  )
+        var request = 'http://localhost:2300/v1/documents' + '?' + searchText
+        console.log('REQUEST ' + request)
+        $http.get(request)
         .then(function(response){
           console.log(response.data['status'])
           console.log('Number of documents: ' + response.data['document_count'])
