@@ -7,7 +7,7 @@ app.controller('MenuController', require('./controllers/MenuController'))
 
     // configure our routes
 
-app.config(function($routeProvider) {
+app.config(function($routeProvider, $locationProvider) {
     $routeProvider
 
         // route for the home page
@@ -74,10 +74,9 @@ app.config(function($routeProvider) {
         .when('/imageupload', {
             templateUrl : 'pages/imageupload.html',
             controller  : 'ImageUploadController'
-        })
-        
+        });
     
-    ;
+    $locationProvider.html5Mode(true);
 });
 
 

@@ -5,7 +5,7 @@
     <h3 style='margin-top:10px;margin-bottom:30px;'>{{ imageCount }} Images</h3>
     <div ng-repeat="image in imageList">
         <p stle='margin-bottom:0;'><img src={{image['storage_url']}} width=150 /></p>
-        <p style='margin-top:0;margin-bottom:1.5em;'><a href="#{{image['url']}}">{{image['id']}}: {{image['title']}}</a></p>
+        <p style='margin-top:0;margin-bottom:1.5em;'><a href="{{image['url']}}">{{image['id']}}: {{image['title']}}</a></p>
     </div>
             
 

@@ -1223,14 +1223,51 @@ module.exports = function ($scope, $log, $location, $route,
   // You can pass it an object.  This hotkey will not be unbound unless manually removed
   // using the hotkeys.del() method
   hotkeys.add({
-    combo: 'alt+e',
-      description: 'blah blah',
+    combo: 'ctrl+e',
+      description: 'Edit document',
       callback: function() {
           console.log('EDIT DOCUMENT ...')
           $location.path('/editdocument')
           $route.reload()
       }
   });
+    
+  hotkeys.add({
+    combo: 'ctrl+v',
+      description: 'View docuemnt',
+      callback: function() {
+          console.log('VIEW DOCUMENT ...')
+          $location.path('/documents')
+          $route.reload()
+      }
+  });    
+    
+  hotkeys.add({
+    combo: 'ctrl+s',
+      description: 'Save docuemnt',
+      callback: function() {
+          console.log('SAVE DOCUMENT ...')
+          // $location.path('/editdocument')
+          // $route.reload()
+      }
+  });
+    
+  hotkeys.add({
+    combo: 'ctrl+u',
+      description: 'User docuemnts',
+      callback: function() {
+        console.log('USER DOCUMENTs ...')
+        $location.path('/documents')
+                    
+        SearchService.query('scope=user.' + UserService.username()).then(
+            function() {
+                $location.path('/documents')
+                $route.reload() 
+                MathJaxService.reload('user documents')
+            })
+      }
+  });    
+    
 
     
   /////
@@ -1246,7 +1283,7 @@ app.controller('MenuController', require('./controllers/MenuController'))
 
     // configure our routes
 
-app.config(function($routeProvider) {
+app.config(function($routeProvider, $locationProvider) {
     $routeProvider
 
         // route for the home page
@@ -1313,10 +1350,9 @@ app.config(function($routeProvider) {
         .when('/imageupload', {
             templateUrl : 'pages/imageupload.html',
             controller  : 'ImageUploadController'
-        })
-        
+        });
     
-    ;
+    $locationProvider.html5Mode(true);
 });
 
 
