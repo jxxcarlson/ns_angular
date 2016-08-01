@@ -1,5 +1,5 @@
     module.exports = function($route, $scope, $location, 
-                               UserApiService, UserService, SearchService, ImageSearchService) {
+                               UserApiService, UserService, MathJaxService, SearchService, ImageSearchService) {
         
         
         
@@ -19,9 +19,12 @@
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
-                    SearchService.query('scope=user.' + UserService.username())
-                    $location.path('/documents')
-                    $route.reload()
+                    SearchService.query('scope=user.' + UserService.username()).then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('SignIn')
+                        })
                   } else {
                     $scope.message = 'Sorry'
                   }

@@ -1,4 +1,4 @@
-module.exports = function ($scope, $log, $location, $route, UserService, SearchService) {
+module.exports = function ($scope, $log, $location, $route, UserService, MathJaxService, SearchService) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -23,10 +23,39 @@ module.exports = function ($scope, $log, $location, $route, UserService, SearchS
     
   $scope.userDocuments = function(){
 
-    console.log('KKKK: ' + UserService.username())
-    
-    SearchService.query('scope=user.' + UserService.username())
     $location.path('/documents')
-    $route.reload()     
-  }    
+                    
+    SearchService.query('scope=user.' + UserService.username()).then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('user documents')
+                        })
+  } 
+  
+  
+  $scope.allDocuments = function(){
+
+    $location.path('/documents')
+                    
+    SearchService.query('scope=all').then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('all documents')
+                        })
+  }
+  
+  $scope.publicDocuments = function(){
+
+    $location.path('/documents')
+                    
+    SearchService.query('scope=public').then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('public documents')
+                        })
+  }
+  
 }

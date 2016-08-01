@@ -55,8 +55,9 @@
                                 <li role="menuitem"><a href="#images">Images</a></li>
                                 <li role="menuitem"><a href="#imageupload">Upload image</a></li>
                                 <li class="divider"></li>
-                                <li role="menuitem"><a href="#" ng-click="userDocuments()">User documents</a></li>  
-                                  
+                                <li role="menuitem"><a href="#documents" ng-click="userDocuments()">User documents</a></li> 
+                                <li role="menuitem"><a href="#documents" ng-click="publicDocuments()">Public documents</a></li>  
+                                <li role="menuitem"><a href="#documents" ng-click="allDocuments()">All documents</a></li>                           
                               </ul>
                             </div>
                         </div>
@@ -79,11 +80,13 @@
 
                         </div>
                       </form>
-                    </li>          
+                    </li> 
+                    
+    
                     
                     <li>
                        <form class="form-horizontal" style="margin-top:14px;">
-                        <div class="form-group">
+                        <div class="form-group" style="margin-left:20px;">
                           <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
                           <div ng-controller="ImageSearchController">
                             <input ng-enter="doImageSearch(  )" ng-model="searchText" placeholder=" image search ..."/>

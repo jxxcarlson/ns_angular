@@ -1,10 +1,12 @@
-module.exports = function($http, DocumentApiService, DocumentService) {
+module.exports = function($http, $q, DocumentApiService, DocumentService) {
+    
+    var deferred = $q.defer();
    
     this.query = function(searchText) {
 
         var request = 'http://localhost:2300/v1/documents' + '?' + searchText
         console.log('REQUEST ' + request)
-        $http.get(request)
+        return $http.get(request)
         .then(function(response){
           console.log(response.data['status'])
           console.log('Number of documents: ' + response.data['document_count'])
@@ -15,5 +17,7 @@ module.exports = function($http, DocumentApiService, DocumentService) {
           var id = documents[0]['id']
           DocumentApiService.getDocument(id)
         })
+        
+        
     }     
 }

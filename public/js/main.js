@@ -611,13 +611,15 @@ module.exports = function(DocumentService) {
     
 }
 },{}],15:[function(require,module,exports){
-module.exports = function($http, DocumentApiService, DocumentService) {
+module.exports = function($http, $q, DocumentApiService, DocumentService) {
+    
+    var deferred = $q.defer();
    
     this.query = function(searchText) {
 
         var request = 'http://localhost:2300/v1/documents' + '?' + searchText
         console.log('REQUEST ' + request)
-        $http.get(request)
+        return $http.get(request)
         .then(function(response){
           console.log(response.data['status'])
           console.log('Number of documents: ' + response.data['document_count'])
@@ -628,6 +630,8 @@ module.exports = function($http, DocumentApiService, DocumentService) {
           var id = documents[0]['id']
           DocumentApiService.getDocument(id)
         })
+        
+        
     }     
 }
 },{}],16:[function(require,module,exports){
@@ -1149,7 +1153,7 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 },{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":42}],30:[function(require,module,exports){
-module.exports = function ($scope, $log, $location, $route, UserService, SearchService) {
+module.exports = function ($scope, $log, $location, $route, UserService, MathJaxService, SearchService) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -1175,10 +1179,14 @@ module.exports = function ($scope, $log, $location, $route, UserService, SearchS
   $scope.userDocuments = function(){
 
     console.log('KKKK: ' + UserService.username())
-    
-    SearchService.query('scope=user.' + UserService.username())
     $location.path('/documents')
-    $route.reload()     
+                    
+    SearchService.query('scope=user.' + UserService.username()).then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('user documents')
+                        })
   }    
 }
 },{}],31:[function(require,module,exports){
@@ -1286,7 +1294,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
     
 },{"./controllers/MenuController":30,"angular":42}],32:[function(require,module,exports){
     module.exports = function($route, $scope, $location, 
-                               UserApiService, UserService, SearchService, ImageSearchService) {
+                               UserApiService, UserService, MathJaxService, SearchService, ImageSearchService) {
         
         
         
@@ -1306,9 +1314,12 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
-                    SearchService.query('scope=user.' + UserService.username())
-                    $location.path('/documents')
-                    $route.reload()
+                    SearchService.query('scope=user.' + UserService.username()).then(
+                        function() {
+                            $location.path('/documents')
+                            $route.reload() 
+                            MathJaxService.reload('SignIn')
+                        })
                   } else {
                     $scope.message = 'Sorry'
                   }
