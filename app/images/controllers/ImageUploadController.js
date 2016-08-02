@@ -31,9 +31,17 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  headers: { 'Content-Type': file.type },
                  data: file
                 }
+            var file_url = response.url
             // $http.put(response.url, file)
             $http(req)
             .success(function(response) {
+                var query = {
+                    title: 'test',
+                    filename: file.name,
+                    content_type: file.type,
+                    owner: UserService.username()
+                };
+                $http.post('http://localhost:2300/v1/images', query )
               //Finally, We're done
               console.log('Upload Done!')
             })
