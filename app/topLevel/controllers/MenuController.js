@@ -68,6 +68,7 @@ module.exports = function ($scope, $log, $location, $route,
   hotkeys.add({
     combo: 'ctrl+e',
       description: 'Edit document',
+      allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('EDIT DOCUMENT ...')
           $location.path('/editdocument')
@@ -78,6 +79,7 @@ module.exports = function ($scope, $log, $location, $route,
   hotkeys.add({
     combo: 'ctrl+v',
       description: 'View docuemnt',
+      allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('VIEW DOCUMENT ...')
           $location.path('/documents')
@@ -88,6 +90,7 @@ module.exports = function ($scope, $log, $location, $route,
   hotkeys.add({
     combo: 'ctrl+s',
       description: 'Save docuemnt',
+      allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('SAVE DOCUMENT ...')
           // $location.path('/editdocument')
@@ -98,6 +101,7 @@ module.exports = function ($scope, $log, $location, $route,
   hotkeys.add({
     combo: 'ctrl+u',
       description: 'User docuemnts',
+      allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
         console.log('USER DOCUMENTs ...')
         $location.path('/documents')
