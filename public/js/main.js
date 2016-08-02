@@ -676,7 +676,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http) {
+ module.exports =  function($scope, $http, UserService) {
         
     $scope.upload = function (file) {
         console.log("UploadCtrl sending S3sign request");
@@ -684,7 +684,8 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         console.log("File type: " + file.type);
         var query = {
             filename: file.name,
-            type: file.type
+            type: file.type,
+            owner: UserService.username()
         };
         // Get presigned URL
         $http.post('http://localhost:2300/v1/presigned', query).success(function(response) {
