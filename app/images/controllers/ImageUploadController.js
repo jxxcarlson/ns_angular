@@ -1,9 +1,23 @@
+
+/*****
+
+CHEYENNE WALLACE: ANGULAR UPLOAD WITH PRESIGNED URL
+http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
+
+RUBY: UPLOAD WITH PRESIGNED URL
+http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.html#UploadObjectPreSignedURLRubySDKV2
+
+*****/
+
+
 // http://stackoverflow.com/questions/34573315/angularjs-image-upload-to-s3
 // https://aws.amazon.com/console/
 
 // http://docs.aws.amazon.com/general/latest/gr/signature-v4-troubleshooting.html#signature-v4-troubleshooting-key-signing
 
- module.exports =  function($scope, $http, Upload) {
+// AWS in JS >>> http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/browser-examples.html
+
+ module.exports =  function($scope, $http) {
 
      
      console.log('Image Uploader yada yada!')
@@ -17,44 +31,25 @@ $scope.upload = function (file) {
         type: file.type
     };
     $http.post('http://localhost:2300/v1/presigned', query).success(function(response) {
-        console.log("WebUploadCtrl s3sign response received");
-        var s3ResponseParams = response;
-        console.log("WebUploadCtrl s3Url, url: " + s3ResponseParams.url)
-        console.log("WebUploadCtrl s3Url, fields: " + s3ResponseParams.fields)
-        console.log("WebUploadCtrl upload  AWSAccessKeyId: " + response.AWSAccessKeyId);
-        console.log("WebUploadCtrl upload  AWSSecretAccessKey: " + response.AWSSecretAccessKey);
-        console.log("WebUploadCtrl upload  signature: " + response.Signature);
-        console.log("WebUploadCtrl upload  response: " + JSON.stringify(response));
-        $scope.upload = Upload.upload({
-                url: s3ResponseParams.url, //s3Url
-                // headers : {'Content-Type': file.type},
-                transformRequest: function(data, headersGetter) {
-                    // var headers = headersGetter();
-                    var headers = {'Content-Type': file.type};
-                    delete headers.Authorization;
-                    return data;
-                },
-                fields: s3ResponseParams.fields, //credentials
-                method: 'PUT',
-                file: file
-            }).progress(function(evt) {
-                $scope.progressPerCent = parseInt(100.0 * evt.loaded / evt.total);
-                console.log('progress: ' + $scope.progressPerCent);
-            }).success(function(data, status, headers, config) {
-                // file is uploaded successfully
-                console.log('file ' + config.file.name + 'is uploaded successfully. Response: ' + data);                
-
-            }).error(function(error) {
-                // Some error has occured
-                console.log('Error uploading to S3');
-                console.log('Error: ' + JSON.stringify(error));
-          });
-    });
+        console.log("UploadCtrl s3sign response received");
+        console.log("UploadCtrl URL in repsonse: " + response.url)
+        console.log("UploadCtrl upload  response: " + JSON.stringify(response));
+        console.log("UploadCtrl FILE size: " + file.length);
+        // Perform The Push To S3
+        // $http.put(response.url, file, {headers: {'Content-Type': file.type}})
+        $http.put(response.url, file)
+        .success(function(response) {
+          //Finally, We're done
+          console.log('Upload Done!')
+        })
+        .error(function(response) {
+          console.log("Error:" + JSON.stringify(response));
+        });
+          
+    })
 };     
 
- 
-            
-            
+           
 }
  
 /****
