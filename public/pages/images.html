@@ -2,10 +2,12 @@
   <div class="col-md-2" >
     <div style="margin-left:1em;">
 
-    <h3 style='margin-top:10px;margin-bottom:30px;'>{{ imageCount }} Images</h3>
-    <div ng-repeat="image in imageList">
-        <p stle='margin-bottom:0;'><img src={{image['storage_url']}} width=150 /></p>
-        <p style='margin-top:0;margin-bottom:1.5em;'><a href="{{image['url']}}">{{image['id']}}: {{image['title']}}</a></p>
+    <h3 style='margin-top:10px;margin-bottom:30px;'>{{ imageCount }} Images</h3> 
+    <div  style="height:400px; overflow-y: auto;">        
+        <div ng-repeat="image in imageList">
+            <p stle='margin-bottom:0;'><img src={{image['storage_url']}} width=150 /></p>
+            <p style='margin-top:0;margin-bottom:1.5em;'><a href="{{image['url']}}">{{image['id']}}: {{image['title']}}</a></p>
+        </div>
     </div>
             
 
@@ -16,22 +18,20 @@
   <div class="col-md-4">
     <div style="margin-left:1em;">
     <h2> {{ title }} </h2>
-    
+    <div style="margin-left:1em;">
+        <h2> {{ title }} </h2>
+        <div class="container fill">
+          <img src={{imageStorageUrl}} style="max-width:300px;max-height:400px;" />
+          <p>{{imageId}}: {{imageTitle}}</p>        
+        </div>
+    </div>
 
 
   </div>
 </div>    
 
-  <div class="col-md-4">
-    <div style="margin-left:1em;">
-    <h2> {{ title }} </h2>
-    <div class="container fill">
-      <img src={{imageStorageUrl}} width=90% />
-      <p>{{imageId}}: {{imageTitle}}</p>        
-    </div>
+<div class="col-md-4">
 
-
-  </div>
 </div>
 
 </div>
