@@ -2,11 +2,14 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
 
     this.getDocumentList = function(scope) {
         
+        
         scope.title = DocumentService.title()
         scope.text = DocumentService.text()
         scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         scope.docArray = DocumentService.documentList()
         scope.documentCount = DocumentService.documentCount()
+        
+        console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
         scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
@@ -29,7 +32,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 
                 scope.$watch(function(scope) { 
                     return scope.renderedText },
-                    function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
+                    MathJaxService.reload('DocumentRouteService: getDocument') 
                 );
                 
                 scope.$watch(function(local_scope) { 

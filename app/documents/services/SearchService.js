@@ -1,9 +1,13 @@
 module.exports = function($http, $q, DocumentApiService, DocumentService) {
     
     var deferred = $q.defer();
+    
+    
    
     this.query = function(searchText) {
 
+        console.log('SearchService, query = ' + searchText)
+        
         var request = 'http://localhost:2300/v1/documents' + '?' + searchText
         console.log('REQUEST ' + request)
         return $http.get(request)
