@@ -1,5 +1,6 @@
   module.exports = function($scope, $routeParams, $http, $sce, $timeout, 
-                             DocumentService, UserService, MathJaxService) {
+                             DocumentService, DocumentApiService, UserService, 
+                             MathJaxService, hotkeys, $interval) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -8,7 +9,44 @@
         } else {
             id = DocumentService.documentId();
         }
-    
+      
+      hotkeys.bindTo($scope)
+        .add({
+          combo: 'ctrl-w',
+          description: 'blah blah',
+          allowIn: ['TEXTAREA'],
+          callback: function() {
+              console.log('WWWWWWW')
+              alert('W')
+          }
+        })
+      
+        var callAtInterval = function() { 
+            updateCount += 1
+            console.log('periodicUpdate ' + updateCount)
+            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)
+            if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
+            
+        }
+      
+        var periodicUpdate 
+        if (DocumentService.kind() == 'asciidoctor-latex') {
+            
+            periodicUpdate = $interval(callAtInterval, 1*60*1000);  // 1 minute
+            
+            
+        } else {
+            
+            periodicUpdate = $interval(callAtInterval, 5*1000); // 5 seconds
+        }
+        
+        var updateCount = 0
+      
+        $scope.$on("$destroy", function(){
+            $interval.cancel(periodicUpdate);
+        });
+
+
         
         /* Initial values: */
         $scope.title = DocumentService.title()
@@ -41,41 +79,11 @@
                 console.log('I set the title to ' + DocumentService.title())
             })
 
-        /* updateDocument */
+        
         $scope.updateDocument = function() {
-
-            var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: UserService.accessToken() });
-
-            console.log('parameter:' + parameter);
-
-            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
-                .then(function(response){
-                    var rt;
-                    if (response.data['status'] == '202') {
-                        var document = response.data['document']
-
-                        /* Update local storage */
-                        DocumentService.setDocumentId(document['id'])
-                        DocumentService.setTitle(document['title'])
-                        DocumentService.setText(document['text'])                          
-                        DocumentService.setRenderedText(document['rendered_text'])
-
-                        /* Update $scope */
-                        $scope.title = document['title']
-                        $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-                        $scope.message = 'Success!'
-                        
-                        
-                        // XX: Is this needed?
-                        
-
-                    } else {
-                        $scope.message = response.data['error']
-                    }
-
-                    console.log('status = ' + String(response.data['status']))
-
-                })
+            
+            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)        
+        
         }
 
 }

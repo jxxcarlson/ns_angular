@@ -1,4 +1,4 @@
-module.exports = function($http, $q, DocumentService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService) {
 
         var deferred = $q.defer();
 
@@ -44,33 +44,38 @@ module.exports = function($http, $q, DocumentService) {
         
         
         
-        /*
-        this.newUser = function(username, email, password) {
-            
-          var parameter = JSON.stringify({username:username, email:email, password: password});
-          console.log(parameter);
-          return $http.post('http://localhost:2300/v1/users/create', parameter)
-          
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
+        this.update = function(id, title, text, scope) {
 
-                var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
+            var parameter = JSON.stringify({id:id, title: title, text:text, token: UserService.accessToken() });
 
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        ;
+            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
+                .then(function(response){
+                    var rt;
+                    if (response.data['status'] == '202') {
+                        var document = response.data['document']
+
+                        /* Update local storage */
+                        DocumentService.setDocumentId(document['id'])
+                        DocumentService.setTitle(document['title'])
+                        DocumentService.setText(document['text'])                          
+                        DocumentService.setRenderedText(document['rendered_text'])
+
+                        /* Update $scope */
+                        scope.title = document['title']
+                        scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                        scope.message = 'Success!'
+                        
+                        
+                        // XX: Is this needed?
+                        
+
+                    } else {
+                        scope.message = response.data['error']
+                    }
+
+                    console.log('status = ' + String(response.data['status']))
+
+                })
         }
-        */
 
       }

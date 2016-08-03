@@ -1,6 +1,6 @@
-module.exports = function ($scope, $log, $location, $route, 
+module.exports = function ($scope, $rootScope, $log, $location, $route, 
                             UserService, MathJaxService, SearchService,
-                            hotkeys) {
+                            DocumentApiService, DocumentService, hotkeys) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -93,6 +93,8 @@ module.exports = function ($scope, $log, $location, $route,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('SAVE DOCUMENT ...')
+          console.log($scope.editText)
+          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope) 
           // $location.path('/editdocument')
           // $route.reload()
       }

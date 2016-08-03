@@ -249,7 +249,8 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
 }
 },{}],7:[function(require,module,exports){
   module.exports = function($scope, $routeParams, $http, $sce, $timeout, 
-                             DocumentService, UserService, MathJaxService) {
+                             DocumentService, DocumentApiService, UserService, 
+                             MathJaxService, hotkeys, $interval) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -258,7 +259,44 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         } else {
             id = DocumentService.documentId();
         }
-    
+      
+      hotkeys.bindTo($scope)
+        .add({
+          combo: 'ctrl-w',
+          description: 'blah blah',
+          allowIn: ['TEXTAREA'],
+          callback: function() {
+              console.log('WWWWWWW')
+              alert('W')
+          }
+        })
+      
+        var callAtInterval = function() { 
+            updateCount += 1
+            console.log('periodicUpdate ' + updateCount)
+            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)
+            if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
+            
+        }
+      
+        var periodicUpdate 
+        if (DocumentService.kind() == 'asciidoctor-latex') {
+            
+            periodicUpdate = $interval(callAtInterval, 1*60*1000);  // 1 minute
+            
+            
+        } else {
+            
+            periodicUpdate = $interval(callAtInterval, 5*1000); // 5 seconds
+        }
+        
+        var updateCount = 0
+      
+        $scope.$on("$destroy", function(){
+            $interval.cancel(periodicUpdate);
+        });
+
+
         
         /* Initial values: */
         $scope.title = DocumentService.title()
@@ -291,41 +329,11 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
                 console.log('I set the title to ' + DocumentService.title())
             })
 
-        /* updateDocument */
+        
         $scope.updateDocument = function() {
-
-            var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: UserService.accessToken() });
-
-            console.log('parameter:' + parameter);
-
-            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
-                .then(function(response){
-                    var rt;
-                    if (response.data['status'] == '202') {
-                        var document = response.data['document']
-
-                        /* Update local storage */
-                        DocumentService.setDocumentId(document['id'])
-                        DocumentService.setTitle(document['title'])
-                        DocumentService.setText(document['text'])                          
-                        DocumentService.setRenderedText(document['rendered_text'])
-
-                        /* Update $scope */
-                        $scope.title = document['title']
-                        $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-                        $scope.message = 'Success!'
-                        
-                        
-                        // XX: Is this needed?
-                        
-
-                    } else {
-                        $scope.message = response.data['error']
-                    }
-
-                    console.log('status = ' + String(response.data['status']))
-
-                })
+            
+            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)        
+        
         }
 
 }
@@ -416,7 +424,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
 },{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":42}],11:[function(require,module,exports){
-module.exports = function($http, $q, DocumentService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService) {
 
         var deferred = $q.defer();
 
@@ -462,34 +470,39 @@ module.exports = function($http, $q, DocumentService) {
         
         
         
-        /*
-        this.newUser = function(username, email, password) {
-            
-          var parameter = JSON.stringify({username:username, email:email, password: password});
-          console.log(parameter);
-          return $http.post('http://localhost:2300/v1/users/create', parameter)
-          
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
+        this.update = function(id, title, text, scope) {
 
-                var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
+            var parameter = JSON.stringify({id:id, title: title, text:text, token: UserService.accessToken() });
 
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        ;
+            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
+                .then(function(response){
+                    var rt;
+                    if (response.data['status'] == '202') {
+                        var document = response.data['document']
+
+                        /* Update local storage */
+                        DocumentService.setDocumentId(document['id'])
+                        DocumentService.setTitle(document['title'])
+                        DocumentService.setText(document['text'])                          
+                        DocumentService.setRenderedText(document['rendered_text'])
+
+                        /* Update $scope */
+                        scope.title = document['title']
+                        scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                        scope.message = 'Success!'
+                        
+                        
+                        // XX: Is this needed?
+                        
+
+                    } else {
+                        scope.message = response.data['error']
+                    }
+
+                    console.log('status = ' + String(response.data['status']))
+
+                })
         }
-        */
 
       }
 },{}],12:[function(require,module,exports){
@@ -601,7 +614,7 @@ module.exports = function($localStorage) {
 },{}],14:[function(require,module,exports){
 module.exports = function(DocumentService) {
     
-    this.reload = function(message) {
+    this.reload = function(message='**') {
         if (DocumentService.kind() == 'asciidoctor-latex') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
             console.log(message + ": reloadMathJax called"); 
@@ -1126,9 +1139,9 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 },{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":42}],30:[function(require,module,exports){
-module.exports = function ($scope, $log, $location, $route, 
+module.exports = function ($scope, $rootScope, $log, $location, $route, 
                             UserService, MathJaxService, SearchService,
-                            hotkeys) {
+                            DocumentApiService, DocumentService, hotkeys) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -1221,6 +1234,8 @@ module.exports = function ($scope, $log, $location, $route,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('SAVE DOCUMENT ...')
+          console.log($scope.editText)
+          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope) 
           // $location.path('/editdocument')
           // $route.reload()
       }
