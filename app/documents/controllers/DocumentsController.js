@@ -5,11 +5,11 @@
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, 
+module.exports = function($scope, $location, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, DocumentRouteService, MathJaxService) {
 
  
-    var id = $routeParams.id;
+    var id = $stateParams.id;
     var queryString =  $location.search()
     
     // Process the given route

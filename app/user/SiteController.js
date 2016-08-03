@@ -1,8 +1,8 @@
-module.exports = function($routeParams, $scope, SearchService, DocumentRouteService, DocumentService, MathJaxService) {
+module.exports = function($stateParams, $scope, SearchService, DocumentRouteService, DocumentService, MathJaxService) {
     
 
     
-    var id = $routeParams.id
+    var id = $stateParams.id
     console.log('Hey!, site = ' + id)
     SearchService.query('scope=user.'+id)
     

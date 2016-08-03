@@ -6,7 +6,7 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ngRoute', 'ngStorage', 
+var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
                                          'cfp.hotkeys']);
 
@@ -216,11 +216,11 @@ app.directive('file', require('./File'))
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $location, $routeParams, $sce, DocumentApiService, 
+module.exports = function($scope, $location, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, DocumentRouteService, MathJaxService) {
 
  
-    var id = $routeParams.id;
+    var id = $stateParams.id;
     var queryString =  $location.search()
     
     // Process the given route
@@ -248,14 +248,14 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
 
 }
 },{}],7:[function(require,module,exports){
-  module.exports = function($scope, $routeParams, $http, $sce, $timeout, 
+  module.exports = function($scope, $stateParams, $http, $sce, $timeout, 
                              DocumentService, DocumentApiService, UserService, 
                              MathJaxService, hotkeys, $interval) {
 
         var id;
-        console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
-        if ($routeParams.id != undefined) {
-            id = $routeParams.id
+        console.log('EDIT CONTROLLER, $stateParams.id: ' + $stateParams.id)
+        if ($stateParams.id != undefined) {
+            id = $stateParams.id
         } else {
             id = DocumentService.documentId();
         }
@@ -381,7 +381,7 @@ module.exports = [
       }
     ]
 },{}],9:[function(require,module,exports){
-module.exports = function($scope, $route, $location, $http, 
+module.exports = function($scope, $state, $location, $http, 
                            DocumentService, DocumentApiService, MathJaxService, QueryParser) {
         $scope.doSearch = function(){
             
@@ -409,7 +409,7 @@ module.exports = function($scope, $route, $location, $http,
                 );
                   
                 $location.path('/documents')
-                $route.reload()
+                $state.reload()
                 
               }) 
             });
@@ -669,11 +669,15 @@ module.exports = function($http, $q, DocumentApiService, DocumentService) {
     }     
 }
 },{}],16:[function(require,module,exports){
-module.exports = function($scope, $route, $location, $http, ImageService, ImageApiService) {
+module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService) {
+    
         $scope.doImageSearch = function(){
+            
+            
             console.log('Search text: ' + $scope.searchText);
             
             $http.get('http://localhost:2300/v1/images' + '?scope=' + $scope.searchText  )
+            
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
@@ -687,13 +691,14 @@ module.exports = function($scope, $route, $location, $http, ImageService, ImageA
               ImageApiService.getImage(id)
               .then(function(response) {
                  $location.path('/images')
-                 $route.reload()       
+                 // $state.reload()       
                })
               
-              
+             
             });
-
+            
       };
+    
     }
 
 },{}],17:[function(require,module,exports){
@@ -762,28 +767,28 @@ REFERENCE: https://github.com/gsklee/ngStorage
 
 For example, URL’s like /route/12345?a=2&b=3 will match the route /route
 with id 12345 and query string variables a & b. Now those values can
-be accessed in controller code using $routeParams service. Any parameter
+be accessed in controller code using $stateParams service. Any parameter
 [preceded by ':'] in route can be accessed in controller by it’s name
-using $routeParams.paramName. Additionally, any query string passed
-in URL can be accessed in controller using $routeParams.variableName
+using $stateParams.paramName. Additionally, any query string passed
+in URL can be accessed in controller using $stateParams.variableName
 */
 
 
-module.exports = function($scope, $routeParams, $location, ImageRouteService, ImageService) {
-// module.exports = function($scope, $location, $routeParams, ImageApiService, ImageService, ImageRouteService) {
+module.exports = function($scope, $stateParams, $location, ImageRouteService, ImageService) {
+// module.exports = function($scope, $location, $stateParams, ImageApiService, ImageService, ImageRouteService) {
 // module.exports = function() {
     
     console.log('ImagesController')
 
-    /*
-    console.log('ImagesController, $routeParams.id = ' + $routeParams.id)
-    console.log('ImagesController, search = ' + $routeParams.search)
+    
+    console.log('ImagesController, $stateParams.id = ' + $stateParams.id)
+    console.log('ImagesController, search = ' + $stateParams.search)
     console.log('ImagesController, URL = ' + $location.absUrl())
     console.log('ImagesController, QS = ' + JSON.stringify($location.search()))
-   */
+   
     
     
-    var id = $routeParams.id;
+    var id = $stateParams.id;
     var queryString =  $location.search()
     // https://docs.angularjs.org/api/ng/service/$location
     
@@ -1158,7 +1163,7 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 },{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":43}],30:[function(require,module,exports){
-module.exports = function ($scope, $rootScope, $log, $location, $route, 
+module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, MathJaxService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
   $scope.items = [
@@ -1190,7 +1195,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
     SearchService.query('scope=user.' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            $state.reload() 
                             MathJaxService.reload('user documents')
                         })
   } 
@@ -1203,7 +1208,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
     SearchService.query('scope=all').then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            $state.reload() 
                             MathJaxService.reload('all documents')
                         })
   }
@@ -1215,7 +1220,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
     SearchService.query('scope=public').then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            $state.reload() 
                             MathJaxService.reload('public documents')
                         })
   }
@@ -1232,7 +1237,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
       callback: function() {
           console.log('EDIT DOCUMENT ...')
           $location.path('/editdocument')
-          $route.reload()
+          $state.reload()
       }
   });
     
@@ -1243,7 +1248,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
       callback: function() {
           console.log('VIEW DOCUMENT ...')
           $location.path('/documents')
-          $route.reload()
+          $state.reload()
       }
   });    
     
@@ -1256,7 +1261,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
           console.log($scope.editText)
           // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope) 
           // $location.path('/editdocument')
-          // $route.reload()
+          // $state.reload()
       }
   });
     
@@ -1271,7 +1276,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
         SearchService.query('scope=user.' + UserService.username()).then(
             function() {
                 $location.path('/documents')
-                $route.reload() 
+                $state.reload() 
                 MathJaxService.reload('user documents')
             })
       }
@@ -1288,6 +1293,17 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
 Advanced routing and resolves
 >>> https://medium.com/opinionated-angularjs/advanced-routing-and-resolves-a2fcbf874a1c#.q9i3lmnjp
 
+>>> https://scotch.io/tutorials/angular-routing-using-ui-router
+
+>>> http://www.funnyant.com/angularjs-ui-router/
+
+>>> https://github.com/angular-ui/ui-router
+
+>>> https://github.com/angular-ui/ui-router/wiki
+
+>>> https://github.com/angular-ui/ui-router/issues/64
+>>> http://stackoverflow.com/questions/23585065/angularjs-ui-router-change-url-without-reloading-state
+
 
 **************/
 
@@ -1302,76 +1318,91 @@ app.controller('MenuController', require('./controllers/MenuController'))
 
     // configure our routes
 
-app.config(function($routeProvider, $locationProvider) {
-    $routeProvider
+app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+    
+    $urlRouterProvider.otherwise('/home');
+    
+    $stateProvider
 
         // route for the home page
-        .when('/', {
+        .state('home', {
+            url: '/',  
             templateUrl : 'pages/signin.html',
             controller  : 'SigninController'
         })
     
-        .when('/site/:id', {
+        .state('about', {
+            url: '/about',
+            templateUrl : 'pages/about.html',
+            controller  : 'aboutController'
+        })
+    
+        .state('site', {
+            url: '/site/:id', 
             templateUrl : 'pages/documents.html',
             controller  : 'SiteController'
         })
     
-        .when('/signin', {
+        .state('signin', {
+            url: '/signin',
             templateUrl : 'pages/signin.html',
             controller  : 'SigninController'
         })
 
-        // route for the about page
-        .when('/about', {
-            templateUrl : 'pages/about.html',
-            controller  : 'aboutController'
-        })
 
-
-        .when('/newdocument', {
+        .state('newdocument', {
+            url: '/newdocument',
             templateUrl : 'pages/newdocument.html',
             controller  : 'newDocumentController'
         })
 
         // route for the contact page
-        .when('/documents', {
+        .state('documents', {
+            url: '/documents', 
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
 
-        .when('/documents/:id', {
+        .state('documentsId', {
+            url: '/documents/:id',
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
 
 
-        .when('/editdocument', {
+        .state('editdocument', {
+            url: '/editdocument',
             templateUrl : 'pages/editdocument.html',
             controller  : 'editDocumentController'
         })
 
-        .when('/editdocument/:id', {
+        .state('editdocumentId', {
+            url: '/editdocument/:id',
             templateUrl : 'pages/editdocument.html',
             controller  : 'editDocumentController'
         })
 
-        .when('/signup', {
+        .state('signup', {
+            url: '/signup',
             templateUrl : 'pages/signup.html',
             controller  : 'SignupController'
         })
     
-        .when('/images', {
+        .state('images', {
+            url: '/images',
             templateUrl : 'pages/images.html',
             controller  : 'ImagesController'
         })
     
-        .when('/images/:id', {
+        .state('imagesId', {
+            url: '/images/:id',
             templateUrl : 'pages/images.html',
             controller  : 'ImagesController'
         })
     
 
-        .when('/imageupload', {
+        .state('imageupload', {
+            url: '/imageupload',
             templateUrl : 'pages/imageupload.html',
             controller  : 'ImageUploadController'
         });
@@ -1385,7 +1416,7 @@ app.config(function($routeProvider, $locationProvider) {
 
 
 // create the controller and inject Angular's $scope
-app.controller('MainController', function($scope, $http, $location, $route, foo, SearchService) {
+app.controller('MainController', function($scope, $http, $state, $location, foo, SearchService) {
     $scope.message = 'This is the home page'
   foo.myFunc('MainController')
   
@@ -1403,7 +1434,7 @@ app.controller('MainController', function($scope, $http, $location, $route, foo,
       
       // SearchService.query('scope=user.'+id)
       $location.path('/site/'+id)
-      $route.reload()
+      $state.reload()
   }
 
     
@@ -1425,7 +1456,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"./controllers/MenuController":30,"angular":43}],32:[function(require,module,exports){
-    module.exports = function($route, $scope, $location, 
+    module.exports = function($state, $scope, $stateParams, $location, 
                                UserApiService, UserService, MathJaxService, SearchService, ImageSearchService) {
         
         
@@ -1449,7 +1480,12 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     SearchService.query('scope=user.' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            // $state.reload()
+                            
+                            $state.transitionTo($state.current, $stateParams, { 
+                              reload: true, inherit: false, notify: true
+                            });
+                            
                             MathJaxService.reload('SignIn')
                         })
                   } else {
@@ -1468,11 +1504,15 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
       }
 
 },{}],33:[function(require,module,exports){
-module.exports = function($scope, $route, UserService) {
+module.exports = function($scope, $state, $stateParams, UserService) {
 
     console.log('Sign out ...')
     
-    $scope.signout = function() { UserService.signout(); $route.reload(); console.log('SIGNING OUT ...') }
+    $scope.signout = function() { 
+        UserService.signout(); 
+        $state.transitionTo($state.current, $stateParams, {reload: true, inherit: false, notify: true });
+        console.log('SIGNING OUT ...') 
+    }
     
     $scope.username = UserService.username()
     $scope.signedIn = UserService.signedIn
@@ -1551,11 +1591,11 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
     ]
     */
 },{}],35:[function(require,module,exports){
-module.exports = function($routeParams, $scope, SearchService, DocumentRouteService, DocumentService, MathJaxService) {
+module.exports = function($stateParams, $scope, SearchService, DocumentRouteService, DocumentService, MathJaxService) {
     
 
     
-    var id = $routeParams.id
+    var id = $stateParams.id
     console.log('Hey!, site = ' + id)
     SearchService.query('scope=user.'+id)
     

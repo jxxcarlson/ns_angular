@@ -1,11 +1,11 @@
-  module.exports = function($scope, $routeParams, $http, $sce, $timeout, 
+  module.exports = function($scope, $stateParams, $http, $sce, $timeout, 
                              DocumentService, DocumentApiService, UserService, 
                              MathJaxService, hotkeys, $interval) {
 
         var id;
-        console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
-        if ($routeParams.id != undefined) {
-            id = $routeParams.id
+        console.log('EDIT CONTROLLER, $stateParams.id: ' + $stateParams.id)
+        if ($stateParams.id != undefined) {
+            id = $stateParams.id
         } else {
             id = DocumentService.documentId();
         }

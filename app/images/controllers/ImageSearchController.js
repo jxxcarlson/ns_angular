@@ -1,8 +1,12 @@
-module.exports = function($scope, $route, $location, $http, ImageService, ImageApiService) {
+module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService) {
+    
         $scope.doImageSearch = function(){
+            
+            
             console.log('Search text: ' + $scope.searchText);
             
             $http.get('http://localhost:2300/v1/images' + '?scope=' + $scope.searchText  )
+            
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
@@ -16,11 +20,12 @@ module.exports = function($scope, $route, $location, $http, ImageService, ImageA
               ImageApiService.getImage(id)
               .then(function(response) {
                  $location.path('/images')
-                 $route.reload()       
+                 // $state.reload()       
                })
               
-              
+             
             });
-
+            
       };
+    
     }

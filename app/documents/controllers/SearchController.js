@@ -1,4 +1,4 @@
-module.exports = function($scope, $route, $location, $http, 
+module.exports = function($scope, $state, $location, $http, 
                            DocumentService, DocumentApiService, MathJaxService, QueryParser) {
         $scope.doSearch = function(){
             
@@ -26,7 +26,7 @@ module.exports = function($scope, $route, $location, $http,
                 );
                   
                 $location.path('/documents')
-                $route.reload()
+                $state.reload()
                 
               }) 
             });

@@ -1,4 +1,4 @@
-module.exports = function ($scope, $rootScope, $log, $location, $route, 
+module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, MathJaxService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
   $scope.items = [
@@ -30,7 +30,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
     SearchService.query('scope=user.' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            $state.reload() 
                             MathJaxService.reload('user documents')
                         })
   } 
@@ -43,7 +43,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
     SearchService.query('scope=all').then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            $state.reload() 
                             MathJaxService.reload('all documents')
                         })
   }
@@ -55,7 +55,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
     SearchService.query('scope=public').then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            $state.reload() 
                             MathJaxService.reload('public documents')
                         })
   }
@@ -72,7 +72,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
       callback: function() {
           console.log('EDIT DOCUMENT ...')
           $location.path('/editdocument')
-          $route.reload()
+          $state.reload()
       }
   });
     
@@ -83,7 +83,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
       callback: function() {
           console.log('VIEW DOCUMENT ...')
           $location.path('/documents')
-          $route.reload()
+          $state.reload()
       }
   });    
     
@@ -96,7 +96,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
           console.log($scope.editText)
           // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope) 
           // $location.path('/editdocument')
-          // $route.reload()
+          // $state.reload()
       }
   });
     
@@ -111,7 +111,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $route,
         SearchService.query('scope=user.' + UserService.username()).then(
             function() {
                 $location.path('/documents')
-                $route.reload() 
+                $state.reload() 
                 MathJaxService.reload('user documents')
             })
       }

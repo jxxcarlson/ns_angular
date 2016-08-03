@@ -3,7 +3,7 @@
   <html ng-app="noteshareApp">
     <head>
       <meta charset="utf-8">
-      <base href="/">
+      <base ui-sref="home">
       <!-- CSS REFERENCE: http://getbootstrap.com/css/ -->
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <!-- SCROLLS -->
@@ -21,7 +21,7 @@
          
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
    
       <!-- Issue with ngStorage -- have to load as above, not with var angular = require('angular'); --
         If one does that, ngStorage does not know about module angular -->
@@ -43,11 +43,11 @@
             <nav class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/">Noteshare.io</a>
+                    <a class="navbar-brand" ui-sref="home">Noteshare.io</a>
                 </div>
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li><a href="documents">DOCUMENTS</a></li>
+                    <li><a ui-sref="documents">DOCUMENTS</a></li>
                     
                     <li style="margin-top:10px;">
                         <div ng-controller="MenuController">
@@ -56,15 +56,15 @@
                                 Tools <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                                <li role="menuitem"><a href="newdocument">New Document</a></li>
-                                <li role="menuitem"><a href="editdocument">Edit Document</a></li>
+                                <li role="menuitem"><a ui-sref="newdocument">New Document</a></li>
+                                <li role="menuitem"><a ui-sref="editdocument">Edit Document</a></li>
                                 <li class="divider"></li>
-                                <li role="menuitem"><a href="images">Images</a></li>
-                                <li role="menuitem"><a href="imageupload">Upload image</a></li>
+                                <li role="menuitem"><a ui-sref="images">Images</a></li>
+                                <li role="menuitem"><a ui-sref="imageupload">Upload image</a></li>
                                 <li class="divider"></li>
-                                <li role="menuitem"><a href="documents" ng-click="userDocuments()">User documents</a></li> 
-                                <li role="menuitem"><a href="documents" ng-click="publicDocuments()">Public documents</a></li>  
-                                <li role="menuitem"><a href="documents" ng-click="allDocuments()">All documents</a></li>                           
+                                <li role="menuitem"><a ui-sref="documents" ng-click="userDocuments()">User documents</a></li> 
+                                <li role="menuitem"><a ui-sref="documents" ng-click="publicDocuments()">Public documents</a></li>  
+                                <li role="menuitem"><a ui-sref="documents" ng-click="allDocuments()">All documents</a></li>                           
                               </ul>
                             </div>
                         </div>
@@ -108,8 +108,8 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="signin"><i class="fa fa-home"></i> Home</a></li>
-                    <li><a href="about"><i class="fa fa-comment"></i> About</a></li>
+                    <li><a ui-sref="signin"><i class="fa fa-home"></i> Home</a></li>
+                    <li><a ui-sref="about"><i class="fa fa-comment"></i> About</a></li>
                 </ul>
             </div>
             </nav>
@@ -120,7 +120,7 @@
         <div id="main">
             <!-- angular templating -->
             <!-- this is where content will be injected -->
-            <div ng-view></div>
+            <div ui-view></div>
 
         </div>
 

@@ -1,4 +1,4 @@
-    module.exports = function($route, $scope, $location, 
+    module.exports = function($state, $scope, $stateParams, $location, 
                                UserApiService, UserService, MathJaxService, SearchService, ImageSearchService) {
         
         
@@ -22,7 +22,12 @@
                     SearchService.query('scope=user.' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
-                            $route.reload() 
+                            // $state.reload()
+                            
+                            $state.transitionTo($state.current, $stateParams, { 
+                              reload: true, inherit: false, notify: true
+                            });
+                            
                             MathJaxService.reload('SignIn')
                         })
                   } else {
