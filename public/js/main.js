@@ -271,11 +271,17 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
           }
         })
       
-        var callAtInterval = function() { 
-            updateCount += 1
-            console.log('periodicUpdate ' + updateCount)
-            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)
-            if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
+        var callAtInterval = function() {
+            if ($scope.textDirty) {
+                updateCount += 1
+                console.log('periodicUpdate ' + updateCount)
+                DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)
+                if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
+                $scope.textDirty = false
+            } else {
+                console.log('SKIPPING periodicUpdate ')
+            }
+            
             
         }
       
@@ -287,7 +293,7 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
             
         } else {
             
-            periodicUpdate = $interval(callAtInterval, 5*1000); // 5 seconds
+            periodicUpdate = $interval(callAtInterval, 500) // 0.5 second
         }
         
         var updateCount = 0
@@ -295,6 +301,12 @@ module.exports = function($scope, $location, $routeParams, $sce, DocumentApiServ
         $scope.$on("$destroy", function(){
             $interval.cancel(periodicUpdate);
         });
+      
+        $scope.refreshText = function() {
+            
+            $scope.textDirty = true
+
+        }
 
 
         
