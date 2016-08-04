@@ -145,9 +145,16 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 
 // create the controller and inject Angular's $scope
-app.controller('MainController', function($scope, $http, $state, $location, foo, SearchService) {
+app.controller('MainController', function($scope, $http, $state, $location, 
+                                           foo, UserService, SearchService, GlobalService) {
     $scope.message = 'This is the home page'
-  foo.myFunc('MainController')
+    foo.myFunc('MainController')
+    $scope.currentSite = UserService.getCurrentSite()
+    $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
+    
+    $scope.host = GlobalService.host()
+    
+    
   
   /*
   var absUrl = $location.absUrl();

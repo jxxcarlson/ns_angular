@@ -3,7 +3,8 @@
   <div class="col-md-2" >
       <div style="margin-left:1em;">
 
-          <h3>{{ documentCount }} Documents</h3>
+          <h3> Documents: {{ documentCount }}</h3>
+          <br />
           <p class="toc-item" ng-repeat="doc in docArray"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
 
         </div>

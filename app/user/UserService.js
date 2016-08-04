@@ -1,10 +1,21 @@
 module.exports = function($localStorage) {
     
-    /*****
+/*****
+
+State variables:
+
+    accessToken
+    currentSite
+    loginStatus
+    signedIn
+    username
     
+
+******/
     
-    
-    ******/
+ this.setCurrentSite = function(site) { $localStorage.currentSite = site }
+ this.getCurrentSite = function() { return $localStorage.currentSite }
+ 
 
  this.signedIn = null    
 
