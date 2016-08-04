@@ -2,7 +2,11 @@ module.exports = [
       '$scope',
       '$http',
       '$localStorage',
-      function($scope, $http, $localStorage) {
+      'GlobalService',
+      function($scope, $http, $localStorage, GlobalService) {
+          
+        var apiServer = GlobalService.apiServer()
+        
         $scope.submit = function() {
 
           console.log('CREATE DOCUMENT')
@@ -14,7 +18,7 @@ module.exports = [
           var parameter = JSON.stringify({title:$scope.title, token:access_token });
           console.log('parameter: ' + parameter);
 
-          $http.post('http://localhost:2300/v1/documents', parameter)
+          $http.post('http://' + apiServer + '/v1/documents', parameter)
           .then(function(response){
             if (response.data['status'] == 200) {
               $scope.message = 'Success!'

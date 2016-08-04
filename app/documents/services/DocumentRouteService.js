@@ -20,7 +20,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     
     
     this.getDocument = function(scope, id) {
-        
+        console.log('DocumentRouteService.getDocument, id: ' + id)
         DocumentApiService.getDocument(id)
         .then(
             function (response) {

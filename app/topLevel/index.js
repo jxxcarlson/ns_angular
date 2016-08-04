@@ -152,7 +152,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
     
-    $scope.host = GlobalService.host()
+    $scope.host = GlobalService.clientServer()
     
     
   

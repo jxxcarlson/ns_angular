@@ -9,7 +9,9 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, UserService) {
+ module.exports =  function($scope, $http, UserService, GlobalService) {
+     
+     var apiServer = GlobalService.apiServer()
         
     $scope.upload = function (file) {
         console.log("UploadCtrl sending S3sign request");
@@ -21,7 +23,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             owner: UserService.username()
         };
         // Get presigned URL
-        $http.post('http://localhost:2300/v1/presigned', query).success(function(response) {
+        $http.post('http://' + apiServer + '/v1/presigned', query).success(function(response) {
             console.log("UploadCtrl s3sign response received");
             console.log("UploadCtrl URL in repsonse: " + response.url)
             // Upload file to S3
@@ -41,7 +43,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     content_type: file.type,
                     owner: UserService.username()
                 };
-                $http.post('http://localhost:2300/v1/images', query )
+                $http.post('http://' + apiServer + '/v1/images', query )
               //Finally, We're done
               console.log('Upload Done!')
             })

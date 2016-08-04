@@ -1,11 +1,12 @@
-module.exports = function($scope, $state, $location, $http, 
+module.exports = function($scope, $state, $location, $http, GlobalService,
                            DocumentService, DocumentApiService, MathJaxService, QueryParser) {
         $scope.doSearch = function(){
             
+            var apiServer = GlobalService.apiServer()
             var query = QueryParser.parse($scope.searchText)
             console.log('query = ' + query)
             
-            $http.get('http://localhost:2300/v1/documents' + '?' + query  )
+            $http.get('http://' + apiServer + '/v1/documents' + '?' + query  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of documents: ' + response.data['document_count'])
@@ -14,6 +15,7 @@ module.exports = function($scope, $state, $location, $http,
               DocumentService.setDocumentList(documents)
               
               var id = documents[0]['id']
+              console.log('SearchController, id: ' + id)
               DocumentApiService.getDocument(id)
               .then(function(response) {
                 

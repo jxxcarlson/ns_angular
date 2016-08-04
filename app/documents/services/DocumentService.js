@@ -1,4 +1,4 @@
-module.exports = function($localStorage) {
+module.exports = function($localStorage, GlobalService) {
     
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
@@ -16,11 +16,24 @@ module.exports = function($localStorage) {
     this.renderedText = function() { return $localStorage.renderedText }
     
     this.setDocumentList = function(array) { 
+        
+        var id
+        if ((array == undefined) || (array[0] == undefined)) {
+            console.log('document array is empty')
+            id = GlobalService.defaultDocumentID()
+            array = [id]
+        } else {
+            console.log('document array: ' + array.length)
+            id = array[0]['id']
+        }
+        
+        
         $localStorage.documentList = array
-        var id = array[0]['id']
+        
+        
         console.log('FIRST ELEMENT = ' + JSON.stringify(array[0]))
-        console.log('ID OF FIRST ELEMENT = ' + id)
-        $localStorage.documentId = id
+        console.log('ID OF FIRST ELEMENT = ' + array[0])
+        $localStorage.documentId = array[0]
     }
     this.documentList = function() { 
         

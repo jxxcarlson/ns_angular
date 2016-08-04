@@ -249,10 +249,12 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
 }
 },{}],7:[function(require,module,exports){
   module.exports = function($scope, $stateParams, $http, $sce, $timeout, 
-                             DocumentService, DocumentApiService, UserService, 
+                             DocumentService, DocumentApiService, UserService, GlobalService,
                              MathJaxService, hotkeys, $interval) {
 
         var id;
+        var apiServer = GlobalService.apiServer()
+        
         console.log('EDIT CONTROLLER, $stateParams.id: ' + $stateParams.id)
         if ($stateParams.id != undefined) {
             id = $stateParams.id
@@ -320,7 +322,7 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         $scope.documentCount = DocumentService.documentCount()
 
         /* Get most recent version from server */
-        $http.get('http://localhost:2300/v1/documents/' + id  )
+        $http.get('http://' + apiServer + '/v1/documents/' + id  )
             .then(function(response){
                 var document = response.data['document']
                 $scope.title = document['title']
@@ -354,7 +356,11 @@ module.exports = [
       '$scope',
       '$http',
       '$localStorage',
-      function($scope, $http, $localStorage) {
+      'GlobalService',
+      function($scope, $http, $localStorage, GlobalService) {
+          
+        var apiServer = GlobalService.apiServer()
+        
         $scope.submit = function() {
 
           console.log('CREATE DOCUMENT')
@@ -366,7 +372,7 @@ module.exports = [
           var parameter = JSON.stringify({title:$scope.title, token:access_token });
           console.log('parameter: ' + parameter);
 
-          $http.post('http://localhost:2300/v1/documents', parameter)
+          $http.post('http://' + apiServer + '/v1/documents', parameter)
           .then(function(response){
             if (response.data['status'] == 200) {
               $scope.message = 'Success!'
@@ -381,14 +387,15 @@ module.exports = [
       }
     ]
 },{}],9:[function(require,module,exports){
-module.exports = function($scope, $state, $location, $http, 
+module.exports = function($scope, $state, $location, $http, GlobalService,
                            DocumentService, DocumentApiService, MathJaxService, QueryParser) {
         $scope.doSearch = function(){
             
+            var apiServer = GlobalService.apiServer()
             var query = QueryParser.parse($scope.searchText)
             console.log('query = ' + query)
             
-            $http.get('http://localhost:2300/v1/documents' + '?' + query  )
+            $http.get('http://' + apiServer + '/v1/documents' + '?' + query  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of documents: ' + response.data['document_count'])
@@ -397,6 +404,7 @@ module.exports = function($scope, $state, $location, $http,
               DocumentService.setDocumentList(documents)
               
               var id = documents[0]['id']
+              console.log('SearchController, id: ' + id)
               DocumentApiService.getDocument(id)
               .then(function(response) {
                 
@@ -436,12 +444,17 @@ app.controller('editDocumentController', require('./controllers/EditController')
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
 },{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":45}],11:[function(require,module,exports){
-module.exports = function($http, $q, $sce, DocumentService, UserService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService) {
 
         var deferred = $q.defer();
+        var apiServer = GlobalService.apiServer()
 
         this.getDocument = function(id) {
-          return  $http.get('http://localhost:2300/v1/documents/' + id  )
+          console.log('DocumentApiService.getDocument, id: ' + id)
+          if (id == undefined) {
+              id = GlobalService.defaultDocumentID()
+          }
+          return  $http.get('http://' + GlobalService.apiServer() + '/v1/documents/' + id  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -461,7 +474,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService) {
         
         
         this.search = function(searchText) {
-          return  $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+          console.log('DocumentApiService.search')      
+          return  $http.get('http://' + apiServer + '/v1/documents' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -486,7 +500,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService) {
 
             var parameter = JSON.stringify({id:id, title: title, text:text, token: UserService.accessToken() });
 
-            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
+            $http.post('http://' + apiServer + '/v1/documents/' + id, parameter)
                 .then(function(response){
                     var rt;
                     if (response.data['status'] == '202') {
@@ -540,7 +554,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     
     
     this.getDocument = function(scope, id) {
-        
+        console.log('DocumentRouteService.getDocument, id: ' + id)
         DocumentApiService.getDocument(id)
         .then(
             function (response) {
@@ -571,7 +585,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     }
 }
 },{}],13:[function(require,module,exports){
-module.exports = function($localStorage) {
+module.exports = function($localStorage, GlobalService) {
     
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
@@ -589,11 +603,24 @@ module.exports = function($localStorage) {
     this.renderedText = function() { return $localStorage.renderedText }
     
     this.setDocumentList = function(array) { 
+        
+        var id
+        if ((array == undefined) || (array[0] == undefined)) {
+            console.log('document array is empty')
+            id = GlobalService.defaultDocumentID()
+            array = [id]
+        } else {
+            console.log('document array: ' + array.length)
+            id = array[0]['id']
+        }
+        
+        
         $localStorage.documentList = array
-        var id = array[0]['id']
+        
+        
         console.log('FIRST ELEMENT = ' + JSON.stringify(array[0]))
-        console.log('ID OF FIRST ELEMENT = ' + id)
-        $localStorage.documentId = id
+        console.log('ID OF FIRST ELEMENT = ' + array[0])
+        $localStorage.documentId = array[0]
     }
     this.documentList = function() { 
         
@@ -641,9 +668,10 @@ module.exports = function(DocumentService) {
     
 }
 },{}],15:[function(require,module,exports){
-module.exports = function($http, $q, DocumentApiService, DocumentService) {
+module.exports = function($http, $q, DocumentApiService, DocumentService, GlobalService) {
     
     var deferred = $q.defer();
+    var apiServer = GlobalService.apiServer()
     
     
    
@@ -651,7 +679,7 @@ module.exports = function($http, $q, DocumentApiService, DocumentService) {
 
         console.log('SearchService, query = ' + searchText)
         
-        var request = 'http://localhost:2300/v1/documents' + '?' + searchText
+        var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText
         console.log('REQUEST ' + request)
         return $http.get(request)
         .then(function(response){
@@ -659,6 +687,11 @@ module.exports = function($http, $q, DocumentApiService, DocumentService) {
           console.log('Number of documents: ' + response.data['document_count'])
           var jsonData = response.data
           var documents = jsonData['documents']
+          if (documents.length == 0) {
+              console.log('documents is empty, setting it to [11]')
+              documents = [GlobalService.defaultDocumentID()]
+          }
+          
           DocumentService.setDocumentList(documents)
 
           var id = documents[0]['id']
@@ -669,14 +702,15 @@ module.exports = function($http, $q, DocumentApiService, DocumentService) {
     }     
 }
 },{}],16:[function(require,module,exports){
-module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService) {
+module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, GlobalService) {
     
         $scope.doImageSearch = function(){
             
+            var apiServer = GlobalService.apiServer()
             
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get('http://localhost:2300/v1/images' + '?scope=' + $scope.searchText  )
+            $http.get('http://' + apiServer + '/v1/images' + '?scope=' + $scope.searchText  )
             
             .then(function(response){
               console.log(response.data['status'])
@@ -713,7 +747,9 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, UserService) {
+ module.exports =  function($scope, $http, UserService, GlobalService) {
+     
+     var apiServer = GlobalService.apiServer()
         
     $scope.upload = function (file) {
         console.log("UploadCtrl sending S3sign request");
@@ -725,7 +761,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             owner: UserService.username()
         };
         // Get presigned URL
-        $http.post('http://localhost:2300/v1/presigned', query).success(function(response) {
+        $http.post('http://' + apiServer + '/v1/presigned', query).success(function(response) {
             console.log("UploadCtrl s3sign response received");
             console.log("UploadCtrl URL in repsonse: " + response.url)
             // Upload file to S3
@@ -745,7 +781,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     content_type: file.type,
                     owner: UserService.username()
                 };
-                $http.post('http://localhost:2300/v1/images', query )
+                $http.post('http://' + apiServer + '/v1/images', query )
               //Finally, We're done
               console.log('Upload Done!')
             })
@@ -832,15 +868,18 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 },{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":45}],20:[function(require,module,exports){
-module.exports = function($http, $q, ImageService) {
+module.exports = function($http, $q, ImageService, GlobalService) {
 
+    
+        var apiServer = GlobalService.apiServer()
         var deferred = $q.defer();
 
+    
         this.getImage = function(id) {
              
         console.log('Image API service says id = ' + id)
         
-          return  $http.get('http://localhost:2300/v1/images/' + id  )
+          return  $http.get('http://' + apiServer + '/v1/images/' + id  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -864,9 +903,9 @@ module.exports = function($http, $q, ImageService) {
             
         }
         
-        
+      
         this.search = function(searchText) {
-          return  $http.get('http://localhost:2300/v1/images' + '?' + $scope.searchText  )
+          return  $http.get('http://' + apiServer + '/v1/images' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -885,7 +924,6 @@ module.exports = function($http, $q, ImageService) {
             })
         }
     
-
       }
 },{}],21:[function(require,module,exports){
 
@@ -931,12 +969,15 @@ module.exports = function(ImageService, ImageApiService) {
     }
 }
 },{}],22:[function(require,module,exports){
-module.exports = function($http, ImageService, ImageApiService) {
+module.exports = function($http, ImageService, ImageApiService, GlobalService) {
     
     this.query = function(searchText){
+        
+        var apiServer = GlobalService.apiServer()
+        
             console.log('Search text: ' + searchText);
             
-            $http.get('http://localhost:2300/v1/images' + '?scope=' + searchText  )
+            $http.get('http://' + apiServer + '/v1/images' + '?scope=' + searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
@@ -1095,7 +1136,13 @@ module.exports = function ($http) {
 },{}],27:[function(require,module,exports){
 module.exports = function() {
     
-    this.host = function() { return "localhost:3000" }
+    // this.clientServer = function() { return "localhost:3000" }
+    // this.apiServer = function() { return "localhost:2300"}
+    
+    this.clientServer = function() { return "jxxmbp.local:3000" }
+    this.apiServer = function() { return "jxxmbp.local:2300" }
+    
+    this.defaultDocumentID = function() { return 11 }
     
 }
 },{}],28:[function(require,module,exports){
@@ -1449,7 +1496,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
     
-    $scope.host = GlobalService.host()
+    $scope.host = GlobalService.clientServer()
     
     
   
@@ -1582,48 +1629,6 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
       }
     
     
- /*   
-    
-    [
-      '$scope',
-      '$http',
-      '$localStorage',
-      'UserService',
-      function($scope, $http, $localStorage, UserService) {
-          
-        $scope.submit = function() {
-            
-          var validation = UserService.validateNewUser($scope.username, $scope.email, $scope.password, $scope.passwordConfirmation)
-          console.log('validaion: ' + validation)
-          
-          if (validation != 'OK') 
-              { $scope.message = validation
-                console.log('Password and confirmation do not match')
-              }
-            else {
-                
-                console.log('Password and confirmation match')    
-                var parameter = JSON.stringify({username:$scope.username, email:$scope.email, 
-                                        password: $scope.password, password_confirmation: $scope.passwordConfirmation});
-                console.log(parameter);
-
-              $http.post('http://localhost:2300/v1/users/create', parameter)
-              .then(function(response){
-                if (response.data['status'] == 200) {
-                  $scope.message = 'Success!'
-                  $localStorage.access_token = response.data['token']
-                } else {
-                  $scope.message = response.data['error']
-                }
-                console.log('status = ' + String(response.data['status']))
-              }); 
-        
-                
-            } // else
-        } // $scope.submit
-      } // function
-    ]
-    */
 },{}],36:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentRouteService, DocumentService, MathJaxService, UserService) {
     
@@ -1667,12 +1672,13 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     
 }
 },{}],38:[function(require,module,exports){
-module.exports = function($http, $q, $localStorage) {
+module.exports = function($http, $q, $localStorage, GlobalService) {
 
         var deferred = $q.defer();
+        var apiServer = GlobalService.apiServer()
 
         this.login = function(username, password) {
-          return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
+          return $http.get('http://' + apiServer + '/v1/users/' + username + '?' + password)
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -1696,7 +1702,7 @@ module.exports = function($http, $q, $localStorage) {
             
           var parameter = JSON.stringify({username:username, email:email, password: password});
           console.log(parameter);
-          return $http.post('http://localhost:2300/v1/users/create', parameter)
+          return $http.post('http://' + apiServer + '/v1/users/create', parameter)
           
           .then(function (response) {
                 // promise is fulfilled
@@ -1722,28 +1728,6 @@ module.exports = function($http, $q, $localStorage) {
       }
 
 
-  /*
-       REFERENCES (PROMISES)
-       http://wildermuth.com/2013/8/3/JavaScript_Promises
-       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
-       https://docs.angularjs.org/api/ng/service/$q
-       
-       NOTE: for requests to the server to succeed, one needs
-       the proper entry in apps/application.rb of the Hanami server corde:
-       
-       module Api
-        class Application < Hanami::Application
-            configure do
-                # https://gitter.im/hanami/chat/archives/2016/02/12
-                # Include gem 'rack-cors', :require => 'rack/cors'
-                middleware.use Rack::Cors do
-                    allow do
-                        origins 'localhost:4000', '127.0.0.1:4000', '0.0.0.0:9000'
-                        resource '*', headers: :any, methods: [:get, :post, :patch, :options]
-                    end
-                end
-              ........
-    */
 },{}],39:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        

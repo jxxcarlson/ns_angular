@@ -1,12 +1,15 @@
-module.exports = function($http, $q, ImageService) {
+module.exports = function($http, $q, ImageService, GlobalService) {
 
+    
+        var apiServer = GlobalService.apiServer()
         var deferred = $q.defer();
 
+    
         this.getImage = function(id) {
              
         console.log('Image API service says id = ' + id)
         
-          return  $http.get('http://localhost:2300/v1/images/' + id  )
+          return  $http.get('http://' + apiServer + '/v1/images/' + id  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -30,9 +33,9 @@ module.exports = function($http, $q, ImageService) {
             
         }
         
-        
+      
         this.search = function(searchText) {
-          return  $http.get('http://localhost:2300/v1/images' + '?' + $scope.searchText  )
+          return  $http.get('http://' + apiServer + '/v1/images' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -51,5 +54,4 @@ module.exports = function($http, $q, ImageService) {
             })
         }
     
-
       }

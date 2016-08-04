@@ -1,8 +1,10 @@
   module.exports = function($scope, $stateParams, $http, $sce, $timeout, 
-                             DocumentService, DocumentApiService, UserService, 
+                             DocumentService, DocumentApiService, UserService, GlobalService,
                              MathJaxService, hotkeys, $interval) {
 
         var id;
+        var apiServer = GlobalService.apiServer()
+        
         console.log('EDIT CONTROLLER, $stateParams.id: ' + $stateParams.id)
         if ($stateParams.id != undefined) {
             id = $stateParams.id
@@ -70,7 +72,7 @@
         $scope.documentCount = DocumentService.documentCount()
 
         /* Get most recent version from server */
-        $http.get('http://localhost:2300/v1/documents/' + id  )
+        $http.get('http://' + apiServer + '/v1/documents/' + id  )
             .then(function(response){
                 var document = response.data['document']
                 $scope.title = document['title']

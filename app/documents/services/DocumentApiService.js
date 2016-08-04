@@ -1,9 +1,14 @@
-module.exports = function($http, $q, $sce, DocumentService, UserService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService) {
 
         var deferred = $q.defer();
+        var apiServer = GlobalService.apiServer()
 
         this.getDocument = function(id) {
-          return  $http.get('http://localhost:2300/v1/documents/' + id  )
+          console.log('DocumentApiService.getDocument, id: ' + id)
+          if (id == undefined) {
+              id = GlobalService.defaultDocumentID()
+          }
+          return  $http.get('http://' + GlobalService.apiServer() + '/v1/documents/' + id  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -23,7 +28,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService) {
         
         
         this.search = function(searchText) {
-          return  $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+          console.log('DocumentApiService.search')      
+          return  $http.get('http://' + apiServer + '/v1/documents' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -48,7 +54,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService) {
 
             var parameter = JSON.stringify({id:id, title: title, text:text, token: UserService.accessToken() });
 
-            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
+            $http.post('http://' + apiServer + '/v1/documents/' + id, parameter)
                 .then(function(response){
                     var rt;
                     if (response.data['status'] == '202') {
