@@ -1,9 +1,10 @@
 <div class="row">
   <div class="col-md-4" >
-    <div style="margin-left:1em;">
+    <div style="margin-left:2em;">
 
     <h2> {{ documentCount }} Documents </h2>
-    <p ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}">{{doc['title']}}</a></p>
+    <br />    
+    <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}">{{doc['title']}}</a></p>
 
   </div>
   </div>

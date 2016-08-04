@@ -4,26 +4,26 @@
       <div style="margin-left:1em;">
 
           <h3>{{ documentCount }} Documents</h3>
-          <p ng-repeat="doc in docArray"><a href="#/editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+          <p class="toc-item" ng-repeat="doc in docArray"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
 
         </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-5">
       <div style="margin-left:1em;">
         <input ng-model="editableTitle" type="text" id="editableTitle">
         <button ng-click="updateDocument()">Save</button></p>
-        <textarea ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false" rows="30" style="width:90%;"></textarea>
+        <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false" rows="30" style="width:90%;"></textarea>
       </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-5">
 
     <div style="margin-left:1em;">
       <h3>{{ title }}</h3>
         
       <!-- <div style="width:90%;" ng-if="renderedText()" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div> -->
-      <div style="width:90%;" ng-bind-html="renderedText()" id="rendered_text"></div>
+      <div style="width:90%;" ng-bind-html="renderedText()" id="rendered-text"></div>
         
         
   </div>

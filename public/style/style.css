@@ -15,14 +15,28 @@ body {
     font-size: 1.5em;
 }
 
-.toc-item {
-    font-size: 1em;
+#edit-text {
+    
+  font-size: 1.5em;  
+}
+
+/* Adjust font-size in table of contents */
+.toc-item a {
+    font-size: 1.5em !important;
+}
+
+.toc-item p {
+    margin:0 !important;
 }
 
 .container{
   height: 100%;
 }
 
+/* Needed to correct asciidoc text 
+size problem when bootstrap.css
+is loaded after asciidoctor.css
+*/
 p {
     font-size: 1em;
 }

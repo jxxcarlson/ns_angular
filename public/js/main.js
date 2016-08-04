@@ -1623,11 +1623,17 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
     $scope.site = id
     DocumentRouteService.getDocumentList($scope)
     
+    $scope.docStyle = function(doc) {
+        if (doc['id'] == DocumentService.documentId() ) {
+            return { "background-color" : "#fee" }
+        }
+    }
+    
     
     
 }
 },{}],36:[function(require,module,exports){
-module.exports = function($stateParams, $state, $scope, $location, DocumentRouteService) {
+module.exports = function($stateParams, $state, $scope, $location, DocumentService, DocumentRouteService) {
     
     console.log('SITE DOCUMENT CONTROLLER')
     
@@ -1638,7 +1644,11 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentRoute
     DocumentRouteService.getDocumentList($scope)
     DocumentRouteService.getDocument($scope, doc_id)
     
-    
+    $scope.docStyle = function(doc) {
+        if (doc['id'] == DocumentService.documentId() ) {
+            return { "background-color" : "#fee" }
+        }
+    }
     
 }
 },{}],37:[function(require,module,exports){
