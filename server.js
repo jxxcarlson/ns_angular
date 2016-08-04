@@ -14,13 +14,11 @@ app.use(
     express.static(__dirname + '/public') //where your static content is located in your filesystem
 );
 
+// app.all('(?=^((?!style).)*$)(?=^((?!js).)*$)', function (req, res, next) {
 app.all('*', function (req, res, next) {
-
-  // Just send the index.html for other files to support HTML5Mode
-	res.sendFile('public/index.html', { root: __dirname });
+  res.sendFile('public/index.html', { root: __dirname });
   requestCount += 1
   console.log(requestCount + ' request: ' + req.params[0])
-
 });
 
 app.listen(PORT) //the port you want to use

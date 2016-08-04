@@ -49,9 +49,28 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     
         .state('site', {
             url: '/site/:id', 
-            templateUrl : 'pages/documents.html',
+            templateUrl : 'pages/site.html',
             controller  : 'SiteController'
         })
+    
+        .state('siteDocument', {
+            url: '/site/:site/:doc_id', 
+            templateUrl : 'pages/site.html',
+            controller  : 'SiteDocumentController'
+        })
+    
+        .state('foo', {
+            url: 'foo', 
+            templateUrl : 'pages/about.html',
+            controller  : 'aboutController'
+        })
+    
+        .state('foo2', {
+            url: 'foo/:id', 
+            templateUrl : 'pages/about.html',
+            controller  : 'aboutController'
+        })
+    
     
         .state('signin', {
             url: '/signin',
@@ -130,6 +149,7 @@ app.controller('MainController', function($scope, $http, $state, $location, foo,
     $scope.message = 'This is the home page'
   foo.myFunc('MainController')
   
+  /*
   var absUrl = $location.absUrl();
   var urlParts = absUrl.split('/')
   var id = urlParts.pop()
@@ -146,7 +166,7 @@ app.controller('MainController', function($scope, $http, $state, $location, foo,
       $location.path('/site/'+id)
       $state.reload()
   }
-
+  */
     
 });
 

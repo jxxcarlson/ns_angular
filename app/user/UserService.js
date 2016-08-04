@@ -1,4 +1,10 @@
 module.exports = function($localStorage) {
+    
+    /*****
+    
+    
+    
+    ******/
 
  this.signedIn = null    
 

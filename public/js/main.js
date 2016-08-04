@@ -132,7 +132,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":10,"./images":19,"./search":24,"./services":29,"./topLevel":31,"./user":39,"angular":43,"angular-route":41}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":10,"./images":19,"./search":24,"./services":29,"./topLevel":31,"./user":40,"angular":44,"angular-route":42}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -208,7 +208,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":43}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":44}],6:[function(require,module,exports){
 
 // ROUTES PROCESSED:
 // GET /documents
@@ -435,7 +435,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":43}],11:[function(require,module,exports){
+},{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":44}],11:[function(require,module,exports){
 module.exports = function($http, $q, $sce, DocumentService, UserService) {
 
         var deferred = $q.defer();
@@ -831,7 +831,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":43}],20:[function(require,module,exports){
+},{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":44}],20:[function(require,module,exports){
 module.exports = function($http, $q, ImageService) {
 
         var deferred = $q.defer();
@@ -1017,7 +1017,7 @@ var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":25,"angular":43}],25:[function(require,module,exports){
+},{"./services/QueryParser":25,"angular":44}],25:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -1162,7 +1162,7 @@ app.service('PSFileUpload', require('./PSFileUpload'))
 
 
 
-},{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":43}],30:[function(require,module,exports){
+},{"./FileUpload":26,"./PSFileUpload":27,"./foo":28,"angular":44}],30:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, MathJaxService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
@@ -1339,9 +1339,28 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     
         .state('site', {
             url: '/site/:id', 
-            templateUrl : 'pages/documents.html',
+            templateUrl : 'pages/site.html',
             controller  : 'SiteController'
         })
+    
+        .state('siteDocument', {
+            url: '/site/:site/:doc_id', 
+            templateUrl : 'pages/site.html',
+            controller  : 'SiteDocumentController'
+        })
+    
+        .state('foo', {
+            url: 'foo', 
+            templateUrl : 'pages/about.html',
+            controller  : 'aboutController'
+        })
+    
+        .state('foo2', {
+            url: 'foo/:id', 
+            templateUrl : 'pages/about.html',
+            controller  : 'aboutController'
+        })
+    
     
         .state('signin', {
             url: '/signin',
@@ -1420,6 +1439,7 @@ app.controller('MainController', function($scope, $http, $state, $location, foo,
     $scope.message = 'This is the home page'
   foo.myFunc('MainController')
   
+  /*
   var absUrl = $location.absUrl();
   var urlParts = absUrl.split('/')
   var id = urlParts.pop()
@@ -1436,7 +1456,7 @@ app.controller('MainController', function($scope, $http, $state, $location, foo,
       $location.path('/site/'+id)
       $state.reload()
   }
-
+  */
     
 });
 
@@ -1455,7 +1475,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/MenuController":30,"angular":43}],32:[function(require,module,exports){
+},{"./controllers/MenuController":30,"angular":44}],32:[function(require,module,exports){
     module.exports = function($state, $scope, $stateParams, $location, 
                                UserApiService, UserService, MathJaxService, SearchService, ImageSearchService) {
         
@@ -1591,21 +1611,37 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
     ]
     */
 },{}],35:[function(require,module,exports){
-module.exports = function($stateParams, $scope, SearchService, DocumentRouteService, DocumentService, MathJaxService) {
+module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentRouteService, DocumentService, MathJaxService) {
     
-
+    console.log('SITE CONTROLLER')
     
+   
     var id = $stateParams.id
     console.log('Hey!, site = ' + id)
     SearchService.query('scope=user.'+id)
     
-    // Process the given route
     $scope.site = id
     DocumentRouteService.getDocumentList($scope)
-
+    
+    
     
 }
 },{}],36:[function(require,module,exports){
+module.exports = function($stateParams, $state, $scope, $location, DocumentRouteService) {
+    
+    console.log('SITE DOCUMENT CONTROLLER')
+    
+   
+    $scope.site = $stateParams.site
+    var doc_id = $stateParams.doc_id
+    
+    DocumentRouteService.getDocumentList($scope)
+    DocumentRouteService.getDocument($scope, doc_id)
+    
+    
+    
+}
+},{}],37:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage) {
 
         var deferred = $q.defer();
@@ -1683,7 +1719,7 @@ module.exports = function($http, $q, $localStorage) {
                 end
               ........
     */
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -1696,8 +1732,14 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = function($localStorage) {
+    
+    /*****
+    
+    
+    
+    ******/
 
  this.signedIn = null    
 
@@ -1775,7 +1817,7 @@ module.exports = function($localStorage) {
 
  
 }
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1788,12 +1830,13 @@ app.controller('SigninController', require('./SignInController'))
 app.controller('SignOutController', require('./SignOutController'))
 app.controller('UserController', require('./UserController'))
 app.controller('SiteController', require('./SiteController'))
+app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
 
 
 
 
-},{"./SignInController":32,"./SignOutController":33,"./SignUpController":34,"./SiteController":35,"./UserApiService":36,"./UserController":37,"./UserService":38,"angular":43}],40:[function(require,module,exports){
+},{"./SignInController":32,"./SignOutController":33,"./SignUpController":34,"./SiteController":35,"./SiteDocumentController":36,"./UserApiService":37,"./UserController":38,"./UserService":39,"angular":44}],41:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -2864,11 +2907,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":40}],42:[function(require,module,exports){
+},{"./angular-route":41}],43:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -34637,8 +34680,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":42}]},{},[1]);
+},{"./angular":43}]},{},[1]);

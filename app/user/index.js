@@ -10,6 +10,7 @@ app.controller('SigninController', require('./SignInController'))
 app.controller('SignOutController', require('./SignOutController'))
 app.controller('UserController', require('./UserController'))
 app.controller('SiteController', require('./SiteController'))
+app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
 
 
