@@ -40,3 +40,24 @@ is loaded after asciidoctor.css
 p {
     font-size: 1em;
 }
+
+.floating-box {
+    display: inline-block;
+    width: 60px;
+    height: 20px;
+    margin: 10px;
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+  label.radio 
+    {
+      font: normal 1.4em courier !important;
+      margin-right: 1em;
+    }
+
+    .radio input
+    {
+      display: inline-block;
+      vertical-align: middle;
+    }

@@ -30,6 +30,12 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
                 
+                 if (DocumentService.getPublic() == true ) {
+                        scope.status = 'public'
+                    } else {
+                        scope.status = 'private'
+                    }
+                
                 scope.$watch(function(scope) { 
                     return scope.renderedText },
                     MathJaxService.reload('DocumentRouteService: getDocument') 

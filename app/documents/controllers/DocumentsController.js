@@ -30,6 +30,12 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         }
     }
     
+    if (DocumentService.getPublic()) {
+            $scope.statusPublic = 'public'
+        } else {
+            $scope.statusPublic = 'private'
+        }
+    
     $scope.$watch(function(scope) { 
         return $scope.renderedText },
         MathJaxService.reload('DocumentController')              

@@ -94,7 +94,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       callback: function() {
           console.log('SAVE DOCUMENT ...')
           console.log($scope.editText)
-          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope) 
+          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope) 
           // $location.path('/editdocument')
           // $state.reload()
       }

@@ -26,12 +26,12 @@
         var callAtInterval = function() {
             if ($scope.textDirty) {
                 updateCount += 1
-                console.log('periodicUpdate ' + updateCount)
-                DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)
+                console.log('periodicUpdate ' + updateCount + 'statusPublic: ' + $scope.statusPublic)
+                DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)
                 if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
                 $scope.textDirty = false
             } else {
-                console.log('SKIPPING periodicUpdate ')
+                console.log('SKIPPING periodicUpdate, ' + 'statusPublic: ' + $scope.statusPublic)
             }
             
             
@@ -70,6 +70,7 @@
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        
 
         /* Get most recent version from server */
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
@@ -79,24 +80,26 @@
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-            
+                      
                  $scope.$watch(function(scope) { 
                     return $scope.renderedText },
                     MathJaxService.reload('EditController')              
                 );
 
-                /* Update local storage */
-                DocumentService.setDocumentId(document['id'])
-                DocumentService.setTitle(document['title'])
-                DocumentService.setText(document['text'])
-                DocumentService.setRenderedText(document['rendered_text'])
-                console.log('I set the title to ' + DocumentService.title())
+                DocumentService.update(document)
+                
+                if (DocumentService.getPublic() == true) {
+                    $scope.statusPublic = 'public'
+                } else {
+                    $scope.statusPublic = 'private'
+                }
+            
             })
 
         
         $scope.updateDocument = function() {
             
-            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)        
+            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)        
         
         }
 

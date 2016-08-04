@@ -4,7 +4,6 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         var apiServer = GlobalService.apiServer()
 
         this.getDocument = function(id) {
-          console.log('DocumentApiService.getDocument, id: ' + id)
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
@@ -15,7 +14,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 var data = response.data
                 var document = data['document']
                 DocumentService.update(document)
-                
+        
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -33,8 +32,6 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
-                console.log(response.data['status'])
-                console.log('Number of documents: ' + response.data['document_count'])
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 DocumentService.setDocumentList( documents )
@@ -50,9 +47,17 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
         
         
-        this.update = function(id, title, text, scope) {
+        this.update = function(id, title, text, statusPublic, scope) {
 
-            var parameter = JSON.stringify({id:id, title: title, text:text, token: UserService.accessToken() });
+            console.log('In DocumentApiService, statusPublic = ' + statusPublic)
+            var public
+            if (statusPublic == 'public') {
+                public = true
+            } else {
+                public = false
+            }
+            console.log('In DocumentApiService, public = ' + public)
+            var parameter = JSON.stringify({id:id, title: title, text:text, public: public, token: UserService.accessToken() });
 
             $http.post('http://' + apiServer + '/v1/documents/' + id, parameter)
                 .then(function(response){
@@ -61,18 +66,12 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                         var document = response.data['document']
 
                         /* Update local storage */
-                        DocumentService.setDocumentId(document['id'])
-                        DocumentService.setTitle(document['title'])
-                        DocumentService.setText(document['text'])                          
-                        DocumentService.setRenderedText(document['rendered_text'])
-
+                        DocumentService.update(document)
+                        
                         /* Update $scope */
                         scope.title = document['title']
                         scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         scope.message = 'Success!'
-                        
-                        
-                        // XX: Is this needed?
                         
 
                     } else {

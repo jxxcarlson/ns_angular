@@ -12,11 +12,15 @@ module.exports = function($localStorage, GlobalService) {
     this.setKind= function(kind) { $localStorage.documentKind = kind }
     this.kind = function() { return $localStorage.documentKind }
     
+    this.setPublic= function(value) { 
+        $localStorage.public = value 
+    }
+    this.getPublic = function() { return $localStorage.public }
+    
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
-    this.setDocumentList = function(array) { 
-        
+    this.setDocumentList = function(array) {    
         var id
         if ((array == undefined) || (array[0] == undefined)) {
             console.log('document array is empty')
@@ -26,15 +30,10 @@ module.exports = function($localStorage, GlobalService) {
             console.log('document array: ' + array.length)
             id = array[0]['id']
         }
-        
-        
         $localStorage.documentList = array
-        
-        
-        console.log('FIRST ELEMENT = ' + JSON.stringify(array[0]))
-        console.log('ID OF FIRST ELEMENT = ' + array[0])
         $localStorage.documentId = array[0]
     }
+    
     this.documentList = function() { 
         
         return $localStorage.documentList 
@@ -51,6 +50,7 @@ module.exports = function($localStorage, GlobalService) {
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
         this.setKind( document['kind'])
+        this.setPublic(document['public'])
         
     }
     
@@ -61,7 +61,7 @@ module.exports = function($localStorage, GlobalService) {
         if (true) {
         // if (documentKind == 'asciidoctor-latex') {
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
-                console.log("XX DOC CONTROLLER: reloadMathJax called");  
+                console.log("XXXXXXXXX DOC CONTROLLER: reloadMathJax called");  
         }
     }
       

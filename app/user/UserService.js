@@ -13,7 +13,7 @@ State variables:
 
 ******/
     
- this.setCurrentSite = function(site) { $localStorage.currentSite = site }
+ this.setCurrentSite = function(site) { console.log('Set site to ' + site); $localStorage.currentSite = site }
  this.getCurrentSite = function() { return $localStorage.currentSite }
  
 

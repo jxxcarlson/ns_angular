@@ -2,10 +2,18 @@
 
   <div class="col-md-2" >
       <div style="margin-left:1em;">
+          
+          <div>
+            <label class='floating-box radio' for="publicRadio">Public</label>
+            <input class='floating-box' id="publicRadio" type="radio" ng-model="statusPublic" value="public" />
+            <br />
+            <label class='floating-box radio' for="privateRadio">Private</label>
+            <input class='floating-box' id="privateRadio" type="radio" ng-model="statusPublic" value="private" /><br />
+          </div>
 
           <h3> Documents: {{ documentCount }}</h3>
           <br />
-          <p class="toc-item" ng-repeat="doc in docArray"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+          <p class="toc-item" ng-repeat="doc in docArray"><a href="editdocument/{{doc['id']}}">{{doc['title']}}::{{doc['public']}}</a></p>
 
         </div>
   </div>

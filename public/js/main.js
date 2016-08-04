@@ -241,6 +241,12 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         }
     }
     
+    if (DocumentService.getPublic()) {
+            $scope.statusPublic = 'public'
+        } else {
+            $scope.statusPublic = 'private'
+        }
+    
     $scope.$watch(function(scope) { 
         return $scope.renderedText },
         MathJaxService.reload('DocumentController')              
@@ -276,12 +282,12 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         var callAtInterval = function() {
             if ($scope.textDirty) {
                 updateCount += 1
-                console.log('periodicUpdate ' + updateCount)
-                DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)
+                console.log('periodicUpdate ' + updateCount + 'statusPublic: ' + $scope.statusPublic)
+                DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)
                 if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
                 $scope.textDirty = false
             } else {
-                console.log('SKIPPING periodicUpdate ')
+                console.log('SKIPPING periodicUpdate, ' + 'statusPublic: ' + $scope.statusPublic)
             }
             
             
@@ -320,6 +326,7 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        
 
         /* Get most recent version from server */
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
@@ -329,24 +336,26 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-            
+                      
                  $scope.$watch(function(scope) { 
                     return $scope.renderedText },
                     MathJaxService.reload('EditController')              
                 );
 
-                /* Update local storage */
-                DocumentService.setDocumentId(document['id'])
-                DocumentService.setTitle(document['title'])
-                DocumentService.setText(document['text'])
-                DocumentService.setRenderedText(document['rendered_text'])
-                console.log('I set the title to ' + DocumentService.title())
+                DocumentService.update(document)
+                
+                if (DocumentService.getPublic() == true) {
+                    $scope.statusPublic = 'public'
+                } else {
+                    $scope.statusPublic = 'private'
+                }
+            
             })
 
         
         $scope.updateDocument = function() {
             
-            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope)        
+            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)        
         
         }
 
@@ -450,7 +459,6 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         var apiServer = GlobalService.apiServer()
 
         this.getDocument = function(id) {
-          console.log('DocumentApiService.getDocument, id: ' + id)
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
@@ -461,7 +469,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 var data = response.data
                 var document = data['document']
                 DocumentService.update(document)
-                
+        
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -479,8 +487,6 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
-                console.log(response.data['status'])
-                console.log('Number of documents: ' + response.data['document_count'])
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 DocumentService.setDocumentList( documents )
@@ -496,9 +502,17 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
         
         
-        this.update = function(id, title, text, scope) {
+        this.update = function(id, title, text, statusPublic, scope) {
 
-            var parameter = JSON.stringify({id:id, title: title, text:text, token: UserService.accessToken() });
+            console.log('In DocumentApiService, statusPublic = ' + statusPublic)
+            var public
+            if (statusPublic == 'public') {
+                public = true
+            } else {
+                public = false
+            }
+            console.log('In DocumentApiService, public = ' + public)
+            var parameter = JSON.stringify({id:id, title: title, text:text, public: public, token: UserService.accessToken() });
 
             $http.post('http://' + apiServer + '/v1/documents/' + id, parameter)
                 .then(function(response){
@@ -507,18 +521,12 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                         var document = response.data['document']
 
                         /* Update local storage */
-                        DocumentService.setDocumentId(document['id'])
-                        DocumentService.setTitle(document['title'])
-                        DocumentService.setText(document['text'])                          
-                        DocumentService.setRenderedText(document['rendered_text'])
-
+                        DocumentService.update(document)
+                        
                         /* Update $scope */
                         scope.title = document['title']
                         scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         scope.message = 'Success!'
-                        
-                        
-                        // XX: Is this needed?
                         
 
                     } else {
@@ -564,6 +572,12 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
                 
+                 if (DocumentService.getPublic() == true ) {
+                        scope.status = 'public'
+                    } else {
+                        scope.status = 'private'
+                    }
+                
                 scope.$watch(function(scope) { 
                     return scope.renderedText },
                     MathJaxService.reload('DocumentRouteService: getDocument') 
@@ -599,11 +613,15 @@ module.exports = function($localStorage, GlobalService) {
     this.setKind= function(kind) { $localStorage.documentKind = kind }
     this.kind = function() { return $localStorage.documentKind }
     
+    this.setPublic= function(value) { 
+        $localStorage.public = value 
+    }
+    this.getPublic = function() { return $localStorage.public }
+    
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
-    this.setDocumentList = function(array) { 
-        
+    this.setDocumentList = function(array) {    
         var id
         if ((array == undefined) || (array[0] == undefined)) {
             console.log('document array is empty')
@@ -613,15 +631,10 @@ module.exports = function($localStorage, GlobalService) {
             console.log('document array: ' + array.length)
             id = array[0]['id']
         }
-        
-        
         $localStorage.documentList = array
-        
-        
-        console.log('FIRST ELEMENT = ' + JSON.stringify(array[0]))
-        console.log('ID OF FIRST ELEMENT = ' + array[0])
         $localStorage.documentId = array[0]
     }
+    
     this.documentList = function() { 
         
         return $localStorage.documentList 
@@ -638,6 +651,7 @@ module.exports = function($localStorage, GlobalService) {
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
         this.setKind( document['kind'])
+        this.setPublic(document['public'])
         
     }
     
@@ -648,7 +662,7 @@ module.exports = function($localStorage, GlobalService) {
         if (true) {
         // if (documentKind == 'asciidoctor-latex') {
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
-                console.log("XX DOC CONTROLLER: reloadMathJax called");  
+                console.log("XXXXXXXXX DOC CONTROLLER: reloadMathJax called");  
         }
     }
       
@@ -1313,7 +1327,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       callback: function() {
           console.log('SAVE DOCUMENT ...')
           console.log($scope.editText)
-          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope) 
+          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope) 
           // $location.path('/editdocument')
           // $state.reload()
       }
@@ -1642,6 +1656,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
     
     $scope.site = id
     DocumentRouteService.getDocumentList($scope)
+
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {
@@ -1757,7 +1772,7 @@ State variables:
 
 ******/
     
- this.setCurrentSite = function(site) { $localStorage.currentSite = site }
+ this.setCurrentSite = function(site) { console.log('Set site to ' + site); $localStorage.currentSite = site }
  this.getCurrentSite = function() { return $localStorage.currentSite }
  
 
