@@ -1,14 +1,28 @@
 /* CSS REFERENCE: http://getbootstrap.com/css/ */
 
-body { margin: 1em; }
+body { 
+    
+    margin: 1em;
+    /* font-size: 2em; */
 
-#rendered_text {
+}
+
+#rendered-text {
     width: 100%;
-    max-width: 600px;
-    height: 600px;;
+    max-width: 800px;
+    height: 800px;
     overflow-y: auto;
+    font-size: 1.5em;
+}
+
+.toc-item {
+    font-size: 1em;
 }
 
 .container{
   height: 100%;
+}
+
+p {
+    font-size: 1em;
 }

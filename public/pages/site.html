@@ -5,15 +5,17 @@
       <div style="margin-left:1em;">
             <h1>Site {{site}}</h1>
             <h2> {{ documentCount }} Documents </h2>
-            <p ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="/site/{{site}}/{{doc['id']}}">{{doc['title']}}</a></p>
+             <div> 
+               <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="/site/{{site}}/{{doc['id']}}">{{doc['title']}}</a></p>
+            </div>
       </div>
   </div>
 
   <div class="col-md-8">
-      <div style="margin-left:1em;">
+      <div >
          <h2> {{ title }} </h2>
-         <div class="container fill">
-           <div ng-bind-html="renderedText()" id="rendered_text"></div>
+         <div class="container fill" >
+           <div ng-bind-html="renderedText()" id="rendered-text"></div>
          </div>
       </div>
   </div>
