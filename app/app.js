@@ -18,6 +18,7 @@ require('./user')
 require('./documents')
 require('./images')
 require('./search')
+require('./site')
 
 
 
