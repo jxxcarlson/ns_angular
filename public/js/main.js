@@ -1306,7 +1306,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $location.path('/documents')
                     
-    SearchService.query('scope=user.' + UserService.username()).then(
+    SearchService.query('user=' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
                             $state.reload() 
