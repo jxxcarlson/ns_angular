@@ -1082,40 +1082,47 @@ module.exports = function() {
     this.parse = function(query) {
         
         
-        var isPureTerm = function(str) { return !(str.includes('.')) }
-        var isMixedTerm = function(str) { return str.includes('.') }
+        var isStandardTerm = function(str) { return (str.includes('=')) }
+        var isBareTerm = function(str) { return !(str.includes('=')) }
         
         var terms = query.split(' ')
         console.log(terms.length + ' QUERY TERMS: ' + terms)
         
-        var pureTerms = terms.filter(isPureTerm)
-        var mixedTerms = terms.filter(isMixedTerm)
+        var standardTerms = terms.filter(isStandardTerm)
+        var bareTerms = terms.filter(isBareTerm)
+    
         
-        if (pureTerms == undefined) { pureTerms = [] }
-        if (mixedTerms == undefined) { mixedTerms = [] }
+        if (standardTerms == undefined) { standardTerms = [] }
+        if (bareTerms == undefined) { bareTerms = [] }
         
-        var titleSearchTerm = ""
-        var scopeSearchTerm = ""
-        pureTerms.forEach(function(term) {titleSearchTerm += "title="+term+"&" })
-        mixedTerms.forEach(function(term) {scopeSearchTerm += "scope="+term+"&" })
+        var standardSearchTerm = ""
+        var bareSearchTerm = ""
         
-        titleSearchTerm = titleSearchTerm.slice(0,-1)
-        scopeSearchTerm = scopeSearchTerm.slice(0,-1)
+        standardTerms.forEach(function(term) {standardSearchTerm += term+"&" })
+        bareTerms.forEach(function(term) {bareSearchTerm += "title="+term+"&" })
+        
+        standardSearchTerm = standardSearchTerm.slice(0,-1)
+        bareSearchTerm = bareSearchTerm.slice(0,-1)
+        
+        console.log('standardSearchTerm: ' + standardSearchTerm)
+        console.log('bareSearchTerm: ' + bareSearchTerm)
         
         var searchText
         
-        if ((titleSearchTerm == undefined) || (titleSearchTerm == '')) {
+        if ((standardSearchTerm == undefined) || (standardSearchTerm == '')) {
             
-            searchText = scopeSearchTerm
+            searchText = bareSearchTerm
             
-        } else if ((scopeSearchTerm == undefined) || (scopeSearchTerm == '')) {
+        } else if ((bareSearchTerm == undefined) || (bareSearchTerm == '')) {
             
-            searchText = titleSearchTerm
+            searchText = standardSearchTerm
             
         } else {
             
-            searchText = scopeSearchTerm + '&' + titleSearchTerm
+            searchText = bareSearchTerm + '&' + standardSearchTerm
         }
+        
+        
     
         return searchText
     }
@@ -1622,12 +1629,15 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     ImageSearchService.query('scope=all')
                     SearchService.query('user=' + UserService.username()).then(
                         function() {
-                            $location.path('/documents')
-                            // $state.reload()
+                            // $location.path('/documents')
                             
+                            $state.go('documents')
+                            
+                            /*
                             $state.transitionTo($state.current, $stateParams, { 
                               reload: true, inherit: false, notify: true
                             });
+                            */
                             
                             MathJaxService.reload('SignIn')
                         })
