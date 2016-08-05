@@ -75,6 +75,7 @@
         /* Get most recent version from server */
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
             .then(function(response){
+            
                 var document = response.data['document']
                 $scope.title = document['title']
                 $scope.editableTitle = $scope.title

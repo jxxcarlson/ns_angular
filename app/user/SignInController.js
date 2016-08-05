@@ -19,7 +19,7 @@
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
-                    SearchService.query('scope=user.' + UserService.username()).then(
+                    SearchService.query('user=' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
                             // $state.reload()

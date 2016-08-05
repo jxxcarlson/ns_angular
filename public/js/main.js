@@ -332,6 +332,7 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         /* Get most recent version from server */
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
             .then(function(response){
+            
                 var document = response.data['document']
                 $scope.title = document['title']
                 $scope.editableTitle = $scope.title
@@ -683,7 +684,7 @@ module.exports = function(DocumentService) {
     
 }
 },{}],15:[function(require,module,exports){
-module.exports = function($http, $q, DocumentApiService, DocumentService, GlobalService) {
+module.exports = function($http, $q, DocumentApiService, DocumentService, GlobalService, UserService) {
     
     var deferred = $q.defer();
     var apiServer = GlobalService.apiServer()
@@ -694,6 +695,7 @@ module.exports = function($http, $q, DocumentApiService, DocumentService, Global
 
         console.log('SearchService, query = ' + searchText)
         
+        // var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText + '&user=' + UserService.username()
         var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText
         console.log('REQUEST ' + request)
         return $http.get(request)
@@ -1618,7 +1620,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     $scope.username = UserService.username()
                     $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
-                    SearchService.query('scope=user.' + UserService.username()).then(
+                    SearchService.query('user=' + UserService.username()).then(
                         function() {
                             $location.path('/documents')
                             // $state.reload()

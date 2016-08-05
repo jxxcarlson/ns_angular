@@ -1,4 +1,4 @@
-module.exports = function($http, $q, DocumentApiService, DocumentService, GlobalService) {
+module.exports = function($http, $q, DocumentApiService, DocumentService, GlobalService, UserService) {
     
     var deferred = $q.defer();
     var apiServer = GlobalService.apiServer()
@@ -9,6 +9,7 @@ module.exports = function($http, $q, DocumentApiService, DocumentService, Global
 
         console.log('SearchService, query = ' + searchText)
         
+        // var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText + '&user=' + UserService.username()
         var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText
         console.log('REQUEST ' + request)
         return $http.get(request)
