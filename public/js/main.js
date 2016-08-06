@@ -425,6 +425,7 @@ module.exports = function($scope, $state, $location, $http, GlobalService,
               DocumentApiService.getDocument(id)
               .then(function(response) {
                   
+                console.log('Document ' + id + ' retrieved')  
                 console.log('CURRENT STATE: ' + $state.current)  
                 $state.go('documents')
                 $state.reload()
