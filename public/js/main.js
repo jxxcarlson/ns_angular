@@ -420,18 +420,19 @@ module.exports = function($scope, $state, $location, $http, GlobalService,
               var jsonData = response.data
               var documents = jsonData['documents']
               DocumentService.setDocumentList(documents)
-              
               var id = documents[0]['id']
               console.log('SearchController, id: ' + id)
               DocumentApiService.getDocument(id)
               .then(function(response) {
+                  
+                console.log('CURRENT STATE: ' + $state.current)  
+                $state.go('documents')
+                $state.reload()
                 
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
                     MathJaxService.reload('SearchController')              
                 );
-                  
-                $state.go('documents')  
                 
                 
               }) 
@@ -1564,30 +1565,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     
     $scope.host = GlobalService.clientServer()
     
-    
-  
-  /*
-  var absUrl = $location.absUrl();
-  var urlParts = absUrl.split('/')
-  var id = urlParts.pop()
-  var route = urlParts.pop()
-  
-  console.log('absUrl = ' + absUrl)
-  console.log('id = ' + id)
-  console.log('route = ' + route)
-  
-  
-  if (route == 'site') {
-      
-      // SearchService.query('scope=user.'+id)
-      $location.path('/site/'+id)
-      $state.reload()
-  }
-  */
-    
 });
-
-
 
 
 app.controller('aboutController', function($scope, foo) {
