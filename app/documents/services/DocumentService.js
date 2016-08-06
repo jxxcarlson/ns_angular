@@ -54,15 +54,7 @@ module.exports = function($localStorage, GlobalService) {
         
     }
     
-    this.reloadMathJax = function(documentKind) {
-        
-        // if ($localStorage.documentKind == 'asciidoctor-latex') {
-        // if (this.kind() == 'asciidoctor-latex') {
-        if (true) {
-        // if (documentKind == 'asciidoctor-latex') {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
-                console.log("XXXXXXXXX DOC CONTROLLER: reloadMathJax called");  
-        }
-    }
+    
+    
       
 }

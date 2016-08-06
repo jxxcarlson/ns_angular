@@ -27,11 +27,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $location.path('/documents')
                     
-    SearchService.query('user=' + UserService.username()).then(
-                        function() {
-                            $state.go('documents') 
-                            MathJaxService.reload('user documents')
-                        })
+    SearchService.query('user=' + UserService.username())
+    
   } 
   
   
@@ -39,22 +36,15 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $location.path('/documents')
                     
-    SearchService.query('scope=all').then(
-                        function() {
-                            $state.go('documents')
-                            MathJaxService.reload('all documents')
-                        })
+    SearchService.query('scope=all')
   }
   
   $scope.publicDocuments = function(){
 
     $location.path('/documents')
                     
-    SearchService.query('scope=public').then(
-                        function() {
-                            $state.go('documents') 
-                            MathJaxService.reload('public documents')
-                        })
+    SearchService.query('scope=public') 
+  
   }
   
   /////

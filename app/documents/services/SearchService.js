@@ -1,34 +1,23 @@
-module.exports = function($http, $q, DocumentApiService, DocumentService, GlobalService, UserService) {
+module.exports = function($http, $state, $location, $q, DocumentApiService, DocumentService, GlobalService, UserService) {
     
     var deferred = $q.defer();
-    var apiServer = GlobalService.apiServer()
-    
-    
+    var apiServer = GlobalService.apiServer() 
    
     this.query = function(searchText) {
-
-        console.log('SearchService, query = ' + searchText)
         
-        // var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText + '&user=' + UserService.username()
-        var request = 'http://' + apiServer + '/v1/documents' + '?' + searchText
-        console.log('REQUEST ' + request)
-        return $http.get(request)
+         return $http.get('http://' + apiServer + '/v1/documents' + '?' + searchText  )
         .then(function(response){
-          console.log(response.data['status'])
-          console.log('Number of documents: ' + response.data['document_count'])
+              
           var jsonData = response.data
           var documents = jsonData['documents']
-          if (documents.length == 0) {
-              console.log('documents is empty, setting it to [11]')
-              documents = [GlobalService.defaultDocumentID()]
-          }
+          
+          if (documents.length == 0) { documents = [GlobalService.defaultDocumentID()] }
           
           DocumentService.setDocumentList(documents)
 
           var id = documents[0]['id']
           DocumentApiService.getDocument(id)
-        })
-        
-        
+          
+        }).then(function(response) { $state.go('documents', {}, {reload: true}) })
     }     
 }
