@@ -27,6 +27,9 @@ module.exports = function($scope, $window, $location, $stateParams, $state, $sce
     var documentKind = DocumentService.kind()
     
     
+    $scope.docStyle = DocumentService.tocStyle
+    
+    /**
     $scope.docStyle = function(doc) { 
         var css = {}
         if (doc['id'] == DocumentService.documentId() ) {
@@ -36,8 +39,8 @@ module.exports = function($scope, $window, $location, $stateParams, $state, $sce
             css["font-style"] = "italic"
         }
         return css
-    }  
-    
+    } 
+    **/
     
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'

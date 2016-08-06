@@ -54,7 +54,16 @@ module.exports = function($localStorage, GlobalService) {
         
     }
     
-   
+   this.tocStyle = function(doc) { 
+        var css = {}
+        if (doc['id'] == $localStorage.documentId ) {
+            css["background-color"] = "#fee"
+        }
+        if (doc['public'] == true ) {
+            css["font-style"] = "italic"
+        }
+        return css
+    }  
     
       
 }

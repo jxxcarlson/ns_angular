@@ -75,6 +75,8 @@
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
         
+        $scope.docStyle = DocumentService.tocStyle
+        
 
         /* Get most recent version from server */
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
