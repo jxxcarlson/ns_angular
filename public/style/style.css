@@ -61,3 +61,11 @@ p {
       display: inline-block;
       vertical-align: middle;
     }
+
+.search-box {
+    
+    width: 250px;
+    height:30px;
+    font-size: 1.35em;
+    
+}

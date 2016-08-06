@@ -61,7 +61,7 @@
                                 Tools <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                                <li role="menuitem"><a ui-sref="newdocument">New Document</a></li>
+                                 <li role="menuitem"><a ui-sref="newdocument">New Document</a></li>
                                 <li role="menuitem"><a ui-sref="editdocument">Edit Document</a></li>
                                 <li class="divider"></li>
                                 <li role="menuitem"><a href="http://{{host}}/site/{{currentSite}}">Go to {{currentSite}}</a></li>  
@@ -88,7 +88,7 @@
                         <div class="form-group">
                           <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
                           <div ng-controller="searchController">
-                            <input ng-enter="doSearch(  )" ng-model="searchText" placeholder=" document search ..."/>
+                            <input class="search-box" ng-enter="doSearch(  )" ng-model="searchText" placeholder=" document search ..."/>
                           </div>
                           <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
 
@@ -103,7 +103,7 @@
                         <div class="form-group" style="margin-left:20px;">
                           <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
                           <div ng-controller="ImageSearchController">
-                            <input ng-enter="doImageSearch(  )" ng-model="searchText" placeholder=" image search ..."/>
+                            <input class="search-box" ng-enter="doImageSearch(  )" ng-model="searchText" placeholder=" image search ..."/>
                           </div>
                           <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
 
