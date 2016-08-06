@@ -23,29 +23,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
   $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
     
-  $scope.userDocuments = function(){
-
-    $location.path('/documents')
-                    
-    SearchService.query('user=' + UserService.username())
-    
-  } 
+  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username()) } 
   
+  $scope.allDocuments = function(){ SearchService.query('scope=all') }
   
-  $scope.allDocuments = function(){
-
-    $location.path('/documents')
-                    
-    SearchService.query('scope=all')
-  }
-  
-  $scope.publicDocuments = function(){
-
-    $location.path('/documents')
-                    
-    SearchService.query('scope=public') 
-  
-  }
+  $scope.publicDocuments = function(){ SearchService.query('scope=public') }
   
   /////
   
@@ -56,22 +38,14 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     combo: 'ctrl+e',
       description: 'Edit document',
       allowIn: ['INPUT','TEXTAREA'],
-      callback: function() {
-          console.log('EDIT DOCUMENT ...')
-          $state.go('editdocument')
-         
-      }
+      callback: function() { $state.go('editdocument') }
   });
     
   hotkeys.add({
     combo: 'ctrl+v',
       description: 'View docuemnt',
       allowIn: ['INPUT','TEXTAREA'],
-      callback: function() {
-          console.log('VIEW DOCUMENT ...')
-          $state.go('documents')
-
-      }
+      callback: function() { $state.go('documents') }
   });    
     
   hotkeys.add({
@@ -93,11 +67,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
         console.log('USER DOCUMENTs ...')            
-        SearchService.query('user=' + UserService.username()).then(
-            function() {
-                $state.go('documents')
-                MathJaxService.reload('user documents')
-            })
+        SearchService.query('user=' + UserService.username())
       }
   });    
     
