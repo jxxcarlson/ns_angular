@@ -6,12 +6,14 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
     var id = $stateParams.id
     UserService.setCurrentSite(id)
     console.log('Hey!, site = ' + id)
-    SearchService.query('scope=user.'+id+'?filter=public')
+    SearchService.query('user.public='+id)
     .then(function(response){
         $scope.site = id
         DocumentRouteService.getDocumentList($scope)
         $scope.docStyle = function(doc) {
             if (doc['id'] == DocumentService.documentId()) { return { "background-color" : "#fee" }}
         }
+    }).then(function(result){
+        $state.go('site')
     })       
 }
