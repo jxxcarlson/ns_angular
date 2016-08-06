@@ -1,4 +1,4 @@
-  module.exports = function($scope, $stateParams, $http, $sce, $timeout, 
+  module.exports = function($scope, $window, $document, $stateParams, $http, $sce, $timeout, 
                              DocumentService, DocumentApiService, UserService, GlobalService,
                              MathJaxService, hotkeys, $interval) {
 
@@ -11,6 +11,10 @@
         } else {
             id = DocumentService.documentId();
         }
+      
+      var innerHeight = $window.innerHeight
+      document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
+      document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
       
       hotkeys.bindTo($scope)
         .add({

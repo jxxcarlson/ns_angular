@@ -21,16 +21,7 @@
                     ImageSearchService.query('scope=all')
                     SearchService.query('user=' + UserService.username()).then(
                         function() {
-                            // $location.path('/documents')
-                            
                             $state.go('documents')
-                            
-                            /*
-                            $state.transitionTo($state.current, $stateParams, { 
-                              reload: true, inherit: false, notify: true
-                            });
-                            */
-                            
                             MathJaxService.reload('SignIn')
                         })
                   } else {

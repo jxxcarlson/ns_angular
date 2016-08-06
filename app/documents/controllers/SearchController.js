@@ -13,22 +13,20 @@ module.exports = function($scope, $state, $location, $http, GlobalService,
               var jsonData = response.data
               var documents = jsonData['documents']
               DocumentService.setDocumentList(documents)
-              
               var id = documents[0]['id']
               console.log('SearchController, id: ' + id)
               DocumentApiService.getDocument(id)
               .then(function(response) {
+                  
+                console.log('CURRENT STATE: ' + $state.current)  
+                $state.go('documents')
+                $state.reload()
                 
-                
-                // XX: THIS IS NEEDED (RE reloadMathJax here)
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    // function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
                     MathJaxService.reload('SearchController')              
                 );
-                  
-                $location.path('/documents')
-                $state.reload()
+                
                 
               }) 
             });

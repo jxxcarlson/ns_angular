@@ -153,31 +153,6 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
     
     $scope.host = GlobalService.clientServer()
-    
-    
-  
-  /*
-  var absUrl = $location.absUrl();
-  var urlParts = absUrl.split('/')
-  var id = urlParts.pop()
-  var route = urlParts.pop()
-  
-  console.log('absUrl = ' + absUrl)
-  console.log('id = ' + id)
-  console.log('route = ' + route)
-  
-  
-  if (route == 'site') {
-      
-      // SearchService.query('scope=user.'+id)
-      $location.path('/site/'+id)
-      $state.reload()
-  }
-  */
-    
-});
-
-
 
 
 app.controller('aboutController', function($scope, foo) {

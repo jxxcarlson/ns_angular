@@ -20,8 +20,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
               console.log('id = ' + id)
               ImageApiService.getImage(id)
               .then(function(response) {
-                 $location.path('/images')
-                 // $state.reload()       
+                 $state.go('images')       
                })
               
              

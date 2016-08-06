@@ -29,8 +29,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
                     
     SearchService.query('user=' + UserService.username()).then(
                         function() {
-                            $location.path('/documents')
-                            $state.reload() 
+                            $state.go('documents') 
                             MathJaxService.reload('user documents')
                         })
   } 
@@ -42,8 +41,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
                     
     SearchService.query('scope=all').then(
                         function() {
-                            $location.path('/documents')
-                            $state.reload() 
+                            $state.go('documents')
                             MathJaxService.reload('all documents')
                         })
   }
@@ -54,8 +52,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
                     
     SearchService.query('scope=public').then(
                         function() {
-                            $location.path('/documents')
-                            $state.reload() 
+                            $state.go('documents') 
                             MathJaxService.reload('public documents')
                         })
   }
@@ -71,8 +68,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('EDIT DOCUMENT ...')
-          $location.path('/editdocument')
-          $state.reload()
+          $state.go('editdocument')
+         
       }
   });
     
@@ -82,8 +79,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('VIEW DOCUMENT ...')
-          $location.path('/documents')
-          $state.reload()
+          $state.go('documents')
+
       }
   });    
     
@@ -105,13 +102,10 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       description: 'User docuemnts',
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
-        console.log('USER DOCUMENTs ...')
-        $location.path('/documents')
-                    
-        SearchService.query('scope=user.' + UserService.username()).then(
+        console.log('USER DOCUMENTs ...')            
+        SearchService.query('user=' + UserService.username()).then(
             function() {
-                $location.path('/documents')
-                $state.reload() 
+                $state.go('documents')
                 MathJaxService.reload('user documents')
             })
       }

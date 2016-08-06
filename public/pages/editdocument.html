@@ -22,7 +22,7 @@
       <div style="margin-left:1em;">
         <input ng-model="editableTitle" type="text" id="editableTitle">
         <button ng-click="updateDocument()">Save</button></p>
-        <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false" rows="30" style="width:90%;"></textarea>
+        <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false"  style="width:90%;" ng-style="editorHeight"></textarea>
       </div>
   </div>
 

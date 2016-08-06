@@ -5,12 +5,15 @@
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $location, $stateParams, $state, $sce, DocumentApiService, 
+module.exports = function($scope, $window, $location, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, DocumentRouteService, MathJaxService) {
 
  
     var id = $stateParams.id;
     var queryString =  $location.search()
+    
+    var innerHeight = $window.innerHeight
+    document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     
     // Process the given route
     if (id == undefined) { 

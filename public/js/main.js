@@ -217,12 +217,15 @@ app.directive('file', require('./File'))
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $location, $stateParams, $state, $sce, DocumentApiService, 
+module.exports = function($scope, $window, $location, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, DocumentRouteService, MathJaxService) {
 
  
     var id = $stateParams.id;
     var queryString =  $location.search()
+    
+    var innerHeight = $window.innerHeight
+    document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     
     // Process the given route
     if (id == undefined) { 
@@ -255,7 +258,7 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
 
 }
 },{}],7:[function(require,module,exports){
-  module.exports = function($scope, $stateParams, $http, $sce, $timeout, 
+  module.exports = function($scope, $window, $document, $stateParams, $http, $sce, $timeout, 
                              DocumentService, DocumentApiService, UserService, GlobalService,
                              MathJaxService, hotkeys, $interval) {
 
@@ -268,6 +271,10 @@ module.exports = function($scope, $location, $stateParams, $state, $sce, Documen
         } else {
             id = DocumentService.documentId();
         }
+      
+      var innerHeight = $window.innerHeight
+      document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
+      document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
       
       hotkeys.bindTo($scope)
         .add({
@@ -419,16 +426,13 @@ module.exports = function($scope, $state, $location, $http, GlobalService,
               DocumentApiService.getDocument(id)
               .then(function(response) {
                 
-                
-                // XX: THIS IS NEEDED (RE reloadMathJax here)
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    // function() { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("EDIT: reloadMathJax called"); }
                     MathJaxService.reload('SearchController')              
                 );
                   
-                $location.path('/documents')
-                $state.reload()
+                $state.go('documents')  
+                
                 
               }) 
             });
@@ -741,8 +745,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
               console.log('id = ' + id)
               ImageApiService.getImage(id)
               .then(function(response) {
-                 $location.path('/images')
-                 // $state.reload()       
+                 $state.go('images')       
                })
               
              
@@ -1317,8 +1320,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
                     
     SearchService.query('user=' + UserService.username()).then(
                         function() {
-                            $location.path('/documents')
-                            $state.reload() 
+                            $state.go('documents') 
                             MathJaxService.reload('user documents')
                         })
   } 
@@ -1330,8 +1332,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
                     
     SearchService.query('scope=all').then(
                         function() {
-                            $location.path('/documents')
-                            $state.reload() 
+                            $state.go('documents')
                             MathJaxService.reload('all documents')
                         })
   }
@@ -1342,8 +1343,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
                     
     SearchService.query('scope=public').then(
                         function() {
-                            $location.path('/documents')
-                            $state.reload() 
+                            $state.go('documents') 
                             MathJaxService.reload('public documents')
                         })
   }
@@ -1359,8 +1359,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('EDIT DOCUMENT ...')
-          $location.path('/editdocument')
-          $state.reload()
+          $state.go('editdocument')
+         
       }
   });
     
@@ -1370,8 +1370,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
           console.log('VIEW DOCUMENT ...')
-          $location.path('/documents')
-          $state.reload()
+          $state.go('documents')
+
       }
   });    
     
@@ -1393,13 +1393,10 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       description: 'User docuemnts',
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
-        console.log('USER DOCUMENTs ...')
-        $location.path('/documents')
-                    
-        SearchService.query('scope=user.' + UserService.username()).then(
+        console.log('USER DOCUMENTs ...')            
+        SearchService.query('user=' + UserService.username()).then(
             function() {
-                $location.path('/documents')
-                $state.reload() 
+                $state.go('documents')
                 MathJaxService.reload('user documents')
             })
       }
@@ -1629,16 +1626,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     ImageSearchService.query('scope=all')
                     SearchService.query('user=' + UserService.username()).then(
                         function() {
-                            // $location.path('/documents')
-                            
                             $state.go('documents')
-                            
-                            /*
-                            $state.transitionTo($state.current, $stateParams, { 
-                              reload: true, inherit: false, notify: true
-                            });
-                            */
-                            
                             MathJaxService.reload('SignIn')
                         })
                   } else {

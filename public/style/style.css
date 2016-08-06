@@ -12,17 +12,17 @@ body {
     max-width: 800px;
     height: 800px;
     overflow-y: auto;
-    font-size: 1.5em;
+    font-size: 1.125em;
 }
 
 #edit-text {
     
-  font-size: 1.5em;  
+  font-size: 1.125em;  
 }
 
 /* Adjust font-size in table of contents */
 .toc-item a {
-    font-size: 1.5em !important;
+    font-size: 1.125em !important;
 }
 
 .toc-item p {
