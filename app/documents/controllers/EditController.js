@@ -2,6 +2,8 @@
                              DocumentService, DocumentApiService, UserService, GlobalService,
                              MathJaxService, hotkeys, $interval) {
 
+      
+        console.log('EDIT CONTROLLER, YAY!!')
         var id;
         var apiServer = GlobalService.apiServer()
         
@@ -17,14 +19,28 @@
       
       hotkeys.bindTo($scope)
         .add({
-          combo: 'ctrl-w',
+          combo: 'ctrl-s',
           description: 'blah blah',
-          allowIn: ['TEXTAREA'],
+          allowIn: ['INPUT', 'TEXTAREA'],
           callback: function() {
-              console.log('WWWWWWW')
-              alert('W')
+            alert('SAVE DOCUMENT')
+            console.log('SAVE DOCUMENT ' + $scope.editableTitle )
+            // console.log($scope.editText)
+            DocumentApiService.update(DocumentService.params($scope), $scope)
           }
         })
+      
+      hotkeys.bindTo($scope)
+        .add({
+          combo: 'ctrl-w',
+          allowIn: ['INPUT', 'TEXTAREA'],
+          description: 'blah blah',
+          callback: function() {
+            alert('WW')
+          }
+        })
+           
+    
       
         var callAtInterval = function() {
             if ($scope.textDirty) {
@@ -61,7 +77,12 @@
       
         $scope.refreshText = function() {
             
-            $scope.textDirty = true
+           console.log('key up: ' + event.keyCode)    
+           if (event.keyCode  == 17) {
+               console.log('CTRL pressed -- saving document')
+               DocumentApiService.update(DocumentService.params($scope), $scope)
+           }   
+           
 
         }
 

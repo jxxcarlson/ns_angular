@@ -47,20 +47,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() { $state.go('documents') }
   });    
-    
-  hotkeys.add({
-    combo: 'ctrl+s',
-      description: 'Save docuemnt',
-      allowIn: ['INPUT','TEXTAREA'],
-      callback: function() {
-          $state.go('editdocument')
-          console.log('SAVE DOCUMENT ' + $scope.editableTitle )
-          // console.log($scope.editText)
-          DocumentApiService.update(DocumentService.params($scope), $scope)
-          
-      }
-  });
-    
+
   hotkeys.add({
     combo: 'ctrl+u',
       description: 'User docuemnts',
