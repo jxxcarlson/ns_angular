@@ -53,11 +53,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       description: 'Save docuemnt',
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
-          console.log('SAVE DOCUMENT ...')
-          console.log($scope.editText)
-          // DocumentApiService.update(DocumentService.documentId(), $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope) 
-          // $location.path('/editdocument')
-          // $state.reload()
+          $state.go('editdocument')
+          console.log('SAVE DOCUMENT ' + $scope.editableTitle )
+          // console.log($scope.editText)
+          DocumentApiService.update(DocumentService.params($scope), $scope)
+          
       }
   });
     
