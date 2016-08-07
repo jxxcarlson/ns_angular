@@ -50,14 +50,9 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         this.update = function(id, title, text, statusPublic, scope) {
 
             console.log('In DocumentApiService, statusPublic = ' + statusPublic)
-            var public
-            if (statusPublic == 'public') {
-                public = true
-            } else {
-                public = false
-            }
-            console.log('In DocumentApiService, public = ' + public)
-            var parameter = JSON.stringify({id:id, title: title, text:text, public: public, token: UserService.accessToken() });
+            
+            console.log('In DocumentApiService, public = ' + statusPublic)
+            var parameter = JSON.stringify({id:id, title: title, text:text, public: statusPublic, token: UserService.accessToken() });
 
             $http.post('http://' + apiServer + '/v1/documents/' + id, parameter)
                 .then(function(response){
@@ -82,5 +77,6 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
 
                 })
         }
+        
 
       }

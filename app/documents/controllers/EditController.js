@@ -87,6 +87,11 @@
                 $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                
+                $scope.updatePublicStatus = function() {
+                    
+                    console.log('STATUS PUBLIC: ' + $scope.statusPublic)
+                }
                       
                  $scope.$watch(function(scope) { 
                     return $scope.renderedText },
