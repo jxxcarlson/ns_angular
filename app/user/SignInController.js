@@ -15,9 +15,9 @@
                 function (result) {
                   if (UserService.loginStatus() == 200) {
                     $scope.message = 'Success!'
-                    UserService.signin()
-                    $scope.username = UserService.username()
-                    $scope.signedIn = UserService.signedIn
+                    UserService.signin($scope)
+                    // $scope.username = UserService.username()
+                    // $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
                     SearchService.query('user=' + UserService.username()).then(
                         function() {

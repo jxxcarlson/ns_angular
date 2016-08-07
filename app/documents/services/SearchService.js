@@ -18,6 +18,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService, Docu
           var id = documents[0]['id']
           DocumentApiService.getDocument(id)
           
-        }).then(function(response) { $state.go(destination, {}, {reload: true}) })
+        }).then(function(response) { 
+             
+             $state.go(destination, {}, {reload: true}) })
     }     
 }

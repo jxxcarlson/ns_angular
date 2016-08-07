@@ -29,9 +29,11 @@ State variables:
  }  
  
  
- this.signin = function() {
+ this.signin = function(scope) {
      
      this.signedIn = 'yes'
+     scope.username = this.username()
+     scope.signedIn = this.signedIn
  }
  
  this.loginStatus = function() {
