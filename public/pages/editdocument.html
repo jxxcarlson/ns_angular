@@ -14,8 +14,8 @@
           -->
           
           <div>
-            <label class='floating-box radio' for="pubpublicCheckbox">Public</label>
-            <input class='floating-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic" ng-click="updateDocument()" />
+            <label class='check-box-label' ng-style="publicStyle()" for="pubpublicCheckbox">Public</label>
+            <input class='floating-box check-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic" ng-click="updateDocument()" />
           </div>
 
           <h3> Documents: {{ documentCount }}</h3>

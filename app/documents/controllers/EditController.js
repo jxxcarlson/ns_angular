@@ -84,6 +84,14 @@
         $scope.documentCount = DocumentService.documentCount()
         
         $scope.docStyle = DocumentService.tocStyle
+        $scope.publicStyle = function() {
+            
+            if ($scope.statusPublic) {
+                return { "background-color": "#fee", "padding": "3px"}
+            } else {
+                return { "padding": "3px"}
+            }
+        }
         
 
         /* Get most recent version from server */
