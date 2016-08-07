@@ -23,11 +23,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
   $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
     
-  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username()) } 
+  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope) } 
   
-  $scope.allDocuments = function(){ SearchService.query('scope=all') }
+  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope }
   
-  $scope.publicDocuments = function(){ SearchService.query('scope=public') }
+  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope }
   
   /////
   
@@ -67,7 +67,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
         console.log('USER DOCUMENTs ...')            
-        SearchService.query('user=' + UserService.username())
+        SearchService.query('user=' + UserService.username(), $scope)
       }
   });    
     

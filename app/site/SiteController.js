@@ -19,7 +19,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
         
         var queryString = 'user.public=' + id
     }
-    SearchService.query(queryString)
+    SearchService.query(queryString, $scope)
     .then(function(response){
         $scope.site = id
         DocumentRouteService.getDocumentList($scope)
