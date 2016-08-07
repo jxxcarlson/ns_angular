@@ -53,6 +53,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'SiteController'
         })
     
+        .state('user', {
+            url: '/user/:id', 
+            templateUrl : 'pages/site.html',
+            controller  : 'SiteController'
+        })
+    
         .state('siteDocument', {
             url: '/site/:site/:doc_id', 
             templateUrl : 'pages/site.html',
@@ -91,6 +97,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
+    
 
         .state('documentsId', {
             url: '/documents/:id',

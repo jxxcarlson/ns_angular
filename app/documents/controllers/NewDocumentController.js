@@ -1,5 +1,7 @@
 module.exports = function($scope, $location, $state, $http, $localStorage, GlobalService, UserService, SearchService) {
           
+    
+      console.log('NEW DOCUMENT CONTROLLER')
       var apiServer = GlobalService.apiServer()
 
       $scope.submit = function() {
@@ -11,6 +13,8 @@ module.exports = function($scope, $location, $state, $http, $localStorage, Globa
       .then(function(response){
             if (response.data['status'] == 202) {
 
+                  console.log('Reponse OK, document created')
+                  
                   var document = response.data['document']
                   var id = document['id']
                   $location.path('/editdocument/' + id)
@@ -18,6 +22,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, Globa
 
             } else {
 
+                    console.log('BAD Reponse, document not created')
                    $scope.message = response.data['error']
 
             }
