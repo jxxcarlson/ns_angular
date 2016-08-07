@@ -48,7 +48,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         })
     
         .state('site', {
-            url: '/site/:id', 
+            url: '/public/:id', 
             templateUrl : 'pages/site.html',
             controller  : 'SiteController'
         })

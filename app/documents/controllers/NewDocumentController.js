@@ -1,31 +1,26 @@
 module.exports = function($scope, $location, $state, $http, $localStorage, GlobalService, UserService, SearchService) {
           
-  var apiServer = GlobalService.apiServer()
+      var apiServer = GlobalService.apiServer()
 
-  $scope.submit = function() {
+      $scope.submit = function() {
 
-  var access_token = UserService.accessToken()
-  var parameter = JSON.stringify({title:$scope.title, token:access_token });
+      var access_token = UserService.accessToken()
+      var parameter = JSON.stringify({title:$scope.title, token:access_token });
 
-  $http.post('http://' + apiServer + '/v1/documents', parameter)
-  .then(function(response){
-    if (response.data['status'] == 202) {
+      $http.post('http://' + apiServer + '/v1/documents', parameter)
+      .then(function(response){
+            if (response.data['status'] == 202) {
 
-      $scope.message = 'Success!'
-      var document = response.data['document']
-      var id = document['id']
+                  var document = response.data['document']
+                  var id = document['id']
+                  $location.path('/editdocument/' + id)
+                  SearchService.query('title='+$scope.title, 'editOneDocument')
 
-    } else {
+            } else {
 
-      $scope.message = response.data['error']
+                   $scope.message = response.data['error']
 
+            }
+      });
     }
-
-    $location.path('/editdocument/' + id)
-    SearchService.query('title='+$scope.title, 'editOneDocument')
-
-  });
-
-
-}
 }
