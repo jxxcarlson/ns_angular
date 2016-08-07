@@ -21,10 +21,10 @@ State variables:
 
  this.signout = function() {
      
-     console.log('SIGNING OUT')
+     console.log('SIGNING OUT - YAY!')
      $localStorage.loginStatus = 'signedOut'
      $localStorage.username = ''
-     $localStorage.accessToken = ''
+     $localStorage.accessToken = '' 
      this.signedIn = null
  }  
  

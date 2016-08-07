@@ -1,5 +1,23 @@
 module.exports = function($localStorage, GlobalService) {
     
+    
+    /**********
+    
+    State variables:
+    
+        documentId
+        title
+        text
+        renderedText
+        documentKind
+        public
+        
+        documentList
+        documentCount
+    
+    
+    ***********/
+    
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
@@ -46,6 +64,19 @@ module.exports = function($localStorage, GlobalService) {
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
+    }
+    
+    this.clear = function() {
+        
+        $localStorage.title = ''
+        $localStorage.documentId = ''
+        $localStorage.text = ''
+        $localStorage.renderedText = ''
+        $localStorage.kind = ''
+        $localStorage.public = false
+        
+        $localStorage.documentList = []
+        $localStorage.documentCount = 0       
     }
     
    this.tocStyle = function(doc) { 

@@ -36,11 +36,6 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                         scope.status = 'private'
                     }
                 
-                scope.$watch(function(scope) { 
-                    return scope.renderedText },
-                    MathJaxService.reload('DocumentRouteService: getDocument') 
-                );
-                
                 scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
                     MathJaxService.reload('DocumentRouteService: getDocument')              

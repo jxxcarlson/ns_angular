@@ -34,7 +34,7 @@ module.exports = function($localStorage) {
         $localStorage.imageId = id
         $localStorage.imageUrl = url
         $localStorage.imageStorageUrl = storageUrl
-        $localStorage.title = title
+        $localStorage.imageTitle = title
         
     }
     
