@@ -66,6 +66,18 @@ module.exports = function($localStorage, GlobalService) {
         
     }
     
+    this.params = function(scope) {
+        
+        var _params = { 
+                    id: this.documentId(), 
+                    title: scope.editableTitle, 
+                    public: scope.statusPublic,
+                    text: scope.editText 
+                 }
+        
+        return _params
+    }
+    
     this.clear = function() {
         
         $localStorage.title = ''

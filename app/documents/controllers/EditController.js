@@ -30,17 +30,10 @@
             if ($scope.textDirty) {
                 updateCount += 1
                 console.log('periodicUpdate ' + updateCount)
-                    
-                var params = { id: DocumentService.documentId(), 
-                    title: $scope.editableTitle, 
-                    public: $scope.statusPublic,
-                    text: $scope.editText 
-                 }
                 
-                DocumentApiService.update(params, $scope)
-               
-                // DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)
-                if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
+                DocumentApiService.update(DocumentService.params($scope), $scope)
+              
+                MathJaxService.reload()
                 $scope.textDirty = false
             } else {
                 console.log('SKIPPING periodicUpdate')
@@ -52,7 +45,7 @@
         var periodicUpdate 
         if (DocumentService.kind() == 'asciidoctor-latex') {
             
-            periodicUpdate = $interval(callAtInterval, 1*60*1000);  // 1 minute
+            periodicUpdate = $interval(callAtInterval, 60*1000);  // 1 minute
             
             
         } else {
@@ -121,14 +114,8 @@
 
         
         $scope.updateDocument = function() {
-            
-            var params = { id: DocumentService.documentId(), 
-                    title: $scope.editableTitle, 
-                    public: $scope.statusPublic,
-                    text: $scope.editText 
-                 }
-            
-            DocumentApiService.update(params, $scope)        
+           
+            DocumentApiService.update(DocumentService.params($scope), $scope)        
         
         }
 
