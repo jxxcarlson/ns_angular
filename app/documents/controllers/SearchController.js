@@ -1,10 +1,16 @@
 module.exports = function($scope, $state, $http, GlobalService,
                            DocumentService, DocumentApiService, 
-                           MathJaxService, QueryParser) {
+                           MathJaxService, QueryParser, UserService) {
         $scope.doSearch = function(){
             
             var apiServer = GlobalService.apiServer()
             var query = QueryParser.parse($scope.searchText)
+            
+            if (UserService.accessTokenValid() == false) {
+                
+                query += '&public'
+                
+            }
             
             $http.get('http://' + apiServer + '/v1/documents' + '?' + query  )
             .then(function(response){

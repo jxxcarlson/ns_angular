@@ -20,16 +20,10 @@ module.exports = function($localStorage, GlobalService) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
-    this.setDocumentList = function(array) {    
-        var id
-        if ((array == undefined) || (array[0] == undefined)) {
-            console.log('document array is empty')
-            id = GlobalService.defaultDocumentID()
-            array = [id]
-        } else {
-            console.log('document array: ' + array.length)
-            id = array[0]['id']
-        }
+    this.setDocumentList = function(array) { 
+        console.log('array:::: ' + array)
+        console.log('document array: ' + array.length)
+        // id = array[0]['id']
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
     }

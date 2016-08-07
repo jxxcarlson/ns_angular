@@ -161,6 +161,9 @@ app.controller('MainController', function($scope, $http, $state, $location,
     
     $scope.host = GlobalService.clientServer()
     
+    $scope.accessTokenValid = UserService.accessTokenValid()
+    console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
+    
 });
 
 

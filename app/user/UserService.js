@@ -47,6 +47,12 @@ State variables:
         return $localStorage.accessToken;
   }
   
+  this.accessTokenValid = function() {
+      
+      console.log('$localStorage.accessToken: ' + $localStorage.accessToken)
+      return ($localStorage.accessToken != '') && ($localStorage.accessToken != undefined)
+  }
+  
   this.validateNewUser = function(username, email, password, passwordConfirmation) {
     
       // Validate username        
