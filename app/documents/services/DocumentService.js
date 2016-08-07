@@ -64,6 +64,8 @@ module.exports = function($localStorage, GlobalService) {
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
+        return document['rendered_text']
+        
     }
     
     this.params = function(scope) {

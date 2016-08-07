@@ -13,10 +13,13 @@
             id = DocumentService.documentId();
         }
       
+      // Set heights of window parts
       var innerHeight = $window.innerHeight
       document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
       document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
       
+      
+      // Editor hotkeys (not working)
       hotkeys.bindTo($scope)
         .add({
           combo: 'ctrl-s',
@@ -41,40 +44,42 @@
         })
            
     
-      
+        // Auto refresh
         var callAtInterval = function() {
             if ($scope.textDirty) {
                 updateCount += 1
                 console.log('periodicUpdate ' + updateCount)
-                
+
                 DocumentApiService.update(DocumentService.params($scope), $scope)
-              
+
                 MathJaxService.reload()
                 $scope.textDirty = false
             } else {
                 console.log('SKIPPING periodicUpdate')
             }
-            
-            
+
+
         }
-      
+
         var periodicUpdate 
         if (DocumentService.kind() == 'asciidoctor-latex') {
-            
+
             periodicUpdate = $interval(callAtInterval, 60*1000);  // 1 minute
-            
-            
+
+
         } else {
-            
+
             periodicUpdate = $interval(callAtInterval, 500) // 0.5 second
         }
-        
+
         var updateCount = 0
-      
+
         $scope.$on("$destroy", function(){
             $interval.cancel(periodicUpdate);
         });
       
+      
+      // update document command bound to key up for control key
         $scope.refreshText = function() {
             
            console.log('key up: ' + event.keyCode)    
@@ -88,7 +93,7 @@
 
 
         
-        /* Initial values: */
+        // Initial values:
         $scope.title = DocumentService.title()
         $scope.editableTitle = DocumentService.title()
         $scope.text = DocumentService.text()
@@ -108,7 +113,7 @@
         }
         
 
-        /* Get most recent version from server */
+        // Get most document from server
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
             .then(function(response){
             
@@ -133,7 +138,7 @@
                 
             })
 
-        
+        // update document
         $scope.updateDocument = function() {
            
             DocumentApiService.update(DocumentService.params($scope), $scope)        

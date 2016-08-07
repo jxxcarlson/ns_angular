@@ -1,4 +1,4 @@
-module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, MathJaxService) {
 
         var deferred = $q.defer();
         var apiServer = GlobalService.apiServer()
@@ -49,7 +49,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
         this.update = function(params, scope) {
 
-
+            var deferredRefresh = $q.defer();
             params['token'] = UserService.accessToken()
 
             var parameter = JSON.stringify(params);
@@ -57,25 +57,32 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
             $http.post('http://' + apiServer + '/v1/documents/' + params['id'], parameter)
                 .then(function(response){
                 
-                    var rt;
-                
                     if (response.data['status'] == '202') {
+                        
                         var document = response.data['document']
-
-                        /* Update local storage */
-                        DocumentService.update(document)
                         
                         /* Update $scope */
                         scope.title = document['title']
                         scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         scope.message = 'Success!'
-                        
 
+                        /* Update local storage */
+                        DocumentService.update(document)
+                 
                     } else {
                         scope.message = response.data['error']
                     }
 
+                }).then( 
+                function(response) {
+                    deferredRefresh.resolve(response)
+                    console.log('AAAA')
+                    MathJaxService.reload('AAAA')
+                }, function(response) {
+                    deferred.reject(response);
+                     console.log('BBBB')
                 })
+            
         }
         
 
