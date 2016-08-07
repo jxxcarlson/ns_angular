@@ -1,5 +1,7 @@
 module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, GlobalService, UserService) {
+                           DocumentRouteService, DocumentService, GlobalService, UserService, MathJaxService) {
+    
+    console.log('SEARCH SERVICE')
     
     var deferred = $q.defer();
     var apiServer = GlobalService.apiServer() 
@@ -24,10 +26,11 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
 
           var id = documents[0]['id']
           DocumentApiService.getDocument(id)
-          // DocumentRouteService.getDocument(id, scope)
-          
-        }).then(function(response) { 
-             
-             $state.go(destination, {}, {reload: true}) })
-    }     
+          DocumentApiService.getDocument(id).then(function(response) {
+                  
+                $state.go('documents', {}, {reload: true})
+              
+              }) 
+         })
+    }
 }
