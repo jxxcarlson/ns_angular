@@ -95,12 +95,8 @@
 
                 DocumentService.update(document)
                 
-                if (DocumentService.getPublic() == true) {
-                    $scope.statusPublic = 'public'
-                } else {
-                    $scope.statusPublic = 'private'
-                }
-            
+                $scope.statusPublic = DocumentService.getPublic()
+                
             })
 
         

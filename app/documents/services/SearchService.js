@@ -3,7 +3,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService, Docu
     var deferred = $q.defer();
     var apiServer = GlobalService.apiServer() 
    
-    this.query = function(searchText) {
+    this.query = function(searchText, destination='documents') {
         
          return $http.get('http://' + apiServer + '/v1/documents' + '?' + searchText  )
         .then(function(response){
@@ -18,6 +18,6 @@ module.exports = function($http, $state, $location, $q, DocumentApiService, Docu
           var id = documents[0]['id']
           DocumentApiService.getDocument(id)
           
-        }).then(function(response) { $state.go('documents', {}, {reload: true}) })
+        }).then(function(response) { $state.go(destination, {}, {reload: true}) })
     }     
 }

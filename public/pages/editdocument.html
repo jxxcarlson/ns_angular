@@ -3,12 +3,19 @@
   <div class="col-md-2" >
       <div style="margin-left:1em;">
           
+          <!--
           <div>
             <label class='floating-box radio' for="publicRadio">Public</label>
             <input class='floating-box' id="publicRadio" type="radio" ng-model="statusPublic" value="public" />
             <br />
             <label class='floating-box radio' for="privateRadio">Private</label>
             <input class='floating-box' id="privateRadio" type="radio" ng-model="statusPublic" value="private" /><br />
+          </div>
+          -->
+          
+          <div>
+            <label class='floating-box radio' for="pubpublicCheckbox">Public</label>
+            <input class='floating-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic"  />
           </div>
 
           <h3> Documents: {{ documentCount }}</h3>

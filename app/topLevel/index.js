@@ -105,7 +105,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'editDocumentController'
         })
 
-        .state('editdocumentId', {
+        .state('editOneDocument', {
             url: '/editdocument/:id',
             templateUrl : 'pages/editdocument.html',
             controller  : 'editDocumentController'

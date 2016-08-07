@@ -1,34 +1,31 @@
-module.exports = [
-      '$scope',
-      '$http',
-      '$localStorage',
-      'GlobalService',
-      function($scope, $http, $localStorage, GlobalService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, GlobalService, UserService, SearchService) {
           
-        var apiServer = GlobalService.apiServer()
-        
-        $scope.submit = function() {
+  var apiServer = GlobalService.apiServer()
 
-          console.log('CREATE DOCUMENT')
-          console.log("create new document: " + $scope.title)
+  $scope.submit = function() {
 
-          var access_token = $localStorage.access_token
-          console.log("TOKEN: " + String(access_token))
+  var access_token = UserService.accessToken()
+  var parameter = JSON.stringify({title:$scope.title, token:access_token });
 
-          var parameter = JSON.stringify({title:$scope.title, token:access_token });
-          console.log('parameter: ' + parameter);
+  $http.post('http://' + apiServer + '/v1/documents', parameter)
+  .then(function(response){
+    if (response.data['status'] == 202) {
 
-          $http.post('http://' + apiServer + '/v1/documents', parameter)
-          .then(function(response){
-            if (response.data['status'] == 200) {
-              $scope.message = 'Success!'
-            } else {
-              $scope.message = response.data['error']
-            }
-            console.log('status = ' + String(response.data['status']))
-          });
+      $scope.message = 'Success!'
+      var document = response.data['document']
+      var id = document['id']
+
+    } else {
+
+      $scope.message = response.data['error']
+
+    }
+
+    $location.path('/editdocument/' + id)
+    SearchService.query('title='+$scope.title, 'editOneDocument')
+
+  });
 
 
-        }
-      }
-    ]
+}
+}
