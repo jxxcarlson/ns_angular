@@ -5,7 +5,6 @@
         var id;
         var apiServer = GlobalService.apiServer()
         
-        console.log('EDIT CONTROLLER, $stateParams.id: ' + $stateParams.id)
         if ($stateParams.id != undefined) {
             id = $stateParams.id
         } else {
@@ -30,12 +29,21 @@
         var callAtInterval = function() {
             if ($scope.textDirty) {
                 updateCount += 1
-                console.log('periodicUpdate ' + updateCount + 'statusPublic: ' + $scope.statusPublic)
-                DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)
+                console.log('periodicUpdate ' + updateCount)
+                    
+                var params = { id: DocumentService.documentId(), 
+                    title: $scope.editableTitle, 
+                    public: $scope.statusPublic,
+                    text: $scope.editText 
+                 }
+                
+                DocumentApiService.update(params, $scope)
+               
+                // DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)
                 if (DocumentService.kind() == 'asciidoctor-latex') { MathJaxService.reload() }
                 $scope.textDirty = false
             } else {
-                console.log('SKIPPING periodicUpdate, ' + 'statusPublic: ' + $scope.statusPublic)
+                console.log('SKIPPING periodicUpdate')
             }
             
             
@@ -90,7 +98,6 @@
                 
                 $scope.updatePublicStatus = function() {
                     
-                    console.log('STATUS PUBLIC: ' + $scope.statusPublic)
                 }
                       
                  $scope.$watch(function(scope) { 
@@ -107,7 +114,13 @@
         
         $scope.updateDocument = function() {
             
-            DocumentApiService.update(id, $scope.editableTitle, $scope.editText, $scope.statusPublic, $scope)        
+            var params = { id: DocumentService.documentId(), 
+                    title: $scope.editableTitle, 
+                    public: $scope.statusPublic,
+                    text: $scope.editText 
+                 }
+            
+            DocumentApiService.update(params, $scope)        
         
         }
 

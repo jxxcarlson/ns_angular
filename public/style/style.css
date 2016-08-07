@@ -70,6 +70,14 @@ p {
     
 }
 
+.input-box {
+    
+    width: 250px;
+    height:30px;
+    font-size: 1.35em;
+    
+}
+
 p { font-size: 1.25em; }
 
 

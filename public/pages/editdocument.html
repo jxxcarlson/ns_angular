@@ -15,7 +15,7 @@
           
           <div>
             <label class='floating-box radio' for="pubpublicCheckbox">Public</label>
-            <input class='floating-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic" ng-click="updatePublicStatus()" />
+            <input class='floating-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic" ng-click="updateDocument()" />
           </div>
 
           <h3> Documents: {{ documentCount }}</h3>
@@ -27,8 +27,14 @@
 
   <div class="col-md-5">
       <div style="margin-left:1em;">
-        <input ng-model="editableTitle" type="text" id="editableTitle">
-        <button ng-click="updateDocument()">Save</button></p>
+        <div style="margin-bottom: 3px;">
+            <span>
+              <input class="input-box" style="width: 400px; vertical-align: middle;" ng-model="editableTitle" type="text" id="editableTitle">
+            </span>    
+            <span style="display:inline-block; vertical-align: middle">
+                <button style="vertical-align: middle" ng-click="updateDocument()">Save</button>
+            </span>    
+        </div>
         <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false"  style="width:90%;" ng-style="editorHeight"></textarea>
       </div>
   </div>

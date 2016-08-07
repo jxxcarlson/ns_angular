@@ -27,7 +27,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
         
         this.search = function(searchText) {
-          console.log('DocumentApiService.search')      
+               
           return  $http.get('http://' + apiServer + '/v1/documents' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
@@ -47,16 +47,18 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
         
         
-        this.update = function(id, title, text, statusPublic, scope) {
+        this.update = function(params, scope) {
 
-            console.log('In DocumentApiService, statusPublic = ' + statusPublic)
-            
-            console.log('In DocumentApiService, public = ' + statusPublic)
-            var parameter = JSON.stringify({id:id, title: title, text:text, public: statusPublic, token: UserService.accessToken() });
 
-            $http.post('http://' + apiServer + '/v1/documents/' + id, parameter)
+            params['token'] = UserService.accessToken()
+
+            var parameter = JSON.stringify(params);
+
+            $http.post('http://' + apiServer + '/v1/documents/' + params['id'], parameter)
                 .then(function(response){
+                
                     var rt;
+                
                     if (response.data['status'] == '202') {
                         var document = response.data['document']
 
@@ -72,8 +74,6 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     } else {
                         scope.message = response.data['error']
                     }
-
-                    console.log('status = ' + String(response.data['status']))
 
                 })
         }
