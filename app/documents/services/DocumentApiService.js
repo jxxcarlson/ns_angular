@@ -78,8 +78,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 }).then( 
                 function(response) {
                     deferredRefresh.resolve(response)
-                    console.log('AAAA')
-                    MathJaxService.reload('AAAA')
+                    console.log('AAAA: ' + JSON.stringify(response))
+                    MathJaxService.reload('AAAA: ')
                 }, function(response) {
                     deferred.reject(response);
                      console.log('BBBB')
