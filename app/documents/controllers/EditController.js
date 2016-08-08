@@ -147,7 +147,7 @@
                       
                  $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    MathJaxService.reload('EditController')              
+                    MathJaxService.reload('EditController, get Document: ' + id)              
                 );
 
                 DocumentService.update(document)
