@@ -42,9 +42,6 @@ module.exports = function($localStorage, GlobalService) {
     this.renderedText = function() { return $localStorage.renderedText }
     
     this.setDocumentList = function(array) { 
-        console.log('array:::: ' + array)
-        console.log('document array: ' + array.length)
-        // id = array[0]['id']
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
     }

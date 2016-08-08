@@ -18,6 +18,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
+                 MathJaxService.reload('DocumentApiService, getDocument')
+              
                 // the following line rejects the promise
                 deferred.reject(response);
                 // promise is returned

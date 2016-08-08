@@ -31,7 +31,6 @@ module.exports = function($scope, $window, $location, $stateParams, $state, $sce
     
     $scope.author = function(doc) {
         
-        console.log(doc)
         if (doc['author'] != UserService.username()) {
             
             return doc['author'] + ": "
