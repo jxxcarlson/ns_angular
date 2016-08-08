@@ -5,6 +5,7 @@
       
         console.log('EDIT CONTROLLER, YAY!!')
         var id;
+        var keyStrokeCount = 0
         var apiServer = GlobalService.apiServer()
         
         if ($stateParams.id != undefined) {
@@ -52,7 +53,7 @@
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
 
-                MathJaxService.reload()
+                // MathJaxService.reload()
                 $scope.textDirty = false
             } else {
                 console.log('SKIPPING periodicUpdate')
@@ -82,13 +83,23 @@
       // update document command bound to key up for control key
         $scope.refreshText = function() {
             
-           console.log('key up: ' + event.keyCode)    
-           if (event.keyCode  == 17) {
-               console.log('CTRL pressed -- saving document')
-               DocumentApiService.update(DocumentService.params($scope), $scope)
-           }   
            
-
+           
+           
+           if (event.keyCode  == 27) {
+               // console.log('ESCAPE pressed -- saving document')
+               DocumentApiService.update(DocumentService.params($scope), $scope)
+           } else {       
+               $scope.textDirty = true
+               keyStrokeCount += 1    
+               console.log('key up: ' + event.keyCode + ', count = ' + keyStrokeCount)
+           
+               if (keyStrokeCount == 10) {
+                   keyStrokeCount = 0
+                   DocumentApiService.update(DocumentService.params($scope), $scope)
+                   $scope.textDirty = false
+               }
+           }  
         }
 
 
