@@ -12,17 +12,17 @@ body {
     max-width: 800px;
     height: 800px;
     overflow-y: auto;
-    font-size: 1.125em;
+    /* font-size: 1.125em; */
 }
 
 #edit-text {
     
-  font-size: 1.125em;  
+  /* font-size: 1.125em;  */
 }
 
 /* Adjust font-size in table of contents */
 .toc-item a {
-    font-size: 1.125em !important;
+    /* font-size: 1.125em !important; */
 }
 
 .toc-item p {
@@ -38,7 +38,7 @@ size problem when bootstrap.css
 is loaded after asciidoctor.css
 */
 p {
-    font-size: 1em;
+    /* font-size: 1em; */
 }
 
 .floating-box {
