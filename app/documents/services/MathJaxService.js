@@ -1,7 +1,7 @@
 module.exports = function(DocumentService) {
     
     this.reload = function(message='**') {
-        if (DocumentService.kind() == 'asciidoctor-latex') {
+        if (DocumentService.kind() == 'asciidoc-latex') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
             console.log(message + ": reloadMathJax called"); 
         } else {
