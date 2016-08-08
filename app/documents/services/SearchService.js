@@ -19,7 +19,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
               
           var jsonData = response.data
           var documents = jsonData['documents']
-          
+          console.log('Search Service, document :: ' + documents.map(function(item) { return item['id'] +', ' + item['title'] +';   '}))
           if (documents.length == 0) { documents = [GlobalService.defaultDocumentID()] }
           
           DocumentService.setDocumentList(documents)

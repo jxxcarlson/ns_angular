@@ -82,22 +82,33 @@ p {
     
     display: inline-block;
     width: 60px;
-    height: 30px;
-    margin: 10px;
+    height: 30px;   
     font-size: 1em;
     vertical-align: middle;
     padding-left: 0.75em;
-    padding-top: 0.5em;
+   
     font-size: 1.25em;   
     
 }
 
 .check-box {
     
-    height: 28px;
-    vertical-align: middle;
+    display: inline-block;
+    height: 22px;
+    vertical-align: top;
 }
 
 p { font-size: 1.25em; }
 
-
+.neutral-box {
+    
+    height:2em;
+    width:7em;
+    font-size: 14pt;
+    padding-left: 1em;
+    padding-top: 0.15em;
+    background-color: #aaa;
+    color: white;
+    
+    
+}

@@ -7,6 +7,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         scope.text = DocumentService.text()
         scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         scope.docArray = DocumentService.documentList()
+        console.log('DocuemntRouteService, getDocumentList :: ' + scope.docarray)
         scope.documentCount = DocumentService.documentCount()
         
         console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
