@@ -31,9 +31,10 @@
                         Doc format <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                        <li role="menuitem" ><a ui-sref="newdocument">Asciidoc</a></li>
-                        <li role="menuitem" ><a ui-sref="newdocument">Asciidoc-MS</a></li>
-                        <li role="menuitem" ><a ui-sref="newdocument">Asciidoc-LaTeX</a></li>
+                        <li role="menuitem" ng-click="setKind('text')" ng-style="getDocKindClass('text')">Text</li>
+                        <li role="menuitem" ng-click="setKind('asciidoc')" ng-style="getDocKindClass('asciidoc')">Asciidoc</li>
+                        <li role="menuitem" ng-click="setKind('asciidoc-ms')" ng-style="getDocKindClass('asciidoc-ms')">Asciidoc-MS</li>
+                        <li role="menuitem" ng-click="setKind('asciidoc-latex')" ng-style="getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX</li>
                                                   
                       </ul>
                     </div>

@@ -6,7 +6,7 @@
 REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function($scope, $window, $location, $stateParams, $state, $sce, DocumentApiService, 
-                           DocumentService, DocumentRouteService, MathJaxService ) {
+                           DocumentService, DocumentRouteService, UserService, MathJaxService ) {
 
  
     var id = $stateParams.id;
@@ -29,24 +29,27 @@ module.exports = function($scope, $window, $location, $stateParams, $state, $sce
     
     $scope.docStyle = DocumentService.tocStyle
     
-    /**
-    $scope.docStyle = function(doc) { 
-        var css = {}
-        if (doc['id'] == DocumentService.documentId() ) {
-            css["background-color"] = "#fee"
+    $scope.author = function(doc) {
+        
+        console.log(doc)
+        if (doc['username'] != UserService.username()) {
+            
+            return doc['author'] + ": "
+            
+        } else {
+            
+            return ""
         }
-        if (doc['public'] == true ) {
-            css["font-style"] = "italic"
-        }
-        return css
-    } 
-    **/
+        
+        
+    }
     
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
         } else {
             $scope.statusPublic = 'private'
         }
+
     
     $scope.$watch(function(scope) { 
         return $scope.renderedText },

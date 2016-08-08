@@ -24,6 +24,10 @@ module.exports = function($localStorage, GlobalService) {
     this.setTitle = function(title) { $localStorage.title = title}
     this.title = function() { return $localStorage.title }
     
+    this.setAuthor = function(author) { $localStorage.author = author}
+    this.author = function() { return $localStorage.author }
+    
+    
     this.setText = function(text) { $localStorage.text = text }
     this.text = function() { return $localStorage.text }
     

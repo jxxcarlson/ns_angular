@@ -53,6 +53,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
             params['token'] = UserService.accessToken()
 
             var parameter = JSON.stringify(params);
+            
+            console.log('DocumentApiService, update, parameter: ' + parameter)
 
             $http.post('http://' + apiServer + '/v1/documents/' + params['id'], parameter)
                 .then(function(response){

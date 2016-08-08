@@ -112,6 +112,24 @@
             }
         }
         
+         $scope.getDocKindClass = function(kk) {
+            
+            if (kk == DocumentService.kind()) {
+                return { "background-color" : "#efe" }
+            } else {
+                return {  } 
+            }
+        }
+         
+        $scope.setKind = function(kk) {
+            
+            console.log('Set document kind to ' + kk)
+            var id = DocumentService.documentId()
+            var params = {id: id, kind: kk}
+            DocumentApiService.update(params, $scope)
+        } 
+        
+
 
         // Get most document from server
         $http.get('http://' + apiServer + '/v1/documents/' + id  )
