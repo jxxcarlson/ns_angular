@@ -4,7 +4,7 @@
 
     <h2> Documents: {{ documentCount }} </h2>
     <br />    
-    <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}">{{author(doc)}}{{doc['title']}}</a></p>
+    <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
 
   </div>
   </div>
