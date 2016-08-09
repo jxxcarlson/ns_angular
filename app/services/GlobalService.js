@@ -39,7 +39,7 @@ module.exports = function() {
         }
     }
     
-    var configuration = "heroku&local"
+    var configuration = "jxxmbp.local"
     
     
     this.configuration = function() { return configuration }
