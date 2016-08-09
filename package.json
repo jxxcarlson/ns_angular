@@ -2,7 +2,7 @@
   "name": "ns_angular",
   "version": "1.0.0",
   "description": "Noteshare angular client",
-  "main": "index.js",
+  "main": "public/js/main.js",
   "repository": "https://github.com/jxxcarlson/ns_angular",
   "scripts": {
     "test": "./node_modules/karma/bin/karma start karma.conf.js"
