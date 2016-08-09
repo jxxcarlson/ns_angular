@@ -97,6 +97,7 @@
                if (keyStrokeCount == 10) {
                    keyStrokeCount = 0
                    DocumentApiService.update(DocumentService.params($scope), $scope)
+                   $scope.wordCount = DocumentService.text().split(' ').length
                    $scope.textDirty = false
                }
            }  
@@ -112,6 +113,8 @@
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        
+        $scope.wordCount = $scope.text.split(' ').length
         
         $scope.docStyle = DocumentService.tocStyle
         $scope.publicStyle = function() {

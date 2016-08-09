@@ -34,7 +34,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  data: file
                 }
             var file_url = response.url
-            console.log("-- now PUT reqeust: " + req)
+            console.log("-- now PUT request: " + JSON.stringify(req))
             $http(req)
             .success(function(response) {
                 var query = {
