@@ -172,12 +172,14 @@ app.controller('AboutController', function($scope, foo, GlobalService) {
     
     
     $scope.message = 'Look! I am an about page ....';
-    foo.myFunc('AboutController')
-    
+    foo.myFunc('AboutController')   
     
     $scope.message1 = 'Configuration: ' + GlobalService.configuration();
     $scope.message2 = 'Client Server: ' + GlobalService.clientServer();
     $scope.message3 = 'API Server: ' + GlobalService.apiServer();
+    $scope.message4 = 'Server command: ' + GlobalService.serverCommand();
+    $scope.message5 = 'Remarks: ' + GlobalService.remarks();
+    
 });
 
 
