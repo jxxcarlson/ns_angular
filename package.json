@@ -12,6 +12,10 @@
   ],
   "author": "James Carlson",
   "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "devDependencies": {
     "angular": "^1.5.8",
     "browserify": "^13.1.0",
