@@ -57,6 +57,7 @@ module.exports = function($localStorage, GlobalService) {
     
     this.update = function(document) {
         
+        console.log('Document Service, update, with title = ' + document['title'])
         this.setTitle( document['title'] )
         this.setDocumentId( document['id'] )       
         this.setText( document['text'] )

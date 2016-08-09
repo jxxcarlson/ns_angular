@@ -25,7 +25,7 @@
                     SearchService.query('user=' + UserService.username()).then(
                         function() {
                             $state.go('documents')
-                            MathJaxService.reload('SignIn')
+                            MathJaxService.reload(DocumentService.kind(), 'SignIn')
                         })
                   } else {
                     console.log('CANNOT SIGN IN USER')  

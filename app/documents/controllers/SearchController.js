@@ -27,7 +27,7 @@ module.exports = function($scope, $state, $http, GlobalService,
                 
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    MathJaxService.reload('SearchController')              
+                    MathJaxService.reload(DocumentService.kind(), 'SearchController')              
                 );                
               })
               

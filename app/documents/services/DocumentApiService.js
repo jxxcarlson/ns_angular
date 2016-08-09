@@ -1,3 +1,9 @@
+/*****
+
+The purpose of DocumentApiServices is to communicate with the API server,
+performing the standard CRUD functons
+
+*****/
 module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, MathJaxService) {
 
         var deferred = $q.defer();
@@ -18,7 +24,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
-                 MathJaxService.reload('DocumentApiService, getDocument')
+                 MathJaxService.reload(DocumentService.kind(), 'DocumentApiService, getDocument')
               
                 // the following line rejects the promise
                 deferred.reject(response);
@@ -80,7 +86,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 function(response) {
                     deferredRefresh.resolve(response)
                     console.log('AAAA: ' + JSON.stringify(response))
-                    MathJaxService.reload('AAAA: ')
+                    MathJaxService.reload(DocumentService.kind(), 'AAAA: ')
                 }, function(response) {
                     deferred.reject(response);
                      console.log('BBBB')

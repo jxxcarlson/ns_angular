@@ -14,7 +14,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         
         scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
-                    MathJaxService.reload('DocumentRouteService: getDocumentList')              
+                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocumentList')              
                 );
         
     }
@@ -39,7 +39,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 
                 scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
-                    MathJaxService.reload('DocumentRouteService: getDocument')              
+                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocument')              
                 );
                 
             },

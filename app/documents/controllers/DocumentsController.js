@@ -5,7 +5,7 @@
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $window, $location, $stateParams, $state, $sce, DocumentApiService, 
+module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, DocumentRouteService, UserService, MathJaxService ) {
 
  
@@ -29,6 +29,14 @@ module.exports = function($scope, $window, $location, $stateParams, $state, $sce
     
     $scope.docStyle = DocumentService.tocStyle
     
+    $scope.reloadMathJax = function() {
+        $timeout( 
+         function() { 
+         MathJaxService.reload('ERERER:  element ready, reloading MathJax for ' + DocumentService.title() )},
+        100)
+        
+    }
+    
     $scope.author = function(doc) {
         
         if (doc['author'] != UserService.username()) {
@@ -50,9 +58,14 @@ module.exports = function($scope, $window, $location, $stateParams, $state, $sce
         }
 
     
-    $scope.$watch(function(scope) { 
-        return $scope.renderedText },
-        MathJaxService.reload('DocumentController')              
-    );
+    //$scope.$watch(function(scope) { 
+        // return $scope.renderedText },
+        // The below is totally useless -- it is called too
+        // early -- before the document state has been
+        // updated.
+        //
+        //
+        // MathJaxService.reload('DocumentController')              
+    // );
 
 }

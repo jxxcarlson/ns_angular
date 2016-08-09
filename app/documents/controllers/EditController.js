@@ -53,7 +53,7 @@
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
 
-                // MathJaxService.reload()
+                // MathJaxService.reload(DocumentService.kind())
                 $scope.textDirty = false
             } else {
                 console.log('SKIPPING periodicUpdate')
@@ -158,7 +158,7 @@
                       
                  $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    MathJaxService.reload('EditController, get Document: ' + id)              
+                    MathJaxService.reload(DocumentService.kind(), 'EditController, get Document: ' + id)              
                 );
 
                 DocumentService.update(document)
