@@ -14,18 +14,18 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
      var apiServer = GlobalService.apiServer()
         
     $scope.upload = function (file) {
-        console.log("UploadCtrl sending S3sign request");
-        console.log("  File name: " + file.name);
-        console.log("File type: " + file.type);
+        console.log("Upload controller sending siging request");
         var query = {
             filename: file.name,
             type: file.type,
             owner: UserService.username()
         };
+        console.log("-- query: " + JSON.stringify(query))
         // Get presigned URL
-        $http.post('http://' + apiServer + '/v1/presigned', query).success(function(response) {
-            console.log("UploadCtrl s3sign response received");
-            console.log("UploadCtrl URL in repsonse: " + response.url)
+        var url = 'http://' + apiServer + '/v1/presigned'
+        console.log("-- url for POST: " + url)
+        $http.post(url, query).success(function(response) {
+            console.log("Signed response received: " + response.url);
             // Upload file to S3
             var req = {
                  method: 'PUT',
@@ -34,7 +34,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  data: file
                 }
             var file_url = response.url
-            // $http.put(response.url, file)
+            console.log("-- now PUT reqeust: " + req)
             $http(req)
             .success(function(response) {
                 var query = {
