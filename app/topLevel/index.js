@@ -25,6 +25,7 @@ var app = require('angular').module('noteshareApp');
 
 
 app.controller('MenuController', require('./controllers/MenuController'))
+// app.controller('AboutController', require('./controllers/AboutController'))
 
     // configure our routes
 
@@ -44,7 +45,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         .state('about', {
             url: '/about',
             templateUrl : 'pages/about.html',
-            controller  : 'aboutController'
+            controller  : 'AboutController'
         })
     
         .state('site', {
@@ -68,13 +69,13 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         .state('foo', {
             url: 'foo', 
             templateUrl : 'pages/about.html',
-            controller  : 'aboutController'
+            controller  : 'AboutController'
         })
     
         .state('foo2', {
             url: 'foo/:id', 
             templateUrl : 'pages/about.html',
-            controller  : 'aboutController'
+            controller  : 'AboutController'
         })
     
     
@@ -166,14 +167,16 @@ app.controller('MainController', function($scope, $http, $state, $location,
     
 });
 
-
-app.controller('aboutController', function($scope, foo) {
+/*
+app.controller('AboutController', function($scope, foo) {
     $scope.message = 'Look! I am an about page ....';
-    foo.myFunc('aboutController')
+    foo.myFunc('AboutController')
     
     
 
 });
+*/
+
 
 app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
