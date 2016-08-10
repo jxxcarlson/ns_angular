@@ -46,7 +46,9 @@ State variables:
   }
  
   this.accessToken = function() {
-        return $localStorage.accessToken;
+    var token = $localStorage.accessToken
+    if token == undefined { token = "" }
+    return $localStorage.accessToken;
   }
   
   this.accessTokenValid = function() {
