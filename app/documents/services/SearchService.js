@@ -14,14 +14,16 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                 
             }
         
-         return $http.get('http://' + apiServer + '/v1/documents' + '?' + searchText  )
+         return $http.get(
+             'http://' + apiServer + '/v1/documents' + '?' + searchText, {
+                 headers: { "accesstoken": UserService.accessToken() }
+             }
+         )
         .then(function(response){
               
           var jsonData = response.data
           var documents = jsonData['documents']
-
-          if ((documents == undefined) || (documents.length == 0)) { documents = [GlobalService.defaultDocumentID()] }
-          
+ 
           DocumentService.setDocumentList(documents)
 
           var id = documents[0]['id']

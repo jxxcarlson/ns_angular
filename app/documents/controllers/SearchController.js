@@ -19,9 +19,13 @@ module.exports = function($scope, $state, $http, GlobalService,
               var documents = jsonData['documents']
               
               DocumentService.setDocumentList(documents)
-              
+                
               var id = documents[0]['id']
-              DocumentApiService.getDocument(id).then(function(response) {
+              
+              var doc= documents[0]
+              if (doc) {
+                var id = documents[0]['id']
+                DocumentApiService.getDocument(id).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 
@@ -29,7 +33,9 @@ module.exports = function($scope, $state, $http, GlobalService,
                     return $scope.renderedText },
                     MathJaxService.reload(DocumentService.kind(), 'SearchController')              
                 );                
-              })
+              })  
+              }
+              
               
             });
       };
