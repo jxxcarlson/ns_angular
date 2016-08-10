@@ -1,1 +1,3 @@
 https://devcenter.heroku.com/articles/node-best-practices[Node best practices]
+http://www.jvandemo.com/how-to-configure-your-angularjs-application-using-environment-variables[Configuring 
+AngularJS apps with environment variables]
