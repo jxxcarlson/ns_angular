@@ -21,5 +21,5 @@ app.all('*', function (req, res, next) {
   console.log(requestCount + ' request: ' + req.params[0])
 });
 
-app.listen(PORT) //the port you want to use
+app.listen(process.env.PORT || PORT) //the port you want to use
 console.log('\nServer listening at http://localhost:' + PORT + '\n');
