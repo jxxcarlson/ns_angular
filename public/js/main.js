@@ -573,7 +573,10 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
-          return  $http.get('http://' + GlobalService.apiServer() + '/v1/documents/' + id  )
+          return  $http.get('http://' + GlobalService.apiServer() + '/v1/documents/' + id,
+            {
+                 headers: { "accesstoken": UserService.accessToken() }
+             })
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -2001,7 +2004,9 @@ State variables:
   }
  
   this.accessToken = function() {
-        return $localStorage.accessToken;
+    var token = $localStorage.accessToken
+    if (token == undefined) { token = "" }
+    return $localStorage.accessToken;
   }
   
   this.accessTokenValid = function() {
