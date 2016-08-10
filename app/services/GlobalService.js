@@ -36,10 +36,18 @@ module.exports = function() {
             "apiServer": "sleepy-tundra-14212.herokuapp.com",
             "serverCommand": "-- api server runs remotely",
             "remarks": "Image upload fails with internal server error, Unexpected token I in JSON at positon 0"
+        },
+        
+        "heroku&heroku": {
+            
+            "clientServer": "salty-savannah-99428.herokuapp.com",
+            "apiServer": "sleepy-tundra-14212.herokuapp.com",
+            "serverCommand": "-- api server runs remotely",
+            "remarks": "Image upload fails with internal server error, Unexpected token I in JSON at positon 0"
         }
     }
     
-    var configuration = "jxxmbp.local"
+    var configuration = "heroku&heroku"
     
     
     this.configuration = function() { return configuration }
