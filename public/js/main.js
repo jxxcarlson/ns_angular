@@ -854,7 +854,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
           var jsonData = response.data
           var documents = jsonData['documents']
 
-          if (documents.length == 0) { documents = [GlobalService.defaultDocumentID()] }
+          if ((documents == undefined) || (documents.length == 0)) { documents = [GlobalService.defaultDocumentID()] }
           
           DocumentService.setDocumentList(documents)
 
@@ -1356,7 +1356,7 @@ module.exports = function() {
         }
     }
     
-    var configuration = "heroku&heroku"
+    var configuration = "jxxmbp.local"
     
     
     this.configuration = function() { return configuration }
