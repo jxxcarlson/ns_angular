@@ -116,3 +116,13 @@ p { font-size: 1.25em; }
 .foo {
     background-color: lightcyan;
 }
+
+input[type="text"] {
+    
+    font-size: 16pt;
+}
+
+input[type="submit"] {
+    
+    font-size: 16pt;
+}

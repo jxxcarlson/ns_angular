@@ -1,4 +1,4 @@
-<div ng-controller='UserController'>
+<div ng-controller='UserController' style="font-size: 16pt;">
 <p ng-model="signedIn"></p>
 
     <!-- SIGN OUT FORM -->  
@@ -15,6 +15,7 @@
     <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;"> 
         <div ng-hide="userStatus == 'signedIn'"> 
             <h1>Sign in</h1> 
+            <br>
 
              <form ng-submit="submit()">
 
@@ -28,6 +29,7 @@
                     <input type="text" class="form-control" id="password" ng-model="password" placeholder="Like 'Abc.def!123' - at least eight characters, no spaces">
                 </div>
 
+                 <br>
                 <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
             </form>
 
