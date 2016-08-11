@@ -1,5 +1,5 @@
 
-module.exports = function(ImageService, ImageApiService) {
+module.exports = function(ImageService, ImageApiService, $state) {
     
 
     this.getImageList = function(scope) {
@@ -17,20 +17,14 @@ module.exports = function(ImageService, ImageApiService) {
     this.getImage = function(scope, id) {
         
         console.log('ImageRouteService: getImage ' + id)
-
-        
-        
+      
         ImageApiService.getImage(id)
         .then(
             function (response) {
-                var data = response['data']
-                
-                // ImageService.set
                 ImageService.updateScope(scope)
+                $state.go('images', {}, {reload: true})    
                 
-                
-                
-            },
+         },
             function (error) {
                 // handle errors here
                 // console.log(error.statusText);
