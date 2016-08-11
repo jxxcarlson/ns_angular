@@ -1780,6 +1780,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     
     envService.set('production');
     
+    
 });
 
 
