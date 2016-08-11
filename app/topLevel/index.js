@@ -154,15 +154,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
-                                           foo, UserService, SearchService, GlobalService,
-                                          envService) {
+                        foo, UserService, SearchService, envService) {
     $scope.message = 'This is the home page'
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
-    
-    $scope.host = GlobalService.clientServer()
-    
+     
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
@@ -171,17 +168,11 @@ app.controller('MainController', function($scope, $http, $state, $location,
 });
 
 
-app.controller('AboutController', function($scope, foo, GlobalService, envService) {
+app.controller('AboutController', function($scope, foo, envService) {
     
     
     $scope.message = 'Look! I am an about page ....';
     foo.myFunc('AboutController')   
-    
-    $scope.message1 = 'Configuration: ' + GlobalService.configuration();
-    $scope.message2 = 'Client Server: ' + GlobalService.clientServer();
-    $scope.message3 = 'API Server: ' + GlobalService.apiServer();
-    $scope.message4 = 'Server command: ' + GlobalService.serverCommand();
-    $scope.message5 = 'Remarks: ' + GlobalService.remarks();
 
     $scope.clientUrl = envService.read('clientUrl')
     $scope.apiUrl = envService.read('apiUrl')

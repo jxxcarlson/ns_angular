@@ -595,7 +595,7 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, DocumentService, UserService, envService, MathJaxService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
         var deferred = $q.defer();
 
@@ -745,7 +745,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     }
 }
 },{}],13:[function(require,module,exports){
-module.exports = function($localStorage, GlobalService) {
+module.exports = function($localStorage) {
     
     
     /**********
@@ -1345,60 +1345,7 @@ module.exports = function() {
     
     // this.clientServer = function() { return "localhost:3000" }
     // this.apiServer = function() { return "localhost:2300"}
-    
-    
-    var configurations = {
         
-        "localhost": {
-            
-            "clientServer": "localhost:3000",
-            "apiServer": "localhost:2300",
-            "serverCommand": "runh",
-            "remarks": "Image upload works on host machine"
-        },
-        
-        "jxxmbp.local": {
-            
-            "clientServer": "jxxmbp.local:3000",
-            "apiServer": "jxxmbp.local:2300",
-            "serverCommand": "runh",
-            "remarks": "Image upload works on host & local machines"
-        },
-        
-        "heroku-local": {
-            
-            "clientServer": "jxxmbp.local:3000",
-            "apiServer": "jxxmbp.local:5000",
-            "serverCommand": "heroku local",
-            "remarks": "Image upload works on host & local machines"
-        },
-        
-        "heroku&local": {
-            
-            "clientServer": "jxxmbp.local:3000",
-            "apiServer": "sleepy-tundra-14212.herokuapp.com",
-            "serverCommand": "-- api server runs remotely",
-            "remarks": "Image upload fails with internal server error, Unexpected token I in JSON at positon 0"
-        },
-        
-        "heroku&heroku": {
-            
-            "clientServer": "salty-savannah-99428.herokuapp.com",
-            "apiServer": "sleepy-tundra-14212.herokuapp.com",
-            "serverCommand": "-- api server runs remotely",
-            "remarks": "Image upload fails with internal server error, Unexpected token I in JSON at positon 0"
-        }
-    }
-    
-    var configuration = "jxxmbp.local"
-    
-    
-    this.configuration = function() { return configuration }
-    this.clientServer = function() { return configurations[configuration]["clientServer"] }
-    this.apiServer = function() { return configurations[configuration]["apiServer"] }
-    this.serverCommand = function() { return configurations[configuration]["serverCommand"] }
-    this.remarks = function() { return configurations[configuration]["remarks"] }
-    
     this.defaultDocumentID = function() { return 11 }
     
 }
@@ -1779,15 +1726,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
-                                           foo, UserService, SearchService, GlobalService,
-                                          envService) {
+                        foo, UserService, SearchService, envService) {
     $scope.message = 'This is the home page'
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
-    
-    $scope.host = GlobalService.clientServer()
-    
+     
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
@@ -1796,17 +1740,11 @@ app.controller('MainController', function($scope, $http, $state, $location,
 });
 
 
-app.controller('AboutController', function($scope, foo, GlobalService, envService) {
+app.controller('AboutController', function($scope, foo, envService) {
     
     
     $scope.message = 'Look! I am an about page ....';
     foo.myFunc('AboutController')   
-    
-    $scope.message1 = 'Configuration: ' + GlobalService.configuration();
-    $scope.message2 = 'Client Server: ' + GlobalService.clientServer();
-    $scope.message3 = 'API Server: ' + GlobalService.apiServer();
-    $scope.message4 = 'Server command: ' + GlobalService.serverCommand();
-    $scope.message5 = 'Remarks: ' + GlobalService.remarks();
 
     $scope.clientUrl = envService.read('clientUrl')
     $scope.apiUrl = envService.read('apiUrl')

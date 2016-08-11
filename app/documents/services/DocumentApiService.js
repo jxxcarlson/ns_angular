@@ -4,7 +4,7 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, DocumentService, UserService, envService, MathJaxService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
         var deferred = $q.defer();
 

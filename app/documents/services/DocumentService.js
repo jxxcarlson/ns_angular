@@ -1,4 +1,4 @@
-module.exports = function($localStorage, GlobalService) {
+module.exports = function($localStorage) {
     
     
     /**********
