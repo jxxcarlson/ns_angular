@@ -15,16 +15,8 @@ module.exports = function($http, $q, ImageService, envService) {
                 var data = response.data
                 var image = data['image']
                 
-                console.log('IMAGE PACKET: ' + JSON.stringify(image))
-                
-                ImageService.setTitle( image['title'] )
-                ImageService.setId( image['id'] )
-                ImageService.setUrl( image['url'] )
-                ImageService.setStorageUrl( image['storage_url'] )
-                ImageService.setContentType( image['content_type'] )
-                
-                
-
+                ImageService.set(image)
+                             
                 // promise is returned
                 return deferred.promise;
             }, function (response) {

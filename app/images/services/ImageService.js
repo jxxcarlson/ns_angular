@@ -25,12 +25,22 @@ module.exports = function($localStorage) {
         var storageUrl = image['storage_url']
         var contentType = image['content_type']
         
+        $localStorage.imageId = id
+        $localStorage.imageUrl = url
+        $localStorage.imageStorageUrl = storageUrl
+        $localStorage.imageTitle = title
+        $localStorage.contentType = contentType
+        
+        console.log('=================================')
+        console.log('PACKET (IMAGE SERVICE SET):')
+        console.log('===========================')
         console.log('IMAGE = ' + JSON.stringify(image))
         console.log('IMAGE ID = ' + id)
         console.log('IMAGE TITLE = ' + title)
         console.log('IMAGE URL = ' + url)
         console.log('IMAGE STORAGE URL = ' + storageUrl)
         console.log('IMAGE CONTENT = ' + contentType)
+        console.log('=================================')
     }
     
     this.setImageList = function(array) { 
