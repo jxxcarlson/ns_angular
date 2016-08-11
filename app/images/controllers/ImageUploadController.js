@@ -16,6 +16,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         var query = {
             filename: file.name,
             title: $scope.title,
+            source: $scope.source,
             type: file.type,
             owner: UserService.username()
         };

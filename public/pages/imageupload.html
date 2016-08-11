@@ -4,17 +4,22 @@
 
         <div ng-controller = "ImageUploadController" >
             
-            <h2>Image Upload</h2>
-            <br />
+            <h2 style="margin-bottom:1em;">Image Upload</h2>
+            
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" ng-model="title">
-              </div>
+                <input type="text" class="form-control" id="title" ng-model="title" placeholder="Required">
+            </div>
+            
+            <div class="form-group" style="margin-bottom:2em;">
+                <label for="source">Source</label>
+                <input type="text" class="form-control" id="title" ng-model="source" placeholder="Optional">
+            </div>
             
             <input name="file" type="file" file />
 
              <br/>
-             <button ng-click = "upload(file)">Upload</button>
+             <button ng-click ="upload(file)">Upload   </button>
         </div>
 
     </div>
