@@ -958,6 +958,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         console.log("Upload controller sending siging request");
         var query = {
             filename: file.name,
+            title: $scope.title,
             type: file.type,
             owner: UserService.username()
         };
@@ -981,6 +982,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                 var query = {
                     title: 'test',
                     filename: file.name,
+                    title: $scope.title,
                     content_type: file.type,
                     owner: UserService.username()
                 };
@@ -1735,7 +1737,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
 });
 

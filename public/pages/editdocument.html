@@ -57,11 +57,13 @@
         <div style="margin-bottom: 3px;">
             <span>
               <input class="input-box" style="width: 400px; vertical-align: middle;" ng-model="editableTitle" type="text" id="editableTitle">
-            </span>    
+            </span>
+            
             <span style="display:inline-block; vertical-align: middle">
                 <button style="vertical-align: middle" ng-click="updateDocument()">Save</button>
             </span>    
         </div>
+        <br />  
         <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false"  style="width:90%;" ng-style="editorHeight"></textarea>
       </div>
       <p style="margin-top:1em; margin-left:1em; font-style: italic">Word count: {{wordCount}}</p>
