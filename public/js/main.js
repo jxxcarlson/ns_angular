@@ -6,9 +6,43 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 
+var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment',
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
-                                         'cfp.hotkeys']);
+                                         'cfp.hotkeys']).
+    config(function(envServiceProvider) {
+        // set the domains and variables for each environment 
+        envServiceProvider.config({
+            domains: {
+                development: ['localhost', 'dev.local'],
+                production: ['acme.com', 'acme.net', 'acme.org']
+                // anotherStage: ['domain1', 'domain2'], 
+                // anotherStage: ['domain1', 'domain2'] 
+            },
+            vars: {
+                development: {
+                    apiUrl: '//localhost/api',
+                    staticUrl: '//localhost/static'
+                    // antoherCustomVar: 'lorem', 
+                    // antoherCustomVar: 'ipsum' 
+                },
+                production: {
+                    apiUrl: '//api.acme.com/v2',
+                    staticUrl: '//static.acme.com'
+                    // antoherCustomVar: 'lorem', 
+                    // antoherCustomVar: 'ipsum' 
+                }
+                // anotherStage: { 
+                // 	customVar: 'lorem', 
+                // 	customVar: 'ipsum' 
+                // } 
+            }
+        });
+ 
+        // run the environment check, so the comprobation is made 
+        // before controllers and services are built 
+        envServiceProvider.check();
+    });
+
 
 require('./topLevel')
 
