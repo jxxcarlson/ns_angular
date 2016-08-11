@@ -1803,7 +1803,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
 });
 
 
-app.controller('AboutController', function($scope, foo, GlobalService) {
+app.controller('AboutController', function($scope, foo, GlobalService, envService) {
     
     
     $scope.message = 'Look! I am an about page ....';
@@ -1815,6 +1815,8 @@ app.controller('AboutController', function($scope, foo, GlobalService) {
     $scope.message4 = 'Server command: ' + GlobalService.serverCommand();
     $scope.message5 = 'Remarks: ' + GlobalService.remarks();
 
+    $scope.clientUrl = envService.read('clientUrl')
+    $scope.apiUrl = envService.read('apiUrl')
     
 });
 
