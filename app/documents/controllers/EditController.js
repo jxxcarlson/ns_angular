@@ -1,12 +1,11 @@
   module.exports = function($scope, $window, $document, $stateParams, $http, $sce, $timeout, 
-                             DocumentService, DocumentApiService, UserService, GlobalService,
+                             DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
 
       
         console.log('EDIT CONTROLLER, YAY!!')
         var id;
         var keyStrokeCount = 0
-        var apiServer = GlobalService.apiServer()
         
         if ($stateParams.id != undefined) {
             id = $stateParams.id
@@ -146,7 +145,7 @@
 
 
         // Get most document from server
-        $http.get('http://' + apiServer + '/v1/documents/' + id  )
+        $http.get(envService.read('apiUrl') + '/documents/' + id  )
             .then(function(response){
             
                 var document = response.data['document']

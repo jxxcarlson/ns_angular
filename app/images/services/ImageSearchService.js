@@ -1,12 +1,10 @@
-module.exports = function($http, ImageService, ImageApiService, GlobalService) {
+module.exports = function($http, ImageService, ImageApiService, envService) {
     
     this.query = function(searchText){
         
-        var apiServer = GlobalService.apiServer()
-        
             console.log('Search text: ' + searchText);
             
-            $http.get('http://' + apiServer + '/v1/images' + '?scope=' + searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])

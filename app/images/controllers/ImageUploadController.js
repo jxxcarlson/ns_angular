@@ -9,9 +9,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, UserService, GlobalService) {
-     
-     var apiServer = GlobalService.apiServer()
+ module.exports =  function($scope, $http, UserService, envService) {
         
     $scope.upload = function (file) {
         console.log("Upload controller sending siging request");
@@ -22,7 +20,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         };
         console.log("-- query: " + JSON.stringify(query))
         // Get presigned URL
-        var url = 'http://' + apiServer + '/v1/presigned'
+        var url = envService.read('apiUrl') + '/presigned'
         console.log("-- url for POST: " + url)
         $http.post(url, query).success(function(response) {
             console.log("Signed response received: " + response.url);

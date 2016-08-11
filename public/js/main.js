@@ -20,13 +20,13 @@ var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment
             },
             vars: {
                 development: {
-                    apiUrl: "http://jxxmbp.local:2300",
+                    apiUrl: "http://jxxmbp.local:2300/v1",
                     clientUrl: "http://jxxmbp.local:3000"
                     // antoherCustomVar: 'lorem', 
                     // antoherCustomVar: 'ipsum' 
                 },
                 production: {
-                    apiUrl: "http://sleepy-tundra-14212.herokuapp.com",
+                    apiUrl: "http://sleepy-tundra-14212.herokuapp.com/v1",
                     clientUrl: "http://salty-savannah-99428.herokuapp.com"
                     // antoherCustomVar: 'lorem', 
                     // antoherCustomVar: 'ipsum' 
@@ -317,14 +317,13 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 }
 },{}],7:[function(require,module,exports){
   module.exports = function($scope, $window, $document, $stateParams, $http, $sce, $timeout, 
-                             DocumentService, DocumentApiService, UserService, GlobalService,
+                             DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
 
       
         console.log('EDIT CONTROLLER, YAY!!')
         var id;
         var keyStrokeCount = 0
-        var apiServer = GlobalService.apiServer()
         
         if ($stateParams.id != undefined) {
             id = $stateParams.id
@@ -464,7 +463,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
 
         // Get most document from server
-        $http.get('http://' + apiServer + '/v1/documents/' + id  )
+        $http.get(envService.read('apiUrl') + '/documents/' + id  )
             .then(function(response){
             
                 var document = response.data['document']
@@ -529,12 +528,11 @@ module.exports = function($scope, $location, $state, $http, $localStorage, UserS
 }
 
 },{}],9:[function(require,module,exports){
-module.exports = function($scope, $state, $http, GlobalService,
+module.exports = function($scope, $state, $http, envService,
                            DocumentService, DocumentApiService, 
                            MathJaxService, QueryParser, UserService) {
         $scope.doSearch = function(){
             
-            var apiServer = GlobalService.apiServer()
             var query = QueryParser.parse($scope.searchText)
             
             if (UserService.accessTokenValid() == false) {
@@ -543,7 +541,7 @@ module.exports = function($scope, $state, $http, GlobalService,
                 
             }
             
-            $http.get('http://' + apiServer + '/v1/documents' + '?' + query  )
+            $http.get(envService.read('apiUrl') + '/documents' + '?' + query  )
             .then(function(response){
                               
               var jsonData = response.data
@@ -597,16 +595,15 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, MathJaxService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, envService, MathJaxService) {
 
         var deferred = $q.defer();
-        var apiServer = GlobalService.apiServer()
 
         this.getDocument = function(id) {
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
-          return  $http.get('http://' + GlobalService.apiServer() + '/v1/documents/' + id,
+          return  $http.get(envService.read('apiUrl') + '/documents/' + id,
             {
                  headers: { "accesstoken": UserService.accessToken() }
              })
@@ -875,12 +872,11 @@ module.exports = function(DocumentService) {
 }
 },{}],15:[function(require,module,exports){
 module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, GlobalService, UserService, MathJaxService) {
+                           DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
     
     console.log('SEARCH SERVICE')
     
     var deferred = $q.defer();
-    var apiServer = GlobalService.apiServer() 
    
     this.query = function(searchText, scope, destination='documents') {
         
@@ -891,7 +887,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
             }
         
          return $http.get(
-             'http://' + apiServer + '/v1/documents' + '?' + searchText, {
+             envService.read('apiUrl') + 'documents' + '?' + searchText, {
                  headers: { "accesstoken": UserService.accessToken() }
              }
          )
@@ -913,15 +909,14 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     }
 }
 },{}],16:[function(require,module,exports){
-module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, GlobalService) {
+module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
             
-            var apiServer = GlobalService.apiServer()
             
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get('http://' + apiServer + '/v1/images' + '?scope=' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + 'images' + '?scope=' + $scope.searchText  )
             
             .then(function(response){
               console.log(response.data['status'])
@@ -957,9 +952,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, UserService, GlobalService) {
-     
-     var apiServer = GlobalService.apiServer()
+ module.exports =  function($scope, $http, UserService, envService) {
         
     $scope.upload = function (file) {
         console.log("Upload controller sending siging request");
@@ -970,7 +963,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         };
         console.log("-- query: " + JSON.stringify(query))
         // Get presigned URL
-        var url = 'http://' + apiServer + '/v1/presigned'
+        var url = envService.read('apiUrl') + '/presigned'
         console.log("-- url for POST: " + url)
         $http.post(url, query).success(function(response) {
             console.log("Signed response received: " + response.url);
@@ -1078,10 +1071,9 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 },{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":47}],20:[function(require,module,exports){
-module.exports = function($http, $q, ImageService, GlobalService) {
+module.exports = function($http, $q, ImageService, envService) {
 
     
-        var apiServer = GlobalService.apiServer()
         var deferred = $q.defer();
 
     
@@ -1089,7 +1081,7 @@ module.exports = function($http, $q, ImageService, GlobalService) {
              
         console.log('Image API service says id = ' + id)
         
-          return  $http.get('http://' + apiServer + '/v1/images/' + id  )
+          return  $http.get(envService.read('apiUrl') + '/images/' + id  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -1179,15 +1171,13 @@ module.exports = function(ImageService, ImageApiService) {
     }
 }
 },{}],22:[function(require,module,exports){
-module.exports = function($http, ImageService, ImageApiService, GlobalService) {
+module.exports = function($http, ImageService, ImageApiService, envService) {
     
     this.query = function(searchText){
         
-        var apiServer = GlobalService.apiServer()
-        
             console.log('Search text: ' + searchText);
             
-            $http.get('http://' + apiServer + '/v1/images' + '?scope=' + searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
@@ -1922,13 +1912,13 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
     
     
 },{}],40:[function(require,module,exports){
-module.exports = function($http, $q, $localStorage, GlobalService) {
+module.exports = function($http, $q, $localStorage, envService) {
 
         var deferred = $q.defer();
-        var apiServer = GlobalService.apiServer()
+      
 
         this.login = function(username, password) {
-          return $http.get('http://' + apiServer + '/v1/users/' + username + '?' + password)
+          return envService.read('apiUrl') + '/users/' + username + '?' + password
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -1952,7 +1942,7 @@ module.exports = function($http, $q, $localStorage, GlobalService) {
             
           var parameter = JSON.stringify({username:username, email:email, password: password});
           console.log(parameter);
-          return $http.post('http://' + apiServer + '/v1/users/create', parameter)
+          return $http.post(envService.read('apiUrl') + '/users/create', parameter)
           
           .then(function (response) {
                 // promise is fulfilled

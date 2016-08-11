@@ -19,13 +19,13 @@ var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment
             },
             vars: {
                 development: {
-                    apiUrl: "http://jxxmbp.local:2300",
+                    apiUrl: "http://jxxmbp.local:2300/v1",
                     clientUrl: "http://jxxmbp.local:3000"
                     // antoherCustomVar: 'lorem', 
                     // antoherCustomVar: 'ipsum' 
                 },
                 production: {
-                    apiUrl: "http://sleepy-tundra-14212.herokuapp.com",
+                    apiUrl: "http://sleepy-tundra-14212.herokuapp.com/v1",
                     clientUrl: "http://salty-savannah-99428.herokuapp.com"
                     // antoherCustomVar: 'lorem', 
                     // antoherCustomVar: 'ipsum' 

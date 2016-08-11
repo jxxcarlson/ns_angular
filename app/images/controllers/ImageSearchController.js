@@ -1,12 +1,11 @@
-module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, GlobalService) {
+module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
             
-            var apiServer = GlobalService.apiServer()
             
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get('http://' + apiServer + '/v1/images' + '?scope=' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + 'images' + '?scope=' + $scope.searchText  )
             
             .then(function(response){
               console.log(response.data['status'])

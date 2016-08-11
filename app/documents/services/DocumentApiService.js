@@ -4,16 +4,15 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, MathJaxService) {
+module.exports = function($http, $q, $sce, DocumentService, UserService, envService, MathJaxService) {
 
         var deferred = $q.defer();
-        var apiServer = GlobalService.apiServer()
 
         this.getDocument = function(id) {
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
-          return  $http.get('http://' + GlobalService.apiServer() + '/v1/documents/' + id,
+          return  $http.get(envService.read('apiUrl') + '/documents/' + id,
             {
                  headers: { "accesstoken": UserService.accessToken() }
              })

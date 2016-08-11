@@ -1,10 +1,10 @@
-module.exports = function($http, $q, $localStorage, GlobalService) {
+module.exports = function($http, $q, $localStorage, envService) {
 
         var deferred = $q.defer();
-        var apiServer = GlobalService.apiServer()
+      
 
         this.login = function(username, password) {
-          return $http.get('http://' + apiServer + '/v1/users/' + username + '?' + password)
+          return envService.read('apiUrl') + '/users/' + username + '?' + password
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -28,7 +28,7 @@ module.exports = function($http, $q, $localStorage, GlobalService) {
             
           var parameter = JSON.stringify({username:username, email:email, password: password});
           console.log(parameter);
-          return $http.post('http://' + apiServer + '/v1/users/create', parameter)
+          return $http.post(envService.read('apiUrl') + '/users/create', parameter)
           
           .then(function (response) {
                 // promise is fulfilled

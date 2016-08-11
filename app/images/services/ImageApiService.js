@@ -1,7 +1,6 @@
-module.exports = function($http, $q, ImageService, GlobalService) {
+module.exports = function($http, $q, ImageService, envService) {
 
     
-        var apiServer = GlobalService.apiServer()
         var deferred = $q.defer();
 
     
@@ -9,7 +8,7 @@ module.exports = function($http, $q, ImageService, GlobalService) {
              
         console.log('Image API service says id = ' + id)
         
-          return  $http.get('http://' + apiServer + '/v1/images/' + id  )
+          return  $http.get(envService.read('apiUrl') + '/images/' + id  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);

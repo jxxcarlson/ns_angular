@@ -1,9 +1,8 @@
-module.exports = function($scope, $state, $http, GlobalService,
+module.exports = function($scope, $state, $http, envService,
                            DocumentService, DocumentApiService, 
                            MathJaxService, QueryParser, UserService) {
         $scope.doSearch = function(){
             
-            var apiServer = GlobalService.apiServer()
             var query = QueryParser.parse($scope.searchText)
             
             if (UserService.accessTokenValid() == false) {
@@ -12,7 +11,7 @@ module.exports = function($scope, $state, $http, GlobalService,
                 
             }
             
-            $http.get('http://' + apiServer + '/v1/documents' + '?' + query  )
+            $http.get(envService.read('apiUrl') + '/documents' + '?' + query  )
             .then(function(response){
                               
               var jsonData = response.data

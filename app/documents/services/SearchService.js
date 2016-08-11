@@ -1,10 +1,9 @@
 module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, GlobalService, UserService, MathJaxService) {
+                           DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
     
     console.log('SEARCH SERVICE')
     
     var deferred = $q.defer();
-    var apiServer = GlobalService.apiServer() 
    
     this.query = function(searchText, scope, destination='documents') {
         
@@ -15,7 +14,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
             }
         
          return $http.get(
-             'http://' + apiServer + '/v1/documents' + '?' + searchText, {
+             envService.read('apiUrl') + 'documents' + '?' + searchText, {
                  headers: { "accesstoken": UserService.accessToken() }
              }
          )
