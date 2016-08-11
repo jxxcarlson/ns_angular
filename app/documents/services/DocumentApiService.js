@@ -1,4 +1,8 @@
 /*****
+ headers: { "accesstoken": UserService.accessToken(),
+                            "Cache-control": "",
+                            "Pragma": "" 
+                          }
 
 The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
@@ -17,6 +21,12 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                  headers: { "accesstoken": UserService.accessToken() }
              })
           .then(function (response) {
+              /// Trying to solve net: :ERR_INVALID_CHUNKED_ENCODING" ///
+              // response.setHeader("Content-Type", "text/plain")
+              // response.setHeader("Content-Length", "");
+              // response.setHeader("Cache-control", "");
+              // response.setHeader("Pragma", "");
+              ///////////////////////////////////////////////////////////
                 // promise is fulfilled
                 deferred.resolve(response.data);
                 var data = response.data

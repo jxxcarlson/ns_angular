@@ -596,6 +596,10 @@ app.controller('editDocumentController', require('./controllers/EditController')
 
 },{"./controllers/DocumentsController":6,"./controllers/EditController":7,"./controllers/NewDocumentController":8,"./controllers/SearchController":9,"./services//DocumentRouteService":12,"./services//DocumentService":13,"./services/DocumentApiService":11,"./services/MathJaxService":14,"./services/SearchService":15,"angular":47}],11:[function(require,module,exports){
 /*****
+ headers: { "accesstoken": UserService.accessToken(),
+                            "Cache-control": "",
+                            "Pragma": "" 
+                          }
 
 The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
@@ -614,6 +618,12 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                  headers: { "accesstoken": UserService.accessToken() }
              })
           .then(function (response) {
+              /// Trying to solve net: :ERR_INVALID_CHUNKED_ENCODING" ///
+              // response.setHeader("Content-Type", "text/plain")
+              // response.setHeader("Content-Length", "");
+              // response.setHeader("Cache-control", "");
+              // response.setHeader("Pragma", "");
+              ///////////////////////////////////////////////////////////
                 // promise is fulfilled
                 deferred.resolve(response.data);
                 var data = response.data
@@ -1770,7 +1780,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
                         foo, UserService, SearchService, envService) {
-    $scope.message = 'This is the home page'
+    $scope.message = ''
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
@@ -1873,30 +1883,33 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
-        
-        $scope.submit = function() {
-          UserApiService.newUser($scope.username, $scope.email, $scope.password)
-          .then(
-                function (result) {
-                  if (UserService.loginStatus() == 200) {
-                    $scope.message = 'Success: signed in as ' + $scope.username
-                    SearchService.query("user="+$scope.username)
-                    $state.go('documents', {}, {reload: true})
-                  } else {
-                  
-                    $scope.message = 'Sorry'
-                  }
-                    // promise was fullfilled (regardless of outcome)
-                    // checks for information will be peformed here
-                },
-                function (error) {
-                    // handle errors here
-                    // console.log(error.statusText);
-                    console.log('ERROR!');
-                }
-            );
-        }
-      }
+    
+    $scope.message = ""
+      
+
+    $scope.submit = function() {
+      UserApiService.newUser($scope.username, $scope.email, $scope.password)
+      .then(
+            function (result) {
+              if (UserService.loginStatus() == 200) {
+                $scope.message = 'Success: signed in as ' + $scope.username
+                SearchService.query("user="+$scope.username)
+                $state.go('documents', {}, {reload: true})
+              } else {
+
+                $scope.message = 'Sorry'
+              }
+                // promise was fullfilled (regardless of outcome)
+                // checks for information will be peformed here
+            },
+            function (error) {
+                // handle errors here
+                // console.log(error.statusText);
+                console.log('ERROR!');
+            }
+        );
+    }
+}
     
     
 },{}],40:[function(require,module,exports){
