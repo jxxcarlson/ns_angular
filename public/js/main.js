@@ -43,6 +43,12 @@ var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment
         envServiceProvider.check();
     });
 
+angular.module('filters-module', [])
+.filter('trustAsResourceUrl', ['$sce', function($sce) {
+    return function(val) {
+        return $sce.trustAsResourceUrl(val);
+    };
+}])
 
 require('./topLevel')
 
@@ -1016,10 +1022,8 @@ in URL can be accessed in controller using $stateParams.variableName
 */
 
 
-module.exports = function($scope, $stateParams, $location, ImageRouteService, ImageService) {
-// module.exports = function($scope, $location, $stateParams, ImageApiService, ImageService, ImageRouteService) {
-// module.exports = function() {
-    
+module.exports = function($scope, $stateParams, $location, $sce, $window, ImageRouteService, ImageService) {
+  
     console.log('ImagesController')
 
     
@@ -1044,9 +1048,16 @@ module.exports = function($scope, $stateParams, $location, ImageRouteService, Im
         ImageRouteService.getImage($scope, id)     
     } 
     
+    var innerHeight = $window.innerHeight
+    document.getElementById("image-toc").style.height = (innerHeight - 200) + 'px'
+    document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
+  
     
     $scope.imageUrl = ImageService.url()
+    
     $scope.imageStorageUrl = ImageService.storageUrl()
+    $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
+    
     $scope.imageCount = ImageService.count()
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()
@@ -1090,10 +1101,15 @@ module.exports = function($http, $q, ImageService, envService) {
                 deferred.resolve(response.data);
                 var data = response.data
                 var image = data['image']
+                
+                console.log('IMAGE PACKET: ' + JSON.stringify(image))
+                
                 ImageService.setTitle( image['title'] )
                 ImageService.setId( image['id'] )
                 ImageService.setUrl( image['url'] )
                 ImageService.setStorageUrl( image['storage_url'] )
+                ImageService.setContentType( image['content_type'] )
+                
                 
 
                 // promise is returned
@@ -1149,17 +1165,18 @@ module.exports = function(ImageService, ImageApiService) {
     
     this.getImage = function(scope, id) {
         
-        console.log('ImageRouteService: getImage')
-        console.log('foo: ', scope.foo)
+        console.log('ImageRouteService: getImage ' + id)
+
         
         
         ImageApiService.getImage(id)
         .then(
             function (response) {
+                var data = response['data']
+                
+                // ImageService.set
                 ImageService.updateScope(scope)
-                // scope.title = ImageService.title()
-                // scope.imageArray = ImageService.imageList()
-                // scope.numberOfImages = ImageService.count()
+                
                 
                 
             },
@@ -1212,6 +1229,25 @@ module.exports = function($localStorage) {
     this.setStorageUrl = function(storageUrl) { $localStorage.imageStorageUrl = storageUrl}
     this.storageUrl = function() { return $localStorage.imageStorageUrl }  
     
+    this.setContentType = function(contentType) { $localStorage.contentType = contentType}
+    this.contentType = function() { return $localStorage.contentType }  
+    
+    
+    this.set = function(image) {
+    
+        var id = image['id']
+        var title = image['title']
+        var url = image['url']
+        var storageUrl = image['storage_url']
+        var contentType = image['content_type']
+        
+        console.log('IMAGE = ' + JSON.stringify(image))
+        console.log('IMAGE ID = ' + id)
+        console.log('IMAGE TITLE = ' + title)
+        console.log('IMAGE URL = ' + url)
+        console.log('IMAGE STORAGE URL = ' + storageUrl)
+        console.log('IMAGE CONTENT = ' + contentType)
+    }
     
     this.setImageList = function(array) { 
         
@@ -1222,18 +1258,21 @@ module.exports = function($localStorage) {
         var title = firstImage['title']
         var url = firstImage['url']
         var storageUrl = firstImage['storage_url']
+        var contentType = firstImage['content_type']
         
         console.log('FIRST ELEMENT = ' + JSON.stringify(firstImage))
         console.log('ID OF FIRST ELEMENT = ' + id)
         console.log('TITLE OF FIRST ELEMENT = ' + title)
         console.log('URL OF FIRST ELEMENT = ' + url)
         console.log('STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
+        console.log('CONTENT TYPE FIRST ELEMENT = ' + contentType)
         
         
         $localStorage.imageId = id
         $localStorage.imageUrl = url
         $localStorage.imageStorageUrl = storageUrl
         $localStorage.imageTitle = title
+        $localStorage.contentType = contentType
         
     }
     
@@ -1249,6 +1288,7 @@ module.exports = function($localStorage) {
         scope.imageUrl = this.url()
         scope.imageStorageUrl = this.storageUrl()
         scope.imageList = this.imageList()
+        scope.contentType = this.contentType()
        
     }
     
@@ -1706,7 +1746,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'ImagesController'
         })
     
-        .state('imagesId', {
+        .state('oneImage', {
             url: '/images/:id',
             templateUrl : 'pages/images.html',
             controller  : 'ImagesController'

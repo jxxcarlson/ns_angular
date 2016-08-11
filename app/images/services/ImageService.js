@@ -13,6 +13,25 @@ module.exports = function($localStorage) {
     this.setStorageUrl = function(storageUrl) { $localStorage.imageStorageUrl = storageUrl}
     this.storageUrl = function() { return $localStorage.imageStorageUrl }  
     
+    this.setContentType = function(contentType) { $localStorage.contentType = contentType}
+    this.contentType = function() { return $localStorage.contentType }  
+    
+    
+    this.set = function(image) {
+    
+        var id = image['id']
+        var title = image['title']
+        var url = image['url']
+        var storageUrl = image['storage_url']
+        var contentType = image['content_type']
+        
+        console.log('IMAGE = ' + JSON.stringify(image))
+        console.log('IMAGE ID = ' + id)
+        console.log('IMAGE TITLE = ' + title)
+        console.log('IMAGE URL = ' + url)
+        console.log('IMAGE STORAGE URL = ' + storageUrl)
+        console.log('IMAGE CONTENT = ' + contentType)
+    }
     
     this.setImageList = function(array) { 
         
@@ -23,18 +42,21 @@ module.exports = function($localStorage) {
         var title = firstImage['title']
         var url = firstImage['url']
         var storageUrl = firstImage['storage_url']
+        var contentType = firstImage['content_type']
         
         console.log('FIRST ELEMENT = ' + JSON.stringify(firstImage))
         console.log('ID OF FIRST ELEMENT = ' + id)
         console.log('TITLE OF FIRST ELEMENT = ' + title)
         console.log('URL OF FIRST ELEMENT = ' + url)
         console.log('STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
+        console.log('CONTENT TYPE FIRST ELEMENT = ' + contentType)
         
         
         $localStorage.imageId = id
         $localStorage.imageUrl = url
         $localStorage.imageStorageUrl = storageUrl
         $localStorage.imageTitle = title
+        $localStorage.contentType = contentType
         
     }
     
@@ -50,6 +72,7 @@ module.exports = function($localStorage) {
         scope.imageUrl = this.url()
         scope.imageStorageUrl = this.storageUrl()
         scope.imageList = this.imageList()
+        scope.contentType = this.contentType()
        
     }
     

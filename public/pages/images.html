@@ -3,7 +3,7 @@
     <div style="margin-left:1em;">
 
     <h3 style='margin-top:10px;margin-bottom:30px;'>{{ imageCount }} Images</h3> 
-    <div  style="height:400px; overflow-y: auto;">        
+    <div  id="image-toc" style="height:400px; overflow-y: auto;">        
         <div ng-repeat="image in imageList">
             <p stle='margin-bottom:0;'><img src={{image['storage_url']}} width=150 /></p>
             <p style='margin-top:0;margin-bottom:1.5em;'><a href="{{image['url']}}">{{image['id']}}: {{image['title']}}</a></p>
@@ -22,7 +22,12 @@
         <h2> {{ title }} </h2>
         <div class="container fill">
           <img src={{imageStorageUrl}} style="max-width:300px;max-height:400px;" />
-          <p>{{imageId}}: {{imageTitle}}</p>        
+    <!-- WORKS: <iframe src="http://psurl.s3.amazonaws.com/Bloch.pdf" style="width:900px; height:900px;"> -->
+          <iframe id="pdf-iframe" src={{pdfImage}} style="width:900px; height:900px;"> 
+              
+            <p>Your browser does not support iframes.</p>
+          </iframe>    
+          <p>{{imageId}}: {{imageTitle}}: {{imageStorageUrl}} </p>        
         </div>
     </div>
 

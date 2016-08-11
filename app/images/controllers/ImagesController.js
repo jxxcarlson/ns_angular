@@ -14,10 +14,8 @@ in URL can be accessed in controller using $stateParams.variableName
 */
 
 
-module.exports = function($scope, $stateParams, $location, ImageRouteService, ImageService) {
-// module.exports = function($scope, $location, $stateParams, ImageApiService, ImageService, ImageRouteService) {
-// module.exports = function() {
-    
+module.exports = function($scope, $stateParams, $location, $sce, $window, ImageRouteService, ImageService) {
+  
     console.log('ImagesController')
 
     
@@ -42,9 +40,16 @@ module.exports = function($scope, $stateParams, $location, ImageRouteService, Im
         ImageRouteService.getImage($scope, id)     
     } 
     
+    var innerHeight = $window.innerHeight
+    document.getElementById("image-toc").style.height = (innerHeight - 200) + 'px'
+    document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
+  
     
     $scope.imageUrl = ImageService.url()
+    
     $scope.imageStorageUrl = ImageService.storageUrl()
+    $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
+    
     $scope.imageCount = ImageService.count()
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()

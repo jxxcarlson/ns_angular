@@ -42,6 +42,12 @@ var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment
         envServiceProvider.check();
     });
 
+angular.module('filters-module', [])
+.filter('trustAsResourceUrl', ['$sce', function($sce) {
+    return function(val) {
+        return $sce.trustAsResourceUrl(val);
+    };
+}])
 
 require('./topLevel')
 

@@ -14,10 +14,15 @@ module.exports = function($http, $q, ImageService, envService) {
                 deferred.resolve(response.data);
                 var data = response.data
                 var image = data['image']
+                
+                console.log('IMAGE PACKET: ' + JSON.stringify(image))
+                
                 ImageService.setTitle( image['title'] )
                 ImageService.setId( image['id'] )
                 ImageService.setUrl( image['url'] )
                 ImageService.setStorageUrl( image['storage_url'] )
+                ImageService.setContentType( image['content_type'] )
+                
                 
 
                 // promise is returned

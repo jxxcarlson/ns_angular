@@ -16,17 +16,18 @@ module.exports = function(ImageService, ImageApiService) {
     
     this.getImage = function(scope, id) {
         
-        console.log('ImageRouteService: getImage')
-        console.log('foo: ', scope.foo)
+        console.log('ImageRouteService: getImage ' + id)
+
         
         
         ImageApiService.getImage(id)
         .then(
             function (response) {
+                var data = response['data']
+                
+                // ImageService.set
                 ImageService.updateScope(scope)
-                // scope.title = ImageService.title()
-                // scope.imageArray = ImageService.imageList()
-                // scope.numberOfImages = ImageService.count()
+                
                 
                 
             },
