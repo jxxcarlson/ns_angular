@@ -1,15 +1,14 @@
-module.exports = function($scope, $location, $state, $http, $localStorage, GlobalService, UserService, SearchService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, UserService, SearchService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')
-      var apiServer = GlobalService.apiServer()
-
+    
       $scope.submit = function() {
 
       var access_token = UserService.accessToken()
       var parameter = JSON.stringify({title:$scope.title, token:access_token });
 
-      $http.post('http://' + apiServer + '/v1/documents', parameter)
+      $http.post(envService.read('apiUrl') + '/documents', parameter)
       .then(function(response){
             if (response.data['status'] == 202) {
 
