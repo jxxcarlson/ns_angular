@@ -14,7 +14,7 @@ var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment
         envServiceProvider.config({
             domains: {
                 development: ['localhost', 'dev.local'],
-                production: ['acme.com', 'acme.net', 'acme.org']
+                production: ['herokuapp.com', 'herokuapp.com']
                 // anotherStage: ['domain1', 'domain2'], 
                 // anotherStage: ['domain1', 'domain2'] 
             },
