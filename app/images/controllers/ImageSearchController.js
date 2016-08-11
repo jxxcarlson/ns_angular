@@ -5,7 +5,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
             
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get(envService.read('apiUrl') + 'images' + '?scope=' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + $scope.searchText  )
             
             .then(function(response){
               console.log(response.data['status'])

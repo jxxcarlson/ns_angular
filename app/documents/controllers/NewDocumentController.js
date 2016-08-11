@@ -1,4 +1,4 @@
-module.exports = function($scope, $location, $state, $http, $localStorage, UserService, SearchService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')

@@ -496,7 +496,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
 }
 },{}],8:[function(require,module,exports){
-module.exports = function($scope, $location, $state, $http, $localStorage, UserService, SearchService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')
@@ -887,7 +887,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
             }
         
          return $http.get(
-             envService.read('apiUrl') + 'documents' + '?' + searchText, {
+             envService.read('apiUrl') + '/documents' + '?' + searchText, {
                  headers: { "accesstoken": UserService.accessToken() }
              }
          )
@@ -916,7 +916,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
             
             console.log('Search text: ' + $scope.searchText);
             
-            $http.get(envService.read('apiUrl') + 'images' + '?scope=' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + $scope.searchText  )
             
             .then(function(response){
               console.log(response.data['status'])
