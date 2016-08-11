@@ -154,7 +154,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
-                                           foo, UserService, SearchService, GlobalService) {
+                                           foo, UserService, SearchService, GlobalService,
+                                          envService) {
     $scope.message = 'This is the home page'
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
@@ -164,6 +165,8 @@ app.controller('MainController', function($scope, $http, $state, $location,
     
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
+    
+    envService.set('production');
     
 });
 

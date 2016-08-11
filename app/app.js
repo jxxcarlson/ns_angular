@@ -5,7 +5,7 @@
 var angular = require('angular');
 require('angular-route');
 
-var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment',
+var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment', 
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
                                          'cfp.hotkeys']).
     config(function(envServiceProvider) {
