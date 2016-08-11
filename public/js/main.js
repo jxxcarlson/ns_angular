@@ -629,7 +629,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, envServ
         
         this.search = function(searchText) {
                
-          return  $http.get('http://' + apiServer + '/v1/documents' + '?' + $scope.searchText  )
+          return  $http.get(envService.read('apiUrl') + '/documents' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -656,7 +656,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, envServ
             var parameter = JSON.stringify(params);
         
 
-            $http.post('http://' + apiServer + '/v1/documents/' + params['id'], parameter)
+            $http.post(envService.read('apiUrl') + '/documents/' + params['id'], parameter)
                 .then(function(response){
                 
                     if (response.data['status'] == '202') {
@@ -984,7 +984,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     content_type: file.type,
                     owner: UserService.username()
                 };
-                $http.post('http://' + apiServer + '/v1/images', query )
+                $http.post(envService.read('apiUrl') + '/images', query )
               //Finally, We're done
               console.log('Upload Done!')
             })
@@ -1107,7 +1107,7 @@ module.exports = function($http, $q, ImageService, envService) {
         
       
         this.search = function(searchText) {
-          return  $http.get('http://' + apiServer + '/v1/images' + '?' + $scope.searchText  )
+          return  $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);

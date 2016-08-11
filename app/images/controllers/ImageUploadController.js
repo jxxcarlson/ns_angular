@@ -41,7 +41,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     content_type: file.type,
                     owner: UserService.username()
                 };
-                $http.post('http://' + apiServer + '/v1/images', query )
+                $http.post(envService.read('apiUrl') + '/images', query )
               //Finally, We're done
               console.log('Upload Done!')
             })

@@ -34,7 +34,7 @@ module.exports = function($http, $q, ImageService, envService) {
         
       
         this.search = function(searchText) {
-          return  $http.get('http://' + apiServer + '/v1/images' + '?' + $scope.searchText  )
+          return  $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
