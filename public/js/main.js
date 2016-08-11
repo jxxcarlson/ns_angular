@@ -1872,15 +1872,18 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
 },{}],39:[function(require,module,exports){
 
 
-module.exports = function($scope, $localStorage, UserApiService, UserService) {
+module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
         
         $scope.submit = function() {
           UserApiService.newUser($scope.username, $scope.email, $scope.password)
           .then(
                 function (result) {
                   if (UserService.loginStatus() == 200) {
-                    $scope.message = 'Success!'
+                    $scope.message = 'Success: signed in as ' + $scope.username
+                    SearchService.query("user="+$scope.username)
+                    $state.go('documents', {}, {reload: true})
                   } else {
+                  
                     $scope.message = 'Sorry'
                   }
                     // promise was fullfilled (regardless of outcome)
