@@ -21,9 +21,9 @@
     <div style="margin-left:1em;">
         <h2> {{ title }} </h2>
         <div class="container fill">
-          <img src={{imageStorageUrl}} style="max-width:300px;max-height:400px;" />
-    <!-- WORKS: <iframe src="http://psurl.s3.amazonaws.com/Bloch.pdf" style="width:900px; height:900px;"> -->
-          <iframe id="pdf-iframe" src={{pdfImage}} style="width:900px; height:900px;"> 
+          <img ng-hide="pdfMode" src={{imageStorageUrl}} style="max-width:300px;max-height:400px;" />
+    
+          <iframe ng-show="pdfMode" id="pdf-iframe" src={{pdfImage}} style="width:900px; height:900px;"> 
               
             <p>Your browser does not support iframes.</p>
           </iframe>    
