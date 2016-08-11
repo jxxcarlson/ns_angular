@@ -1900,10 +1900,9 @@ module.exports = function($scope, $localStorage, UserApiService, UserService) {
 module.exports = function($http, $q, $localStorage, envService) {
 
         var deferred = $q.defer();
-      
-
+        
         this.login = function(username, password) {
-          return envService.read('apiUrl') + '/users/' + username + '?' + password
+          return $http.get(envService.read('apiUrl') + '/users/' + username + '?' + password)
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
