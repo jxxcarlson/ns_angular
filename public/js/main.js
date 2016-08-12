@@ -547,7 +547,9 @@ module.exports = function($scope, $state, $http, envService,
                 
             }
             
-            $http.get(envService.read('apiUrl') + '/documents' + '?' + query  )
+            $http.get(envService.read('apiUrl') + '/documents' + '?' + query, {
+                 headers: { "accesstoken": UserService.accessToken() }
+             }  )
             .then(function(response){
                               
               var jsonData = response.data
@@ -1788,7 +1790,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });

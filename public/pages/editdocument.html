@@ -15,7 +15,18 @@
           
           
           
-          <div>
+          
+
+          <h3> Documents: {{ documentCount }}</h3>
+          <br />
+          <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+
+        </div>
+  </div>
+
+  <!-- SOURCE TEXT -->    
+  <div class="col-md-5">
+      <div>
           <p class="neutral-box" ng-click="showTools = !showTools">Settings</p>
           <div ng-show="showTools">
               
@@ -43,17 +54,7 @@
           </div>      
           
           </div>
-
-          <h3> Documents: {{ documentCount }}</h3>
-          <br />
-          <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
-
-        </div>
-  </div>
-
-  <!-- SOURCE TEXT -->    
-  <div class="col-md-5">
-      <div style="margin-left:1em;">
+      <div ng-hide="showTools" style="margin-left:1em;">
         <div style="margin-bottom: 3px;">
             <span>
               <input class="input-box" style="width: 400px; vertical-align: middle;" ng-model="editableTitle" type="text" id="editableTitle">

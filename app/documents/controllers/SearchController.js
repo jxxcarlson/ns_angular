@@ -11,7 +11,9 @@ module.exports = function($scope, $state, $http, envService,
                 
             }
             
-            $http.get(envService.read('apiUrl') + '/documents' + '?' + query  )
+            $http.get(envService.read('apiUrl') + '/documents' + '?' + query, {
+                 headers: { "accesstoken": UserService.accessToken() }
+             }  )
             .then(function(response){
                               
               var jsonData = response.data
