@@ -13,11 +13,9 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                 
             }
         
-         return $http.get(
-             envService.read('apiUrl') + '/documents' + '?' + searchText, {
-                 headers: { "accesstoken": UserService.accessToken() }
-             }
-         )
+         var url = envService.read('apiUrl') + '/documents' + '?' + searchText
+         var options = { headers: { "accesstoken": UserService.accessToken() }}
+         return $http.get(url, options)
         .then(function(response){
               
           var jsonData = response.data

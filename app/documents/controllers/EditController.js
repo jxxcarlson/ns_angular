@@ -13,6 +13,9 @@
             id = DocumentService.documentId();
         }
       
+      console.log('EDITOR: id = ' + id)
+      //DocumentService.setDocumentId(id)
+      
       // Set heights of window parts
       var innerHeight = $window.innerHeight
       document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
@@ -145,7 +148,9 @@
 
 
         // Get most document from server
-        $http.get(envService.read('apiUrl') + '/documents/' + id  )
+        var url = envService.read('apiUrl') + '/documents/' + id
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        $http.get(url, options  )
             .then(function(response){
             
                 var document = response.data['document']

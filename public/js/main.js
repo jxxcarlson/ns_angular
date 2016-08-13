@@ -337,6 +337,9 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
             id = DocumentService.documentId();
         }
       
+      console.log('EDITOR: id = ' + id)
+      //DocumentService.setDocumentId(id)
+      
       // Set heights of window parts
       var innerHeight = $window.innerHeight
       document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
@@ -469,7 +472,9 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
 
         // Get most document from server
-        $http.get(envService.read('apiUrl') + '/documents/' + id  )
+        var url = envService.read('apiUrl') + '/documents/' + id
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        $http.get(url, options  )
             .then(function(response){
             
                 var document = response.data['document']
@@ -547,9 +552,9 @@ module.exports = function($scope, $state, $http, envService,
                 
             }
             
-            $http.get(envService.read('apiUrl') + '/documents' + '?' + query, {
-                 headers: { "accesstoken": UserService.accessToken() }
-             }  )
+            var url = envService.read('apiUrl') + '/documents' + '?' + query
+            var options = { headers: { "accesstoken": UserService.accessToken() }}
+            $http.get(url, options)
             .then(function(response){
                               
               var jsonData = response.data
@@ -615,10 +620,9 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
-          return  $http.get(envService.read('apiUrl') + '/documents/' + id,
-            {
-                 headers: { "accesstoken": UserService.accessToken() }
-             })
+          var url = envService.read('apiUrl') + '/documents/' + id
+          var options = { headers: { "accesstoken": UserService.accessToken() }}
+          return  $http.get(url, options)
           .then(function (response) {
               /// Trying to solve net: :ERR_INVALID_CHUNKED_ENCODING" ///
               // response.setHeader("Content-Type", "text/plain")
@@ -647,8 +651,10 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
         this.search = function(searchText) {
                
-          return  $http.get(envService.read('apiUrl') + '/documents' + '?' + $scope.searchText  )
-          .then(function (response) {
+            var url = envService.read('apiUrl') + '/documents' + '?' + $scope.searchText
+            var options = { headers: { "accesstoken": UserService.accessToken() }}
+            return  $http.get(url, options)
+            .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
                 var jsonData = response.data
@@ -673,8 +679,9 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
 
             var parameter = JSON.stringify(params);
         
-
-            $http.post(envService.read('apiUrl') + '/documents/' + params['id'], parameter)
+            var url = envService.read('apiUrl') + '/documents/' + params['id'], parameter
+            var options = { headers: { "accesstoken": UserService.accessToken() }}
+            $http.post(url, options)
                 .then(function(response){
                 
                     if (response.data['status'] == '202') {
@@ -904,11 +911,9 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                 
             }
         
-         return $http.get(
-             envService.read('apiUrl') + '/documents' + '?' + searchText, {
-                 headers: { "accesstoken": UserService.accessToken() }
-             }
-         )
+         var url = envService.read('apiUrl') + '/documents' + '?' + searchText
+         var options = { headers: { "accesstoken": UserService.accessToken() }}
+         return $http.get(url, options)
         .then(function(response){
               
           var jsonData = response.data
