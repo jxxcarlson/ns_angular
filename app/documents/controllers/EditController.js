@@ -52,6 +52,7 @@
             if ($scope.textDirty) {
                 updateCount += 1
                 console.log('periodicUpdate ' + updateCount)
+                console.log('EDITOR, call DocumentApiService($scope)')
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
 
@@ -177,6 +178,7 @@
         // update document
         $scope.updateDocument = function() {
            
+            console.log('EDITOR, updateDocument')
             DocumentApiService.update(DocumentService.params($scope), $scope)        
         
         }

@@ -1,1 +1,4 @@
+[%hardbreaks]
 http://www.tilcode.com/tag/angularjs[Using gulp build proces on heroku]
+https://markgoodyear.com/2014/01/getting-started-with-gulp[gulp]
+https://www.sitepoint.com/deploying-heroku-using-gulp-node-git[gulp build heroku]

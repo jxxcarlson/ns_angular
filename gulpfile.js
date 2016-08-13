@@ -23,6 +23,35 @@ var cors = function (req, res, next) {
   next();
 };
 
+// https://www.npmjs.com/package/gulp-replace
+var replace = require('gulp-replace');
+
+gulp.task('prod', function(){
+  console.log('\n    Configuring for production\n')
+  gulp.src(['app/topLevel/index.js'])
+    .pipe(replace("development", "production"))
+    .pipe(gulp.dest('tmp/'));
+    gulp.src(['tmp/index.js'])
+      .pipe(gulp.dest('app/topLevel/'))
+    // .pipe(gulp.dest('build/file.txt'));
+});
+
+gulp.task('dev', function(){
+  console.log('\n    Configuring for development\n')
+  gulp.src(['app/topLevel/index.js'])
+    .pipe(replace("production", "development"))
+    .pipe(gulp.dest('tmp/'));
+  gulp.src(['tmp/index.js'])
+     .pipe(gulp.dest('app/topLevel/'))
+});
+
+gulp.task('foo', function(){
+  console.log('\n    Task foo\n')
+  gulp.src(['file.txt'])
+    .pipe(replace('bar', 'foo'))
+    .pipe(gulp.dest('build/'));
+});
+
 gulp.task('connect', function() {
   connect.server({
     root: 'public',
@@ -97,4 +126,3 @@ gulp.task('build', ['jscs', 'lint'], function() {
             message: 'Successfully built application'
         }))
 });
-

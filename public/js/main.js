@@ -376,6 +376,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
             if ($scope.textDirty) {
                 updateCount += 1
                 console.log('periodicUpdate ' + updateCount)
+                console.log('EDITOR, call DocumentApiService($scope)')
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
 
@@ -501,6 +502,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         // update document
         $scope.updateDocument = function() {
            
+            console.log('EDITOR, updateDocument')
             DocumentApiService.update(DocumentService.params($scope), $scope)        
         
         }
@@ -670,20 +672,23 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
             })
         }
         
+
         
         
         this.update = function(params, scope) {
 
+            console.log('API, DOCUMENT, UPDATE')
+            
             var deferredRefresh = $q.defer();
-            params['token'] = UserService.accessToken()
-
+     
             var parameter = JSON.stringify(params);
-        
-            var url = envService.read('apiUrl') + '/documents/' + params['id'], parameter
+            var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
-            $http.post(url, options)
+            
+            $http.post(url, parameter, options)
                 .then(function(response){
                 
+                    console.log('  -- status: ' + response.data['status'])
                     if (response.data['status'] == '202') {
                         
                         var document = response.data['document']

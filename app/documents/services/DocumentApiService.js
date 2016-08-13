@@ -66,20 +66,23 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
             })
         }
         
+
         
         
         this.update = function(params, scope) {
 
+            console.log('API, DOCUMENT, UPDATE')
+            
             var deferredRefresh = $q.defer();
-            params['token'] = UserService.accessToken()
-
+     
             var parameter = JSON.stringify(params);
-        
-            var url = envService.read('apiUrl') + '/documents/' + params['id'], parameter
+            var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
-            $http.post(url, options)
+            
+            $http.post(url, parameter, options)
                 .then(function(response){
                 
+                    console.log('  -- status: ' + response.data['status'])
                     if (response.data['status'] == '202') {
                         
                         var document = response.data['document']
