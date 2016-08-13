@@ -1,4 +1,4 @@
-module.exports = function($http, $q, ImageService, envService) {
+module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
         var deferred = $q.defer();
@@ -7,8 +7,10 @@ module.exports = function($http, $q, ImageService, envService) {
         this.getImage = function(id) {
              
         console.log('Image API service says id = ' + id)
-        
-          return  $http.get(envService.read('apiUrl') + '/images/' + id  )
+          
+          var url = envService.read('apiUrl') + '/images/' + id
+          var options = { headers: { "accesstoken": UserService.accessToken() }}
+          return  $http.get(url, options)
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -31,7 +33,10 @@ module.exports = function($http, $q, ImageService, envService) {
         
       
         this.search = function(searchText) {
-          return  $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
+            
+          var url = envService.read('apiUrl') + '/images' + '?' + $scope.searchText 
+          var options = { headers: { "accesstoken": UserService.accessToken() }}
+          return  $http.get(url, options)
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);

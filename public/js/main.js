@@ -942,11 +942,12 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
         $scope.doImageSearch = function(){
             
             
-            console.log('Search text: ' + $scope.searchText);
+            console.log('SEARCH CONTROLLER, Search text: ' + $scope.searchText);
             
-            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
             
             .then(function(response){
+              
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
               var jsonData = response.data
@@ -958,7 +959,8 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
               console.log('id = ' + id)
               ImageApiService.getImage(id)
               .then(function(response) {
-                 $state.go('images')       
+                 console.log('GOING TO IMAGES')
+                 $state.go('images', {}, {reload: true})
                })
               
              
@@ -1111,7 +1113,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 },{"./controllers/ImageSearchController":16,"./controllers/ImageUploadController":17,"./controllers/ImagesController":18,"./services/ImageApiService":20,"./services/ImageRouteService":21,"./services/ImageSearchService":22,"./services/ImageService":23,"angular":47}],20:[function(require,module,exports){
-module.exports = function($http, $q, ImageService, envService) {
+module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
         var deferred = $q.defer();
@@ -1120,8 +1122,10 @@ module.exports = function($http, $q, ImageService, envService) {
         this.getImage = function(id) {
              
         console.log('Image API service says id = ' + id)
-        
-          return  $http.get(envService.read('apiUrl') + '/images/' + id  )
+          
+          var url = envService.read('apiUrl') + '/images/' + id
+          var options = { headers: { "accesstoken": UserService.accessToken() }}
+          return  $http.get(url, options)
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -1144,7 +1148,10 @@ module.exports = function($http, $q, ImageService, envService) {
         
       
         this.search = function(searchText) {
-          return  $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
+            
+          var url = envService.read('apiUrl') + '/images' + '?' + $scope.searchText 
+          var options = { headers: { "accesstoken": UserService.accessToken() }}
+          return  $http.get(url, options)
           .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -1209,7 +1216,7 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
         
             console.log('Search text: ' + searchText);
             
-            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
@@ -1221,6 +1228,8 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
               var id = images[0]['id']
               console.log('id = ' + id)
               ImageApiService.getImage(id)
+              $state.go('images', {reload: true, inherit: false, notify: true })              
+
             })
         }
 }
@@ -1800,7 +1809,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });

@@ -4,7 +4,7 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
         
             console.log('Search text: ' + searchText);
             
-            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + searchText  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
@@ -16,6 +16,8 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
               var id = images[0]['id']
               console.log('id = ' + id)
               ImageApiService.getImage(id)
+              $state.go('images', {reload: true, inherit: false, notify: true })              
+
             })
         }
 }

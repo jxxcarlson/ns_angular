@@ -3,11 +3,12 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
         $scope.doImageSearch = function(){
             
             
-            console.log('Search text: ' + $scope.searchText);
+            console.log('SEARCH CONTROLLER, Search text: ' + $scope.searchText);
             
-            $http.get(envService.read('apiUrl') + '/images' + '?scope=' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
             
             .then(function(response){
+              
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
               var jsonData = response.data
@@ -19,7 +20,8 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
               console.log('id = ' + id)
               ImageApiService.getImage(id)
               .then(function(response) {
-                 $state.go('images')       
+                 console.log('GOING TO IMAGES')
+                 $state.go('images', {}, {reload: true})
                })
               
              
