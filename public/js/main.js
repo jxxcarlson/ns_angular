@@ -521,7 +521,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       $http.post(envService.read('apiUrl') + '/documents', parameter)
       .then(function(response){
-            if (response.data['status'] == 202) {
+            if (response.data['status'] == 'success') {
 
                   console.log('Reponse OK, document created')
                   
@@ -708,7 +708,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 .then(function(response){
                 
                     console.log('  -- status: ' + response.data['status'])
-                    if (response.data['status'] == '202') {
+                    if (response.data['status'] == 'success') {
                         
                         var document = response.data['document']
                         
@@ -1943,7 +1943,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
       UserApiService.newUser($scope.username, $scope.email, $scope.password)
       .then(
             function (result) {
-              if (UserService.loginStatus() == 200) {
+              if (UserService.loginStatus() == 'success') {
                 $scope.message = 'Success: signed in as ' + $scope.username
                 SearchService.query("user="+$scope.username)
                 $state.go('documents', {}, {reload: true})

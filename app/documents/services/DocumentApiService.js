@@ -102,7 +102,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 .then(function(response){
                 
                     console.log('  -- status: ' + response.data['status'])
-                    if (response.data['status'] == '202') {
+                    if (response.data['status'] == 'success') {
                         
                         var document = response.data['document']
                         

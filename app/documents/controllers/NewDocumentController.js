@@ -10,7 +10,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       $http.post(envService.read('apiUrl') + '/documents', parameter)
       .then(function(response){
-            if (response.data['status'] == 202) {
+            if (response.data['status'] == 'success') {
 
                   console.log('Reponse OK, document created')
                   

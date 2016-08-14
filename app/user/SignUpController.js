@@ -9,7 +9,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
       UserApiService.newUser($scope.username, $scope.email, $scope.password)
       .then(
             function (result) {
-              if (UserService.loginStatus() == 200) {
+              if (UserService.loginStatus() == 'success') {
                 $scope.message = 'Success: signed in as ' + $scope.username
                 SearchService.query("user="+$scope.username)
                 $state.go('documents', {}, {reload: true})
