@@ -9,8 +9,7 @@ body {
 
 #rendered-text {
     width: 100%;
-    max-width: 800px;
-    height: 800px;
+    max-width: 600px;
     overflow-y: auto;
     /* font-size: 1.125em; */
 }
