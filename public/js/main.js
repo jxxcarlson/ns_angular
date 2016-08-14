@@ -26,8 +26,8 @@ var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment
                     // antoherCustomVar: 'ipsum' 
                 },
                 production: {
-                    apiUrl: "http://sleepy-tundra-14212.herokuapp.com/v1",
-                    clientUrl: "http://salty-savannah-99428.herokuapp.com"
+                    apiUrl: "http://xdoc-api.herokuapp.com/v1",
+                    clientUrl: "http://manuscripta.herokuapp.com"
                     // antoherCustomVar: 'lorem', 
                     // antoherCustomVar: 'ipsum' 
                 }
