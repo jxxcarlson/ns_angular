@@ -17,7 +17,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
                   var document = response.data['document']
                   var id = document['id']
                   $location.path('/editdocument/' + id)
-                  SearchService.query('title='+$scope.title, $scope, 'editOneDocument')
+                  SearchService.query('id='+id, $scope, 'editOneDocument')
 
             } else {
 
