@@ -30,6 +30,25 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 deferred.resolve(response.data);
                 var data = response.data
                 var document = data['document']
+                
+                var links = document['links'] || {} 
+                console.log('***** LINKS: ' + JSON.stringify(data))
+                
+                var documents = links['documents'] || []
+                console.log('HOWDY!')
+                console.log('***** DOCUMENT LENGTH: ' + documents.length)
+                console.log('***** DOCUMENTS: ' + JSON.stringify(documents))
+                
+                // If the document has subdocuments, display them
+                // instead of the search results
+                if (documents.length > 0) {
+                    
+                    console.log('SUBDOCUMENTS: ' + documents.length)
+                    console.log('SUBDOCUMENTS: ' + documents)
+                    DocumentService.setDocumentList( documents )
+                }
+                
+                
                 DocumentService.update(document)
         
                 // promise is returned

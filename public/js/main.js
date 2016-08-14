@@ -528,7 +528,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
                   var document = response.data['document']
                   var id = document['id']
                   $location.path('/editdocument/' + id)
-                  SearchService.query('title='+$scope.title, $scope, 'editOneDocument')
+                  SearchService.query('id='+id, $scope, 'editOneDocument')
 
             } else {
 
@@ -636,6 +636,25 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 deferred.resolve(response.data);
                 var data = response.data
                 var document = data['document']
+                
+                var links = document['links'] || {} 
+                console.log('***** LINKS: ' + JSON.stringify(data))
+                
+                var documents = links['documents'] || []
+                console.log('HOWDY!')
+                console.log('***** DOCUMENT LENGTH: ' + documents.length)
+                console.log('***** DOCUMENTS: ' + JSON.stringify(documents))
+                
+                // If the document has subdocuments, display them
+                // instead of the search results
+                if (documents.length > 0) {
+                    
+                    console.log('SUBDOCUMENTS: ' + documents.length)
+                    console.log('SUBDOCUMENTS: ' + documents)
+                    DocumentService.setDocumentList( documents )
+                }
+                
+                
                 DocumentService.update(document)
         
                 // promise is returned
@@ -982,7 +1001,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, UserService, envService) {
+ module.exports =  function($scope, $http, $state, UserService, envService) {
         
     $scope.upload = function (file) {
         console.log("Upload controller sending siging request");
@@ -994,12 +1013,14 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             owner: UserService.username()
         };
         console.log("-- query: " + JSON.stringify(query))
+        
         // Get presigned URL
         var url = envService.read('apiUrl') + '/presigned'
         console.log("-- url for POST: " + url)
         $http.post(url, query).success(function(response) {
+            
             console.log("Signed response received: " + response.url);
-            // Upload file to S3
+           
             var req = {
                  method: 'PUT',
                  url: response.url,
@@ -1008,16 +1029,26 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                 }
             var file_url = response.url
             console.log("-- now PUT request: " + JSON.stringify(req))
+            
+             // Upload file to S3
             $http(req)
             .success(function(response) {
                 var query = {
-                    title: 'test',
+                    title: $scope.title,
                     filename: file.name,
                     title: $scope.title,
                     content_type: file.type,
                     owner: UserService.username()
                 };
+                
+                // Add image to API database
                 $http.post(envService.read('apiUrl') + '/images', query )
+                    .success(function(response){
+                    console.log('IMAGE ID: ' + response['id'])
+                    // ImageSearchService.query('id='+id)
+                    $state.go('images', {}, {reload: true})
+                })
+                
               //Finally, We're done
               console.log('Upload Done!')
             })
