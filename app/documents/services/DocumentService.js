@@ -41,10 +41,18 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
+    this.setSubdocuments = function(subdocumentArray) { 
+        $localStorage.subdocuments = subdocumentArray
+    }
+    
     this.setDocumentList = function(array) { 
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
     }
+    
+    this.subdocuments = function() { return $localStorage.subdocuments || []}
+   
+    this.subdocumentCount = function() { return this.subdocuments().length }
     
     this.documentList = function() { 
         
@@ -64,6 +72,11 @@ module.exports = function($localStorage) {
         this.setRenderedText( document['rendered_text'] )
         this.setKind( document['kind'])
         this.setPublic(document['public'])
+        
+        var links = document['links'] || {} 
+        var subdocuments = links['documents'] || []
+        
+        this.setSubdocuments(subdocuments)
         
         return document['rendered_text']
         

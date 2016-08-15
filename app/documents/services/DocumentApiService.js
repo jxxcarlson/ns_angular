@@ -36,6 +36,10 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
+                console.log('**** sub DOCS: ' + DocumentService.subdocuments())
+                console.log('**** sub DOC COUNT: ' + DocumentService.subdocumentCount())
+                
+                
                 
         
                 // promise is returned

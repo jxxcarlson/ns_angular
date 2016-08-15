@@ -1,4 +1,4 @@
-module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')
@@ -8,7 +8,11 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
       var access_token = UserService.accessToken()
       var parameter = JSON.stringify({title:$scope.title, token:access_token });
 
-      $http.post(envService.read('apiUrl') + '/documents', parameter)
+      var url = envService.read('apiUrl') + '/documents'
+      if (DocumentService.subdocumentCount() > 0) {
+          url += '?append=' +DocumentService.documentId()
+      }
+      $http.post(url, parameter)
       .then(function(response){
             if (response.data['status'] == 'success') {
 

@@ -509,7 +509,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
 }
 },{}],8:[function(require,module,exports){
-module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')
@@ -519,7 +519,11 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
       var access_token = UserService.accessToken()
       var parameter = JSON.stringify({title:$scope.title, token:access_token });
 
-      $http.post(envService.read('apiUrl') + '/documents', parameter)
+      var url = envService.read('apiUrl') + '/documents'
+      if (DocumentService.subdocumentCount() > 0) {
+          url += '?append=' +DocumentService.documentId()
+      }
+      $http.post(url, parameter)
       .then(function(response){
             if (response.data['status'] == 'success') {
 
@@ -642,6 +646,10 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
+                console.log('**** sub DOCS: ' + DocumentService.subdocuments())
+                console.log('**** sub DOC COUNT: ' + DocumentService.subdocumentCount())
+                
+                
                 
         
                 // promise is returned
@@ -824,10 +832,18 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
+    this.setSubdocuments = function(subdocumentArray) { 
+        $localStorage.subdocuments = subdocumentArray
+    }
+    
     this.setDocumentList = function(array) { 
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
     }
+    
+    this.subdocuments = function() { return $localStorage.subdocuments || []}
+   
+    this.subdocumentCount = function() { return this.subdocuments().length }
     
     this.documentList = function() { 
         
@@ -847,6 +863,11 @@ module.exports = function($localStorage) {
         this.setRenderedText( document['rendered_text'] )
         this.setKind( document['kind'])
         this.setPublic(document['public'])
+        
+        var links = document['links'] || {} 
+        var subdocuments = links['documents'] || []
+        
+        this.setSubdocuments(subdocuments)
         
         return document['rendered_text']
         
@@ -1827,7 +1848,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
 });
 
