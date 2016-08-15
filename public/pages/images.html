@@ -1,6 +1,19 @@
 <div class="row">
-  <div class="col-md-2" >
+  <div class="col-md-3" >
     <div style="margin-left:1em;">
+        
+          
+   <form class="form-horizontal" style="margin-top:14px;">
+    <div class="form-group" style="margin-left:0;">
+      <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
+      <div ng-controller="ImageSearchController">
+        <input class="search-box" ng-enter="doImageSearch(  )" ng-model="searchText" placeholder=" image search ..."/>
+      </div>
+      <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
+
+    </div>
+  </form> 
+                    
 
     <h3 style='margin-top:10px;margin-bottom:30px;'>{{ imageCount }} Images</h3> 
     <div  id="image-toc" style="height:400px; overflow-y: auto;">        

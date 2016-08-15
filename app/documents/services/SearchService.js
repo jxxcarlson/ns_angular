@@ -27,7 +27,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
           DocumentApiService.getDocument(id)
           DocumentApiService.getDocument(id).then(function(response) {
                   
-                $state.go('documents', {}, {reload: true})
+                $state.go(destination, {}, {reload: true})
               
               }) 
          })

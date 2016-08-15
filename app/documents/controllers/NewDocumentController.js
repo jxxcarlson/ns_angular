@@ -7,11 +7,17 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       var access_token = UserService.accessToken()
       var parameter = JSON.stringify({title:$scope.title, token:access_token });
-
       var url = envService.read('apiUrl') + '/documents'
-      if (DocumentService.subdocumentCount() > 0) {
+      var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
+      var lastDocumentId = DocumentService.documentId()
+      
+      // Add the newly created document to the document list
+      // of the current document
+      if (hasSubdocuments) {
           url += '?append=' +DocumentService.documentId()
       }
+        
+      // Create document      
       $http.post(url, parameter)
       .then(function(response){
             if (response.data['status'] == 'success') {
@@ -20,8 +26,22 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
                   
                   var document = response.data['document']
                   var id = document['id']
-                  $location.path('/editdocument/' + id)
-                  $state.go('documents', {}, {reload:true})
+                  
+                  
+                  if (hasSubdocuments == true) { 
+                      console.log('BRANCH A')
+                      console.log('**** lastDocumentId: '+ lastDocumentId)
+                      SearchService.query('id='+lastDocumentId, $scope)
+                      
+                      // $location.path('/editdocument/' + id)
+                      // $state.go('editdocument', {}, {reload:true})
+                      
+                  } else {
+                      console.log('BRANCH B')
+                      $location.path('/editdocument/' + id)
+                      $state.go('editdocument', {}, {reload:true})
+                  }
+                  
                   // SearchService.query('id='+id, $scope, 'editOneDocument')
 
             } else {
