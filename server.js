@@ -16,8 +16,16 @@ app.use(
 );
 
 app.all('*', function (req, res, next) {
-  console.log(req.hostname)    
-  res.sendFile('public/index.html', { root: __dirname });
+  console.log(req.hostname) 
+  
+  switch(req.hostname) {
+        case 'www.manuscripta.io': res.sendFile('public/index.html', { root: __dirname }); break;
+        case 'www.concertonovo.io': res.write('<h1>This is concertonov.io</h1>'); break;
+        default: 
+            res.statusCode = 404;
+            res.write('<p>We do not serve the host: <b>' + req.hostname + '</b>.</p>');
+    }   
+    
   requestCount += 1
   console.log(requestCount + ' request: ' + req.params[0])
 });
