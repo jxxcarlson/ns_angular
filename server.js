@@ -16,14 +16,16 @@ app.use(
 );
 
 app.all('*', function (req, res, next) {
-  console.log(req.hostname) 
+  console.log('*** HOST: ' + req.hostname) 
   
   switch(req.hostname) {
-        case 'www.manuscripta.io': res.sendFile('public/index.html', { root: __dirname }); break;
-        case 'www.concertonovo.io': res.write('<h1>This is concertonov.io</h1>'); break;
+        case 'www.manuscripta.io': res.sendFile('public/index.html', { root: __dirname }); 
+              console.log('*** HANDLE MANUSCRIPTA'); break;
+        case 'www.concertonovo.io': res.write('<h1>This is concertonovo.io</h1>'); 
+              console.log('*** HANLDE CONCERTONOVO'); res.end(); break;
         default: 
             res.statusCode = 404;
-            res.write('<p>We do not serve the host: <b>' + req.hostname + '</b>.</p>');
+            res.write('<p>We do not serve the host: <b>' + req.hostname + '</b>.</p>'); res.end();
     }   
     
   requestCount += 1
