@@ -20,6 +20,8 @@ app.use(
 
 app.all('*', function (req, res, next) {
   console.log('*** HOST: ' + req.hostname) 
+  console.log('*** URL : ' + req.originalUrl) 
+  console.log('*** PATH: ' + req.path) 
   
   switch(req.hostname) {
         case 'www.manuscripta.io': res.sendFile('public/index.html', { root: __dirname }); 
