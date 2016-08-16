@@ -26,7 +26,7 @@ app.all('*', function (req, res, next) {
   switch(req.hostname) {
         case 'www.manuscripta.io': res.sendFile('public/index.html', { root: __dirname }); 
               console.log('*** HANDLE MANUSCRIPTA'); break;
-        case 'www.concertonovo.io': res.write('<h1>This is concertonovo.io</h1>'); 
+        case 'www.concertonovo.io': res.sendFile('novo/index.html', { root: __dirname }); 
               console.log('*** HANDLE CONCERTONOVO'); res.end(); break;
         default: 
             res.statusCode = 404;
