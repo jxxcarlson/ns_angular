@@ -13,6 +13,9 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         var deferred = $q.defer();
 
         this.getDocument = function(id) {
+            
+          console.log('*** DocApiService: getDocument') 
+          
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
@@ -27,11 +30,20 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 var links = document['links'] || {} 
                 var documents = links['documents'] || []
                 
+                console.log('*** documents.length: ' + documents.length)
+                
                 // If the document has subdocuments, display them
                 // instead of the search results
                 if (documents.length > 0) {
                     
+                    console.log('*** Setting collecton title: ' + document['title'])
+                    DocumentService.setCollectionTitle(document['title'])
                     DocumentService.setDocumentList( documents )
+                } 
+                else 
+                {
+                    // console.log('*** Setting collecton title to NONE')
+                    // DocumentService.setCollectionTitle('none')
                 }
                 
                 

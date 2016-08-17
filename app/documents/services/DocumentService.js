@@ -62,6 +62,12 @@ module.exports = function($localStorage) {
     
     this.documentCount = function() { return $localStorage.documentList.length }
     
+    this.setCollectionTitle = function(collectionTitle) {
+        
+        $localStorage.collectionTitle = collectionTitle 
+    }
+    this.collectionTitle = function() { return $localStorage.collectionTitle }
+    
     
     this.update = function(document) {
         

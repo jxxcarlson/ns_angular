@@ -280,6 +280,18 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     
     
     $scope.docStyle = DocumentService.tocStyle
+    if (DocumentService.collectionTitle() != DocumentService.title()) {
+        
+        $scope.collectionTitle = DocumentService.collectionTitle()
+        
+    }
+    else
+    {
+        $scope.collectionTitle = DocumentService.collectionTitle()
+        
+        // $scope.collectionTitle = undefined
+    }
+
     
     $scope.reloadMathJax = function() {
         $timeout( 
@@ -588,6 +600,7 @@ module.exports = function($scope, $state, $http, envService,
               var documents = jsonData['documents']
               
               DocumentService.setDocumentList(documents)
+              DocumentService.setCollectionTitle(undefined)
                 
               var id = documents[0]['id']
               var doc= documents[0]
@@ -644,6 +657,9 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         var deferred = $q.defer();
 
         this.getDocument = function(id) {
+            
+          console.log('*** DocApiService: getDocument') 
+          
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
@@ -658,11 +674,20 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 var links = document['links'] || {} 
                 var documents = links['documents'] || []
                 
+                console.log('*** documents.length: ' + documents.length)
+                
                 // If the document has subdocuments, display them
                 // instead of the search results
                 if (documents.length > 0) {
                     
+                    console.log('*** Setting collecton title: ' + document['title'])
+                    DocumentService.setCollectionTitle(document['title'])
                     DocumentService.setDocumentList( documents )
+                } 
+                else 
+                {
+                    // console.log('*** Setting collecton title to NONE')
+                    // DocumentService.setCollectionTitle('none')
                 }
                 
                 
@@ -873,6 +898,12 @@ module.exports = function($localStorage) {
     }
     
     this.documentCount = function() { return $localStorage.documentList.length }
+    
+    this.setCollectionTitle = function(collectionTitle) {
+        
+        $localStorage.collectionTitle = collectionTitle 
+    }
+    this.collectionTitle = function() { return $localStorage.collectionTitle }
     
     
     this.update = function(document) {
@@ -1869,7 +1900,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('development');
+    envService.set('production');
     
 });
 

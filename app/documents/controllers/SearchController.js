@@ -20,6 +20,7 @@ module.exports = function($scope, $state, $http, envService,
               var documents = jsonData['documents']
               
               DocumentService.setDocumentList(documents)
+              DocumentService.setCollectionTitle(undefined)
                 
               var id = documents[0]['id']
               var doc= documents[0]

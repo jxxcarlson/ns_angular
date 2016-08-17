@@ -28,6 +28,18 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     
     
     $scope.docStyle = DocumentService.tocStyle
+    if (DocumentService.collectionTitle() != DocumentService.title()) {
+        
+        $scope.collectionTitle = DocumentService.collectionTitle()
+        
+    }
+    else
+    {
+        $scope.collectionTitle = DocumentService.collectionTitle()
+        
+        // $scope.collectionTitle = undefined
+    }
+
     
     $scope.reloadMathJax = function() {
         $timeout( 
