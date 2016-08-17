@@ -33,7 +33,7 @@
     }
 	#nav {
 		padding:10px 20px;
-		background:#ddd;
+		background:#222;
 	}
 	#nav ul {
 		margin:0;
@@ -48,7 +48,8 @@
 	}
 #nav li a {
     
-    color: #cc0000;
+    /* color: #cc0000; */
+    color: #fff;
     text-decoration: none;
     font-weight:bold;
     font-size:1em;
