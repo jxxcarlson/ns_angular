@@ -2,7 +2,7 @@
   <div class="col-md-4" >
     <div style="margin-left:2em;">
 
-    <h2> Documents: {{ documentCount }} </h2>
+    <h3> {{ tableOfContentsTitle }} </h3>
     <br />    
     <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
 

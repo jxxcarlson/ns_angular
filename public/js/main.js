@@ -593,6 +593,8 @@ module.exports = function($scope, $state, $http, envService,
               var id = documents[0]['id']
               var doc= documents[0]
               
+              $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+              
               if (doc) {
                 var id = documents[0]['id']
                 DocumentApiService.getDocument(id).then(function(response) {
@@ -782,6 +784,17 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         
         console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
+        if (DocumentService.collectionTitle() == undefined) {
+                    
+            scope.collectionTitle = undefined 
+            scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+        }
+        else
+        {
+            scope.collectionTitle = DocumentService.collectionTitle()
+            scope.tableOfContentsTitle = 'Contents'
+        }
+        
         scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
                     MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocumentList')              
@@ -796,19 +809,22 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         .then(
             function (response) {
                 scope.title = DocumentService.title()
-                if (scope.title == DocumentService.collectionTitle()) {
+                if (DocumentService.collectionTitle() == undefined) {
                     
                     scope.collectionTitle = undefined 
+                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
                 }
                 else
                 {
                     scope.collectionTitle = DocumentService.collectionTitle()
+                    scope.tableOfContentsTitle = 'Contents'
                 }
                 
                 scope.text = DocumentService.text()
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
+                
                 
                 
                 
