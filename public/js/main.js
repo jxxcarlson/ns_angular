@@ -797,7 +797,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         {
             scope.collectionTitle = DocumentService.collectionTitle()
             scope.collectionId = DocumentService.collectionId()
-            scope.hideCollection = false // (DocumentService.collectionId() == DocumentService.documentId())
+            scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
         
@@ -836,7 +836,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     scope.tableOfContentsTitle = 'Contents'
                 }
                 
-                scope.hideCollection = false // (DocumentService.collectionId() == DocumentService.documentId())
+                scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
                 
 
                 
@@ -913,25 +913,28 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
+    
+    
+    
+    
+    // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }
+    this.subdocuments = function() { return $localStorage.subdocuments || []}
+    this.subdocumentCount = function() { return this.subdocuments().length }
     
+    
+    // Results of search
     this.setDocumentList = function(array) { 
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
     }
-    
-    this.subdocuments = function() { return $localStorage.subdocuments || []}
-   
-    this.subdocumentCount = function() { return this.subdocuments().length }
-    
     this.documentList = function() { 
         
         return $localStorage.documentList 
     
     }
-    
     this.documentCount = function() { 
         
         if ($localStorage.documentList == undefined) {
@@ -944,25 +947,37 @@ module.exports = function($localStorage) {
         }    
     }
     
+    
+    // Collection
+    
+    // Collection title
     this.setCollectionTitle = function(collectionTitle) {
         
         $localStorage.collectionTitle = collectionTitle 
     }
     this.collectionTitle = function() { return $localStorage.collectionTitle }
     
+    // Collection id
     this.setCollectionId = function(id) {
         
         $localStorage.collectionId = id 
     }
     this.collectionId = function() { return $localStorage.collectionId }
     
+    
+    // Update
+    
     this.update = function(document) {
         
         console.log('Document Service, update, with title = ' + document['title'])
+        
+        this.setAuthor( document['author'] )
         this.setTitle( document['title'] )
-        this.setDocumentId( document['id'] )       
+        this.setDocumentId( document['id'] )  
+        
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
+        
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
