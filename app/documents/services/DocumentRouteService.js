@@ -48,6 +48,23 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 }
                     
                 
+                var stackTop = this.collectionStackTop()
+                
+                if (stackTop == undefined) {
+                    
+                    scope.collectionTitle = undefined 
+                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+                    
+                }
+                else
+                {
+                    scope.collectionTitle = stackTop.title
+                    scope.collectionId = stackTop.id
+                    scope.tableOfContentsTitle = 'Contents' 
+                    
+                }
+                
+                /**
                 if (DocumentService.collectionTitle() == undefined) {
                     
                     scope.collectionTitle = undefined 
@@ -59,6 +76,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     scope.collectionId = DocumentService.collectionId()
                     scope.tableOfContentsTitle = 'Contents'
                 }
+                **/
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
                 
