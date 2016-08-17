@@ -25,7 +25,10 @@ module.exports = function($scope, $state, $http, envService,
               var id = documents[0]['id']
               var doc= documents[0]
               
-              $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+              if ($scope != undefined ) {
+                $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'  
+              }
+              
               
               if (doc) {
                 var id = documents[0]['id']
