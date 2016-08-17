@@ -62,6 +62,9 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
                 
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
+                
 
                 
                 scope.text = DocumentService.text()

@@ -88,6 +88,11 @@ module.exports = function($localStorage) {
         return (matches.length > 0) 
     }
     
+    //XXX
+    this.currentDocumentIsTerminal = function() { 
+        console.log('**** subdocuments: ' + this.subdocuments().length)
+        return (this.subdocuments().length == 0) }
+    
     this.isSiblingOfCurrentDocument = function(item) {  }
     
     this.updateCollectionStack = function(item) {}
@@ -160,6 +165,7 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+        console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
         
         this.setSubdocuments(subdocuments)
         

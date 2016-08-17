@@ -53,6 +53,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 DocumentService.update(document)
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
+                console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
+                
                 var isInDocList = DocumentService.documentIsInDocumentList(cdi)
                 console.log('*** current document is in Document list: ' + isInDocList)
                 

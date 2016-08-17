@@ -589,13 +589,13 @@ module.exports = function($scope, $state, $http, envService,
               
               DocumentService.setDocumentList(documents)
               DocumentService.setCollectionTitle(undefined)
+              DocumentService.resetCollectionStack()
                 
               var id = documents[0]['id']
               var doc= documents[0]
               
-              if ($scope != undefined ) {
-                $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'  
-              }
+              
+              $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() 
               
               
               if (doc) {
@@ -690,6 +690,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 DocumentService.update(document)
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
+                console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
+                
                 var isInDocList = DocumentService.documentIsInDocumentList(cdi)
                 console.log('*** current document is in Document list: ' + isInDocList)
                 
@@ -839,6 +841,9 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
                 
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
+                
 
                 
                 scope.text = DocumentService.text()
@@ -961,6 +966,11 @@ module.exports = function($localStorage) {
         return (matches.length > 0) 
     }
     
+    //XXX
+    this.currentDocumentIsTerminal = function() { 
+        console.log('**** subdocuments: ' + this.subdocuments().length)
+        return (this.subdocuments().length == 0) }
+    
     this.isSiblingOfCurrentDocument = function(item) {  }
     
     this.updateCollectionStack = function(item) {}
@@ -1033,6 +1043,7 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+        console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
         
         this.setSubdocuments(subdocuments)
         
