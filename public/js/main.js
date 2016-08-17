@@ -1904,6 +1904,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 });
 
 
+
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
                         foo, UserService, SearchService, envService) {
