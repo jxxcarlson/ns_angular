@@ -26,10 +26,21 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         .then(
             function (response) {
                 scope.title = DocumentService.title()
+                if (scope.title == DocumentService.collectionTitle()) {
+                    
+                    scope.collectionTitle = undefined 
+                }
+                else
+                {
+                    scope.collectionTitle = DocumentService.collectionTitle()
+                }
+                
                 scope.text = DocumentService.text()
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
+                
+                
                 
                  if (DocumentService.getPublic() == true ) {
                         scope.status = 'public'

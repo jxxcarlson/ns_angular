@@ -276,22 +276,10 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         DocumentRouteService.getDocument($scope, id)     
         // documentKind = DocumentService.kind()
     } 
+    
     var documentKind = DocumentService.kind()
     
-    
     $scope.docStyle = DocumentService.tocStyle
-    if (DocumentService.collectionTitle() != DocumentService.title()) {
-        
-        $scope.collectionTitle = DocumentService.collectionTitle()
-        
-    }
-    else
-    {
-        $scope.collectionTitle = DocumentService.collectionTitle()
-        
-        // $scope.collectionTitle = undefined
-    }
-
     
     $scope.reloadMathJax = function() {
         $timeout( 
@@ -808,10 +796,21 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         .then(
             function (response) {
                 scope.title = DocumentService.title()
+                if (scope.title == DocumentService.collectionTitle()) {
+                    
+                    scope.collectionTitle = undefined 
+                }
+                else
+                {
+                    scope.collectionTitle = DocumentService.collectionTitle()
+                }
+                
                 scope.text = DocumentService.text()
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
+                
+                
                 
                  if (DocumentService.getPublic() == true ) {
                         scope.status = 'public'
