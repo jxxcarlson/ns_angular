@@ -21,6 +21,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         {
             scope.collectionTitle = DocumentService.collectionTitle()
             scope.collectionId = DocumentService.collectionId()
+            scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
         
@@ -49,6 +50,10 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     scope.collectionId = DocumentService.collectionId()
                     scope.tableOfContentsTitle = 'Contents'
                 }
+                
+                scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
+                
+
                 
                 scope.text = DocumentService.text()
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
