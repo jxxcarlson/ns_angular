@@ -38,6 +38,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     
                     console.log('*** Setting collecton title: ' + document['title'])
                     DocumentService.setCollectionTitle(document['title'])
+                    DocumentService.setCollectionId(document['id'])
                     DocumentService.setDocumentList( documents )
                 } 
                 else 

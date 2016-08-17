@@ -672,6 +672,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     
                     console.log('*** Setting collecton title: ' + document['title'])
                     DocumentService.setCollectionTitle(document['title'])
+                    DocumentService.setCollectionId(document['id'])
                     DocumentService.setDocumentList( documents )
                 } 
                 else 
@@ -792,6 +793,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         else
         {
             scope.collectionTitle = DocumentService.collectionTitle()
+            scope.collectionId = DocumentService.collectionId()
             scope.tableOfContentsTitle = 'Contents'
         }
         
@@ -817,6 +819,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 else
                 {
                     scope.collectionTitle = DocumentService.collectionTitle()
+                    scope.collectionId = DocumentService.collectionId()
                     scope.tableOfContentsTitle = 'Contents'
                 }
                 
@@ -920,6 +923,11 @@ module.exports = function($localStorage) {
     }
     this.collectionTitle = function() { return $localStorage.collectionTitle }
     
+    this.setCollectionId = function(id) {
+        
+        $localStorage.collectionId = id 
+    }
+    this.collectionId = function() { return $localStorage.collectionId }
     
     this.update = function(document) {
         
@@ -1017,6 +1025,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
               
           var jsonData = response.data
           var documents = jsonData['documents']
+          
+          scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
  
           DocumentService.setDocumentList(documents)
 

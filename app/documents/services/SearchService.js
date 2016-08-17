@@ -21,7 +21,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
           var jsonData = response.data
           var documents = jsonData['documents']
           
-          scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')
+          scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
  
           DocumentService.setDocumentList(documents)
 

@@ -68,6 +68,11 @@ module.exports = function($localStorage) {
     }
     this.collectionTitle = function() { return $localStorage.collectionTitle }
     
+    this.setCollectionId = function(id) {
+        
+        $localStorage.collectionId = id 
+    }
+    this.collectionId = function() { return $localStorage.collectionId }
     
     this.update = function(document) {
         

@@ -20,6 +20,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         else
         {
             scope.collectionTitle = DocumentService.collectionTitle()
+            scope.collectionId = DocumentService.collectionId()
             scope.tableOfContentsTitle = 'Contents'
         }
         
@@ -45,6 +46,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 else
                 {
                     scope.collectionTitle = DocumentService.collectionTitle()
+                    scope.collectionId = DocumentService.collectionId()
                     scope.tableOfContentsTitle = 'Contents'
                 }
                 
