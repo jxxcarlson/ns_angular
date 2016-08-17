@@ -797,7 +797,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         {
             scope.collectionTitle = DocumentService.collectionTitle()
             scope.collectionId = DocumentService.collectionId()
-            scope.hideCollection = false // (DocumentService.collectionId() == DocumentService.documentId())
+            scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
         
@@ -815,6 +815,15 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         .then(
             function (response) {
                 scope.title = DocumentService.title()
+                
+                if (DocumentService.subdocumentCount() > 0) {
+                   
+                    DocumentService.setCollectionId(DocumentService.documentId())
+                    DocumentService.setCollectionTitle(DocumentService.title())
+                    
+                }
+                    
+                
                 if (DocumentService.collectionTitle() == undefined) {
                     
                     scope.collectionTitle = undefined 
@@ -827,7 +836,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     scope.tableOfContentsTitle = 'Contents'
                 }
                 
-                scope.hideCollection = false // (DocumentService.collectionId() == DocumentService.documentId())
+                scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
                 
 
                 
