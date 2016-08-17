@@ -75,7 +75,18 @@ module.exports = function($localStorage) {
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
     
     this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
-    this.collectionStack = function() { $localStorage.collectionStack || []}
+    this.collectionStack = function() { return $localStorage.collectionStack || []}
+    this.collectionStackTop = function() { 
+        
+        var n = this.collectionStack().length - 1
+        if (n > -1) {
+            return this.collectionStack()[n]
+        } 
+        else
+        {
+            return undefined
+        }
+    }
     this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
     this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
     
@@ -96,21 +107,61 @@ module.exports = function($localStorage) {
     
     this.isSiblingOfCurrentDocument = function(item) {  }
     
+    
+    
+    this.itemsAreEqual = function(firstItem, secondItem) {
+            
+            if ((firstItem == undefined) || (secondItem == undefined)) {
+                
+                return false
+            }
+            else 
+            {
+                return (firstItem.id == secondItem.id)
+            }
+    }
+    
+    
     this.updateCollectionStack = function() {
         
+        var currentItem = this.currentDocumentItem()
         var currentIsTerminal = this.currentDocumentIsTerminal()
-        var currentIsInDocumentList = this.documentIsInDocumentList(this.currentDocumentItem())
-        
-        if ( currentIsTerminal && !currentIsInDocumentList) { this.pushCollectionStack(item) }
-        // if ( currentIsTerminal && currentIsInDocumentList) { this.pushCollectionStack(item) }
-        if ( !currentIsTerminal ) { this.pushCollectionStack(item) }
-        
+        var currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
+        var stackTop = this.collectionStackTop()
         var stackDisplay = JSON.stringify($localStorage.collectionStack)
         
-        // this.collectionStack().forEach(function(item) {stackDisplay += '['+ item.id + ', ' + item.title + '], ' })
+    
+        console.log( '*** BEFORE UPDATE')
+        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
+        console.log('*** currentItem: ' + JSON.stringify(currentItem))
+        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
+        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
+        
+        if  (this.itemsAreEqual(stackTop, currentItem)) { 
+            
+            this.popCollectionStack()
+        }
+        else if ( currentIsTerminal && !currentIsInDocumentList) {
+            
+            this.pushCollectionStack(item) 
+        }
+        else if ( !currentIsTerminal ) {
+            
+            this.pushCollectionStack(item) 
+        }
         
         
-        console.log('Stack: ' + stackDisplay)
+        stackDisplay = JSON.stringify($localStorage.collectionStack) 
+        currentItem = this.currentDocumentItem()
+        currentIsTerminal = this.currentDocumentIsTerminal()
+        currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
+        stackTop = this.collectionStackTop()
+        
+        console.log( '*** AFTER UPDATE')
+        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
+        console.log('*** currentItem: ' + JSON.stringify(currentItem))
+        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
+        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
       
     }
     
