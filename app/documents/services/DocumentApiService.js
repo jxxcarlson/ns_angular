@@ -51,6 +51,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
+                DocumentService.updateCollectionStack()
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
                 console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())

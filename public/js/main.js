@@ -688,6 +688,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
+                DocumentService.updateCollectionStack()
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
                 console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
@@ -953,6 +954,7 @@ module.exports = function($localStorage) {
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
     
     this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
+    this.collectionStack = function() { $localStorage.collectionStack || []}
     this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
     this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
     
@@ -973,7 +975,23 @@ module.exports = function($localStorage) {
     
     this.isSiblingOfCurrentDocument = function(item) {  }
     
-    this.updateCollectionStack = function(item) {}
+    this.updateCollectionStack = function() {
+        
+        var currentIsTerminal = this.currentDocumentIsTerminal()
+        var currentIsInDocumentList = this.documentIsInDocumentList(this.currentDocumentItem())
+        
+        if ( currentIsTerminal && !currentIsInDocumentList) { this.pushCollectionStack(item) }
+        // if ( currentIsTerminal && currentIsInDocumentList) { this.pushCollectionStack(item) }
+        if ( !currentIsTerminal ) { this.pushCollectionStack(item) }
+        
+        var stackDisplay = JSON.stringify($localStorage.collectionStack)
+        
+        // this.collectionStack().forEach(function(item) {stackDisplay += '['+ item.id + ', ' + item.title + '], ' })
+        
+        
+        console.log('Stack: ' + stackDisplay)
+      
+    }
     
     
     
