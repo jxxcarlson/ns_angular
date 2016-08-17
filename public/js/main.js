@@ -676,6 +676,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     console.log('*** Setting collecton title: ' + document['title'])
                     DocumentService.setCollectionTitle(document['title'])
                     DocumentService.setCollectionId(document['id'])
+                    DocumentService.setCurrentCollectionItem(document['id'], document['title'])
+                    
                     DocumentService.setDocumentList( documents )
                 } 
                 else 
@@ -686,12 +688,11 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
-                console.log('**** sub DOCS: ' + DocumentService.subdocuments())
-                console.log('**** sub DOC COUNT: ' + DocumentService.subdocumentCount())
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
+                var isInDocList = DocumentService.documentIsInDocumentList(cdi)
+                console.log('*** current document is in Document list: ' + isInDocList)
                 
-                
-                
-        
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -913,16 +914,61 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
-    
-    
-    
-    
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }
     this.subdocuments = function() { return $localStorage.subdocuments || []}
     this.subdocumentCount = function() { return this.subdocuments().length }
+    
+    
+    /********** Collection Management ***************/
+    
+    
+    // An item is an object with fields id and a title
+    this.makeDocumentItem = function(id, title) {
+        
+        obj = {}
+        obj.id = id
+        obj.title = title
+        
+        return obj
+    }
+    
+    this.setCurrentCollectionItem = function(id, title) { 
+        item = this.makeDocumentItem(id,title)
+        $localStorage.currentCollectionItem = item 
+    }
+    this.currentCollectionItem = function() { return $localStorage.currentCollectionItem }
+    
+    this.setCurrentDocumentItem = function(id, title) { 
+        item = this.makeDocumentItem(id,title)
+        $localStorage.currentDocumentItem = item  
+    }
+    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
+    
+    this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
+    this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
+    this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
+    
+    this.documentIsInDocumentList = function(item) {
+        
+        var matchId = function(item, listItem) { return (item.id == listItem['id'])}
+        
+        var matches = this.documentList().filter(
+            function(x) { return matchId(item, x) }
+        ) || []   
+        return (matches.length > 0) 
+    }
+    
+    this.isSiblingOfCurrentDocument = function(item) {  }
+    
+    this.updateCollectionStack = function(item) {}
+    
+    
+    
+    
+    
     
     
     // Results of search
@@ -969,11 +1015,15 @@ module.exports = function($localStorage) {
     
     this.update = function(document) {
         
-        console.log('Document Service, update, with title = ' + document['title'])
+        console.log('*** Document Service, update, with title = ' + document['title'])
         
         this.setAuthor( document['author'] )
+        
+        // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
-        this.setDocumentId( document['id'] )  
+        this.setDocumentId( document['id'] )
+        
+        this.setCurrentDocumentItem(document['id'], document['title'])
         
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
@@ -1972,7 +2022,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
 });
 

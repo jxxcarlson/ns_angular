@@ -39,6 +39,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     console.log('*** Setting collecton title: ' + document['title'])
                     DocumentService.setCollectionTitle(document['title'])
                     DocumentService.setCollectionId(document['id'])
+                    DocumentService.setCurrentCollectionItem(document['id'], document['title'])
+                    
                     DocumentService.setDocumentList( documents )
                 } 
                 else 
@@ -49,12 +51,11 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
-                console.log('**** sub DOCS: ' + DocumentService.subdocuments())
-                console.log('**** sub DOC COUNT: ' + DocumentService.subdocumentCount())
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
+                var isInDocList = DocumentService.documentIsInDocumentList(cdi)
+                console.log('*** current document is in Document list: ' + isInDocList)
                 
-                
-                
-        
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
