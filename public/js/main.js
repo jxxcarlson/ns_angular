@@ -920,7 +920,17 @@ module.exports = function($localStorage) {
     
     }
     
-    this.documentCount = function() { return $localStorage.documentList.length }
+    this.documentCount = function() { 
+        
+        if ($localStorage.documentList == undefined) {
+            
+            return 0
+        }
+        else {
+            
+            return $localStorage.documentList.length
+        }    
+    }
     
     this.setCollectionTitle = function(collectionTitle) {
         
