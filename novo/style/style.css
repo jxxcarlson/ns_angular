@@ -79,4 +79,11 @@
 	* html #footer {
 		height:1px;
 	}
+     
+    #left { 
+
+    position: absolute;
+    left 0;
+    top: 85px;
+    }
 	

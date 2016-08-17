@@ -22,8 +22,8 @@ module.exports = function($scope, $state, $http, envService,
               DocumentService.setDocumentList(documents)
                 
               var id = documents[0]['id']
-              
               var doc= documents[0]
+              
               if (doc) {
                 var id = documents[0]['id']
                 DocumentApiService.getDocument(id).then(function(response) {

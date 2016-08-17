@@ -12,6 +12,7 @@ var concertoNovoApp = express()
 
 var PORT = 3000
 var requestCount = 0
+var concertoNovoRequestCount = 0
 
 angularApp.use(
     "/", //the URL throught which you want to access to you static content
@@ -24,13 +25,20 @@ angularApp.all('*', function (req, res, next) {
   console.log('*** PATH: ' + req.path)
   res.sendFile('public/index.html', { root: __dirname });
   requestCount += 1
-  console.log(requestCount + ', request: ' + req.params[0])
+  console.log('*** ' + requestCount + ', request: ' + req.params[0])
 });
 
 concertoNovoApp.use(
     "/", //the URL throught which you want to access to you static content
     express.static(__dirname + '/novo') //where your static content is located in your filesystem
 );
+
+concertoNovoApp.all('*', function (req, res, next) {
+  console.log('*** HOST: ' + req.hostname) 
+  console.log('*** PATH: ' + req.path)
+  concertoNovoRequestCount += 1
+  console.log('*** ' + concertoNovoRequestCount + ', request: ' + req.params[0])
+});
 
 app.use(vhost(concertoNovoDomain, concertoNovoApp))
 app.use(vhost(angularAppDomain, angularApp))
