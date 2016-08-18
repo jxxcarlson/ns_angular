@@ -32,7 +32,7 @@ module.exports = function($scope, $state, $http, envService,
               
               if (doc) {
                 var id = documents[0]['id']
-                DocumentApiService.getDocument(id).then(function(response) {
+                DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 

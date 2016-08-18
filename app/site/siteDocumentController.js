@@ -6,8 +6,10 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     $scope.site = $stateParams.site
     var doc_id = $stateParams.doc_id
     
+    var queryObj =  $location.search()
+    
     DocumentRouteService.getDocumentList($scope)
-    DocumentRouteService.getDocument($scope, doc_id)
+    DocumentRouteService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {

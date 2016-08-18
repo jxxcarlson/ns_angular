@@ -76,9 +76,11 @@ module.exports = function($localStorage) {
     
     this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
     this.collectionStack = function() { return $localStorage.collectionStack || []}
-    this.collectionStackTop = function() { 
+    
+    // Return element k steps from the top of the stack
+    this.collectionStackPeek = function(k) { 
         
-        var n = this.collectionStack().length - 1
+        var n = this.collectionStack().length - k - 1
         
         if (n > -1) {
             
@@ -86,9 +88,11 @@ module.exports = function($localStorage) {
         } 
         else
         {
-            return undefined
+            var item = {}; item.id = 0; var item.title = ''
+            return item
         }
     }
+    this.collectionStackTop = function() { return this.collectionStackPeek(0) }
     this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
     this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
     
@@ -113,11 +117,15 @@ module.exports = function($localStorage) {
     
     this.itemsAreEqual = function(firstItem, secondItem) {
             
-            if ((firstItem == undefined) || (secondItem == undefined)) {
+            if ((firstItem == undefined) && (secondItem == undefined)) {
+                
+                return true
+            }
+            else if ((firstItem == undefined) || (secondItem == undefined)) {
                 
                 return false
             }
-            else 
+            else
             {
                 return (firstItem.id == secondItem.id)
             }
@@ -139,19 +147,38 @@ module.exports = function($localStorage) {
         console.log('*** stackTop   : ' + JSON.stringify(stackTop))
         console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
         
-        /*
+        var report = function(message) {
+            
+            var cis = JSON.stringify(currentItem)
+            var sts = JSON.stringify($localStorage.collectionStack)
+            var nSt = $localStorage.collectionStack.length
+            console.log(message + ', I = ' + cis + ', N = ' + nSt + ', S = ' + sts )
+            
+        }
+        
+        
         if  (this.itemsAreEqual(stackTop, currentItem)) { 
             
             this.popCollectionStack()
+            report('Rule pop')
         }
-        */
-        if ( currentIsTerminal && !currentIsInDocumentList) {
+        else if ( currentIsTerminal && !currentIsInDocumentList) {
             
-            this.pushCollectionStack(item) 
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 1')
+                
+            }    
         }
         else if ( !currentIsTerminal ) {
             
-            this.pushCollectionStack(item) 
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 2')
+                
+            }
         }
         
         

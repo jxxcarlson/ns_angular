@@ -10,7 +10,8 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
  
     var id = $stateParams.id;
-    var queryString =  $location.search()
+    var queryObj =  $location.search()
+    console.log('*** Doc Ctrl, queryObj = ' + JSON.stringify(queryObj))
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
@@ -21,7 +22,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         //documentKind = DocumentService.kind()
         
     else { 
-        DocumentRouteService.getDocument($scope, id)     
+        DocumentRouteService.getDocument($scope, id, queryObj)     
         // documentKind = DocumentService.kind()
     } 
     
@@ -49,6 +50,12 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         }
         
         
+    }
+    
+    $scope.goUp = function() {
+        
+        console.log('Rule goUp')
+        DocumentService.popCollectionStack()
     }
     
     if (DocumentService.getPublic()) {

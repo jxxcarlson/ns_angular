@@ -33,9 +33,9 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     }
     
     
-    this.getDocument = function(scope, id) {
+    this.getDocument = function(scope, id, queryObj) {
         console.log('DocumentRouteService.getDocument, id: ' + id)
-        DocumentApiService.getDocument(id)
+        DocumentApiService.getDocument(id, queryObj)
         .then(
             function (response) {
                 scope.title = DocumentService.title()
@@ -47,21 +47,36 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     
                 }
                     
-                
                 var stackTop = DocumentService.collectionStackTop()
                 
                 console.log('*** DRS, stackTop: ' + JSON.stringify(stackTop))
                 
                 if (stackTop == undefined) {
                     
+                    console.log('QQ:0')
                     scope.collectionTitle = undefined 
                     scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
                     
                 }
                 else
                 {
-                    scope.collectionTitle = stackTop.title
-                    scope.collectionId = stackTop.id
+                    console.log('QQ:1 ')
+                    var currentItem = DocumentService.currentDocumentItem()
+                    var collectionItem = {}
+                    if (DocumentService.itemsAreEqual(stackTop, currentItem)) {
+
+                        scope.collectionItem = DocumentService.collectionStackPeek(1)
+                        console.log('QQ:2 ' + JSON.stringify(scope.collectionItem))
+                    } 
+                    else
+                    {
+                        scope.collectionItem = stackTop
+                        console.log('QQ:3 ' + JSON.stringify(scope.collectionItem))
+                    } 
+                    scope.collectionTitle = scope.collectionItem.title
+                    scope.collectionId = scope.collectionItem.id
+                    console.log('QQ:4 id = ' + scope.collectionId)
+                    console.log('QQ:4 title = ' + scope.collectionTitle)
                     scope.tableOfContentsTitle = 'Contents' 
                     
                 }

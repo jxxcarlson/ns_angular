@@ -4,7 +4,7 @@
 
     <h3> {{ tableOfContentsTitle }} </h3>
     <br />    
-    <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
+    <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}?toc"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
 
   </div>
   </div>
@@ -12,7 +12,7 @@
   <div class="col-md-8">
     <div style="margin-left:1em;">
         <h3 style="margin-left:15px">
-            <a ng-hide="hideCollection" ng-href="documents/{{collectionId}}">{{ collectionTitle }}</a>
+            <a ng-hide="hideCollection2" ng-click="goUp()" ng-href="documents/{{collectionId}}">{{ collectionTitle }}</a>
         </h3>    
     <h2 style="margin-left:15px"> {{ title }} </h2>
     <br/>        

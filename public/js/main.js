@@ -262,7 +262,8 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
  
     var id = $stateParams.id;
-    var queryString =  $location.search()
+    var queryObj =  $location.search()
+    console.log('*** Doc Ctrl, queryObj = ' + JSON.stringify(queryObj))
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
@@ -273,7 +274,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         //documentKind = DocumentService.kind()
         
     else { 
-        DocumentRouteService.getDocument($scope, id)     
+        DocumentRouteService.getDocument($scope, id, queryObj)     
         // documentKind = DocumentService.kind()
     } 
     
@@ -301,6 +302,12 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         }
         
         
+    }
+    
+    $scope.goUp = function() {
+        
+        console.log('Rule goUp')
+        DocumentService.popCollectionStack()
     }
     
     if (DocumentService.getPublic()) {
@@ -600,7 +607,7 @@ module.exports = function($scope, $state, $http, envService,
               
               if (doc) {
                 var id = documents[0]['id']
-                DocumentApiService.getDocument(id).then(function(response) {
+                DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 
@@ -649,7 +656,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
 
         var deferred = $q.defer();
 
-        this.getDocument = function(id) {
+        this.getDocument = function(id, queryObj) {
             
           console.log('*** DocApiService: getDocument') 
           
@@ -688,7 +695,17 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
-                DocumentService.updateCollectionStack()
+                //if (queryObj.toc) { 
+                if (true) { 
+                    
+                    console.log('ucs - Updating collection stack: ' + id)
+                    DocumentService.updateCollectionStack() 
+                }
+                else
+                {
+                    
+                    console.log('ucs - NOT Updating collection stack: ' + id)
+                }
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
                 console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
@@ -813,9 +830,9 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     }
     
     
-    this.getDocument = function(scope, id) {
+    this.getDocument = function(scope, id, queryObj) {
         console.log('DocumentRouteService.getDocument, id: ' + id)
-        DocumentApiService.getDocument(id)
+        DocumentApiService.getDocument(id, queryObj)
         .then(
             function (response) {
                 scope.title = DocumentService.title()
@@ -827,21 +844,36 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     
                 }
                     
-                
                 var stackTop = DocumentService.collectionStackTop()
                 
                 console.log('*** DRS, stackTop: ' + JSON.stringify(stackTop))
                 
                 if (stackTop == undefined) {
                     
+                    console.log('QQ:0')
                     scope.collectionTitle = undefined 
                     scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
                     
                 }
                 else
                 {
-                    scope.collectionTitle = stackTop.title
-                    scope.collectionId = stackTop.id
+                    console.log('QQ:1 ')
+                    var currentItem = DocumentService.currentDocumentItem()
+                    var collectionItem = {}
+                    if (DocumentService.itemsAreEqual(stackTop, currentItem)) {
+
+                        scope.collectionItem = DocumentService.collectionStackPeek(1)
+                        console.log('QQ:2 ' + JSON.stringify(scope.collectionItem))
+                    } 
+                    else
+                    {
+                        scope.collectionItem = stackTop
+                        console.log('QQ:3 ' + JSON.stringify(scope.collectionItem))
+                    } 
+                    scope.collectionTitle = scope.collectionItem.title
+                    scope.collectionId = scope.collectionItem.id
+                    console.log('QQ:4 id = ' + scope.collectionId)
+                    console.log('QQ:4 title = ' + scope.collectionTitle)
                     scope.tableOfContentsTitle = 'Contents' 
                     
                 }
@@ -975,9 +1007,11 @@ module.exports = function($localStorage) {
     
     this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
     this.collectionStack = function() { return $localStorage.collectionStack || []}
-    this.collectionStackTop = function() { 
+    
+    // Return element k steps from the top of the stack
+    this.collectionStackPeek = function(k) { 
         
-        var n = this.collectionStack().length - 1
+        var n = this.collectionStack().length - k - 1
         
         if (n > -1) {
             
@@ -988,6 +1022,7 @@ module.exports = function($localStorage) {
             return undefined
         }
     }
+    this.collectionStackTop = function() { return this.collectionStackPeek(0) }
     this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
     this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
     
@@ -1012,11 +1047,15 @@ module.exports = function($localStorage) {
     
     this.itemsAreEqual = function(firstItem, secondItem) {
             
-            if ((firstItem == undefined) || (secondItem == undefined)) {
+            if ((firstItem == undefined) && (secondItem == undefined)) {
+                
+                return true
+            }
+            else if ((firstItem == undefined) || (secondItem == undefined)) {
                 
                 return false
             }
-            else 
+            else
             {
                 return (firstItem.id == secondItem.id)
             }
@@ -1038,19 +1077,37 @@ module.exports = function($localStorage) {
         console.log('*** stackTop   : ' + JSON.stringify(stackTop))
         console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
         
-        /*
+        var report = function(message) {
+            
+            var cis = JSON.stringify(currentItem)
+            var sts = JSON.stringify($localStorage.collectionStack)
+            var nSt = $localStorage.collectionStack.length
+            console.log(message + ', I = ' + cis + ', N = ' + nSt + ', S = ' + sts )
+            
+        }
+        
+        
         if  (this.itemsAreEqual(stackTop, currentItem)) { 
             
             this.popCollectionStack()
         }
-        */
-        if ( currentIsTerminal && !currentIsInDocumentList) {
+        else if ( currentIsTerminal && !currentIsInDocumentList) {
             
-            this.pushCollectionStack(item) 
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 1')
+                
+            }    
         }
         else if ( !currentIsTerminal ) {
             
-            this.pushCollectionStack(item) 
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 2')
+                
+            }
         }
         
         
@@ -1229,10 +1286,11 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
           
  
           DocumentService.setDocumentList(documents)
+          DocumentService.resetCollectionStack()
 
           var id = documents[0]['id']
-          DocumentApiService.getDocument(id)
-          DocumentApiService.getDocument(id).then(function(response) {
+          DocumentApiService.getDocument(id, {})
+          DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go(destination, {}, {reload: true})
               
@@ -1875,8 +1933,10 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     $scope.site = $stateParams.site
     var doc_id = $stateParams.doc_id
     
+    var queryObj =  $location.search()
+    
     DocumentRouteService.getDocumentList($scope)
-    DocumentRouteService.getDocument($scope, doc_id)
+    DocumentRouteService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {
@@ -2126,7 +2186,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });
