@@ -6,3 +6,7 @@ x/
 .env
 public/info/
 public/pages/widgets/
+.idea/
+servers/
+build/
+NOTES.html
