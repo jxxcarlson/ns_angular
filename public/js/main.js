@@ -176,7 +176,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":11,"./images":21,"./search":26,"./services":33,"./site":36,"./topLevel":38,"./user":45,"angular":49,"angular-route":47}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":12,"./images":22,"./search":27,"./services":34,"./site":37,"./topLevel":39,"./user":46,"angular":50,"angular-route":48}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -252,7 +252,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":49}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":50}],6:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
 
 
@@ -637,6 +637,26 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 }
 
 },{}],10:[function(require,module,exports){
+module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService,
+                          DocumentService, DocumentRouteService ) {
+
+    console.log('PP: controller PrintDocument')
+
+    var id = DocumentService.currentDocumentItem().id
+
+
+    console.log('  -- PP: id =' + id)
+
+
+    DocumentRouteService.printDocument($scope, id, {})
+
+    $scope.title = DocumentService.title()
+    $scope.printUrl = DocumentService.printUrl()
+
+    $state.go('printdocument')
+
+}
+},{}],11:[function(require,module,exports){
 module.exports = function($scope, $state, $http, envService,
                            DocumentService, DocumentApiService, 
                            MathJaxService, QueryParser, UserService) {
@@ -686,7 +706,7 @@ module.exports = function($scope, $state, $http, envService,
             });
       };
     }                                      
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -703,11 +723,12 @@ app.controller('documentsController', require('./controllers/DocumentsController
 app.controller('searchController', require('./controllers/SearchController'))
 app.controller('editDocumentController', require('./controllers/EditController'))
 app.controller('DeleteDocumentController', require('./controllers/DeleteDocumentController'))
+app.controller('PrintDocumentController', require('./controllers/PrintDocumentController'))
 
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/NewDocumentController":9,"./controllers/SearchController":10,"./services//DocumentRouteService":14,"./services//DocumentService":15,"./services/CollectionService":12,"./services/DocumentApiService":13,"./services/MathJaxService":16,"./services/SearchService":17,"angular":49}],12:[function(require,module,exports){
+},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/NewDocumentController":9,"./controllers/PrintDocumentController":10,"./controllers/SearchController":11,"./services//DocumentRouteService":15,"./services//DocumentService":16,"./services/CollectionService":13,"./services/DocumentApiService":14,"./services/MathJaxService":17,"./services/SearchService":18,"angular":50}],13:[function(require,module,exports){
 module.exports = function(DocumentService) {
 
 
@@ -752,7 +773,7 @@ module.exports = function(DocumentService) {
 
 
 }
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*****
  headers: { "accesstoken": UserService.accessToken(),
                             "Cache-control": "",
@@ -857,6 +878,29 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 return deferred.promise;
             })
         }
+
+    this.printDocument = function(id, queryObj) {
+
+        console.log('PP: in DRS, printDocument, id = ' + id)
+        var url = envService.read('apiUrl') + '/printdocument/' + id
+        console.log('PP: in DRS, printDocument, url = ' + url)
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        return  $http.get(url, options)
+            .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var jsonData = response.data
+                var url = jsonData['url']
+                DocumentService.setPrintUrl(url)
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+    }
         
 
         
@@ -905,7 +949,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         
 
       }
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
 
     this.getDocumentList = function(scope) {
@@ -1000,8 +1044,21 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         );
 
     }
+
+    this.printDocument = function(scope, id, queryObj) {
+        DocumentApiService.printDocument(id, queryObj)
+            .then(
+                function(respose) {
+                   scope.printUrl = DocumentService.printUrl()
+                    console.log("scope.printUrl: " + scope.printUrl )
+
+                }
+            )
+
+    }
+
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -1021,7 +1078,8 @@ module.exports = function($localStorage) {
     
     
     ***********/
-    
+
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
@@ -1044,7 +1102,10 @@ module.exports = function($localStorage) {
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
-    
+
+    this.setPrintUrl = function(url) { $localStorage.printUrl = url}
+    this.printUrl = function() { return $localStorage.printUrl }
+
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
@@ -1306,7 +1367,7 @@ module.exports = function($localStorage) {
     
       
 }
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function(DocumentService) {
     
     this.reload = function(documentKind, message) {
@@ -1322,7 +1383,7 @@ module.exports = function(DocumentService) {
     }
     
 }
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function($http, $state, $location, $q, DocumentApiService, 
                            DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
     
@@ -1371,7 +1432,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
          })
     }
 }
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
@@ -1405,7 +1466,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, ImageA
     
     }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 /*****
 
@@ -1476,7 +1537,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 }
  
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 
 /*
 GET /images
@@ -1543,7 +1604,7 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     console.log('IMAGE COUNT = ' + $scope.imageList.length)
     
 }
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1559,7 +1620,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":18,"./controllers/ImageUploadController":19,"./controllers/ImagesController":20,"./services/ImageApiService":22,"./services/ImageRouteService":23,"./services/ImageSearchService":24,"./services/ImageService":25,"angular":49}],22:[function(require,module,exports){
+},{"./controllers/ImageSearchController":19,"./controllers/ImageUploadController":20,"./controllers/ImagesController":21,"./services/ImageApiService":23,"./services/ImageRouteService":24,"./services/ImageSearchService":25,"./services/ImageService":26,"angular":50}],23:[function(require,module,exports){
 module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
@@ -1618,7 +1679,7 @@ module.exports = function($http, $q, ImageService, envService, UserService) {
         }
     
       }
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 module.exports = function(ImageService, ImageApiService, $state) {
     
@@ -1656,7 +1717,7 @@ module.exports = function(ImageService, ImageApiService, $state) {
 
     }
 }
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function($http, ImageService, ImageApiService, envService) {
     
     this.query = function(searchText){
@@ -1681,7 +1742,7 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
         }
 }
                   
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -1772,14 +1833,14 @@ module.exports = function($localStorage) {
     
        
 }
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":27,"angular":49}],27:[function(require,module,exports){
+},{"./services/QueryParser":28,"angular":50}],28:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -1836,7 +1897,7 @@ module.exports = function() {
     
     
     }
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // http://www.tutorialspoint.com/angularjs/angularjs_upload_file.htm
 
 module.exports = function ($http) {
@@ -1861,7 +1922,7 @@ module.exports = function ($http) {
 
     
  }
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = function() {
     
     // this.clientServer = function() { return "localhost:3000" }
@@ -1870,7 +1931,7 @@ module.exports = function() {
     this.defaultDocumentID = function() { return 11 }
     
 }
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 
 // Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/
 // Demo: http://cheynewallace.github.io/angular-s3-upload/
@@ -1919,7 +1980,7 @@ module.exports = function(file) {
     });
 
 }
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = function(Math) {
      
     this.reportTime = function() {
@@ -1932,7 +1993,7 @@ module.exports = function(Math) {
         return sec + "::" + ms
     }
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -1940,7 +2001,7 @@ module.exports = function(Math) {
             return val;
         }
     }
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1955,7 +2016,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 
-},{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":49}],34:[function(require,module,exports){
+},{"./FileUpload":29,"./GlobalService":30,"./PSFileUpload":31,"./UtilityService":32,"./foo":33,"angular":50}],35:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentRouteService, DocumentService, MathJaxService, UserService) {
     
     console.log('SITE CONTROLLER')
@@ -1997,7 +2058,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
        
     })       
 }
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, DocumentService, DocumentRouteService) {
     
     console.log('SITE DOCUMENT CONTROLLER')
@@ -2018,7 +2079,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     }
     
 }
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2026,7 +2087,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('SiteController', require('./SiteController'))
 app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
-},{"./SiteController":34,"./SiteDocumentController":35,"angular":49}],37:[function(require,module,exports){
+},{"./SiteController":35,"./SiteDocumentController":36,"angular":50}],38:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, MathJaxService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
@@ -2094,7 +2155,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   /////
   
 }
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /***********
 
 Advanced routing and resolves
@@ -2203,6 +2264,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'documentsController'
         })
 
+        .state('printdocument', {
+            url: '/printdocument/:id',
+            templateUrl : 'pages/printdocument.html',
+            controller  : 'PrintDocumentController'
+        })
+
 
         .state('editdocument', {
             url: '/editdocument',
@@ -2267,7 +2334,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });
@@ -2290,7 +2357,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/MenuController":37,"angular":49}],39:[function(require,module,exports){
+},{"./controllers/MenuController":38,"angular":50}],40:[function(require,module,exports){
     module.exports = function($state, $scope, $stateParams, $location, 
                                UserApiService, UserService, DocumentService, MathJaxService, 
                                SearchService, ImageSearchService) {
@@ -2339,7 +2406,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
         }
       }
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {
 
     console.log('Sign out ...')
@@ -2358,7 +2425,7 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
         
 }
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
@@ -2391,7 +2458,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
 }
     
     
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage, envService) {
 
         var deferred = $q.defer();
@@ -2447,7 +2514,7 @@ module.exports = function($http, $q, $localStorage, envService) {
       }
 
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -2460,7 +2527,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function($localStorage) {
     
 /*****
@@ -2566,7 +2633,7 @@ State variables:
 
  
 }
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2582,7 +2649,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":39,"./SignOutController":40,"./SignUpController":41,"./UserApiService":42,"./UserController":43,"./UserService":44,"angular":49}],46:[function(require,module,exports){
+},{"./SignInController":40,"./SignOutController":41,"./SignUpController":42,"./UserApiService":43,"./UserController":44,"./UserService":45,"angular":50}],47:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -3653,11 +3720,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":46}],48:[function(require,module,exports){
+},{"./angular-route":47}],49:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -35426,8 +35493,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":48}]},{},[1]);
+},{"./angular":49}]},{},[1]);

@@ -106,6 +106,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'documentsController'
         })
 
+        .state('printdocument', {
+            url: '/printdocument/:id',
+            templateUrl : 'pages/printdocument.html',
+            controller  : 'PrintDocumentController'
+        })
+
 
         .state('editdocument', {
             url: '/editdocument',
@@ -170,7 +176,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });

@@ -17,7 +17,8 @@ module.exports = function($localStorage) {
     
     
     ***********/
-    
+
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
@@ -40,7 +41,10 @@ module.exports = function($localStorage) {
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
-    
+
+    this.setPrintUrl = function(url) { $localStorage.printUrl = url}
+    this.printUrl = function() { return $localStorage.printUrl }
+
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray

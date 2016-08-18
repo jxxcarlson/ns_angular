@@ -14,6 +14,7 @@ app.controller('documentsController', require('./controllers/DocumentsController
 app.controller('searchController', require('./controllers/SearchController'))
 app.controller('editDocumentController', require('./controllers/EditController'))
 app.controller('DeleteDocumentController', require('./controllers/DeleteDocumentController'))
+app.controller('PrintDocumentController', require('./controllers/PrintDocumentController'))
 
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */

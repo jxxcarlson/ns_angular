@@ -102,6 +102,29 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 return deferred.promise;
             })
         }
+
+    this.printDocument = function(id, queryObj) {
+
+        console.log('PP: in DRS, printDocument, id = ' + id)
+        var url = envService.read('apiUrl') + '/printdocument/' + id
+        console.log('PP: in DRS, printDocument, url = ' + url)
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        return  $http.get(url, options)
+            .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var jsonData = response.data
+                var url = jsonData['url']
+                DocumentService.setPrintUrl(url)
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+    }
         
 
         

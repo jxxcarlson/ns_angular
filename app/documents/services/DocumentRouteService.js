@@ -92,4 +92,17 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         );
 
     }
+
+    this.printDocument = function(scope, id, queryObj) {
+        DocumentApiService.printDocument(id, queryObj)
+            .then(
+                function(respose) {
+                   scope.printUrl = DocumentService.printUrl()
+                    console.log("scope.printUrl: " + scope.printUrl )
+
+                }
+            )
+
+    }
+
 }
