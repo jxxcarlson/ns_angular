@@ -828,7 +828,7 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 }
                     
                 
-                var stackTop = this.collectionStackTop()
+                var stackTop = DocumentService.collectionStackTop()
                 
                 if (stackTop == undefined) {
                     
