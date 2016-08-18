@@ -119,6 +119,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'editDocumentController'
         })
 
+        .state('deletedocument', {
+            url: '/deletedocument',
+            templateUrl : 'pages/documents.html',
+            controller  : 'DeleteDocumentController'
+        })
+
         .state('signup', {
             url: '/signup',
             templateUrl : 'pages/signup.html',
