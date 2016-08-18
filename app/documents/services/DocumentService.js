@@ -55,7 +55,7 @@ module.exports = function($localStorage) {
     // An item is an object with fields id and a title
     this.makeDocumentItem = function(id, title) {
         
-        obj = {}
+        var obj = {}
         obj.id = id
         obj.title = title
         
@@ -63,13 +63,13 @@ module.exports = function($localStorage) {
     }
     
     this.setCurrentCollectionItem = function(id, title) { 
-        item = this.makeDocumentItem(id,title)
+        var item = this.makeDocumentItem(id,title)
         $localStorage.currentCollectionItem = item 
     }
     this.currentCollectionItem = function() { return $localStorage.currentCollectionItem }
     
     this.setCurrentDocumentItem = function(id, title) { 
-        item = this.makeDocumentItem(id,title)
+        var item = this.makeDocumentItem(id,title)
         $localStorage.currentDocumentItem = item  
     }
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
@@ -88,7 +88,7 @@ module.exports = function($localStorage) {
         } 
         else
         {
-            var item = {}; item.id = 0; var item.title = ''
+            var item = {}; item.id = 0; item.title = ''
             return item
         }
     }
@@ -152,15 +152,15 @@ module.exports = function($localStorage) {
             var cis = JSON.stringify(currentItem)
             var sts = JSON.stringify($localStorage.collectionStack)
             var nSt = $localStorage.collectionStack.length
-            console.log(message + ', I = ' + cis + ', N = ' + nSt + ', S = ' + sts )
+            console.log(message + ', N = ' + nSt + ', S = ' + sts )
             
         }
         
         
         if  (this.itemsAreEqual(stackTop, currentItem)) { 
             
-            this.popCollectionStack()
-            report('Rule pop')
+           // this.popCollectionStack()
+           // report('Rule pop')
         }
         else if ( currentIsTerminal && !currentIsInDocumentList) {
             
@@ -179,6 +179,10 @@ module.exports = function($localStorage) {
                 report('Rule 2')
                 
             }
+        }
+        else {
+
+            report('Rule no-op')
         }
         
         
