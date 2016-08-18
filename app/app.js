@@ -9,7 +9,7 @@ require('angular-route');
 
 var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment', 
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
-                                         'cfp.hotkeys']).
+                                         'cfp.hotkeys', 'angular-confirm']).
     config(function(envServiceProvider) {
         // set the domains and variables for each environment 
         envServiceProvider.config({
@@ -61,6 +61,7 @@ require('./documents')
 require('./images')
 require('./search')
 require('./site')
+
 
 
 

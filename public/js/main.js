@@ -10,7 +10,7 @@ require('angular-route');
 
 var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment', 
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
-                                         'cfp.hotkeys']).
+                                         'cfp.hotkeys', 'angular-confirm']).
     config(function(envServiceProvider) {
         // set the domains and variables for each environment 
         envServiceProvider.config({
@@ -62,6 +62,7 @@ require('./documents')
 require('./images')
 require('./search')
 require('./site')
+
 
 
 
@@ -252,7 +253,7 @@ app.directive('file', require('./File'))
 
 
 },{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":48}],6:[function(require,module,exports){
-module.exports = function($scope, $state, $http, UserService, DocumentService, envService, SearchService) {
+module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
 
 
     console.log('DELETE DOCUMENT CONTROLLER: ' + DocumentService.currentDocumentItem().title)
@@ -261,27 +262,40 @@ module.exports = function($scope, $state, $http, UserService, DocumentService, e
 
     console.log('-- SUBMIT')
 
-    var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id
-    var options = { headers: { "accesstoken": UserService.accessToken() }}
-    console.log('access token: ' + UserService.accessToken())
-
-    // DELETE document
-    $http.delete(url, options)
-        .then(function(response){
-            if (response.data['status'] == 'success') {
-
-                console.log('Response OK, document deleted')
-                SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
-
-
-
-            } else {
-
-                console.log('BAD Response, document not created')
-                $scope.message = response.data['error']
-
-            }
+    $confirm({text: 'Are you sure you want to delete ' + DocumentService.currentDocumentItem().title + '?'})
+        .then(function() {
+            $scope.deletedConfirm = 'Deleted';
+            doDelete()
         });
+
+
+    var doDelete = function() {
+
+
+        var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        console.log('access token: ' + UserService.accessToken())
+
+        // DELETE document
+        $http.delete(url, options)
+            .then(function(response){
+                if (response.data['status'] == 'success') {
+
+                    console.log('Response OK, document deleted')
+                    SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
+
+
+
+                } else {
+
+                    console.log('BAD Response, document not created')
+                    $scope.message = response.data['error']
+
+                }
+            });
+
+    }
+
 
 }
 },{}],7:[function(require,module,exports){

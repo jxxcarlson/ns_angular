@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "angular": "^1.5.8",
+    "angular-confirm": "^1.2.5",
     "angular-hotkeys": "^1.7.0",
     "angular-route": "^1.5.8",
     "express": "^4.0",
