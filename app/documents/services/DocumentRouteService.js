@@ -50,6 +50,8 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                 
                 var stackTop = DocumentService.collectionStackTop()
                 
+                console.log('*** DRS, stackTop: ' + JSON.stringify(stackTop))
+                
                 if (stackTop == undefined) {
                     
                     scope.collectionTitle = undefined 
