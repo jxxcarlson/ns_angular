@@ -79,7 +79,9 @@ module.exports = function($localStorage) {
     this.collectionStackTop = function() { 
         
         var n = this.collectionStack().length - 1
+        
         if (n > -1) {
+            
             return this.collectionStack()[n]
         } 
         else
@@ -137,11 +139,13 @@ module.exports = function($localStorage) {
         console.log('*** stackTop   : ' + JSON.stringify(stackTop))
         console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
         
+        /*
         if  (this.itemsAreEqual(stackTop, currentItem)) { 
             
             this.popCollectionStack()
         }
-        else if ( currentIsTerminal && !currentIsInDocumentList) {
+        */
+        if ( currentIsTerminal && !currentIsInDocumentList) {
             
             this.pushCollectionStack(item) 
         }
