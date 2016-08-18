@@ -21,18 +21,18 @@ module.exports = function($scope, $state, $http, envService,
               
               DocumentService.setDocumentList(documents)
               DocumentService.setCollectionTitle(undefined)
+              DocumentService.resetCollectionStack()
                 
               var id = documents[0]['id']
               var doc= documents[0]
               
-              if ($scope != undefined ) {
-                $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'  
-              }
+              
+              $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() 
               
               
               if (doc) {
                 var id = documents[0]['id']
-                DocumentApiService.getDocument(id).then(function(response) {
+                DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 

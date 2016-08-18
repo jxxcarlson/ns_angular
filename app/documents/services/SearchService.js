@@ -28,10 +28,11 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
           
  
           DocumentService.setDocumentList(documents)
+          DocumentService.resetCollectionStack()
 
           var id = documents[0]['id']
-          DocumentApiService.getDocument(id)
-          DocumentApiService.getDocument(id).then(function(response) {
+          DocumentApiService.getDocument(id, {})
+          DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go(destination, {}, {reload: true})
               

@@ -262,7 +262,8 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
  
     var id = $stateParams.id;
-    var queryString =  $location.search()
+    var queryObj =  $location.search()
+    console.log('*** Doc Ctrl, queryObj = ' + JSON.stringify(queryObj))
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
@@ -273,7 +274,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         //documentKind = DocumentService.kind()
         
     else { 
-        DocumentRouteService.getDocument($scope, id)     
+        DocumentRouteService.getDocument($scope, id, queryObj)     
         // documentKind = DocumentService.kind()
     } 
     
@@ -301,6 +302,12 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         }
         
         
+    }
+    
+    $scope.goUp = function() {
+        
+        console.log('Rule goUp')
+        DocumentService.popCollectionStack()
     }
     
     if (DocumentService.getPublic()) {
@@ -589,18 +596,18 @@ module.exports = function($scope, $state, $http, envService,
               
               DocumentService.setDocumentList(documents)
               DocumentService.setCollectionTitle(undefined)
+              DocumentService.resetCollectionStack()
                 
               var id = documents[0]['id']
               var doc= documents[0]
               
-              if ($scope != undefined ) {
-                $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'  
-              }
+              
+              $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() 
               
               
               if (doc) {
                 var id = documents[0]['id']
-                DocumentApiService.getDocument(id).then(function(response) {
+                DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 
@@ -649,7 +656,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
 
         var deferred = $q.defer();
 
-        this.getDocument = function(id) {
+        this.getDocument = function(id, queryObj) {
             
           console.log('*** DocApiService: getDocument') 
           
@@ -676,6 +683,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     console.log('*** Setting collecton title: ' + document['title'])
                     DocumentService.setCollectionTitle(document['title'])
                     DocumentService.setCollectionId(document['id'])
+                    DocumentService.setCurrentCollectionItem(document['id'], document['title'])
+                    
                     DocumentService.setDocumentList( documents )
                 } 
                 else 
@@ -686,12 +695,24 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
-                console.log('**** sub DOCS: ' + DocumentService.subdocuments())
-                console.log('**** sub DOC COUNT: ' + DocumentService.subdocumentCount())
+                //if (queryObj.toc) { 
+                if (true) { 
+                    
+                    console.log('ucs - Updating collection stack: ' + id)
+                    DocumentService.updateCollectionStack() 
+                }
+                else
+                {
+                    
+                    console.log('ucs - NOT Updating collection stack: ' + id)
+                }
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
+                console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
                 
+                var isInDocList = DocumentService.documentIsInDocumentList(cdi)
+                console.log('*** current document is in Document list: ' + isInDocList)
                 
-                
-        
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -809,9 +830,9 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
     }
     
     
-    this.getDocument = function(scope, id) {
+    this.getDocument = function(scope, id, queryObj) {
         console.log('DocumentRouteService.getDocument, id: ' + id)
-        DocumentApiService.getDocument(id)
+        DocumentApiService.getDocument(id, queryObj)
         .then(
             function (response) {
                 scope.title = DocumentService.title()
@@ -823,7 +844,41 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     
                 }
                     
+                var stackTop = DocumentService.collectionStackTop()
                 
+                console.log('*** DRS, stackTop: ' + JSON.stringify(stackTop))
+                
+                if (stackTop == undefined) {
+                    
+                    console.log('QQ:0')
+                    scope.collectionTitle = undefined 
+                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+                    
+                }
+                else
+                {
+                    console.log('QQ:1 ')
+                    var currentItem = DocumentService.currentDocumentItem()
+                    var collectionItem = {}
+                    if (DocumentService.itemsAreEqual(stackTop, currentItem)) {
+
+                        scope.collectionItem = DocumentService.collectionStackPeek(1)
+                        console.log('QQ:2 ' + JSON.stringify(scope.collectionItem))
+                    } 
+                    else
+                    {
+                        scope.collectionItem = stackTop
+                        console.log('QQ:3 ' + JSON.stringify(scope.collectionItem))
+                    } 
+                    scope.collectionTitle = scope.collectionItem.title
+                    scope.collectionId = scope.collectionItem.id
+                    console.log('QQ:4 id = ' + scope.collectionId)
+                    console.log('QQ:4 title = ' + scope.collectionTitle)
+                    scope.tableOfContentsTitle = 'Contents' 
+                    
+                }
+                
+                /**
                 if (DocumentService.collectionTitle() == undefined) {
                     
                     scope.collectionTitle = undefined 
@@ -835,8 +890,12 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
                     scope.collectionId = DocumentService.collectionId()
                     scope.tableOfContentsTitle = 'Contents'
                 }
+                **/
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
+                
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
                 
 
                 
@@ -913,16 +972,169 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
-    
-    
-    
-    
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }
     this.subdocuments = function() { return $localStorage.subdocuments || []}
     this.subdocumentCount = function() { return this.subdocuments().length }
+    
+    
+    /********** Collection Management ***************/
+    
+    
+    // An item is an object with fields id and a title
+    this.makeDocumentItem = function(id, title) {
+        
+        var obj = {}
+        obj.id = id
+        obj.title = title
+        
+        return obj
+    }
+    
+    this.setCurrentCollectionItem = function(id, title) { 
+        var item = this.makeDocumentItem(id,title)
+        $localStorage.currentCollectionItem = item 
+    }
+    this.currentCollectionItem = function() { return $localStorage.currentCollectionItem }
+    
+    this.setCurrentDocumentItem = function(id, title) { 
+        var item = this.makeDocumentItem(id,title)
+        $localStorage.currentDocumentItem = item  
+    }
+    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
+    
+    this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
+    this.collectionStack = function() { return $localStorage.collectionStack || []}
+    
+    // Return element k steps from the top of the stack
+    this.collectionStackPeek = function(k) { 
+        
+        var n = this.collectionStack().length - k - 1
+        
+        if (n > -1) {
+            
+            return this.collectionStack()[n]
+        } 
+        else
+        {
+            var item = {}; item.id = 0; item.title = ''
+            return item
+        }
+    }
+    this.collectionStackTop = function() { return this.collectionStackPeek(0) }
+    this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
+    this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
+    
+    this.documentIsInDocumentList = function(item) {
+        
+        var matchId = function(item, listItem) { return (item.id == listItem['id'])}
+        
+        var matches = this.documentList().filter(
+            function(x) { return matchId(item, x) }
+        ) || []   
+        return (matches.length > 0) 
+    }
+    
+    //XXX
+    this.currentDocumentIsTerminal = function() { 
+        console.log('**** subdocuments: ' + this.subdocuments().length)
+        return (this.subdocuments().length == 0) }
+    
+    this.isSiblingOfCurrentDocument = function(item) {  }
+    
+    
+    
+    this.itemsAreEqual = function(firstItem, secondItem) {
+            
+            if ((firstItem == undefined) && (secondItem == undefined)) {
+                
+                return true
+            }
+            else if ((firstItem == undefined) || (secondItem == undefined)) {
+                
+                return false
+            }
+            else
+            {
+                return (firstItem.id == secondItem.id)
+            }
+    }
+    
+    
+    this.updateCollectionStack = function() {
+        
+        var currentItem = this.currentDocumentItem()
+        var currentIsTerminal = this.currentDocumentIsTerminal()
+        var currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
+        var stackTop = this.collectionStackTop()
+        var stackDisplay = JSON.stringify($localStorage.collectionStack)
+        
+    
+        console.log( '*** BEFORE UPDATE')
+        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
+        console.log('*** currentItem: ' + JSON.stringify(currentItem))
+        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
+        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
+        
+        var report = function(message) {
+            
+            var cis = JSON.stringify(currentItem)
+            var sts = JSON.stringify($localStorage.collectionStack)
+            var nSt = $localStorage.collectionStack.length
+            console.log(message + ', N = ' + nSt + ', S = ' + sts )
+            
+        }
+        
+        
+        if  (this.itemsAreEqual(stackTop, currentItem)) { 
+            
+           // this.popCollectionStack()
+           // report('Rule pop')
+        }
+        else if ( currentIsTerminal && !currentIsInDocumentList) {
+            
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 1')
+                
+            }    
+        }
+        else if ( !currentIsTerminal ) {
+            
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 2')
+                
+            }
+        }
+        else {
+
+            report('Rule no-op')
+        }
+        
+        
+        stackDisplay = JSON.stringify($localStorage.collectionStack) 
+        currentItem = this.currentDocumentItem()
+        currentIsTerminal = this.currentDocumentIsTerminal()
+        currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
+        stackTop = this.collectionStackTop()
+        
+        console.log( '*** AFTER UPDATE')
+        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
+        console.log('*** currentItem: ' + JSON.stringify(currentItem))
+        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
+        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
+      
+    }
+    
+    
+    
+    
+    
     
     
     // Results of search
@@ -969,11 +1181,15 @@ module.exports = function($localStorage) {
     
     this.update = function(document) {
         
-        console.log('Document Service, update, with title = ' + document['title'])
+        console.log('*** Document Service, update, with title = ' + document['title'])
         
         this.setAuthor( document['author'] )
+        
+        // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
-        this.setDocumentId( document['id'] )  
+        this.setDocumentId( document['id'] )
+        
+        this.setCurrentDocumentItem(document['id'], document['title'])
         
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
@@ -983,6 +1199,7 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+        console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
         
         this.setSubdocuments(subdocuments)
         
@@ -1075,10 +1292,11 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
           
  
           DocumentService.setDocumentList(documents)
+          DocumentService.resetCollectionStack()
 
           var id = documents[0]['id']
-          DocumentApiService.getDocument(id)
-          DocumentApiService.getDocument(id).then(function(response) {
+          DocumentApiService.getDocument(id, {})
+          DocumentApiService.getDocument(id, {}).then(function(response) {
                   
                 $state.go(destination, {}, {reload: true})
               
@@ -1721,8 +1939,10 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     $scope.site = $stateParams.site
     var doc_id = $stateParams.doc_id
     
+    var queryObj =  $location.search()
+    
     DocumentRouteService.getDocumentList($scope)
-    DocumentRouteService.getDocument($scope, doc_id)
+    DocumentRouteService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {
@@ -1972,7 +2192,8 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
+    
     
 });
 

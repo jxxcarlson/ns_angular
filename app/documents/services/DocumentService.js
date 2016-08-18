@@ -41,16 +41,169 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
     
-    
-    
-    
-    
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }
     this.subdocuments = function() { return $localStorage.subdocuments || []}
     this.subdocumentCount = function() { return this.subdocuments().length }
+    
+    
+    /********** Collection Management ***************/
+    
+    
+    // An item is an object with fields id and a title
+    this.makeDocumentItem = function(id, title) {
+        
+        var obj = {}
+        obj.id = id
+        obj.title = title
+        
+        return obj
+    }
+    
+    this.setCurrentCollectionItem = function(id, title) { 
+        var item = this.makeDocumentItem(id,title)
+        $localStorage.currentCollectionItem = item 
+    }
+    this.currentCollectionItem = function() { return $localStorage.currentCollectionItem }
+    
+    this.setCurrentDocumentItem = function(id, title) { 
+        var item = this.makeDocumentItem(id,title)
+        $localStorage.currentDocumentItem = item  
+    }
+    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
+    
+    this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
+    this.collectionStack = function() { return $localStorage.collectionStack || []}
+    
+    // Return element k steps from the top of the stack
+    this.collectionStackPeek = function(k) { 
+        
+        var n = this.collectionStack().length - k - 1
+        
+        if (n > -1) {
+            
+            return this.collectionStack()[n]
+        } 
+        else
+        {
+            var item = {}; item.id = 0; item.title = ''
+            return item
+        }
+    }
+    this.collectionStackTop = function() { return this.collectionStackPeek(0) }
+    this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
+    this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
+    
+    this.documentIsInDocumentList = function(item) {
+        
+        var matchId = function(item, listItem) { return (item.id == listItem['id'])}
+        
+        var matches = this.documentList().filter(
+            function(x) { return matchId(item, x) }
+        ) || []   
+        return (matches.length > 0) 
+    }
+    
+    //XXX
+    this.currentDocumentIsTerminal = function() { 
+        console.log('**** subdocuments: ' + this.subdocuments().length)
+        return (this.subdocuments().length == 0) }
+    
+    this.isSiblingOfCurrentDocument = function(item) {  }
+    
+    
+    
+    this.itemsAreEqual = function(firstItem, secondItem) {
+            
+            if ((firstItem == undefined) && (secondItem == undefined)) {
+                
+                return true
+            }
+            else if ((firstItem == undefined) || (secondItem == undefined)) {
+                
+                return false
+            }
+            else
+            {
+                return (firstItem.id == secondItem.id)
+            }
+    }
+    
+    
+    this.updateCollectionStack = function() {
+        
+        var currentItem = this.currentDocumentItem()
+        var currentIsTerminal = this.currentDocumentIsTerminal()
+        var currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
+        var stackTop = this.collectionStackTop()
+        var stackDisplay = JSON.stringify($localStorage.collectionStack)
+        
+    
+        console.log( '*** BEFORE UPDATE')
+        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
+        console.log('*** currentItem: ' + JSON.stringify(currentItem))
+        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
+        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
+        
+        var report = function(message) {
+            
+            var cis = JSON.stringify(currentItem)
+            var sts = JSON.stringify($localStorage.collectionStack)
+            var nSt = $localStorage.collectionStack.length
+            console.log(message + ', N = ' + nSt + ', S = ' + sts )
+            
+        }
+        
+        
+        if  (this.itemsAreEqual(stackTop, currentItem)) { 
+            
+           // this.popCollectionStack()
+           // report('Rule pop')
+        }
+        else if ( currentIsTerminal && !currentIsInDocumentList) {
+            
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 1')
+                
+            }    
+        }
+        else if ( !currentIsTerminal ) {
+            
+            if (!this.itemsAreEqual(currentItem, stackTop)) { 
+            
+                this.pushCollectionStack(currentItem)
+                report('Rule 2')
+                
+            }
+        }
+        else {
+
+            report('Rule no-op')
+        }
+        
+        
+        stackDisplay = JSON.stringify($localStorage.collectionStack) 
+        currentItem = this.currentDocumentItem()
+        currentIsTerminal = this.currentDocumentIsTerminal()
+        currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
+        stackTop = this.collectionStackTop()
+        
+        console.log( '*** AFTER UPDATE')
+        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
+        console.log('*** currentItem: ' + JSON.stringify(currentItem))
+        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
+        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
+      
+    }
+    
+    
+    
+    
+    
     
     
     // Results of search
@@ -97,11 +250,15 @@ module.exports = function($localStorage) {
     
     this.update = function(document) {
         
-        console.log('Document Service, update, with title = ' + document['title'])
+        console.log('*** Document Service, update, with title = ' + document['title'])
         
         this.setAuthor( document['author'] )
+        
+        // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
-        this.setDocumentId( document['id'] )  
+        this.setDocumentId( document['id'] )
+        
+        this.setCurrentDocumentItem(document['id'], document['title'])
         
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
@@ -111,6 +268,7 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+        console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
         
         this.setSubdocuments(subdocuments)
         

@@ -12,7 +12,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
 
         var deferred = $q.defer();
 
-        this.getDocument = function(id) {
+        this.getDocument = function(id, queryObj) {
             
           console.log('*** DocApiService: getDocument') 
           
@@ -39,6 +39,8 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                     console.log('*** Setting collecton title: ' + document['title'])
                     DocumentService.setCollectionTitle(document['title'])
                     DocumentService.setCollectionId(document['id'])
+                    DocumentService.setCurrentCollectionItem(document['id'], document['title'])
+                    
                     DocumentService.setDocumentList( documents )
                 } 
                 else 
@@ -49,12 +51,24 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 
                 
                 DocumentService.update(document)
-                console.log('**** sub DOCS: ' + DocumentService.subdocuments())
-                console.log('**** sub DOC COUNT: ' + DocumentService.subdocumentCount())
+                //if (queryObj.toc) { 
+                if (true) { 
+                    
+                    console.log('ucs - Updating collection stack: ' + id)
+                    DocumentService.updateCollectionStack() 
+                }
+                else
+                {
+                    
+                    console.log('ucs - NOT Updating collection stack: ' + id)
+                }
+                var cdi = DocumentService.currentDocumentItem()
+                console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
+                console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
                 
+                var isInDocList = DocumentService.documentIsInDocumentList(cdi)
+                console.log('*** current document is in Document list: ' + isInDocList)
                 
-                
-        
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
