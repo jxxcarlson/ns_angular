@@ -1,4 +1,6 @@
-
+// http://henriquat.re/modularizing-angularjs/modularizing-angular-applications/modularizing-angular-applications.html
+// http://henriquat.re/
+// https://www.safaribooksonline.com/blog/2014/03/27/13-step-guide-angularjs-modularization/
 
 'use strict'
 

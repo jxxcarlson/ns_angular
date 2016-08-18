@@ -1,6 +1,6 @@
 module.exports = function(DocumentService) {
     
-    this.reload = function(documentKind, message='**') {
+    this.reload = function(documentKind, message) {
         console.log('**** ***** IN MathJaxService, documentKind = ' + documentKind)
         //if (documentKind == 'asciidoc-latex') {
         if ('asciidoc-latex' == 'asciidoc-latex') {

@@ -73,7 +73,13 @@ module.exports = function($localStorage) {
         $localStorage.currentDocumentItem = item  
     }
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-    
+
+
+    ///////// TOC //////////////////////
+
+
+    ///////// COLLECTION STACK //////////////////////
+
     this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
     this.collectionStack = function() { return $localStorage.collectionStack || []}
     

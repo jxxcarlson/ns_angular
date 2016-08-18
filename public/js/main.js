@@ -1,5 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
+// http://henriquat.re/modularizing-angularjs/modularizing-angular-applications/modularizing-angular-applications.html
+// http://henriquat.re/
+// https://www.safaribooksonline.com/blog/2014/03/27/13-step-guide-angularjs-modularization/
 
 'use strict'
 
@@ -1004,7 +1006,13 @@ module.exports = function($localStorage) {
         $localStorage.currentDocumentItem = item  
     }
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-    
+
+
+    ///////// TOC //////////////////////
+
+
+    ///////// COLLECTION STACK //////////////////////
+
     this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
     this.collectionStack = function() { return $localStorage.collectionStack || []}
     
@@ -1248,7 +1256,7 @@ module.exports = function($localStorage) {
 },{}],14:[function(require,module,exports){
 module.exports = function(DocumentService) {
     
-    this.reload = function(documentKind, message='**') {
+    this.reload = function(documentKind, message) {
         console.log('**** ***** IN MathJaxService, documentKind = ' + documentKind)
         //if (documentKind == 'asciidoc-latex') {
         if ('asciidoc-latex' == 'asciidoc-latex') {
