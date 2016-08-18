@@ -1132,21 +1132,13 @@ module.exports = function($localStorage) {
     this.updateCollectionStack = function() {
         
         var currentItem = this.currentDocumentItem()
+        var stackTop = this.collectionStackTop()
+
         var currentIsTerminal = this.currentDocumentIsTerminal()
         var currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
-        var stackTop = this.collectionStackTop()
-        var stackDisplay = JSON.stringify($localStorage.collectionStack)
-        
-    
-        console.log( '*** BEFORE UPDATE')
-        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
-        console.log('*** currentItem: ' + JSON.stringify(currentItem))
-        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
-        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
-        
+
         var report = function(message) {
-            
-            var cis = JSON.stringify(currentItem)
+
             var sts = JSON.stringify($localStorage.collectionStack)
             var nSt = $localStorage.collectionStack.length
             console.log(message + ', N = ' + nSt + ', S = ' + sts )
@@ -1181,19 +1173,6 @@ module.exports = function($localStorage) {
 
             report('Rule no-op')
         }
-        
-        
-        stackDisplay = JSON.stringify($localStorage.collectionStack) 
-        currentItem = this.currentDocumentItem()
-        currentIsTerminal = this.currentDocumentIsTerminal()
-        currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
-        stackTop = this.collectionStackTop()
-        
-        console.log( '*** AFTER UPDATE')
-        console.log('Stack: (' + $localStorage.collectionStack.length +'): '+ stackDisplay)
-        console.log('*** currentItem: ' + JSON.stringify(currentItem))
-        console.log('*** stackTop   : ' + JSON.stringify(stackTop))
-        console.log('*** stackTop == currentItem  : ' + (stackTop == currentItem))
       
     }
     
@@ -2272,7 +2251,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });
