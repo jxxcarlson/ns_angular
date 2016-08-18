@@ -23,11 +23,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
   $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
     
-  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope) } 
+  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope, 'documents') }
   
-  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope }
+  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope, 'documents' }
   
-  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope }
+  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope, 'documents' }
   
   /////
   

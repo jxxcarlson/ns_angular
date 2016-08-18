@@ -5,7 +5,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     
     var deferred = $q.defer();
    
-    this.query = function(searchText, scope, destination='documents') {
+    this.query = function(searchText, scope, destination) {
         
         if (UserService.accessTokenValid() == false) {
                 

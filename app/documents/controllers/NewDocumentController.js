@@ -31,7 +31,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
                   if (hasSubdocuments == true) { 
                       console.log('BRANCH A')
                       console.log('**** lastDocumentId: '+ lastDocumentId)
-                      SearchService.query('id='+lastDocumentId, $scope)
+                      SearchService.query('id='+lastDocumentId, $scope, 'documents')
                       
                       // $location.path('/editdocument/' + id)
                       // $state.go('editdocument', {}, {reload:true})

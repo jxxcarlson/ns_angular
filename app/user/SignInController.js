@@ -22,7 +22,7 @@
                     // $scope.username = UserService.username()
                     // $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
-                    SearchService.query('user=' + UserService.username()).then(
+                    SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
                             $state.go('documents')
                             MathJaxService.reload(DocumentService.kind(), 'SignIn')

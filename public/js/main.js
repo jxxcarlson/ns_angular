@@ -551,7 +551,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
                   if (hasSubdocuments == true) { 
                       console.log('BRANCH A')
                       console.log('**** lastDocumentId: '+ lastDocumentId)
-                      SearchService.query('id='+lastDocumentId, $scope)
+                      SearchService.query('id='+lastDocumentId, $scope, 'documents')
                       
                       // $location.path('/editdocument/' + id)
                       // $state.go('editdocument', {}, {reload:true})
@@ -1277,7 +1277,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     
     var deferred = $q.defer();
    
-    this.query = function(searchText, scope, destination='documents') {
+    this.query = function(searchText, scope, destination) {
         
         if (UserService.accessTokenValid() == false) {
                 
@@ -1918,7 +1918,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
         
         var queryString = 'user.public=' + id
     }
-    SearchService.query(queryString, $scope)
+    SearchService.query(queryString, $scope, 'documents')
     .then(function(response){
         $scope.site = id
         DocumentRouteService.getDocumentList($scope)
@@ -1993,11 +1993,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
   $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
     
-  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope) } 
+  $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope, 'documents') }
   
-  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope }
+  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope, 'documents' }
   
-  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope }
+  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope, 'documents' }
   
   /////
   
@@ -2248,7 +2248,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     // $scope.username = UserService.username()
                     // $scope.signedIn = UserService.signedIn
                     ImageSearchService.query('scope=all')
-                    SearchService.query('user=' + UserService.username()).then(
+                    SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
                             $state.go('documents')
                             MathJaxService.reload(DocumentService.kind(), 'SignIn')
@@ -2305,7 +2305,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
             function (result) {
               if (UserService.loginStatus() == 'success') {
                 $scope.message = 'Success: signed in as ' + $scope.username
-                SearchService.query("user="+$scope.username)
+                SearchService.query("user="+$scope.username, $scope, 'documents')
                 $state.go('documents', {}, {reload: true})
               } else {
 

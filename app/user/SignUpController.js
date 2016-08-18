@@ -11,7 +11,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
             function (result) {
               if (UserService.loginStatus() == 'success') {
                 $scope.message = 'Success: signed in as ' + $scope.username
-                SearchService.query("user="+$scope.username)
+                SearchService.query("user="+$scope.username, $scope, 'documents')
                 $state.go('documents', {}, {reload: true})
               } else {
 
