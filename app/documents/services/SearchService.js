@@ -2,6 +2,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                            DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
     
     console.log('SEARCH SERVICE')
+
+    DocumentService.resetCollectionStack()
     
     var deferred = $q.defer();
    

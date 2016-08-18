@@ -12,15 +12,15 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         
         console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
-        if (DocumentService.collectionTitle() == undefined) {
+        if (DocumentService.currentCollectionItem().id == 0) {
                     
             scope.collectionTitle = undefined 
             scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
         }
         else
         {
-            scope.collectionTitle = DocumentService.collectionTitle()
-            scope.collectionId = DocumentService.collectionId()
+            scope.collectionTitle = DocumentService.currentCollectionItem().title
+            scope.collectionId = DocumentService.currentCollectionItem().id
             scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
@@ -41,7 +41,7 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 scope.title = DocumentService.title()
 
 
-                CollectionService.getCollectionItem($scope)
+                CollectionService.getCollectionItem(scope)
 
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())

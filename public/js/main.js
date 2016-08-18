@@ -565,11 +565,25 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
 }
 },{}],9:[function(require,module,exports){
-module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService, CollectionService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')
-    
+
+      CollectionService.getCollectionItem($scope)
+      console.log('NDS: collectionTitle' + DocumentService.currentCollectionItem().title)
+      var parentTitle = DocumentService.currentCollectionItem().title || ''
+      if (parentTitle != '') {
+
+          $scope.parentDocumentLine = 'Parent document: ' + DocumentService.currentCollectionItem().title
+
+      } else {
+
+          $scope.parentDocumentLine = ''
+
+      }
+
+
       $scope.submit = function() {
 
       var access_token = UserService.accessToken()
@@ -577,6 +591,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
       var url = envService.read('apiUrl') + '/documents'
       var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
       var lastDocumentId = DocumentService.documentId()
+
       
       // Add the newly created document to the document list
       // of the current document
@@ -905,15 +920,15 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         
         console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
-        if (DocumentService.collectionTitle() == undefined) {
+        if (DocumentService.currentCollectionItem().id == 0) {
                     
             scope.collectionTitle = undefined 
             scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
         }
         else
         {
-            scope.collectionTitle = DocumentService.collectionTitle()
-            scope.collectionId = DocumentService.collectionId()
+            scope.collectionTitle = DocumentService.currentCollectionItem().title
+            scope.collectionId = DocumentService.currentCollectionItem().id
             scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
@@ -934,7 +949,7 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 scope.title = DocumentService.title()
 
 
-                CollectionService.getCollectionItem($scope)
+                CollectionService.getCollectionItem(scope)
 
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
@@ -1053,7 +1068,10 @@ module.exports = function($localStorage) {
 
     ///////// COLLECTION STACK //////////////////////
 
-    this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
+    this.resetCollectionStack = function() {
+        this.setCurrentCollectionItem(0, '')
+        $localStorage.collectionStack = []
+    }
     this.collectionStack = function() { return $localStorage.collectionStack || []}
     
     // Return element k steps from the top of the stack
@@ -1314,6 +1332,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                            DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
     
     console.log('SEARCH SERVICE')
+
+    DocumentService.resetCollectionStack()
     
     var deferred = $q.defer();
    

@@ -80,7 +80,10 @@ module.exports = function($localStorage) {
 
     ///////// COLLECTION STACK //////////////////////
 
-    this.resetCollectionStack = function() { $localStorage.collectionStack = [] }
+    this.resetCollectionStack = function() {
+        this.setCurrentCollectionItem(0, '')
+        $localStorage.collectionStack = []
+    }
     this.collectionStack = function() { return $localStorage.collectionStack || []}
     
     // Return element k steps from the top of the stack

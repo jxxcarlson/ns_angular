@@ -1,8 +1,22 @@
-module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService) {
+module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService, CollectionService) {
           
     
       console.log('NEW DOCUMENT CONTROLLER')
-    
+
+      CollectionService.getCollectionItem($scope)
+      console.log('NDS: collectionTitle' + DocumentService.currentCollectionItem().title)
+      var parentTitle = DocumentService.currentCollectionItem().title || ''
+      if (parentTitle != '') {
+
+          $scope.parentDocumentLine = 'Parent document: ' + DocumentService.currentCollectionItem().title
+
+      } else {
+
+          $scope.parentDocumentLine = ''
+
+      }
+
+
       $scope.submit = function() {
 
       var access_token = UserService.accessToken()
@@ -10,6 +24,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
       var url = envService.read('apiUrl') + '/documents'
       var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
       var lastDocumentId = DocumentService.documentId()
+
       
       // Add the newly created document to the document list
       // of the current document
