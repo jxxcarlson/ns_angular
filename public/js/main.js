@@ -570,6 +570,8 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
     
       console.log('NEW DOCUMENT CONTROLLER')
 
+
+      // Set the parent document if there is one.
       CollectionService.getCollectionItem($scope)
       console.log('NDS: collectionTitle' + DocumentService.currentCollectionItem().title)
       var parentTitle = DocumentService.currentCollectionItem().title || ''
@@ -583,6 +585,12 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       }
 
+      $scope.cancel  = function() {
+
+          console.log('CANCEL')
+          $state.go('documents')
+
+        }
 
       $scope.submit = function() {
 
@@ -2334,7 +2342,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('production');
+    envService.set('development');
     
     
 });
