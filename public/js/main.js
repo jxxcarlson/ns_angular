@@ -906,7 +906,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
 
       }
 },{}],14:[function(require,module,exports){
-module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService) {
+module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
 
     this.getDocumentList = function(scope) {
         
@@ -914,7 +914,15 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         scope.title = DocumentService.title()
         scope.text = DocumentService.text()
         scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-        scope.docArray = DocumentService.documentList()
+        if (UserService.accessToken() == '') {
+
+            scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
+        }
+        else {
+
+            scope.docArray = DocumentService.documentList()
+        }
+
         console.log('DocuemntRouteService, getDocumentList :: ' + scope.docarray)
         scope.documentCount = DocumentService.documentCount()
         
@@ -960,7 +968,15 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 
                 scope.text = DocumentService.text()
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-                scope.docArray = DocumentService.documentList()
+
+                if (UserService.accessToken() == '') {
+
+                    scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
+                }
+                else {
+
+                    scope.docArray = DocumentService.documentList()
+                }
                 scope.numberOfDocuments = DocumentService.documentCount()
                 
                 
@@ -2251,7 +2267,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
     $scope.accessTokenValid = UserService.accessTokenValid()
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('development');
+    envService.set('production');
     
     
 });
