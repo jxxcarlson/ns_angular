@@ -1,4 +1,4 @@
-module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxService) {
+module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService) {
 
     this.getDocumentList = function(scope) {
         
@@ -39,75 +39,21 @@ module.exports = function(DocumentService, DocumentApiService, $sce, MathJaxServ
         .then(
             function (response) {
                 scope.title = DocumentService.title()
-                
-                if (DocumentService.subdocumentCount() > 0) {
-                   
-                    DocumentService.setCollectionId(DocumentService.documentId())
-                    DocumentService.setCollectionTitle(DocumentService.title())
-                    
-                }
-                    
-                var stackTop = DocumentService.collectionStackTop()
-                
-                console.log('*** DRS, stackTop: ' + JSON.stringify(stackTop))
-                
-                if (stackTop == undefined) {
-                    
-                    console.log('QQ:0')
-                    scope.collectionTitle = undefined 
-                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-                    
-                }
-                else
-                {
-                    console.log('QQ:1 ')
-                    var currentItem = DocumentService.currentDocumentItem()
-                    var collectionItem = {}
-                    if (DocumentService.itemsAreEqual(stackTop, currentItem)) {
 
-                        scope.collectionItem = DocumentService.collectionStackPeek(1)
-                        console.log('QQ:2 ' + JSON.stringify(scope.collectionItem))
-                    } 
-                    else
-                    {
-                        scope.collectionItem = stackTop
-                        console.log('QQ:3 ' + JSON.stringify(scope.collectionItem))
-                    } 
-                    scope.collectionTitle = scope.collectionItem.title
-                    scope.collectionId = scope.collectionItem.id
-                    console.log('QQ:4 id = ' + scope.collectionId)
-                    console.log('QQ:4 title = ' + scope.collectionTitle)
-                    scope.tableOfContentsTitle = 'Contents' 
-                    
-                }
-                
-                /**
-                if (DocumentService.collectionTitle() == undefined) {
-                    
-                    scope.collectionTitle = undefined 
-                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-                }
-                else
-                {
-                    scope.collectionTitle = DocumentService.collectionTitle()
-                    scope.collectionId = DocumentService.collectionId()
-                    scope.tableOfContentsTitle = 'Contents'
-                }
-                **/
+
+                CollectionService.getCollectionItem($scope)
+
                 
                 scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
                 
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
-                
 
                 
                 scope.text = DocumentService.text()
                 scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
                 scope.docArray = DocumentService.documentList()
                 scope.numberOfDocuments = DocumentService.documentCount()
-                
-                
                 
                 
                  if (DocumentService.getPublic() == true ) {
