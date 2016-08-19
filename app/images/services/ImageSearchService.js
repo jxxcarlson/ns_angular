@@ -1,4 +1,4 @@
-module.exports = function($http, ImageService, ImageApiService, envService) {
+module.exports = function($http, ImageService, ImageApiService, QueryParser, envService) {
     
     this.query = function(searchText){
         

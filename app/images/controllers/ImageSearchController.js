@@ -1,4 +1,4 @@
-module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
+module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
 

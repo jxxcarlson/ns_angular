@@ -1431,7 +1431,7 @@ module.exports = function(DocumentService) {
 }
 },{}],18:[function(require,module,exports){
 module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
+                           DocumentRouteService, DocumentService, envService, UserService, QueryParser) {
     
     console.log('SEARCH SERVICE')
 
@@ -1481,7 +1481,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     }
 }
 },{}],19:[function(require,module,exports){
-module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
+module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
 
@@ -1769,7 +1769,7 @@ module.exports = function(ImageService, ImageApiService, $state) {
     }
 }
 },{}],25:[function(require,module,exports){
-module.exports = function($http, ImageService, ImageApiService, envService) {
+module.exports = function($http, ImageService, ImageApiService, QueryParser, envService) {
     
     this.query = function(searchText){
         

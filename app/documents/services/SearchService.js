@@ -1,5 +1,5 @@
 module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, envService, UserService, MathJaxService) {
+                           DocumentRouteService, DocumentService, envService, UserService, QueryParser) {
     
     console.log('SEARCH SERVICE')
 
