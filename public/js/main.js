@@ -614,7 +614,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
         }
 
-      $scope.formData = {}
+      $scope.formData = { 'child': false, 'position': 'null'}
 
 
 
