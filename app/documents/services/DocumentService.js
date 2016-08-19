@@ -107,7 +107,13 @@ module.exports = function($localStorage) {
     }
     this.collectionStackTop = function() { return this.collectionStackPeek(0) }
     this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
-    this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
+    this.popCollectionStack = function() {
+
+        console.log('rule goUp, before pop: ' + JSON.stringify($localStorage.collectionStack))
+        return $localStorage.collectionStack.pop()
+        console.log('rule goUp, after pop: ' + JSON.stringify($localStorage.collectionStack))
+
+    }
     
     this.documentIsInDocumentList = function(item) {
         

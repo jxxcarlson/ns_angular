@@ -6,7 +6,7 @@
 REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
-                           DocumentService, DocumentRouteService, UserService, MathJaxService ) {
+                           DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
 
  
     var id = $stateParams.id;

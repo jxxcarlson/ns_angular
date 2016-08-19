@@ -18,12 +18,15 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       }
 
+      $scope.currentDocumentLine = 'Current document: ' + DocumentService.currentDocumentItem().title
+
       $scope.cancel  = function() {
 
           console.log('CANCEL')
           $state.go('documents')
 
         }
+
 
       $scope.submit = function() {
 

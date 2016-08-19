@@ -307,7 +307,7 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
-                           DocumentService, DocumentRouteService, UserService, MathJaxService ) {
+                           DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
 
  
     var id = $stateParams.id;
@@ -587,12 +587,15 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       }
 
+      $scope.currentDocumentLine = 'Current document: ' + DocumentService.currentDocumentItem().title
+
       $scope.cancel  = function() {
 
           console.log('CANCEL')
           $state.go('documents')
 
         }
+
 
       $scope.submit = function() {
 
@@ -1180,7 +1183,13 @@ module.exports = function($localStorage) {
     }
     this.collectionStackTop = function() { return this.collectionStackPeek(0) }
     this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
-    this.popCollectionStack = function() { return $localStorage.collectionStack.pop() }
+    this.popCollectionStack = function() {
+
+        console.log('rule goUp, before pop: ' + JSON.stringify($localStorage.collectionStack))
+        return $localStorage.collectionStack.pop()
+        console.log('rule goUp, after pop: ' + JSON.stringify($localStorage.collectionStack))
+
+    }
     
     this.documentIsInDocumentList = function(item) {
         
