@@ -14,6 +14,11 @@ body {
     /* font-size: 1.125em; */
 }
 
+#toc {
+    overflow-y: auto;
+    /* font-size: 1.125em; */
+}
+
 #edit-text {
     
   font-size: 1.25em; 

@@ -15,7 +15,9 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
-    
+    // document.getElementById("toc").style.height = '300px' //(innerHeight - 220) + 'px'
+    document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
+
     // Process the given route
     if (id == undefined) { 
         DocumentRouteService.getDocumentList($scope) }
