@@ -143,7 +143,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'ImagesController'
         })
     
-        .state('oneImage', {
+        .state('getimage', {
             url: '/images/:id',
             templateUrl : 'pages/images.html',
             controller  : 'ImagesController'

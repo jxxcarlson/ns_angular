@@ -9,10 +9,12 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, $state, UserService, envService) {
+ module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
+
+     // var deferred = $q.defer();
         
     $scope.upload = function (file) {
-        console.log("Upload controller sending siging request");
+
         var query = {
             filename: file.name,
             title: $scope.title,
@@ -20,14 +22,10 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             type: file.type,
             owner: UserService.username()
         };
-        console.log("-- query: " + JSON.stringify(query))
         
-        // Get presigned URL
+        // 1. Get presigned URL
         var url = envService.read('apiUrl') + '/presigned'
-        console.log("-- url for POST: " + url)
         $http.post(url, query).success(function(response) {
-            
-            console.log("Signed response received: " + response.url);
            
             var req = {
                  method: 'PUT',
@@ -36,11 +34,11 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  data: file
                 }
             var file_url = response.url
-            console.log("-- now PUT request: " + JSON.stringify(req))
             
-             // Upload file to S3
+             // 2. Upload file to S3
             $http(req)
             .success(function(response) {
+
                 var query = {
                     title: $scope.title,
                     filename: file.name,
@@ -49,19 +47,16 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     owner: UserService.username()
                 };
                 
-                // Add image to API database
+                // 3. Add image to API database
                 $http.post(envService.read('apiUrl') + '/images', query )
                     .success(function(response){
-                    console.log('IMAGE ID: ' + response['id'])
-                    // ImageSearchService.query('id='+id)
-                    $state.go('images', {}, {reload: true})
+                    console.log('III:  success, GOIMAGE, ID = ' + response['id'])
+                    ImageSearchService.query('id='+response['id'], $state)
                 })
-                
-              //Finally, We're done
-              console.log('Upload Done!')
+
             })
             .error(function(response) {
-              console.log("Error:" + JSON.stringify(response));
+              console.log("III: Error:" + JSON.stringify(response));
             });
         })
     };             

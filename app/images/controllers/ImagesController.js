@@ -15,29 +15,18 @@ in URL can be accessed in controller using $stateParams.variableName
 
 
 module.exports = function($scope, $stateParams, $location, $sce, $window, ImageRouteService, ImageService) {
-  
-    console.log('ImagesController')
-
-    
-    console.log('ImagesController, $stateParams.id = ' + $stateParams.id)
-    console.log('ImagesController, search = ' + $stateParams.search)
-    console.log('ImagesController, URL = ' + $location.absUrl())
-    console.log('ImagesController, QS = ' + JSON.stringify($location.search()))
-   
-    
     
     var id = $stateParams.id;
-    var queryString =  $location.search()
-    // https://docs.angularjs.org/api/ng/service/$location
-    
     
     // Process the given route
-    if (id == undefined) { 
+    if (id == undefined) {
+
         $scope.foo = 'bar'
         ImageRouteService.getImageList($scope) 
     } 
-    else { 
-        ImageRouteService.getImage($scope, id)     
+    else {
+
+        ImageRouteService.getImage($scope, id)
     } 
     
     var innerHeight = $window.innerHeight
@@ -45,10 +34,7 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
     
     $scope.pdfMode = (ImageService.contentType() == 'application/pdf')
-    
-    console.log("XXXXXX: " + ImageService.contentType() + " ::: pdfMode = " + $scope.pdfMode)
-  
-    
+
     $scope.imageUrl = ImageService.url()
     
     $scope.imageStorageUrl = ImageService.storageUrl()
@@ -58,9 +44,6 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.id()
-    
-    console.log('IMAGE URL = ' + ImageService.url())
-    console.log('IMAGE STORAGE URL = ' + ImageService.storageUrl())
-    console.log('IMAGE COUNT = ' + $scope.imageList.length)
+
     
 }

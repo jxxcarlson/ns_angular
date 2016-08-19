@@ -54,12 +54,12 @@ module.exports = function($localStorage) {
         var storageUrl = firstImage['storage_url']
         var contentType = firstImage['content_type']
         
-        console.log('FIRST ELEMENT = ' + JSON.stringify(firstImage))
-        console.log('ID OF FIRST ELEMENT = ' + id)
-        console.log('TITLE OF FIRST ELEMENT = ' + title)
-        console.log('URL OF FIRST ELEMENT = ' + url)
-        console.log('STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
-        console.log('CONTENT TYPE FIRST ELEMENT = ' + contentType)
+        console.log('SIL: FIRST ELEMENT = ' + JSON.stringify(firstImage))
+        console.log('SIL: ID OF FIRST ELEMENT = ' + id)
+        console.log('SIL: TITLE OF FIRST ELEMENT = ' + title)
+        console.log('SIL: URL OF FIRST ELEMENT = ' + url)
+        console.log('SIL: STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
+        console.log('SIL: CONTENT TYPE FIRST ELEMENT = ' + contentType)
         
         
         $localStorage.imageId = id

@@ -44,7 +44,7 @@ module.exports = function() {
             searchText = bareSearchTerm + '&' + standardSearchTerm
         }
         
-        
+        console.log('PARSED QUERY: ' + searchText)
     
         return searchText
     }

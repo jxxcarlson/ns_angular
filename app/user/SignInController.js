@@ -19,9 +19,7 @@
                     console.log('SIGNING IN USER')  
                     $scope.message = 'Success!'
                     UserService.signin($scope)
-                    // $scope.username = UserService.username()
-                    // $scope.signedIn = UserService.signedIn
-                    ImageSearchService.query('scope=all')
+                    ImageSearchService.query('scope=all', $state)
                     SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
                             $state.go('documents')
@@ -38,8 +36,6 @@
                     // checks for information will be peformed here
                 },
                 function (error) {
-                    // handle errors here
-                    // console.log(error.statusText);
                     console.log('ERROR!');
                 }
             );

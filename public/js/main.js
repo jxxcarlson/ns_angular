@@ -1485,23 +1485,16 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
     
         $scope.doImageSearch = function(){
 
-
             var query = QueryParser.parse($scope.searchText)
 
-
-            console.log('SEARCH CONTROLLER, Search text: ' + query);
-            
-            $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
             
             .then(function(response){
-              
-              console.log(response.data['status'])
-              console.log('Number of images: ' + response.data['image_count'])
+
               var jsonData = response.data
               var images = jsonData['images']
               ImageService.setImageList(images)
-              
-              
+
               var id = images[0]['id']
               console.log('id = ' + id)
               ImageApiService.getImage(id)
@@ -1509,7 +1502,6 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
                  console.log('GOING TO IMAGES')
                  $state.go('images', {}, {reload: true})
                })
-              
              
             });
             
@@ -1529,10 +1521,12 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $http, $state, UserService, envService) {
+ module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
+
+     // var deferred = $q.defer();
         
     $scope.upload = function (file) {
-        console.log("Upload controller sending siging request");
+
         var query = {
             filename: file.name,
             title: $scope.title,
@@ -1540,14 +1534,10 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             type: file.type,
             owner: UserService.username()
         };
-        console.log("-- query: " + JSON.stringify(query))
         
-        // Get presigned URL
+        // 1. Get presigned URL
         var url = envService.read('apiUrl') + '/presigned'
-        console.log("-- url for POST: " + url)
         $http.post(url, query).success(function(response) {
-            
-            console.log("Signed response received: " + response.url);
            
             var req = {
                  method: 'PUT',
@@ -1556,11 +1546,11 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  data: file
                 }
             var file_url = response.url
-            console.log("-- now PUT request: " + JSON.stringify(req))
             
-             // Upload file to S3
+             // 2. Upload file to S3
             $http(req)
             .success(function(response) {
+
                 var query = {
                     title: $scope.title,
                     filename: file.name,
@@ -1569,19 +1559,16 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     owner: UserService.username()
                 };
                 
-                // Add image to API database
+                // 3. Add image to API database
                 $http.post(envService.read('apiUrl') + '/images', query )
                     .success(function(response){
-                    console.log('IMAGE ID: ' + response['id'])
-                    // ImageSearchService.query('id='+id)
-                    $state.go('images', {}, {reload: true})
+                    console.log('III:  success, GOIMAGE, ID = ' + response['id'])
+                    ImageSearchService.query('id='+response['id'], $state)
                 })
-                
-              //Finally, We're done
-              console.log('Upload Done!')
+
             })
             .error(function(response) {
-              console.log("Error:" + JSON.stringify(response));
+              console.log("III: Error:" + JSON.stringify(response));
             });
         })
     };             
@@ -1606,29 +1593,18 @@ in URL can be accessed in controller using $stateParams.variableName
 
 
 module.exports = function($scope, $stateParams, $location, $sce, $window, ImageRouteService, ImageService) {
-  
-    console.log('ImagesController')
-
-    
-    console.log('ImagesController, $stateParams.id = ' + $stateParams.id)
-    console.log('ImagesController, search = ' + $stateParams.search)
-    console.log('ImagesController, URL = ' + $location.absUrl())
-    console.log('ImagesController, QS = ' + JSON.stringify($location.search()))
-   
-    
     
     var id = $stateParams.id;
-    var queryString =  $location.search()
-    // https://docs.angularjs.org/api/ng/service/$location
-    
     
     // Process the given route
-    if (id == undefined) { 
+    if (id == undefined) {
+
         $scope.foo = 'bar'
         ImageRouteService.getImageList($scope) 
     } 
-    else { 
-        ImageRouteService.getImage($scope, id)     
+    else {
+
+        ImageRouteService.getImage($scope, id)
     } 
     
     var innerHeight = $window.innerHeight
@@ -1636,10 +1612,7 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
     
     $scope.pdfMode = (ImageService.contentType() == 'application/pdf')
-    
-    console.log("XXXXXX: " + ImageService.contentType() + " ::: pdfMode = " + $scope.pdfMode)
-  
-    
+
     $scope.imageUrl = ImageService.url()
     
     $scope.imageStorageUrl = ImageService.storageUrl()
@@ -1649,10 +1622,7 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.id()
-    
-    console.log('IMAGE URL = ' + ImageService.url())
-    console.log('IMAGE STORAGE URL = ' + ImageService.storageUrl())
-    console.log('IMAGE COUNT = ' + $scope.imageList.length)
+
     
 }
 },{}],22:[function(require,module,exports){
@@ -1769,29 +1739,29 @@ module.exports = function(ImageService, ImageApiService, $state) {
     }
 }
 },{}],25:[function(require,module,exports){
-module.exports = function($http, ImageService, ImageApiService, QueryParser, envService) {
-    
-    this.query = function(searchText){
-        
+module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService) {
 
-            var query = QueryParser.parse(searchText)
-            
-            $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+    
+    this.query = function(searchText, state){
+
+        var query = QueryParser.parse(searchText)
+
+        $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+
             .then(function(response){
-              console.log(response.data['status'])
-              console.log('Number of images: ' + response.data['image_count'])
-              var jsonData = response.data
-              var images = jsonData['images']
-              ImageService.setImageList(images)
-              
-              
-              var id = images[0]['id']
-              console.log('id = ' + id)
-              ImageApiService.getImage(id)
-              $state.go('images', {reload: true, inherit: false, notify: true })              
+
+                var jsonData = response.data
+                var images = jsonData['images']
+                ImageService.setImageList(images)
+                var id = images[0]['id']
+                ImageApiService.getImage(id)
+                    .then(function(response) {
+                        $state.go('images', {}, {reload: true})
+                    })
 
             })
-        }
+
+    }
 }
                   
 },{}],26:[function(require,module,exports){
@@ -1851,12 +1821,12 @@ module.exports = function($localStorage) {
         var storageUrl = firstImage['storage_url']
         var contentType = firstImage['content_type']
         
-        console.log('FIRST ELEMENT = ' + JSON.stringify(firstImage))
-        console.log('ID OF FIRST ELEMENT = ' + id)
-        console.log('TITLE OF FIRST ELEMENT = ' + title)
-        console.log('URL OF FIRST ELEMENT = ' + url)
-        console.log('STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
-        console.log('CONTENT TYPE FIRST ELEMENT = ' + contentType)
+        console.log('SIL: FIRST ELEMENT = ' + JSON.stringify(firstImage))
+        console.log('SIL: ID OF FIRST ELEMENT = ' + id)
+        console.log('SIL: TITLE OF FIRST ELEMENT = ' + title)
+        console.log('SIL: URL OF FIRST ELEMENT = ' + url)
+        console.log('SIL: STORAGE URL OF FIRST ELEMENT = ' + storageUrl)
+        console.log('SIL: CONTENT TYPE FIRST ELEMENT = ' + contentType)
         
         
         $localStorage.imageId = id
@@ -1939,7 +1909,7 @@ module.exports = function() {
             searchText = bareSearchTerm + '&' + standardSearchTerm
         }
         
-        
+        console.log('PARSED QUERY: ' + searchText)
     
         return searchText
     }
@@ -2353,7 +2323,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'ImagesController'
         })
     
-        .state('oneImage', {
+        .state('getimage', {
             url: '/images/:id',
             templateUrl : 'pages/images.html',
             controller  : 'ImagesController'
@@ -2433,9 +2403,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     console.log('SIGNING IN USER')  
                     $scope.message = 'Success!'
                     UserService.signin($scope)
-                    // $scope.username = UserService.username()
-                    // $scope.signedIn = UserService.signedIn
-                    ImageSearchService.query('scope=all')
+                    ImageSearchService.query('scope=all', $state)
                     SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
                             $state.go('documents')
@@ -2452,8 +2420,6 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     // checks for information will be peformed here
                 },
                 function (error) {
-                    // handle errors here
-                    // console.log(error.statusText);
                     console.log('ERROR!');
                 }
             );
