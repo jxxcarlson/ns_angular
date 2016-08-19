@@ -2348,7 +2348,7 @@ app.controller('MainController', function($scope, $http, $state, $location,
 
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('development');
+    envService.set('production');
     
     
 });
