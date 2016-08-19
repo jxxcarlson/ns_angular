@@ -1,9 +1,12 @@
 module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
-            
-            
-            console.log('SEARCH CONTROLLER, Search text: ' + $scope.searchText);
+
+
+            var query = QueryParser.parse($scope.searchText)
+
+
+            console.log('SEARCH CONTROLLER, Search text: ' + query);
             
             $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
             

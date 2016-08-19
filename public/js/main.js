@@ -1441,6 +1441,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
    
     this.query = function(searchText, scope, destination) {
 
+        var queryText = QueryParser.parse(searchText)
+
         console.log('*** Destination for q = ' + searchText + ' : ' + destination)
 
         if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
@@ -1451,7 +1453,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                 
             }
         
-         var url = envService.read('apiUrl') + '/documents' + '?' + searchText
+         var url = envService.read('apiUrl') + '/documents' + '?' + queryText
          var options = { headers: { "accesstoken": UserService.accessToken() }}
          return $http.get(url, options)
         .then(function(response){
@@ -1482,9 +1484,12 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
 module.exports = function($scope, $state, $location, $http, ImageService, ImageApiService, envService) {
     
         $scope.doImageSearch = function(){
-            
-            
-            console.log('SEARCH CONTROLLER, Search text: ' + $scope.searchText);
+
+
+            var query = QueryParser.parse($scope.searchText)
+
+
+            console.log('SEARCH CONTROLLER, Search text: ' + query);
             
             $http.get(envService.read('apiUrl') + '/images' + '?' + $scope.searchText  )
             
@@ -1768,9 +1773,10 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
     
     this.query = function(searchText){
         
-            console.log('Search text: ' + searchText);
+
+            var query = QueryParser.parse(searchText)
             
-            $http.get(envService.read('apiUrl') + '/images' + '?' + searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])

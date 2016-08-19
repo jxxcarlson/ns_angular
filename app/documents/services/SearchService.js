@@ -9,6 +9,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
    
     this.query = function(searchText, scope, destination) {
 
+        var queryText = QueryParser.parse(searchText)
+
         console.log('*** Destination for q = ' + searchText + ' : ' + destination)
 
         if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
@@ -19,7 +21,7 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
                 
             }
         
-         var url = envService.read('apiUrl') + '/documents' + '?' + searchText
+         var url = envService.read('apiUrl') + '/documents' + '?' + queryText
          var options = { headers: { "accesstoken": UserService.accessToken() }}
          return $http.get(url, options)
         .then(function(response){

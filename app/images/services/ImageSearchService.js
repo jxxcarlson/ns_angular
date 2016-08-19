@@ -2,9 +2,10 @@ module.exports = function($http, ImageService, ImageApiService, envService) {
     
     this.query = function(searchText){
         
-            console.log('Search text: ' + searchText);
+
+            var query = QueryParser.parse(searchText)
             
-            $http.get(envService.read('apiUrl') + '/images' + '?' + searchText  )
+            $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
             .then(function(response){
               console.log(response.data['status'])
               console.log('Number of images: ' + response.data['image_count'])
