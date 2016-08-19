@@ -916,10 +916,12 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         this.update = function(params, scope) {
 
             console.log('API, DOCUMENT, UPDATE')
-            
+            console.log('Update, params, author_name: ' + params.author_name)
+
             var deferredRefresh = $q.defer();
      
             var parameter = JSON.stringify(params);
+            console.log('update, params, parameter: ' + parameter)
             var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             
@@ -1338,12 +1340,14 @@ module.exports = function($localStorage) {
     }
     
     this.params = function(scope) {
-        
+
+        console.log('Params, author_name: ' + this.author())
         var _params = { 
                     id: this.documentId(), 
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
-                    text: scope.editText 
+                    text: scope.editText,
+                    author_name: this.author()
                  }
         
         return _params
@@ -2333,13 +2337,15 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
-                        foo, UserService, SearchService, envService) {
+                        foo, UserService, SearchService, envService, DocumentService) {
     $scope.message = ''
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
      
     $scope.accessTokenValid = UserService.accessTokenValid()
+    $scope.documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
     envService.set('development');

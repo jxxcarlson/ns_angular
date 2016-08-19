@@ -167,13 +167,15 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 // create the controller and inject Angular's $scope
 app.controller('MainController', function($scope, $http, $state, $location, 
-                        foo, UserService, SearchService, envService) {
+                        foo, UserService, SearchService, envService, DocumentService) {
     $scope.message = ''
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
      
     $scope.accessTokenValid = UserService.accessTokenValid()
+    $scope.documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
     envService.set('development');

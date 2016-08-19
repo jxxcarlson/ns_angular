@@ -132,10 +132,12 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
         this.update = function(params, scope) {
 
             console.log('API, DOCUMENT, UPDATE')
-            
+            console.log('Update, params, author_name: ' + params.author_name)
+
             var deferredRefresh = $q.defer();
      
             var parameter = JSON.stringify(params);
+            console.log('update, params, parameter: ' + parameter)
             var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             

@@ -269,12 +269,14 @@ module.exports = function($localStorage) {
     }
     
     this.params = function(scope) {
-        
+
+        console.log('Params, author_name: ' + this.author())
         var _params = { 
                     id: this.documentId(), 
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
-                    text: scope.editText 
+                    text: scope.editText,
+                    author_name: this.author()
                  }
         
         return _params
