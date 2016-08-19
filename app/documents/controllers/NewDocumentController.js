@@ -10,15 +10,33 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
       var parentTitle = DocumentService.currentCollectionItem().title || ''
       if (parentTitle != '') {
 
-          $scope.parentDocumentLine = 'Parent document: ' + DocumentService.currentCollectionItem().title
+          $scope.parentDocumentTitle = DocumentService.currentCollectionItem().title
 
       } else {
 
-          $scope.parentDocumentLine = ''
+          $scope.parentDocumentTitle = ''
 
       }
 
-      $scope.currentDocumentLine = 'Current document: ' + DocumentService.currentDocumentItem().title
+      $scope.currentDocumentTitle = DocumentService.currentDocumentItem().title
+
+      if ($scope.parentDocumentTitle != '' && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
+
+          $scope.ifparentdocument = true
+      }
+      else {
+
+          $scope.ifparentdocument = false
+      }
+
+      if ($scope.parentDocumentTitle == '') {
+
+          $scope.ifnewchild = true
+
+      } else {
+
+          $scope.ifnewchild = false
+      }
 
       $scope.cancel  = function() {
 
@@ -27,15 +45,20 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
         }
 
+      $scope.formData = {}
+
+
 
       $scope.submit = function() {
 
       var access_token = UserService.accessToken()
-      var parameter = JSON.stringify({title:$scope.title, token:access_token });
+      var parameter = JSON.stringify({title:$scope.title, token:access_token, options: JSON.stringify($scope.formData),
+          current_document_id: DocumentService.currentDocumentItem().id, parent_document_id: DocumentService.currentCollectionItem().id});
       var url = envService.read('apiUrl') + '/documents'
       var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
       var lastDocumentId = DocumentService.documentId()
 
+      console.log('formData = ' + JSON.stringify($scope.formData)   )
       
       // Add the newly created document to the document list
       // of the current document

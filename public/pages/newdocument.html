@@ -5,7 +5,6 @@
 
         <div ng-app="noteshareApp" ng-controller="newDocumentController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
             <form ng-submit="submit()">
-                <p>{{parentDocumentLine}}</p>
 
               <h2>New document</h2>
 
@@ -19,7 +18,41 @@
 
                <br>
                <br>
-               <p>{{currentDocumentLine}}</p>
+
+
+               <div ng-show="ifparentdocument">
+                    <p><strong>Options:</strong> put the new document</p>
+                    <div class="form-group">
+                        <div class="radio222">
+                            <label>
+                                <input type="radio"  name="positionOption" value="above" ng-model="formData.position"  class='floating-box check-box'  />
+                            above
+                            </label>
+                            <label>
+                                <input type="radio" name="positionOption"  value="below" ng-model="formData.position" class='floating-box check-box'    /> below
+                            </label>
+                        </div>
+                    </div>
+                    <p style="margin-bottom:10px;margin-left:13px;">the document <strong><i>{{currentDocumentTitle}}</i></strong></p>
+                    <p>It will be a new child of <strong>{{parentDocumentTitle}}</strong></p>
+               </div>
+
+                <div ng-show="ifnewchild">
+                    <p><strong>Options:</strong> make the new document a child of <strong>{{currentDocumentTitle}}</strong></p>
+                    <div>
+                        <label class='check-box-label' for="childDocumentCheckbox">Yes{{parentDocumentTitle}}</label>
+                        <input class='floating-box check-box' id="childDocumentCheckbox" type="checkbox" ng-model="formData.child" ng-click="" />
+                    </div>
+                </div>
+
+                <pre>
+
+                    {{formData}}
+                </pre>
+
+
+
+                <p></p>
             </form>
             
             <br/>
