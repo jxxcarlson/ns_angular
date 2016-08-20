@@ -86,9 +86,7 @@
       // update document command bound to key up for control key
         $scope.refreshText = function() {
             
-           
-           
-           
+
            if (event.keyCode  == 27) {
                // console.log('ESCAPE pressed -- saving document')
                DocumentApiService.update(DocumentService.params($scope), $scope)
@@ -116,6 +114,7 @@
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        $scope.idIsDefined = (id != undefined)
         
         $scope.wordCount = $scope.text.split(' ').length
         
@@ -145,10 +144,24 @@
             var params = {id: id, kind: kk}
             DocumentApiService.update(params, $scope)
         } 
-        
 
+        $scope.moveUp = function() {
 
-        // Get most document from server
+            var parent_id = DocumentService.currentCollectionItem().id
+            console.log('MOVE: ' + id + ' up in ' + parent_id )
+            DocumentApiService.move_subdocument(parent_id, id, 'move_up', $scope)
+
+        }
+
+       $scope.moveDown = function() {
+
+          var parent_id = DocumentService.currentCollectionItem().id
+          console.log('MOVE: ' + id + ' down in ' + parent_id )
+          DocumentApiService.move_subdocument(parent_id, id, 'move_down', $scope)
+
+      }
+
+        // Get most recent document from server
         var url = envService.read('apiUrl') + '/documents/' + id
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         $http.get(url, options  )

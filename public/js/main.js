@@ -249,6 +249,7 @@ app.directive('elemReady', require('./elemReady'))
 app.directive('file', require('./File'))
 
 
+
   
 
 
@@ -468,9 +469,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
       // update document command bound to key up for control key
         $scope.refreshText = function() {
             
-           
-           
-           
+
            if (event.keyCode  == 27) {
                // console.log('ESCAPE pressed -- saving document')
                DocumentApiService.update(DocumentService.params($scope), $scope)
@@ -498,6 +497,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
         $scope.docArray = DocumentService.documentList()
         $scope.documentCount = DocumentService.documentCount()
+        $scope.idIsDefined = (id != undefined)
         
         $scope.wordCount = $scope.text.split(' ').length
         
@@ -527,10 +527,24 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
             var params = {id: id, kind: kk}
             DocumentApiService.update(params, $scope)
         } 
-        
 
+        $scope.moveUp = function() {
 
-        // Get most document from server
+            var parent_id = DocumentService.currentCollectionItem().id
+            console.log('MOVE: ' + id + ' up in ' + parent_id )
+            DocumentApiService.move_subdocument(parent_id, id, 'move_up', $scope)
+
+        }
+
+       $scope.moveDown = function() {
+
+          var parent_id = DocumentService.currentCollectionItem().id
+          console.log('MOVE: ' + id + ' down in ' + parent_id )
+          DocumentApiService.move_subdocument(parent_id, id, 'move_down', $scope)
+
+      }
+
+        // Get most recent document from server
         var url = envService.read('apiUrl') + '/documents/' + id
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         $http.get(url, options  )
@@ -820,7 +834,7 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function($http, $q, $sce, $state, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
         var deferred = $q.defer();
 
@@ -840,7 +854,7 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 var data = response.data
                 var document = data['document']                
                 var links = document['links'] || {} 
-                var documents = links['documents'] || []
+                var documents = links['documents'] || [] // JJJJ
                 
                 console.log('*** documents.length: ' + documents.length)
                 
@@ -984,9 +998,70 @@ module.exports = function($http, $q, $sce, DocumentService, UserService, GlobalS
                 })
             
         }
+
+
+    this.move_subdocument = function(parent_id, subdocument_id, command, scope) {
+
+        // command is 'move_up' or 'move_down'
+
+        console.log('API, DOCUMENT, MOVE SUBDOCUMENT')
+
+
+        var deferredRefresh = $q.defer();
+
+        var parameter = JSON.stringify({author_name: DocumentService.author()});
+        var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+
+        console.log('MOVE: url = ' + url)
+
+        $http.post(url, parameter, options)
+            .then(function(response){
+
+                console.log('  -- status: ' + response.data['status'])
+                if (response.data['status'] == 'success') {
+
+                    var document = response.data['document']
+                    var links = document['links'] || {}
+                    var documents = links['documents'] || []
+                    if (documents.length > 0) {
+
+                        console.log('*** Setting collecton title: ' + document['title'])
+                        DocumentService.setCollectionTitle(document['title'])
+                        DocumentService.setCollectionId(document['id'])
+                        DocumentService.setCurrentCollectionItem(document['id'], document['title'])
+
+                        DocumentService.setDocumentList( documents )
+                    }
+
+                    /* Update $scope */
+                    scope.title = document['title']
+                    scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                    scope.message = 'Success!'
+
+                    /* Update local storage */
+                    DocumentService.update(document)
+                    $state.go('editdocument', {}, {reload:true})
+
+                } else {
+                    scope.message = response.data['error']
+                }
+
+            }).then(
+            function(response) {
+                deferredRefresh.resolve(response)
+                console.log('AAAA: ' + JSON.stringify(response))
+
+                MathJaxService.reload(DocumentService.kind(), 'AAAA: ')
+            }, function(response) {
+                deferred.reject(response);
+                console.log('BBBB')
+            })
+
+    }
         
 
-      }
+}
 },{}],15:[function(require,module,exports){
 module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
 
@@ -2373,16 +2448,20 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 
 // create the controller and inject Angular's $scope
-app.controller('MainController', function($scope, $http, $state, $location, 
+app.controller('MainController', function($scope, $http, $state, $location, $localStorage,
                         foo, UserService, SearchService, envService, DocumentService) {
+
+    var accessTokenValid = UserService.accessTokenValid()
+    var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
     $scope.message = ''
 
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
      
-    $scope.accessTokenValid = UserService.accessTokenValid()
-    $scope.documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+    $scope.accessTokenValid = accessTokenValid
+    $scope.documentEditable = documentEditable
 
     console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
@@ -2431,10 +2510,10 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     console.log('SIGNING IN USER')  
                     $scope.message = 'Success!'
                     UserService.signin($scope)
-                    ImageSearchService.query('scope=all', $state)
+                    // ImageSearchService.query('scope=all', $state)
                     SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
-                            $state.go('documents')
+                            $state.go('documents', {}, {reload:true})
                             MathJaxService.reload(DocumentService.kind(), 'SignIn')
                         })
                   } else {

@@ -17,8 +17,16 @@
           
           
 
-          <h3> Documents: {{ documentCount }}</h3>
+          <h3> Contents ({{ documentCount }})</h3>
+
+          <div ng-show="idIsDefined">
+              <button style="background-color:white; color:#666; padding:5px 10px; font-size:1.2em;">Move</button>
+              <button ng-click="moveUp()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Up</button>
+              <button ng-click="moveDown()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Down</button>
+          </div>
           <br />
+          <br />
+
           <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
 
         </div>

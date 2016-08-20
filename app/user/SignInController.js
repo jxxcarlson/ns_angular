@@ -19,10 +19,10 @@
                     console.log('SIGNING IN USER')  
                     $scope.message = 'Success!'
                     UserService.signin($scope)
-                    ImageSearchService.query('scope=all', $state)
+                    // ImageSearchService.query('scope=all', $state)
                     SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
-                            $state.go('documents')
+                            $state.go('documents', {}, {reload:true})
                             MathJaxService.reload(DocumentService.kind(), 'SignIn')
                         })
                   } else {
