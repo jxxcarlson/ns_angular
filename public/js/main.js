@@ -1485,16 +1485,23 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
     
         $scope.doImageSearch = function(){
 
+
             var query = QueryParser.parse($scope.searchText)
 
+
+            console.log('SEARCH CONTROLLER, Search text: ' + query);
+            
             $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
             
             .then(function(response){
-
+              
+              console.log(response.data['status'])
+              console.log('Number of images: ' + response.data['image_count'])
               var jsonData = response.data
               var images = jsonData['images']
               ImageService.setImageList(images)
-
+              
+              
               var id = images[0]['id']
               console.log('id = ' + id)
               ImageApiService.getImage(id)
@@ -1502,6 +1509,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
                  console.log('GOING TO IMAGES')
                  $state.go('images', {}, {reload: true})
                })
+              
              
             });
             
@@ -1523,10 +1531,10 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
  module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
 
-     // var deferred = $q.defer();
+     var deferred = $q.defer();
         
     $scope.upload = function (file) {
-
+        console.log("III: Upload controller sending signing request");
         var query = {
             filename: file.name,
             title: $scope.title,
@@ -1534,10 +1542,14 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             type: file.type,
             owner: UserService.username()
         };
+        console.log("III: -- query: " + JSON.stringify(query))
         
         // 1. Get presigned URL
         var url = envService.read('apiUrl') + '/presigned'
+        console.log("III: -- url for POST: " + url)
         $http.post(url, query).success(function(response) {
+            
+            console.log("III: success: recieved signed response received: " + response.url);
            
             var req = {
                  method: 'PUT',
@@ -1546,11 +1558,12 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  data: file
                 }
             var file_url = response.url
+            console.log("III: -- now PUT request: " + JSON.stringify(req))
             
              // 2. Upload file to S3
             $http(req)
             .success(function(response) {
-
+                console.log('III, successful upload')
                 var query = {
                     title: $scope.title,
                     filename: file.name,
@@ -1563,8 +1576,20 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                 $http.post(envService.read('apiUrl') + '/images', query )
                     .success(function(response){
                     console.log('III:  success, GOIMAGE, ID = ' + response['id'])
-                    ImageSearchService.query('id='+response['id'], $state)
+                    ImageSearchService.query('id='+response['id'])
+                    $state.go('images', {}, {reload: true})
                 })
+                    .then( function(response) {
+                        // 4. Go to image page
+                        console.log('III: Going to image page')
+                        deferred.resolve(response);
+                        $state.go('images', {}, {reload: true})
+                    })
+                //Finally, We're done
+                console.log('III: Upload Done!')
+
+
+
 
             })
             .error(function(response) {
@@ -1593,8 +1618,21 @@ in URL can be accessed in controller using $stateParams.variableName
 
 
 module.exports = function($scope, $stateParams, $location, $sce, $window, ImageRouteService, ImageService) {
+  
+    console.log('ImagesController')
+
+    
+    console.log('ImagesController, $stateParams.id = ' + $stateParams.id)
+    console.log('ImagesController, search = ' + $stateParams.search)
+    console.log('ImagesController, URL = ' + $location.absUrl())
+    console.log('ImagesController, QS = ' + JSON.stringify($location.search()))
+   
+    
     
     var id = $stateParams.id;
+    var queryString =  $location.search()
+    // https://docs.angularjs.org/api/ng/service/$location
+    
     
     // Process the given route
     if (id == undefined) {
@@ -1612,7 +1650,10 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
     
     $scope.pdfMode = (ImageService.contentType() == 'application/pdf')
-
+    
+    console.log("XXXXXX: " + ImageService.contentType() + " ::: pdfMode = " + $scope.pdfMode)
+  
+    
     $scope.imageUrl = ImageService.url()
     
     $scope.imageStorageUrl = ImageService.storageUrl()
@@ -1622,7 +1663,10 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.id()
-
+    
+    console.log('IMAGE URL = ' + ImageService.url())
+    console.log('IMAGE STORAGE URL = ' + ImageService.storageUrl())
+    console.log('IMAGE COUNT = ' + $scope.imageList.length)
     
 }
 },{}],22:[function(require,module,exports){
@@ -1739,28 +1783,28 @@ module.exports = function(ImageService, ImageApiService, $state) {
     }
 }
 },{}],25:[function(require,module,exports){
-module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService) {
+module.exports = function($http, ImageService, ImageApiService, QueryParser, envService) {
 
     
-    this.query = function(searchText, state){
+    this.query = function(searchText){
 
         var query = QueryParser.parse(searchText)
 
         $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+        .then(function(response){
+          console.log(response.data['status'])
+          console.log('Number of images: ' + response.data['image_count'])
+          var jsonData = response.data
+          var images = jsonData['images']
 
-            .then(function(response){
+          ImageService.setImageList(images)
 
-                var jsonData = response.data
-                var images = jsonData['images']
-                ImageService.setImageList(images)
-                var id = images[0]['id']
-                ImageApiService.getImage(id)
-                    .then(function(response) {
-                        $state.go('images', {}, {reload: true})
-                    })
+          var id = images[0]['id']
+          console.log('id = ' + id)
+          ImageApiService.getImage(id)
+          // $state not defined // $state.go('images', {reload: true, inherit: false, notify: true })
 
-            })
-
+        })
     }
 }
                   
@@ -2403,7 +2447,9 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     console.log('SIGNING IN USER')  
                     $scope.message = 'Success!'
                     UserService.signin($scope)
-                    ImageSearchService.query('scope=all', $state)
+                    // $scope.username = UserService.username()
+                    // $scope.signedIn = UserService.signedIn
+                    ImageSearchService.query('scope=all')
                     SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                         function() {
                             $state.go('documents')
@@ -2420,6 +2466,8 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     // checks for information will be peformed here
                 },
                 function (error) {
+                    // handle errors here
+                    // console.log(error.statusText);
                     console.log('ERROR!');
                 }
             );
