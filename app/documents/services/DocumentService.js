@@ -130,7 +130,7 @@ module.exports = function($localStorage) {
     
     //XXX
     this.currentDocumentIsTerminal = function() { 
-        console.log('**** subdocuments: ' + this.subdocuments().length)
+
         return (this.subdocuments().length == 0) }
     
     this.isSiblingOfCurrentDocument = function(item) {  }
@@ -247,8 +247,6 @@ module.exports = function($localStorage) {
     
     this.update = function(document) {
         
-        console.log('*** Document Service, update, with title = ' + document['title'])
-        
         this.setAuthor( document['author'] )
         
         // These are eventually to be eliminated in favor of setDocumentItem
@@ -265,7 +263,6 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
-        console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
 
         this.setSubdocuments(subdocuments)
 
@@ -277,7 +274,6 @@ module.exports = function($localStorage) {
     
     this.params = function(scope) {
 
-        console.log('Params, author_name: ' + this.author())
         var _params = { 
                     id: this.documentId(), 
                     title: scope.editableTitle, 
@@ -314,10 +310,6 @@ module.exports = function($localStorage) {
     }
 
     this.showThatItHasSubdocuments = function(doc) {
-
-        console.log('SUBDOC: ' + doc['title'] + ', ' + doc['has_subdocuments'])
-
-        console.log('JSON: ' + JSON.stringify(doc))
 
         return doc['has_subdocuments']
     }

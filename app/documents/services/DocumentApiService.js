@@ -30,8 +30,6 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
                 var links = document['links'] || {} 
                 var documents = links['documents'] || [] // JJJJ
                 
-                console.log('*** documents.length: ' + documents.length)
-                
                 // If the document has subdocuments, display them
                 // instead of the search results
                 if (documents.length > 0) {
@@ -63,11 +61,8 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
                     console.log('ucs - NOT Updating collection stack: ' + id)
                 }
                 var cdi = DocumentService.currentDocumentItem()
-                console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
-                console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
                 
                 var isInDocList = DocumentService.documentIsInDocumentList(cdi)
-                console.log('*** current document is in Document list: ' + isInDocList)
                 
                 // promise is returned
                 return deferred.promise;
@@ -105,9 +100,7 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
 
     this.printDocument = function(id, queryObj) {
 
-        console.log('PP: in DRS, printDocument, id = ' + id)
         var url = envService.read('apiUrl') + '/printdocument/' + id
-        console.log('PP: in DRS, printDocument, url = ' + url)
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         return  $http.get(url, options)
             .then(function (response) {
@@ -132,12 +125,10 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
         this.update = function(params, scope) {
 
             console.log('API, DOCUMENT, UPDATE')
-            console.log('Update, params, author_name: ' + params.author_name)
 
             var deferredRefresh = $q.defer();
      
             var parameter = JSON.stringify(params);
-            console.log('update, params, parameter: ' + parameter)
             var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             

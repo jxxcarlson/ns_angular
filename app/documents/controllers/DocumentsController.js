@@ -11,7 +11,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
  
     var id = $stateParams.id;
     var queryObj =  $location.search()
-    console.log('*** Doc Ctrl, queryObj = ' + JSON.stringify(queryObj))
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'

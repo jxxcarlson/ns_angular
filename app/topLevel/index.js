@@ -180,10 +180,8 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
      
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
-
-    console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('development');
+    envService.set('production');
     
     
 });

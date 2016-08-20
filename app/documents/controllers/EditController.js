@@ -2,8 +2,6 @@
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
 
-      
-        console.log('EDIT CONTROLLER, YAY!!')
         var id;
         var keyStrokeCount = 0
         
@@ -12,9 +10,6 @@
         } else {
             id = DocumentService.documentId();
         }
-      
-      console.log('EDITOR: id = ' + id)
-      //DocumentService.setDocumentId(id)
       
       // Set heights of window parts
       var innerHeight = $window.innerHeight
@@ -30,8 +25,6 @@
           allowIn: ['INPUT', 'TEXTAREA'],
           callback: function() {
             alert('SAVE DOCUMENT')
-            console.log('SAVE DOCUMENT ' + $scope.editableTitle )
-            // console.log($scope.editText)
             DocumentApiService.update(DocumentService.params($scope), $scope)
           }
         })
@@ -51,15 +44,11 @@
         var callAtInterval = function() {
             if ($scope.textDirty) {
                 updateCount += 1
-                console.log('periodicUpdate ' + updateCount)
-                console.log('EDITOR, call DocumentApiService($scope)')
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
 
                 // MathJaxService.reload(DocumentService.kind())
                 $scope.textDirty = false
-            } else {
-                console.log('SKIPPING periodicUpdate')
             }
 
 

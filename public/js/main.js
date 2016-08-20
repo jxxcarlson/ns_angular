@@ -313,7 +313,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
  
     var id = $stateParams.id;
     var queryObj =  $location.search()
-    console.log('*** Doc Ctrl, queryObj = ' + JSON.stringify(queryObj))
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
@@ -387,8 +386,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
 
-      
-        console.log('EDIT CONTROLLER, YAY!!')
         var id;
         var keyStrokeCount = 0
         
@@ -397,9 +394,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         } else {
             id = DocumentService.documentId();
         }
-      
-      console.log('EDITOR: id = ' + id)
-      //DocumentService.setDocumentId(id)
       
       // Set heights of window parts
       var innerHeight = $window.innerHeight
@@ -415,8 +409,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
           allowIn: ['INPUT', 'TEXTAREA'],
           callback: function() {
             alert('SAVE DOCUMENT')
-            console.log('SAVE DOCUMENT ' + $scope.editableTitle )
-            // console.log($scope.editText)
             DocumentApiService.update(DocumentService.params($scope), $scope)
           }
         })
@@ -436,15 +428,11 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         var callAtInterval = function() {
             if ($scope.textDirty) {
                 updateCount += 1
-                console.log('periodicUpdate ' + updateCount)
-                console.log('EDITOR, call DocumentApiService($scope)')
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
 
                 // MathJaxService.reload(DocumentService.kind())
                 $scope.textDirty = false
-            } else {
-                console.log('SKIPPING periodicUpdate')
             }
 
 
@@ -858,8 +846,6 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
                 var links = document['links'] || {} 
                 var documents = links['documents'] || [] // JJJJ
                 
-                console.log('*** documents.length: ' + documents.length)
-                
                 // If the document has subdocuments, display them
                 // instead of the search results
                 if (documents.length > 0) {
@@ -891,11 +877,8 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
                     console.log('ucs - NOT Updating collection stack: ' + id)
                 }
                 var cdi = DocumentService.currentDocumentItem()
-                console.log('**** currentDocumentItem: ' + cdi.id + ', ' + cdi.title)
-                console.log('**** --- is terminal: ' + DocumentService.currentDocumentIsTerminal())
                 
                 var isInDocList = DocumentService.documentIsInDocumentList(cdi)
-                console.log('*** current document is in Document list: ' + isInDocList)
                 
                 // promise is returned
                 return deferred.promise;
@@ -933,9 +916,7 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
 
     this.printDocument = function(id, queryObj) {
 
-        console.log('PP: in DRS, printDocument, id = ' + id)
         var url = envService.read('apiUrl') + '/printdocument/' + id
-        console.log('PP: in DRS, printDocument, url = ' + url)
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         return  $http.get(url, options)
             .then(function (response) {
@@ -960,12 +941,10 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
         this.update = function(params, scope) {
 
             console.log('API, DOCUMENT, UPDATE')
-            console.log('Update, params, author_name: ' + params.author_name)
 
             var deferredRefresh = $q.defer();
      
             var parameter = JSON.stringify(params);
-            console.log('update, params, parameter: ' + parameter)
             var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             
@@ -1306,7 +1285,7 @@ module.exports = function($localStorage) {
     
     //XXX
     this.currentDocumentIsTerminal = function() { 
-        console.log('**** subdocuments: ' + this.subdocuments().length)
+
         return (this.subdocuments().length == 0) }
     
     this.isSiblingOfCurrentDocument = function(item) {  }
@@ -1423,8 +1402,6 @@ module.exports = function($localStorage) {
     
     this.update = function(document) {
         
-        console.log('*** Document Service, update, with title = ' + document['title'])
-        
         this.setAuthor( document['author'] )
         
         // These are eventually to be eliminated in favor of setDocumentItem
@@ -1441,7 +1418,6 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
-        console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
 
         this.setSubdocuments(subdocuments)
 
@@ -1453,7 +1429,6 @@ module.exports = function($localStorage) {
     
     this.params = function(scope) {
 
-        console.log('Params, author_name: ' + this.author())
         var _params = { 
                     id: this.documentId(), 
                     title: scope.editableTitle, 
@@ -1491,10 +1466,6 @@ module.exports = function($localStorage) {
 
     this.showThatItHasSubdocuments = function(doc) {
 
-        console.log('SUBDOC: ' + doc['title'] + ', ' + doc['has_subdocuments'])
-
-        console.log('JSON: ' + JSON.stringify(doc))
-
         return doc['has_subdocuments']
     }
     
@@ -1529,8 +1500,6 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     this.query = function(searchText, scope, destination) {
 
         var queryText = QueryParser.parse(searchText)
-
-        console.log('*** Destination for q = ' + searchText + ' : ' + destination)
 
         if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
         
@@ -2474,10 +2443,8 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
      
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
-
-    console.log('$scope.accessTokenValid = ' + $scope.accessTokenValid)
     
-    envService.set('development');
+    envService.set('production');
     
     
 });
