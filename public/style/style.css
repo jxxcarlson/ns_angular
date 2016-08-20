@@ -124,6 +124,7 @@ p { font-size: 1.25em; }
 input[type="text"] {
     
     font-size: 16pt;
+    margin-bottom:10px;
 }
 
 input[type="submit"] {

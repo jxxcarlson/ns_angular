@@ -14,7 +14,7 @@ in URL can be accessed in controller using $stateParams.variableName
 */
 
 
-module.exports = function($scope, $stateParams, $state, $location, $sce, $window, ImageRouteService, ImageService, ImageSearchService) {
+module.exports = function($scope, $stateParams, $state, $location, $sce, $window, ImageRouteService, ImageService, ImageSearchService, ImageApiService) {
     
     var id = $stateParams.id;
     
@@ -36,14 +36,27 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     $scope.pdfMode = (ImageService.contentType() == 'application/pdf')
 
     $scope.imageUrl = ImageService.url()
-    
+    $scope.source = ImageService.imageSource()
+
     $scope.imageStorageUrl = ImageService.storageUrl()
     $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
     
     $scope.imageCount = ImageService.count()
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()
-    $scope.imageId = ImageService.id()
+    $scope.imageId = ImageService.imageId()
+    $scope.tags = ImageService.tags()
+
+    $scope.updateImage = function() {
+
+        params = { title: $scope.imageTitle, source: $scope.source, tags: $scope.tags }
+        ImageApiService.update(params, $scope.imageId)
+    }
+
+    $scope.userIsOwnerOfCurrentImage = function() {
+
+        return  true
+    }
 
     $scope.randomImages = function() {
 
