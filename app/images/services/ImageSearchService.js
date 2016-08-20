@@ -3,6 +3,9 @@ module.exports = function($http, $state, ImageService, ImageApiService, QueryPar
     
     this.query = function(searchText, state){
 
+
+        console.log("IMG: image service, query = " + searchText)
+
         var query = QueryParser.parse(searchText)
 
         $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
@@ -15,7 +18,7 @@ module.exports = function($http, $state, ImageService, ImageApiService, QueryPar
                 var id = images[0]['id']
                 ImageApiService.getImage(id)
                     .then(function(response) {
-                        $state.go('images', {}, {reload: true})
+                        state.go('images', {}, {reload: true})
                     })
 
             })

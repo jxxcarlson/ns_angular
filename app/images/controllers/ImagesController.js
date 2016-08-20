@@ -14,7 +14,7 @@ in URL can be accessed in controller using $stateParams.variableName
 */
 
 
-module.exports = function($scope, $stateParams, $location, $sce, $window, ImageRouteService, ImageService) {
+module.exports = function($scope, $stateParams, $state, $location, $sce, $window, ImageRouteService, ImageService, ImageSearchService) {
     
     var id = $stateParams.id;
     
@@ -44,6 +44,8 @@ module.exports = function($scope, $stateParams, $location, $sce, $window, ImageR
     $scope.imageList = ImageService.imageList()
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.id()
+
+    $scope.randomImages = function() { ImageSearchService.query('random=20', $state) }
 
     
 }

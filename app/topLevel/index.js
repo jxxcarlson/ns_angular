@@ -169,6 +169,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 app.controller('MainController', function($scope, $http, $state, $location, 
                         foo, UserService, SearchService, envService, DocumentService) {
     $scope.message = ''
+
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
