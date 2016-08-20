@@ -1,10 +1,18 @@
-module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService) {
+module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService, UserService) {
     
         $scope.doImageSearch = function(){
 
-            var query = QueryParser.parse($scope.searchText)
+            console.log('_IMAGE: search controller')
 
-            $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+            var query = QueryParser.parse($scope.searchText)
+            var url = envService.read('apiUrl') + '/images' + '?' + query
+            var options = { headers: { "accesstoken": UserService.accessToken() }}
+
+            console.log('URL: ' + url)
+            console.log('OPTIONS: ' + JSON.stringify(options))
+
+
+            $http.get(url, options)
             
             .then(function(response){
 

@@ -45,7 +45,12 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.id()
 
-    $scope.randomImages = function() { ImageSearchService.query('random=20', $state) }
+    $scope.randomImages = function() {
+
+        console.log('_IMAGE: calling search service from Images Controller')
+        ImageSearchService.query('random=20', $state)
+
+    }
 
     
 }

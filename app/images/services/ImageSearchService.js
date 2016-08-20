@@ -1,14 +1,20 @@
-module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService) {
+module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService, UserService) {
 
     
     this.query = function(searchText, state){
 
-
-        console.log("IMG: image service, query = " + searchText)
+        console.log('_IMAGE: search service')
+        console.log("_IMAGE: image service, query = " + searchText)
 
         var query = QueryParser.parse(searchText)
+        console.log('_IMAGE: image service, query = ' + query)
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        var url = envService.read('apiUrl') + '/images' + '?' + query
 
-        $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+        console.log('URL: ' + url)
+        console.log('OPTIONS: ' + JSON.stringify(options))
+
+        $http.get(url, options)
 
             .then(function(response){
 

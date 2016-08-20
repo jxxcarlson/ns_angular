@@ -1481,13 +1481,21 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     }
 }
 },{}],19:[function(require,module,exports){
-module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService) {
+module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService, UserService) {
     
         $scope.doImageSearch = function(){
 
-            var query = QueryParser.parse($scope.searchText)
+            console.log('_IMAGE: search controller')
 
-            $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+            var query = QueryParser.parse($scope.searchText)
+            var url = envService.read('apiUrl') + '/images' + '?' + query
+            var options = { headers: { "accesstoken": UserService.accessToken() }}
+
+            console.log('URL: ' + url)
+            console.log('OPTIONS: ' + JSON.stringify(options))
+
+
+            $http.get(url, options)
             
             .then(function(response){
 
@@ -1527,6 +1535,8 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         
     $scope.upload = function (file) {
 
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+
         var query = {
             filename: file.name,
             title: $scope.title,
@@ -1538,7 +1548,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
         // 1. Get presigned URL
         var url = envService.read('apiUrl') + '/presigned'
         $http.post(url, query).success(function(response) {
-           
+            console.log('_IMAGE:  success, presigned token received', JSON.stringify(response))
             var req = {
                  method: 'PUT',
                  url: response.url,
@@ -1550,7 +1560,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
              // 2. Upload file to S3
             $http(req)
             .success(function(response) {
-
+                console.log('_IMAGE:  success, image uploaded to S3', JSON.stringify(response))
                 var query = {
                     title: $scope.title,
                     filename: file.name,
@@ -1562,13 +1572,14 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                 // 3. Add image to API database
                 $http.post(envService.read('apiUrl') + '/images', query )
                     .success(function(response){
-                    console.log('III:  success, GOIMAGE, ID = ' + response['id'])
+                    console.log('_IMAGE:  success,create image database record, id = ' + response['id'])
+                    console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
                     ImageSearchService.query('id='+response['id'], $state)
                 })
 
             })
             .error(function(response) {
-              console.log("III: Error:" + JSON.stringify(response));
+              console.log("_IMAGE: Error:" + JSON.stringify(response));
             });
         })
     };             
@@ -1623,7 +1634,12 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.id()
 
-    $scope.randomImages = function() { ImageSearchService.query('random=20', $state) }
+    $scope.randomImages = function() {
+
+        console.log('_IMAGE: calling search service from Images Controller')
+        ImageSearchService.query('random=20', $state)
+
+    }
 
     
 }
@@ -1741,17 +1757,23 @@ module.exports = function(ImageService, ImageApiService, $state) {
     }
 }
 },{}],25:[function(require,module,exports){
-module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService) {
+module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService, UserService) {
 
     
     this.query = function(searchText, state){
 
-
-        console.log("IMG: image service, query = " + searchText)
+        console.log('_IMAGE: search service')
+        console.log("_IMAGE: image service, query = " + searchText)
 
         var query = QueryParser.parse(searchText)
+        console.log('_IMAGE: image service, query = ' + query)
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        var url = envService.read('apiUrl') + '/images' + '?' + query
 
-        $http.get(envService.read('apiUrl') + '/images' + '?' + query  )
+        console.log('URL: ' + url)
+        console.log('OPTIONS: ' + JSON.stringify(options))
+
+        $http.get(url, options)
 
             .then(function(response){
 
