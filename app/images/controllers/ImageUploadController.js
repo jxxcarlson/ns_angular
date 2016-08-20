@@ -50,7 +50,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                 };
                 
                 // 3. Add image to API database
-                $http.post(envService.read('apiUrl') + '/images', query )
+                $http.post(envService.read('apiUrl') + '/images', query, options )
                     .success(function(response){
                     console.log('_IMAGE:  success,create image database record, id = ' + response['id'])
                     console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
