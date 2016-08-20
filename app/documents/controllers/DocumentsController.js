@@ -31,6 +31,8 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     var documentKind = DocumentService.kind()
     
     $scope.docStyle = DocumentService.tocStyle
+    $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
+
     
     $scope.reloadMathJax = function() {
         $timeout( 

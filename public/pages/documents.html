@@ -6,7 +6,7 @@
     <h3> {{ tableOfContentsTitle }} </h3>
     <br />
     <div id="toc">
-        <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="{{doc['url']}}?toc"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
+        <p class="toc-item " ng-repeat="doc in docArray" ng-style="docStyle(doc)"><i ng-show="hasSubdocument(doc)" class="fa fa-caret-right">&nbsp;</i><a href="{{doc['url']}}?toc"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
     </div>
 
     </div>

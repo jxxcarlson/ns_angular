@@ -42,7 +42,7 @@ module.exports = function($localStorage) {
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
 
-    this.setPrintUrl = function(url) { $localStorage.printUrl = url}
+    this.setPrintUrl = function(url) { $localStorage.printUrl = url }
     this.printUrl = function() { return $localStorage.printUrl }
 
     // Subdocuments of current document
@@ -51,6 +51,9 @@ module.exports = function($localStorage) {
     }
     this.subdocuments = function() { return $localStorage.subdocuments || []}
     this.subdocumentCount = function() { return this.subdocuments().length }
+
+    this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
+    this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
     
     
     /********** Collection Management ***************/
@@ -197,11 +200,7 @@ module.exports = function($localStorage) {
         }
       
     }
-    
-    
-    
-    
-    
+
     
     
     // Results of search
@@ -267,8 +266,10 @@ module.exports = function($localStorage) {
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
         console.log('** XXX ** ' + subdocuments.length + ' subdocuments set for ' + document['title'])
-        
+
         this.setSubdocuments(subdocuments)
+
+        this.setHasSubdocuments(document['has_subdocuments'])
         
         return document['rendered_text']
         
@@ -310,7 +311,16 @@ module.exports = function($localStorage) {
             css["font-style"] = "italic"
         }
         return css
-    }  
+    }
+
+    this.showThatItHasSubdocuments = function(doc) {
+
+        console.log('SUBDOC: ' + doc['title'] + ', ' + doc['has_subdocuments'])
+
+        console.log('JSON: ' + JSON.stringify(doc))
+
+        return doc['has_subdocuments']
+    }
     
       
 }
