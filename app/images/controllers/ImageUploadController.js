@@ -42,6 +42,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             $http(req)
             .success(function(response) {
                 console.log('_IMAGE:  success, image uploaded to S3', JSON.stringify(response))
+                /*
                 var query = {
                     title: $scope.formData.title,
                     filename: file.name,
@@ -50,19 +51,27 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     content_type: file.type,
                     owner: UserService.username()
                 };
-                
+                */
+
+                console.log("IMAGE QUERY: " + JSON.stringify(query))
                 // 3. Add image to API database
                 $http.post(envService.read('apiUrl') + '/images', query, options )
                     .success(function(response){
                     console.log('_IMAGE:  success,create image database record, id = ' + response['id'])
                     console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
-                    if ($scope.formData == true ) {
+                    if ($scope.formData.attach == true ) {
+
+                        console.log('_IMAGE: FORK A')
+
+                        //$state.go('documents', {id: response['parent_id']}
 
 
                     }
                     else {
 
                         ImageSearchService.query('id='+response['id'], $state)
+
+                        console.log('_IMAGE: FORK B')
 
                     }
 
