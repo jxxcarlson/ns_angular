@@ -1619,9 +1619,9 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             .success(function(response) {
                 console.log('_IMAGE:  success, image uploaded to S3', JSON.stringify(response))
                 var query = {
-                    title: $scope.title,
+                    title: $scope.formData.title,
                     filename: file.name,
-                    title: $scope.title,
+                    source: $scope.formData.source,
                     content_type: file.type,
                     owner: UserService.username()
                 };
