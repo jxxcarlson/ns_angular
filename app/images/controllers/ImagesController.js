@@ -47,6 +47,7 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.imageId()
     $scope.tags = ImageService.tags()
+    $scope.mediaType =  ImageService.contentType()
 
     $scope.updateImage = function() {
 
