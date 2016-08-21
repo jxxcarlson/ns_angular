@@ -6,7 +6,7 @@
 
           <h3> Contents ({{ documentCount }})</h3>
 
-          <div ng-show="idIsDefined">
+          <div ng-show="ifParentExists">
               <button style="background-color:white; color:#666; padding:5px 10px; font-size:1.2em;">Move</button>
               <button ng-click="moveUp()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Up</button>
               <button ng-click="moveDown()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Down</button>

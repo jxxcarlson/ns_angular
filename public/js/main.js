@@ -436,7 +436,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
       $scope.text = DocumentService.text() // for word count
 
-      $scope.idIsDefined = (id != undefined)
+      $scope.ifParentExists = (DocumentService.currentCollectionItem().id != 0)
 
       $scope.wordCount = $scope.text.split(' ').length
 
