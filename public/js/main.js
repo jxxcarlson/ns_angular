@@ -1622,6 +1622,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     title: $scope.formData.title,
                     filename: file.name,
                     source: $scope.formData.source,
+                    attach: $scope.formData.attach,
                     content_type: file.type,
                     owner: UserService.username()
                 };
@@ -1631,8 +1632,18 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     .success(function(response){
                     console.log('_IMAGE:  success,create image database record, id = ' + response['id'])
                     console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
-                    ImageSearchService.query('id='+response['id'], $state)
+                    if ($scope.formData == true ) {
+
+
+                    }
+                    else {
+
+                        ImageSearchService.query('id='+response['id'], $state)
+
+                    }
+
                 })
+
 
             })
             .error(function(response) {
