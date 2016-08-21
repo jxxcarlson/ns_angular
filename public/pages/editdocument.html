@@ -6,7 +6,8 @@
 
           <h3> Contents ({{ documentCount }})</h3>
 
-          <div ng-show="ifParentExists">
+          <div ng-show="
+">
               <button style="background-color:white; color:#666; padding:5px 10px; font-size:1.2em;">Move</button>
               <button ng-click="moveUp()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Up</button>
               <button ng-click="moveDown()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Down</button>
@@ -63,6 +64,7 @@
                   <div class="col-md-10">
                       <input type="text" ng-model="tags" placeholder="tags" style="width:100%">
                       <input type="text" ng-model="identifier" placeholder="identifier" style="width:100%">
+                      <input type="text" ng-model="kind" placeholder="kind" style="width:100%">
                       <button ng-click="setParams()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Update</button>
                   </div>
               </div>

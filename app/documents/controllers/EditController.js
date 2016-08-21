@@ -57,6 +57,7 @@
 
           $scope.identifier = DocumentService.identifier()
           $scope.tags = DocumentService.tags()
+          $scope.kind = DocumentService.kind()
           $scope.showTools = !$scope.showTools
       }
 

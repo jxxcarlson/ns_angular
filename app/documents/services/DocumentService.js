@@ -61,6 +61,16 @@ module.exports = function($localStorage) {
 
     this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
     this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
+
+    this.setAttachmentUrl = function(url) {
+
+        $localStorage.attachmentUrl = url
+    }
+
+    this.attachmentUrl = function() {
+
+        return $localStorage.attachmentUrl
+    }
     
     
     /********** Collection Management ***************/
@@ -270,6 +280,30 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+
+
+        var resources = links['resources']
+        if (resources != undefined) {
+
+            var media_attachment  = resources['media_attachment']
+
+            if (media_attachment != undefined) {
+
+                var attachmentUrl = media_attachment['url']
+
+                if (attachmentUrl != undefined) {
+
+                    this.setAttachmentUrl(attachmentUrl)
+
+                }
+            }
+        }
+
+
+        console.log('attachmentUrl: ' + attachmentUrl)
+
+
+
         var tags = document['tags'] || {}
 
         this.setTags(tags)

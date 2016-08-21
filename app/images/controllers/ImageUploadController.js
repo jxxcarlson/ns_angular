@@ -9,7 +9,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
+ module.exports =  function($scope, $q, $http, $location, $state, UserService, envService, SearchService) {
 
      // var deferred = $q.defer();
 
@@ -51,16 +51,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             $http(req)
             .success(function(response) {
                 console.log('_IMAGE:  success, image uploaded to S3', JSON.stringify(response))
-                /*
-                var query = {
-                    title: $scope.formData.title,
-                    filename: file.name,
-                    source: $scope.formData.source,
-                    attach: $scope.formData.attach,
-                    content_type: file.type,
-                    owner: UserService.username()
-                };
-                */
+
 
                 console.log("IMAGE QUERY: " + JSON.stringify(query))
                 // 3. Add image to API database
@@ -70,9 +61,11 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
                     if ($scope.formData.attach == true ) {
 
-                        console.log('_IMAGE: FORK A')
+                        console.log('_IMAGE: FORK A, parent document = ' + response['parent_document'])
 
-                        $state.go('documents', {id: response['parent_id']})
+                        SearchService.query('id=' + response['parent_document'])
+                        // $location.path(response['parent_id'])
+                        // $state.go('documents', {id: response['parent_id']})
 
 
                     }

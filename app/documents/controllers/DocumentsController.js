@@ -17,9 +17,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     // document.getElementById("toc").style.height = '300px' //(innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
-    $scope.textKind = true
-    $scope.imageKind = false
-    $scope.imageKind = false
     // Process the given route
     if (id == undefined) { 
         DocumentRouteService.getDocumentList($scope) }
@@ -28,7 +25,35 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     else { 
         DocumentRouteService.getDocument($scope, id, queryObj)     
         // documentKind = DocumentService.kind()
-    } 
+    }
+
+
+
+
+
+    //////
+    var imageRegex = new RegExp("image/")
+    var pdfRegex = new RegExp("application/pdf")
+
+    $scope.imageKind = imageRegex.test(DocumentService.kind())
+    $scope.pdfKind = pdfRegex.test(DocumentService.kind())
+    $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
+
+    if ($scope.imageKind || $scope.pdfKind ) {
+
+
+        $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+
+        console.log('ON SCOPE, ATTACHMENT URL = ' + $scope.attachmentUrl)
+    }
+
+    console.log('Kinds: ' + $scope.imageKind +', ' +  $scope.pdfKind +', ' +  $scope.textKind )
+    //////
+
+
+
+
     
     var documentKind = DocumentService.kind()
     

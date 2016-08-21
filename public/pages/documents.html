@@ -25,7 +25,14 @@
         </div>
 
         <div ng-show="imageKind" class="container fill">
-          <img src="{{mediaResourceUrl}}" />
+          <img src="{{attachmentUrl}}" />
+        </div>
+
+        <div ng-show="pdfKind" class="container fill">
+            <p><a ng-href="{{attachmentUrl}}" target="_blank">Link</a></p>
+            <iframe id="pdf-iframe" src={{attachmentUrl}} style="width:700px; height:900px;"> <p>Your browser does not support iframes.</p>
+            </iframe>
+
         </div>
 
     </div>

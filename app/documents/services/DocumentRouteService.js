@@ -70,7 +70,28 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                     scope.docArray = DocumentService.documentList()
                 }
                 scope.numberOfDocuments = DocumentService.documentCount()
-                
+
+
+                //////
+                var imageRegex = new RegExp("image/")
+                var pdfRegex = new RegExp("application/pdf")
+
+                scope.imageKind = imageRegex.test(DocumentService.kind())
+                scope.pdfKind = pdfRegex.test(DocumentService.kind())
+                scope.textKind = (!scope.imageKind && !scope.pdfKind)
+
+                if (scope.imageKind || scope.pdfKind ) {
+
+
+                    scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+                    // $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
+
+                    console.log('ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
+                }
+
+                console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
+                //////
                 
                  if (DocumentService.getPublic() == true ) {
                         scope.status = 'public'

@@ -8,7 +8,7 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, $state, DocumentService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function($http, $q, $sce, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
         var deferred = $q.defer();
 
@@ -207,6 +207,7 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
 
                     /* Update local storage */
                     DocumentService.update(document)
+                    $location.path('editdocument/' + subdocument_id)
                     $state.go('editdocument', {}, {reload:true})
 
                 } else {

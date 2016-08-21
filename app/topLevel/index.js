@@ -181,7 +181,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('development');
+    envService.set('production');
     
     
 });

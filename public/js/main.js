@@ -319,9 +319,6 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     // document.getElementById("toc").style.height = '300px' //(innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
-    $scope.textKind = true
-    $scope.imageKind = false
-    $scope.imageKind = false
     // Process the given route
     if (id == undefined) { 
         DocumentRouteService.getDocumentList($scope) }
@@ -330,7 +327,35 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     else { 
         DocumentRouteService.getDocument($scope, id, queryObj)     
         // documentKind = DocumentService.kind()
-    } 
+    }
+
+
+
+
+
+    //////
+    var imageRegex = new RegExp("image/")
+    var pdfRegex = new RegExp("application/pdf")
+
+    $scope.imageKind = imageRegex.test(DocumentService.kind())
+    $scope.pdfKind = pdfRegex.test(DocumentService.kind())
+    $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
+
+    if ($scope.imageKind || $scope.pdfKind ) {
+
+
+        $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+
+        console.log('ON SCOPE, ATTACHMENT URL = ' + $scope.attachmentUrl)
+    }
+
+    console.log('Kinds: ' + $scope.imageKind +', ' +  $scope.pdfKind +', ' +  $scope.textKind )
+    //////
+
+
+
+
     
     var documentKind = DocumentService.kind()
     
@@ -444,6 +469,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
           $scope.identifier = DocumentService.identifier()
           $scope.tags = DocumentService.tags()
+          $scope.kind = DocumentService.kind()
           $scope.showTools = !$scope.showTools
       }
 
@@ -876,7 +902,7 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, $state, DocumentService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function($http, $q, $sce, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
         var deferred = $q.defer();
 
@@ -1075,6 +1101,7 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
 
                     /* Update local storage */
                     DocumentService.update(document)
+                    $location.path('editdocument/' + subdocument_id)
                     $state.go('editdocument', {}, {reload:true})
 
                 } else {
@@ -1169,7 +1196,28 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                     scope.docArray = DocumentService.documentList()
                 }
                 scope.numberOfDocuments = DocumentService.documentCount()
-                
+
+
+                //////
+                var imageRegex = new RegExp("image/")
+                var pdfRegex = new RegExp("application/pdf")
+
+                scope.imageKind = imageRegex.test(DocumentService.kind())
+                scope.pdfKind = pdfRegex.test(DocumentService.kind())
+                scope.textKind = (!scope.imageKind && !scope.pdfKind)
+
+                if (scope.imageKind || scope.pdfKind ) {
+
+
+                    scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+                    // $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
+
+                    console.log('ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
+                }
+
+                console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
+                //////
                 
                  if (DocumentService.getPublic() == true ) {
                         scope.status = 'public'
@@ -1269,6 +1317,16 @@ module.exports = function($localStorage) {
 
     this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
     this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
+
+    this.setAttachmentUrl = function(url) {
+
+        $localStorage.attachmentUrl = url
+    }
+
+    this.attachmentUrl = function() {
+
+        return $localStorage.attachmentUrl
+    }
     
     
     /********** Collection Management ***************/
@@ -1478,6 +1536,30 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+
+
+        var resources = links['resources']
+        if (resources != undefined) {
+
+            var media_attachment  = resources['media_attachment']
+
+            if (media_attachment != undefined) {
+
+                var attachmentUrl = media_attachment['url']
+
+                if (attachmentUrl != undefined) {
+
+                    this.setAttachmentUrl(attachmentUrl)
+
+                }
+            }
+        }
+
+
+        console.log('attachmentUrl: ' + attachmentUrl)
+
+
+
         var tags = document['tags'] || {}
 
         this.setTags(tags)
@@ -1650,7 +1732,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
+ module.exports =  function($scope, $q, $http, $location, $state, UserService, envService, SearchService) {
 
      // var deferred = $q.defer();
 
@@ -1692,16 +1774,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             $http(req)
             .success(function(response) {
                 console.log('_IMAGE:  success, image uploaded to S3', JSON.stringify(response))
-                /*
-                var query = {
-                    title: $scope.formData.title,
-                    filename: file.name,
-                    source: $scope.formData.source,
-                    attach: $scope.formData.attach,
-                    content_type: file.type,
-                    owner: UserService.username()
-                };
-                */
+
 
                 console.log("IMAGE QUERY: " + JSON.stringify(query))
                 // 3. Add image to API database
@@ -1711,9 +1784,11 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
                     if ($scope.formData.attach == true ) {
 
-                        console.log('_IMAGE: FORK A')
+                        console.log('_IMAGE: FORK A, parent document = ' + response['parent_document'])
 
-                        $state.go('documents', {id: response['parent_id']})
+                        SearchService.query('id=' + response['parent_document'])
+                        // $location.path(response['parent_id'])
+                        // $state.go('documents', {id: response['parent_id']})
 
 
                     }
@@ -2598,7 +2673,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('development');
+    envService.set('production');
     
     
 });
