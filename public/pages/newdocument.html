@@ -37,10 +37,10 @@
                     <p>It will be a new child of <strong>{{parentDocumentTitle}}</strong></p>
                </div>
 
-                <div ng-show="ifnewchild">
+                <div ng-hide="ifparentdocument">
                     <p><strong>Options:</strong> make the new document a child of <strong>{{currentDocumentTitle}}</strong></p>
                     <div>
-                        <label class='check-box-label' for="childDocumentCheckbox">Yes{{parentDocumentTitle}}</label>
+                        <label class='check-box-label' for="childDocumentCheckbox">Yes</label>
                         <input class='floating-box check-box' id="childDocumentCheckbox" type="checkbox" ng-model="formData.child" ng-click="" />
                     </div>
                 </div>

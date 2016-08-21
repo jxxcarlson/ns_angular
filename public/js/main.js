@@ -2673,7 +2673,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('production');
+    envService.set('development');
     
     
 });
