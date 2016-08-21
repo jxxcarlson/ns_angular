@@ -1588,8 +1588,26 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
  module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
 
      // var deferred = $q.defer();
-        
-    $scope.upload = function (file) {
+
+
+     var randomString = function (n) {
+         // 36 ** 11 > Number.MAX_SAFE_INTEGER
+         if (n > 10)
+             throw new Error('Too big n for this function');
+         var x = "0000000000" + Math.floor(Number.MAX_SAFE_INTEGER * Math.random()).toString(36);
+         return x.slice(-n);
+     }
+
+     $scope.formData = { 'title': '', 'source': '', attach: false}
+
+     $scope.cancel  = function() {
+
+         console.log('CANCEL')
+         $state.go('images')
+
+     }
+
+     $scope.upload = function (file) {
 
         var options = { headers: { "accesstoken": UserService.accessToken() }}
 
@@ -1597,7 +1615,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             filename: file.name,
             title: $scope.formData.title,
             source: $scope.formData.source,
-            attach: $scope.formData.attach,
+            attach: true, // $scope.formData.attach,
             type: file.type,
             owner: UserService.username()
         };
@@ -1618,6 +1636,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             $http(req)
             .success(function(response) {
                 console.log('_IMAGE:  success, image uploaded to S3', JSON.stringify(response))
+                /*
                 var query = {
                     title: $scope.formData.title,
                     filename: file.name,
@@ -1626,19 +1645,27 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                     content_type: file.type,
                     owner: UserService.username()
                 };
-                
+                */
+
+                console.log("IMAGE QUERY: " + JSON.stringify(query))
                 // 3. Add image to API database
                 $http.post(envService.read('apiUrl') + '/images', query, options )
                     .success(function(response){
                     console.log('_IMAGE:  success,create image database record, id = ' + response['id'])
                     console.log('_IMAGE:  success,create image database record, response = ' + JSON.stringify(response))
-                    if ($scope.formData == true ) {
+                    if ($scope.formData.attach == true ) {
+
+                        console.log('_IMAGE: FORK A')
+
+                        //$state.go('documents', {id: response['parent_id']}
 
 
                     }
                     else {
 
                         ImageSearchService.query('id='+response['id'], $state)
+
+                        console.log('_IMAGE: FORK B')
 
                     }
 
@@ -1704,6 +1731,7 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     $scope.imageTitle = ImageService.title()
     $scope.imageId = ImageService.imageId()
     $scope.tags = ImageService.tags()
+    $scope.mediaType =  ImageService.contentType()
 
     $scope.updateImage = function() {
 
@@ -2431,6 +2459,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
+
+        .state('documents', {
+            url: '/documents/:id',
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
+        })
     
 
         .state('documentsId', {
@@ -2514,7 +2548,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('production');
+    envService.set('development');
     
     
 });

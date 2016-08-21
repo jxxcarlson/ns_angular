@@ -98,6 +98,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
+
+        .state('documents', {
+            url: '/documents/:id',
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
+        })
     
 
         .state('documentsId', {
@@ -181,7 +187,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('production');
+    envService.set('development');
     
     
 });

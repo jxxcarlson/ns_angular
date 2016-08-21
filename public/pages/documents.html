@@ -17,14 +17,19 @@
         <h3 style="margin-left:15px">
             <a ng-hide="hideCollection1" ng-click="goUp()" ng-href="documents/{{collectionId}}">{{ collectionTitle }}</a>
         </h3>    
-    <h2 style="margin-left:15px"> {{ title }} </h2>
-    <br/>        
-    <div class="container fill">
-      <div elem-ready="reloadMathJax()" ng-bind-html="renderedText()" id="rendered-text"></div>
+        <h2 style="margin-left:15px"> {{ title }} </h2>
+        <br/>
+
+        <div ng-show="textKind" class="container fill">
+          <div elem-ready="reloadMathJax()" ng-bind-html="renderedText()" id="rendered-text"></div>
+        </div>
+
+        <div ng-show="imageKind" class="container fill">
+          <img src="{{mediaResourceUrl}}" />
+        </div>
+
     </div>
 
-
   </div>
-</div>
 
 </div>

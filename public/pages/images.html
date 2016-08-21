@@ -56,6 +56,7 @@
         <br>
         <p><strong>Source:</strong> {{source}}</p>
         <p><strong>Tags:</strong> {{tags}}</p>
+        <p><strong>Media type: </strong>{{mediaType}}</p>
         <br/>
     </div>
 
@@ -64,6 +65,7 @@
         <input type="text" ng-model="imageTitle" placeholder="title">
         <input type="text" ng-model="source" placeholder="source">
         <input type="text" ng-model="tags" placeholder="tags">
+        <p>{{mediaType}}</p>
         <br/>
         <button ng-click="updateImage()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Update Image</button>
         <br/>
