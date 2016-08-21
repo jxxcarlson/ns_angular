@@ -131,3 +131,15 @@ input[type="submit"] {
     
     font-size: 16pt;
 }
+
+
+.editor-label {
+
+    font-size:12pt;
+     padding: 8px 8px;
+}
+
+.editor-row {
+
+    margin-bottom: 20px;
+}

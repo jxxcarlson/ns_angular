@@ -1,4 +1,4 @@
-  module.exports = function($scope, $window, $document, $stateParams, $http, $sce, $timeout, 
+  module.exports = function($scope, $window, $document, $stateParams, $state, $http, $sce, $timeout,
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
 
@@ -10,6 +10,59 @@
         } else {
             id = DocumentService.documentId();
         }
+
+      var url = envService.read('apiUrl') + '/documents/' + id
+      var options = { headers: { "accesstoken": UserService.accessToken() }}
+      $http.get(url, options  )
+          .then(function(response){
+
+              var document = response.data['document']
+              $scope.title = document['title']
+              $scope.editableTitle = $scope.title
+              $scope.editText = document['text']
+              $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+              $scope.kind = DocumentService.kind(),
+              $scope.docArray = DocumentService.documentList()
+              $scope.documentCount = DocumentService.documentCount()
+
+              $scope.identifier = DocumentService.identifier()
+              $scope.tags = DocumentService.tags()
+
+
+              $scope.updatePublicStatus = function() {
+
+              }
+
+              $scope.$watch(function(scope) {
+                      return $scope.renderedText },
+                  MathJaxService.reload(DocumentService.kind(), 'EditController, get Document: ' + id)
+              );
+
+              DocumentService.update(document)
+
+             // $scope.statusPublic = DocumentService.getPublic()
+
+
+          })
+
+      // $state.go($state.$current, null, { reload: true })
+
+      $scope.text = DocumentService.text() // for word count
+
+      $scope.idIsDefined = (id != undefined)
+
+      $scope.wordCount = $scope.text.split(' ').length
+
+      $scope.toggleParameterEditor = function() {
+
+          $scope.identifier = DocumentService.identifier()
+          $scope.tags = DocumentService.tags()
+          $scope.showTools = !$scope.showTools
+      }
+
+      console.log('INITIAL editOptions: ' + JSON.stringify($scope.editOptions))
+
+
       
       // Set heights of window parts
       var innerHeight = $window.innerHeight
@@ -95,18 +148,6 @@
 
 
         
-        // Initial values:
-        $scope.title = DocumentService.title()
-        $scope.editableTitle = DocumentService.title()
-        $scope.text = DocumentService.text()
-        $scope.editText = DocumentService.text()
-        $scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-        $scope.docArray = DocumentService.documentList()
-        $scope.documentCount = DocumentService.documentCount()
-        $scope.idIsDefined = (id != undefined)
-        
-        $scope.wordCount = $scope.text.split(' ').length
-        
         $scope.docStyle = DocumentService.tocStyle
         $scope.publicStyle = function() {
             
@@ -130,9 +171,18 @@
             
             console.log('Set document kind to ' + kk)
             var id = DocumentService.documentId()
-            var params = {id: id, kind: kk}
+            var params = {id: id, kind: kk, author_name: DocumentService.author()}
             DocumentApiService.update(params, $scope)
-        } 
+        }
+
+      $scope.setParams = function(kk) {
+
+          console.log('Set document kind to ' + kk)
+          var id = DocumentService.documentId()
+          var params = {id: id, tags: $scope.tags,
+              identifier: $scope.identifier, author_name: DocumentService.author()}
+          DocumentApiService.update(params, $scope)
+      }
 
         $scope.moveUp = function() {
 
@@ -151,36 +201,14 @@
       }
 
         // Get most recent document from server
-        var url = envService.read('apiUrl') + '/documents/' + id
-        var options = { headers: { "accesstoken": UserService.accessToken() }}
-        $http.get(url, options  )
-            .then(function(response){
-            
-                var document = response.data['document']
-                $scope.title = document['title']
-                $scope.editableTitle = $scope.title
-                $scope.editText = document['text']
-                $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-                
-                $scope.updatePublicStatus = function() {
-                    
-                }
-                      
-                 $scope.$watch(function(scope) { 
-                    return $scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'EditController, get Document: ' + id)              
-                );
 
-                DocumentService.update(document)
-                
-                $scope.statusPublic = DocumentService.getPublic()
-                
-            })
 
         // update document
         $scope.updateDocument = function() {
            
             console.log('EDITOR, updateDocument')
+
+
             DocumentApiService.update(DocumentService.params($scope), $scope)        
         
         }

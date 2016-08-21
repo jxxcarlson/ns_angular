@@ -17,6 +17,9 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     // document.getElementById("toc").style.height = '300px' //(innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
+    $scope.textKind = true
+    $scope.imageKind = false
+    $scope.imageKind = false
     // Process the given route
     if (id == undefined) { 
         DocumentRouteService.getDocumentList($scope) }

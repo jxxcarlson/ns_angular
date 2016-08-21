@@ -129,6 +129,7 @@ module.exports = function($http, $q, $sce, $state, DocumentService, UserService,
             var deferredRefresh = $q.defer();
      
             var parameter = JSON.stringify(params);
+            console.log('-- parameter: ' + parameter)
             var url = envService.read('apiUrl') + '/documents/' + params['id']
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             

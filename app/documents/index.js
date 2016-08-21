@@ -13,6 +13,7 @@ app.controller('newDocumentController', require('./controllers/NewDocumentContro
 app.controller('documentsController', require('./controllers/DocumentsController'))
 app.controller('searchController', require('./controllers/SearchController'))
 app.controller('editDocumentController', require('./controllers/EditController'))
+app.controller('EditMenuController', require('./controllers/EditMenuController'))
 app.controller('DeleteDocumentController', require('./controllers/DeleteDocumentController'))
 app.controller('PrintDocumentController', require('./controllers/PrintDocumentController'))
 

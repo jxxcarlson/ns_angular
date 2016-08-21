@@ -52,7 +52,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
   hotkeys.add({
     combo: 'ctrl+u',
-      description: 'User docuemnts',
+      description: 'User documents',
       allowIn: ['INPUT','TEXTAREA'],
       callback: function() {
         console.log('USER DOCUMENTs ...')            

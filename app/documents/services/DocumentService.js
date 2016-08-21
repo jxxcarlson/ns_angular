@@ -24,7 +24,11 @@ module.exports = function($localStorage) {
     
     this.setTitle = function(title) { $localStorage.title = title}
     this.title = function() { return $localStorage.title }
-    
+
+    this.setIdentifier = function(identifier) { $localStorage.identifier = identifier}
+    this.identifier = function() { return $localStorage.identifier }
+
+
     this.setAuthor = function(author) { $localStorage.author = author}
     this.author = function() { return $localStorage.author }
     
@@ -41,6 +45,9 @@ module.exports = function($localStorage) {
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return $localStorage.renderedText }
+
+    this.setTags = function(tags) { $localStorage.tags = tags}
+    this.tags = function() { return $localStorage.tags  }
 
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
     this.printUrl = function() { return $localStorage.printUrl }
@@ -263,6 +270,11 @@ module.exports = function($localStorage) {
         
         var links = document['links'] || {} 
         var subdocuments = links['documents'] || []
+        var tags = document['tags'] || {}
+
+        this.setTags(tags)
+
+        this.setIdentifier(document['identifier'])
 
         this.setSubdocuments(subdocuments)
 

@@ -3,19 +3,6 @@
   <div class="col-md-2" >
       <div style="margin-left:1em;">
           
-          <!--
-          <div>
-            <label class='floating-box radio' for="publicRadio">Public</label>
-            <input class='floating-box' id="publicRadio" type="radio" ng-model="statusPublic" value="public" />
-            <br />
-            <label class='floating-box radio' for="privateRadio">Private</label>
-            <input class='floating-box' id="privateRadio" type="radio" ng-model="statusPublic" value="private" /><br />
-          </div>
-          -->
-          
-          
-          
-          
 
           <h3> Contents ({{ documentCount }})</h3>
 
@@ -24,10 +11,11 @@
               <button ng-click="moveUp()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Up</button>
               <button ng-click="moveDown()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Down</button>
           </div>
+          <p style="margin-top:8px; width:183px" class="neutral-box" ng-click="toggleParameterEditor()">Settings</p>
           <br />
           <br />
 
-          <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+          <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a ng-href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
 
         </div>
   </div>
@@ -35,33 +23,59 @@
   <!-- SOURCE TEXT -->    
   <div class="col-md-5">
       <div>
-          <p class="neutral-box" ng-click="showTools = !showTools">Settings</p>
-          <div ng-show="showTools">
-              
-               <div>
-                <label class='check-box-label' ng-style="publicStyle()" for="publicCheckbox">Public</label>
-                <input class='floating-box check-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic" ng-click="updateDocument()" />
+
+        <div ng-show="showTools" style="margin-left:40px;background-color:#eee; padding:20px;">
+
+              <div class="row editor-row">
+
+                  <div class="col-md-8">
+                      <label class='check-box-label' ng-style="publicStyle()" for="publicCheckbox">Public</label>
+                      <input class='floating-box check-box' id="publicCheckbox" type="checkbox" ng-model="statusPublic" ng-click="updateDocument()" />
+                  </div>
+
+                  <div class="col-md-4">
+                      <li style="margin-top:0; list-style-type:none" >
+                          <div ng-controller="MenuController">
+                              <div class="btn-group" uib-dropdown is-open="status.isopen">
+                                  <button id="single-button" type="button" class="btn" uib-dropdown-toggle ng-disabled="disabled">
+                                      Doc format <span class="caret"></span>
+                                  </button>
+                                  <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                                      <li role="menuitem" ng-click="setKind('text')" ng-style="getDocKindClass('text')">Text</li>
+                                      <li role="menuitem" ng-click="setKind('asciidoc')" ng-style="getDocKindClass('asciidoc')">Asciidoc</li>
+                                      <li role="menuitem" ng-click="setKind('asciidoc-ms')" ng-style="getDocKindClass('asciidoc-ms')">Asciidoc-MS</li>
+                                      <li role="menuitem" ng-click="setKind('asciidoc-latex')" ng-style="getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX</li>
+
+                                  </ul>
+                              </div>
+                          </div>
+                      </li>
+                  </div>
+
+
               </div>
-              
-            <li style="margin-top:10px; list-style-type:none" >
-                <div ng-controller="MenuController">
-                    <div class="btn-group" uib-dropdown is-open="status.isopen">
-                      <button id="single-button" type="button" class="btn" uib-dropdown-toggle ng-disabled="disabled">
-                        Doc format <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                        <li role="menuitem" ng-click="setKind('text')" ng-style="getDocKindClass('text')">Text</li>
-                        <li role="menuitem" ng-click="setKind('asciidoc')" ng-style="getDocKindClass('asciidoc')">Asciidoc</li>
-                        <li role="menuitem" ng-click="setKind('asciidoc-ms')" ng-style="getDocKindClass('asciidoc-ms')">Asciidoc-MS</li>
-                        <li role="menuitem" ng-click="setKind('asciidoc-latex')" ng-style="getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX</li>
-                                                  
-                      </ul>
-                    </div>
-                </div>
-            </li>
+
+              <div class="row editor-row">
+                  <div class="col-md-2">
+                      <label class="editor-label">Tags</label>
+                      <label class="editor-label">Identifier</label>
+                  </div>
+                  <div class="col-md-10">
+                      <input type="text" ng-model="tags" placeholder="tags" style="width:100%">
+                      <input type="text" ng-model="identifier" placeholder="identifier" style="width:100%">
+                      <button ng-click="setParams()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Update</button>
+                  </div>
+              </div>
+
+
+
+              <!-- <pre>{{editOptions}}</pre> -->
+
+
           </div>      
           
           </div>
+
       <div ng-hide="showTools" style="margin-left:1em;">
         <div style="margin-bottom: 3px;">
             <span>
@@ -75,7 +89,7 @@
         <br />  
         <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty" ng-init="textDirty=false"  style="width:90%;" ng-style="editorHeight"></textarea>
       </div>
-      <p style="margin-top:1em; margin-left:1em; font-style: italic">Word count: {{wordCount}}</p>
+      <p ng-hide="showTools" style="margin-top:1em; margin-left:10px; font-style: italic">Word count: {{wordCount}}</p>
   </div>
 
   <div class="col-md-5">
