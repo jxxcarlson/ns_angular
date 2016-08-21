@@ -32,8 +32,9 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     var innerHeight = $window.innerHeight
     document.getElementById("image-toc").style.height = (innerHeight - 200) + 'px'
     document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
-    
-    $scope.pdfMode = (ImageService.contentType() == 'application/pdf')
+
+    var pdfRegex = new RegExp("\.pdf")
+    $scope.pdfMode = (ImageService.contentType() == 'application/pdf' || pdfRegex.test(ImageService.storageUrl()))
 
     $scope.imageUrl = ImageService.url()
     $scope.source = ImageService.imageSource()

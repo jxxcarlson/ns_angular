@@ -8,18 +8,22 @@
             
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" ng-model="title" placeholder="Required">
+                <input type="text" class="form-control" id="title" ng-model="formData.title" placeholder="Required">
             </div>
             
             <div class="form-group" style="margin-bottom:2em;">
                 <label for="source">Source</label>
-                <input type="text" class="form-control" id="title" ng-model="source" placeholder="Optional">
+                <input type="text" class="form-control" id="title" ng-model="formData.source" placeholder="Optional">
             </div>
             
             <input name="file" type="file" file />
 
              <br/>
              <button ng-click ="upload(file)">Upload   </button>
+
+            <br><br>
+
+            <p><strong>Option:</strong> Attach to a new document</strong> <input class='floating-box check-box' id="attachToDocument" type="checkbox" ng-model="formData.attach" style="margin-top:12px;" /></p>
         </div>
 
     </div>

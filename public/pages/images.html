@@ -42,7 +42,7 @@
               
             <p>Your browser does not support iframes.</p>
           </iframe>    
-          <p>{{imageId}}: {{imageTitle}}</p>        
+          <p>{{imageId}}: <a ng-href="{{imageStorageUrl}}" target="_blank">{{imageTitle}}</a></p>
         </div>
     </div>
 
@@ -66,6 +66,7 @@
         <input type="text" ng-model="tags" placeholder="tags">
         <br/>
         <button ng-click="updateImage()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Update Image</button>
+        <br/>
         <br/>
     </div>
 

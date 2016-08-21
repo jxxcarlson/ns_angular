@@ -1595,8 +1595,9 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
         var query = {
             filename: file.name,
-            title: $scope.title,
-            source: $scope.source,
+            title: $scope.formData.title,
+            source: $scope.formData.source,
+            attach: $scope.formData.attach,
             type: file.type,
             owner: UserService.username()
         };
@@ -1677,8 +1678,9 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
     var innerHeight = $window.innerHeight
     document.getElementById("image-toc").style.height = (innerHeight - 200) + 'px'
     document.getElementById("pdf-iframe").style.height = (innerHeight - 200) + 'px'
-    
-    $scope.pdfMode = (ImageService.contentType() == 'application/pdf')
+
+    var pdfRegex = new RegExp("\.pdf")
+    $scope.pdfMode = (ImageService.contentType() == 'application/pdf' || pdfRegex.test(ImageService.storageUrl()))
 
     $scope.imageUrl = ImageService.url()
     $scope.source = ImageService.imageSource()
@@ -2501,7 +2503,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('production');
+    envService.set('development');
     
     
 });
