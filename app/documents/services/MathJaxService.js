@@ -1,4 +1,4 @@
-module.exports = function(DocumentService) {
+module.exports = function() {
     
     this.reload = function(documentKind, message) {
         console.log('**** ***** IN MathJaxService, documentKind = ' + documentKind)
