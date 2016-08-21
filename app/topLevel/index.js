@@ -99,12 +99,6 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'documentsController'
         })
 
-        .state('documents', {
-            url: '/documents/:id',
-            templateUrl : 'pages/documents.html',
-            controller  : 'documentsController'
-        })
-    
 
         .state('documentsId', {
             url: '/documents/:id',

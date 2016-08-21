@@ -1589,15 +1589,6 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
      // var deferred = $q.defer();
 
-
-     var randomString = function (n) {
-         // 36 ** 11 > Number.MAX_SAFE_INTEGER
-         if (n > 10)
-             throw new Error('Too big n for this function');
-         var x = "0000000000" + Math.floor(Number.MAX_SAFE_INTEGER * Math.random()).toString(36);
-         return x.slice(-n);
-     }
-
      $scope.formData = { 'title': '', 'source': '', attach: false}
 
      $scope.cancel  = function() {
@@ -1657,7 +1648,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
                         console.log('_IMAGE: FORK A')
 
-                        //$state.go('documents', {id: response['parent_id']}
+                        $state.go('documents', {id: response['parent_id']})
 
 
                     }
@@ -2460,12 +2451,6 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'documentsController'
         })
 
-        .state('documents', {
-            url: '/documents/:id',
-            templateUrl : 'pages/documents.html',
-            controller  : 'documentsController'
-        })
-    
 
         .state('documentsId', {
             url: '/documents/:id',

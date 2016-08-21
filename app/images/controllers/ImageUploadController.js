@@ -12,8 +12,17 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
  module.exports =  function($scope, $q, $http, $state, UserService, envService, ImageSearchService) {
 
      // var deferred = $q.defer();
-        
-    $scope.upload = function (file) {
+
+     $scope.formData = { 'title': '', 'source': '', attach: false}
+
+     $scope.cancel  = function() {
+
+         console.log('CANCEL')
+         $state.go('images')
+
+     }
+
+     $scope.upload = function (file) {
 
         var options = { headers: { "accesstoken": UserService.accessToken() }}
 
@@ -63,7 +72,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
                         console.log('_IMAGE: FORK A')
 
-                        //$state.go('documents', {id: response['parent_id']}
+                        $state.go('documents', {id: response['parent_id']})
 
 
                     }
