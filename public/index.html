@@ -51,7 +51,7 @@
             <nav class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" ui-sref="home">Noteshare.io</a>
+                    <a class="navbar-brand" ui-sref="home">Manuscripta.io</a>
                 </div>
 
                 <ul class="nav navbar-nav navbar-left">
@@ -77,8 +77,7 @@
                                 <li class="divider"></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="userDocuments()">User documents</a></li> 
                                 <li role="menuitem"><a ui-sref="documents" ng-click="publicDocuments()">Public documents</a></li>  
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="allDocuments()">All documents</a></li>                           
-                                <li role="menuitem"><a ui-sref="documents" ng-click="randomDocuments()">Roll the dice</a></li>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="allDocuments()">All documents</a></li>
                               </ul>
                             </div>
                         </div>
@@ -107,6 +106,7 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
+                    <li><a ui-sref="documents" ng-click="randomDocuments()"><i class="fa fa-random"></i> Explore</a></li>
                     <li><a ui-sref="signin"><i class="fa fa-home"></i> Home</a></li>
                     <li><a ui-sref="about"><i class="fa fa-comment"></i> About</a></li>
                 </ul>

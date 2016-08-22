@@ -180,7 +180,10 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
      
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
-    
+
+    $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
+
+
     envService.set('production');
     
     

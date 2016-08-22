@@ -1,44 +1,75 @@
-<br/>
-<div ng-controller='UserController' style="font-size: 16pt;">
-<p ng-model="signedIn"></p>
+<div class="row">
 
-    <!-- SIGN OUT FORM -->  
-    <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
-        <h1>Signed in as {{username}}</h1> 
-        <br /> 
-        <div ng-controller="SignOutController">
-            <button ng-click="signout()">Sign out</button> 
-        </div>   
-    </div>  
-    <!-- END SIGN OUT FORM -->
+    <div class="col-md-6">
 
-    <!-- SIGN IN FORM -->  
-    <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;"> 
-        <div ng-hide="userStatus == 'signedIn'"> 
-            <h1>Sign in</h1> 
-            <br>
+        <br/>
+        <div ng-controller='UserController' style="font-size: 16pt;">
+            <p ng-model="signedIn"></p>
 
-             <form ng-submit="submit()">
-
-                <div class="form-group">
-                    <label for="username">User name</label>
-                    <input type="text" class="form-control" id="username" ng-model="username" placeholder="Like jjones, at least rour characters, letters and numerals only">
+            <!-- SIGN OUT FORM -->
+            <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+                <h1>Signed in as {{username}}</h1>
+                <br />
+                <div ng-controller="SignOutController">
+                    <button ng-click="signout()">Sign out</button>
                 </div>
+            </div>
+            <!-- END SIGN OUT FORM -->
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="text" class="form-control" id="password" ng-model="password" placeholder="Like 'Abc.def!123' - at least eight characters, no spaces">
+            <!-- SIGN IN FORM -->
+            <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+                <div ng-hide="userStatus == 'signedIn'">
+                    <h1>Sign in</h1>
+                    <br>
+
+                    <form ng-submit="submit()">
+
+                        <div class="form-group">
+                            <label for="username">User name</label>
+                            <input type="text" class="form-control" id="username" ng-model="username" placeholder="At least four characters">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="text" class="form-control" id="password" ng-model="password" placeholder="At least eight characters">
+                        </div>
+
+                        <br>
+                        <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
+                    </form>
+
+                    <br/><br/>
+                    <p style='font-size: 1.5em'> {{ message }} </p>
+                    <p style='font-size: 1.25em'><a href="signup"><i class="fa fa-signup"></i>Need an account?</a></p>
                 </div>
+            </div>
+            <!-- /SIGN IN FORM -->
 
-                 <br>
-                <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
-            </form>
+        </div>
 
-            <br/><br/>
-            <p style='font-size: 1.5em'> {{ message }} </p> 
-            <p style='font-size: 1.5em'><a href="signup"><i class="fa fa-signup"></i>Need an account?</a></p>     
-        </div>      
     </div>
-    <!-- /SIGN IN FORM -->  
-        
+
+    <div class="col-md-6">
+
+        <div>
+            <h3>Selected links</h3>
+            <p><a href="/documents/jc.qft">Lectures on Quantum Field Theory</a></p>
+
+
+        </div>
+
+        <div style="margin-top:60px;">
+
+            <p style="max-width:20em;">Want to be a beta tester?  Or post your class notes? <a href="/signup">Sign up</a>
+            for a free account.</p>
+
+            <p>Questions?  Contact jxxcarlson at gmail</p>
+
+        </div>
+
+
+
+    </div>
+
 </div>
+

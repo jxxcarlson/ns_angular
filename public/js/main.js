@@ -1749,7 +1749,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $q, $http, $location, $state, UserService, envService, SearchService) {
+ module.exports =  function($scope, $q, $http, $location, $state, UserService, envService, ImageSearchService, SearchService) {
 
      // var deferred = $q.defer();
 
@@ -2689,7 +2689,10 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
      
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
-    
+
+    $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
+
+
     envService.set('production');
     
     

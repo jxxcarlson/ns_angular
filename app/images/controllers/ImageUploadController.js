@@ -9,7 +9,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
 *****/
 
- module.exports =  function($scope, $q, $http, $location, $state, UserService, envService, SearchService) {
+ module.exports =  function($scope, $q, $http, $location, $state, UserService, envService, ImageSearchService, SearchService) {
 
      // var deferred = $q.defer();
 
