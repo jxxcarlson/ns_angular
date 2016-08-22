@@ -1753,7 +1753,9 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
      // var deferred = $q.defer();
 
+
      $scope.formData = { 'title': '', 'source': '', attach: false}
+
 
      $scope.cancel  = function() {
 
@@ -1763,6 +1765,8 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
      }
 
      $scope.upload = function (file) {
+
+         $scope.filename = file.name
 
         var options = { headers: { "accesstoken": UserService.accessToken() }}
 
@@ -1774,6 +1778,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             type: file.type,
             owner: UserService.username()
         };
+
         
         // 1. Get presigned URL
         var url = envService.read('apiUrl') + '/presigned'
@@ -1795,6 +1800,8 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 
                 console.log("IMAGE QUERY: " + JSON.stringify(query))
                 // 3. Add image to API database
+                var title = $scope.filename.split('.')[0].replace('_', ' ')
+                query['title'] = title
                 $http.post(envService.read('apiUrl') + '/images', query, options )
                     .success(function(response){
                     console.log('_IMAGE:  success,create image database record, id = ' + response['id'])

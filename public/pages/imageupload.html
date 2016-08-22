@@ -4,8 +4,9 @@
 
         <div ng-controller = "ImageUploadController" >
             
-            <h2 style="margin-bottom:1em;">Image Upload</h2>
-            
+            <h2 style="margin-bottom:1em;">Image/pdf Upload</h2>
+
+            <!--
             <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" class="form-control" id="title" ng-model="formData.title" placeholder="Required">
@@ -15,7 +16,9 @@
                 <label for="source">Source</label>
                 <input type="text" class="form-control" id="source" ng-model="formData.source" placeholder="Optional">
             </div>
-            
+            -->
+
+
              <input name="file" type="file" file />
 
              <br/>
@@ -26,11 +29,12 @@
 
             <p><strong>Option:</strong> Attach to a new document</strong> <input class='floating-box check-box' id="attachToDocument" type="checkbox" ng-model="formData.attach" style="margin-top:12px;" /></p>
 
-
+            <!--
             <pre>
 
             {{formData}}
             </pre>
+            -->
 
         </div>
 
