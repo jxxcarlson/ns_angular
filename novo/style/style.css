@@ -1,6 +1,4 @@
 
-
-<!-- <style type="text/css" media="screen, print, projection"> -->
 	body,
 	html {
 		margin:0;
@@ -83,7 +81,7 @@
     #left { 
 
     position: absolute;
-    left 0;
+    left: 0;
     top: 85px;
     }
 	

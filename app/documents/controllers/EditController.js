@@ -185,6 +185,16 @@
           DocumentApiService.update(params, $scope)
       }
 
+      $scope.attachDocument = function() {
+
+          console.log('Attach current document  ' + $scope.childOf)
+          var id = DocumentService.currentDocumentItem().id
+          var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
+          DocumentApiService.update(params, $scope)
+      }
+
+
+
         $scope.moveUp = function() {
 
             var parent_id = DocumentService.currentCollectionItem().id

@@ -130,7 +130,14 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
      
             var parameter = JSON.stringify(params);
             console.log('-- parameter: ' + parameter)
-            var url = envService.read('apiUrl') + '/documents/' + params['id']
+            if (params['query_string'] != undefined) {
+
+                var url = envService.read('apiUrl') + '/documents/' + params['id'] + '?' + params['query_string']
+            }
+            else {
+
+                var url = envService.read('apiUrl') + '/documents/' + params['id']
+            }
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             
             $http.post(url, parameter, options)

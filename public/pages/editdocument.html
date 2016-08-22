@@ -6,8 +6,7 @@
 
           <h3> Contents ({{ documentCount }})</h3>
 
-          <div ng-show="
-">
+          <div ng-show="ifParentExists">
               <button style="background-color:white; color:#666; padding:5px 10px; font-size:1.2em;">Move</button>
               <button ng-click="moveUp()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Up</button>
               <button ng-click="moveDown()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Down</button>
@@ -56,18 +55,34 @@
 
               </div>
 
-              <div class="row editor-row">
+              <div class="row editor-row" style="margin-top:40px;">
                   <div class="col-md-2">
                       <label class="editor-label">Tags</label>
                       <label class="editor-label">Identifier</label>
+                      <label class="editor-label">Type</label>
                   </div>
                   <div class="col-md-10">
                       <input type="text" ng-model="tags" placeholder="tags" style="width:100%">
                       <input type="text" ng-model="identifier" placeholder="identifier" style="width:100%">
                       <input type="text" ng-model="kind" placeholder="kind" style="width:100%">
-                      <button ng-click="setParams()" style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Update</button>
+                      <button ng-click="setParams()" style="float:right; background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Update</button>
                   </div>
               </div>
+
+
+              <div class="row editor-row" style="margin-top:40px;">
+                  <div  class="col-md-4">
+
+                  </div>
+                <div class="col-md-6">
+                    <label class="editor-label">Attach as child of</label> <input type="text" ng-model="childOf" placeholder="123" style="margin-left:10px;width:50px;"><br/>
+                    <label class="editor-label">Attach as sibling of</label> <input type="text" ng-model="siblingOf" placeholder="456" style="width:50px;"><br/>
+                </div>
+                  <div class="col-md-2">
+                      <br/><br/>
+                      <button ng-click="attachDocument()" style="float:right;margin-right:0px;text-outline: none;0px;background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Attach</button>
+                  </div>
+            </div>
 
 
 

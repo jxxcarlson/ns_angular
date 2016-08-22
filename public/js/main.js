@@ -597,6 +597,16 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
           DocumentApiService.update(params, $scope)
       }
 
+      $scope.attachDocument = function() {
+
+          console.log('Attach current document  ' + $scope.childOf)
+          var id = DocumentService.currentDocumentItem().id
+          var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
+          DocumentApiService.update(params, $scope)
+      }
+
+
+
         $scope.moveUp = function() {
 
             var parent_id = DocumentService.currentCollectionItem().id
@@ -1024,7 +1034,14 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
      
             var parameter = JSON.stringify(params);
             console.log('-- parameter: ' + parameter)
-            var url = envService.read('apiUrl') + '/documents/' + params['id']
+            if (params['query_string'] != undefined) {
+
+                var url = envService.read('apiUrl') + '/documents/' + params['id'] + '?' + params['query_string']
+            }
+            else {
+
+                var url = envService.read('apiUrl') + '/documents/' + params['id']
+            }
             var options = { headers: { "accesstoken": UserService.accessToken() }}
             
             $http.post(url, parameter, options)
@@ -2673,7 +2690,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
     
-    envService.set('development');
+    envService.set('production');
     
     
 });
