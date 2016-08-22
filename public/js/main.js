@@ -2693,7 +2693,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
 
 
-    envService.set('development');
+    envService.set('production');
     
     
 });
