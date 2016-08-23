@@ -52,7 +52,7 @@ module.exports = function($localStorage) {
     this.renderedText = function() { return this.document().renderedText }
 
     this.setTags = function(tags) { $localStorage.tags = tags}
-    this.tags = function() { return $this.document().tags  }
+    this.tags = function() { return     this.document().tags  }
 
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
     this.printUrl = function() { return this.document().printUrl }
@@ -143,12 +143,14 @@ module.exports = function($localStorage) {
         console.log('rule goUp, after pop: ' + JSON.stringify($localStorage.collectionStack))
 
     }
-    
+
+
+    /// XXXX ////
     this.documentIsInDocumentList = function(item) {
         
         var matchId = function(item, listItem) { return (item.id == listItem['id'])}
         
-        var matches = this.documentList().filter(
+         var matches = this.documentList().filter(
             function(x) { return matchId(item, x) }
         ) || []   
         return (matches.length > 0) 
@@ -263,16 +265,25 @@ module.exports = function($localStorage) {
 
     // Results of search
     this.setDocumentList = function(array) {
+
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
         this.currentDocumentList = array
 
     }
+
     this.documentList = function() {
 
         if (this.currentDocumentList == undefined) {
 
-            return $localStorage.currentDocumentList
+            if ($localStorage.currentDocumentList == undefined) {
+
+                return []
+
+            } else {
+
+                return $localStorage.currentDocumentList
+            }
         }
         else {
 

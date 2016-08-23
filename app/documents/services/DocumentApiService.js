@@ -131,7 +131,7 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
         
 
         
-        
+        //// JJJJ ///
         this.update = function(params, scope) {
 
             console.log('API, DOCUMENT, UPDATE')
@@ -157,14 +157,17 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                     if (response.data['status'] == 'success') {
                         
                         var document = response.data['document']
+
+                        DocumentService.update(document)
+                        var _document = DocumentService.document()
                         
                         /* Update $scope */
-                        scope.title = document['title']
-                        scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                        scope.title = _document.title
+                        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
                         scope.message = 'Success!'
 
                         /* Update local storage */
-                        DocumentService.update(document)
+
                  
                     } else {
                         scope.message = response.data['error']
