@@ -3,7 +3,7 @@
 
 
 
-        <div ng-app="noteshareApp" ng-controller="newDocumentController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+        <div ng-app="noteshareApp" ng-controller="newDocumentController" style="width:80%; min-width:300px;margin-left:auto; margin-right:auto;" id="newdocumentform">
             <form ng-submit="submit()">
 
               <h2>New document</h2>
@@ -21,7 +21,7 @@
 
 
                <div ng-show="ifparentdocument">
-                    <p><strong>Options</strong> put the new document</p>
+                    <p><strong>Option:</strong> Put the new document</p>
                     <div class="form-group">
                         <div class="radio222">
                             <label>
@@ -33,12 +33,14 @@
                             </label>
                         </div>
                     </div>
-                    <p style="margin-bottom:10px;margin-left:13px;">the document <strong><i>{{currentDocumentTitle}}</i></strong></p>
+                    <p style="margin-bottom:10px;">{{currentDocumentTitle}} <strong><i>{{}}</i></strong></p>
                     <p>It will be a new child of <strong>{{parentDocumentTitle}}</strong></p>
                </div>
 
-                <div ng-hide="ifparentdocument22">
-                    <p><strong>Option</strong> make the new document a child of <strong>{{currentDocumentTitle}}</strong></p>
+                <br>
+
+                <div>
+                    <p><strong>Option:</strong> Make the new document a child of <strong>{{currentDocumentTitle}}</strong></p>
                     <div>
                         <label class='check-box-label' for="childDocumentCheckbox">Yes</label>
                         <input class='floating-box check-box' id="childDocumentCheckbox" type="checkbox" ng-model="formData.child" ng-click="" />
@@ -46,6 +48,7 @@
                 </div>
 
 
+                <br><br>
                 <pre>
                     {{formData}}
                 </pre>

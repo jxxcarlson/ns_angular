@@ -15,13 +15,14 @@
   <div class="col-md-8">
     <div style="margin-left:1em;">
         <h3 style="margin-left:15px">
-            <a ng-hide="hideCollection1" ng-click="goUp()" ng-href="documents/{{collectionId}}">{{ collectionTitle }}</a>
+            <a ng-hide="hideParent" ng-click="goUp()" ng-href="documents/{{parentId}}">{{ parentTitle }}</a>
         </h3>    
         <h2 style="margin-left:15px"> {{ title }} </h2>
         <br/>
 
         <div ng-show="textKind" class="container fill">
           <div elem-ready="reloadMathJax()" ng-bind-html="renderedText()" id="rendered-text"></div>
+          <!-- <div elem-ready="reloadMathJax()"  id="rendered-text">{{title}}</div> -->
         </div>
 
         <div ng-show="imageKind" class="container fill">

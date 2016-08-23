@@ -1,7 +1,7 @@
-  module.exports = function($scope, $window, $document, $stateParams, $state, $http, $sce, $timeout,
+  module.exports = function($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
-
+''
         var id;
         var keyStrokeCount = 0
         
@@ -16,29 +16,93 @@
       $http.get(url, options  )
           .then(function(response){
 
-              var document = response.data['document']
-              $scope.title = document['title']
-              $scope.editableTitle = $scope.title
-              $scope.editText = document['text']
-              $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-              $scope.kind = DocumentService.kind(),
+              var document = response.data['document'] // JJJJ
+              DocumentService.update(response.data['document'])
+              var editDocument = DocumentService.document()
+              $scope.editDocument = editDocument
+              $scope.renderedText = function() { return $sce.trustAsHtml(editDocument.rendered_text); }
+              $scope.title = document.title
+              $scope.editableTitle = document.title
+              $scope.editText = document.text
+              $scope.kind = document.kind
+
+              var imageRegex = new RegExp("image/")
+              var pdfRegex = new RegExp("application/pdf")
+
+              $scope.imageKind = imageRegex.test($scope.kind)
+              $scope.pdfKind = pdfRegex.test($scope.kind)
+              $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
+
+              $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+              console.log('XXX(Editor), Kind: ' + $scope.kind)
+              console.log('XXX(Editor), Kind flags: ' + $scope.textKind, ', ' + $scope.pdfKind + ', ' + $scope.imageKind)
+
+
+              $scope.identifier = document.identifier
+              $scope.tags = document.tags
+
+
+              console.log('EEE, title = ' + $scope.editDocument.title)
+
               $scope.docArray = DocumentService.documentList()
               $scope.documentCount = DocumentService.documentCount()
 
-              $scope.identifier = DocumentService.identifier()
-              $scope.tags = DocumentService.tags()
 
+              /// HANDLE PARENT ///
+              var links = editDocument.links
+              var parent = links.parent || {}
+              if (parent == {}) {
 
-              $scope.updatePublicStatus = function() {
+                  $scope.parentId = 0
+                  $scope.parentTitle = ''
 
+              } else {
+
+                  $scope.parentId = parent.id
+                  $scope.parentTitle = parent.title
               }
+
+
+
+
+              if (DocumentService.getPublic()) {
+                  $scope.statusPublic = true
+              } else {
+                  $scope.statusPublic = false
+              }
+
 
               $scope.$watch(function(scope) {
                       return $scope.renderedText },
-                  MathJaxService.reload(DocumentService.kind(), 'EditController, get Document: ' + id)
+
+                  $timeout(
+                      function() {
+                          MathJaxService.reload(DocumentService.kind(), 'MMM:2, EditController, get Document: ' + id)
+                      },
+                      10
+                  )
+
               );
 
               DocumentService.update(document)
+
+
+              //////////
+
+
+              var _documentList = DocumentService.documentList()
+
+              if (_documentList.length == 0) {
+
+                  DocumentService.resetDocumentList()
+                  _documentList = $localStorage.documentList
+              }
+
+              $scope.docArray = _documentList || []
+
+
+              /////////////
 
              // $scope.statusPublic = DocumentService.getPublic()
 
@@ -49,9 +113,9 @@
 
       $scope.text = DocumentService.text() // for word count
 
-      $scope.ifParentExists = (DocumentService.currentCollectionItem().id != 0)
-
       $scope.wordCount = $scope.text.split(' ').length
+
+      $scope.ifParentExists = true
 
       $scope.toggleParameterEditor = function() {
 
@@ -160,12 +224,19 @@
         }
         
          $scope.getDocKindClass = function(kk) {
-            
-            if (kk == DocumentService.kind()) {
-                return { "background-color" : "#efe" }
+
+            if ($scope.editDocument)  {
+
+                if (kk == $scope.editDocument.kind) {
+                    return { "background-color" : "#efe" }
+                } else {
+                    return {  }
+                }
             } else {
-                return {  } 
+
+                return { }
             }
+
         }
          
         $scope.setKind = function(kk) {
@@ -191,23 +262,24 @@
           var id = DocumentService.currentDocumentItem().id
           var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
           DocumentApiService.update(params, $scope)
+          // $location.path('editdocument/' + id)
+          // SearchService.query('id=' + id, $scope, 'editdocument')
       }
 
 
 
         $scope.moveUp = function() {
 
-            var parent_id = DocumentService.currentCollectionItem().id
-            console.log('MOVE: ' + id + ' up in ' + parent_id )
-            DocumentApiService.move_subdocument(parent_id, id, 'move_up', $scope)
+            console.log('MOVE: ' + id + ' up in ' + $scope.parentId )
+            DocumentApiService.move_subdocument($scope.parentId, id, 'move_up', $scope)
 
         }
 
        $scope.moveDown = function() {
 
-          var parent_id = DocumentService.currentCollectionItem().id
-          console.log('MOVE: ' + id + ' down in ' + parent_id )
-          DocumentApiService.move_subdocument(parent_id, id, 'move_down', $scope)
+
+          console.log('MOVE: ' + id + ' down in ' + $scope.parentId )
+          DocumentApiService.move_subdocument($scope.parentId, id, 'move_down', $scope)
 
       }
 

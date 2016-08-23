@@ -19,39 +19,58 @@ module.exports = function($localStorage) {
     ***********/
 
 
+    this.parentId = function() {
+
+        var parent = this.document.links.parent
+        if (parent == undefined) {
+
+            console.log('PPP: parent id undefined')
+            return undefined
+
+        } else {
+
+            console.log('PPP: parent = ' + parent.id + ', ' + parent.title)
+            return parent.id
+        }
+    }
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
     this.setTitle = function(title) { $localStorage.title = title}
-    this.title = function() { return $localStorage.title }
+    this.title = function() { return this.document().title }
+
 
     this.setIdentifier = function(identifier) { $localStorage.identifier = identifier}
-    this.identifier = function() { return $localStorage.identifier }
+    this.identifier = function() { return this.document().identifier }
 
 
     this.setAuthor = function(author) { $localStorage.author = author}
-    this.author = function() { return $localStorage.author }
+    this.author = function() { return this.document().author }
     
     this.setText = function(text) { $localStorage.text = text }
-    this.text = function() { return $localStorage.text }
+    this.text = function() { return this.document().text }
     
     this.setKind= function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return $localStorage.documentKind }
+    this.kind = function() { return this.document().documentKind }
     
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
-    this.getPublic = function() { return $localStorage.public }
+    this.getPublic = function() { return this.document().public }
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
-    this.renderedText = function() { return $localStorage.renderedText }
+    this.renderedText = function() { return this.document().renderedText }
 
     this.setTags = function(tags) { $localStorage.tags = tags}
-    this.tags = function() { return $localStorage.tags  }
+    this.tags = function() { return  this.document().tags  }
 
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
-    this.printUrl = function() { return $localStorage.printUrl }
+    this.printUrl = function() { return this.document().printUrl }
 
+
+
+    //// SPECIAL (JJJJ) ////
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
@@ -71,8 +90,9 @@ module.exports = function($localStorage) {
 
         return $localStorage.attachmentUrl
     }
-    
-    
+
+
+    //// END (JJJJ) ////
     /********** Collection Management ***************/
     
     
@@ -85,13 +105,7 @@ module.exports = function($localStorage) {
         
         return obj
     }
-    
-    this.setCurrentCollectionItem = function(id, title) { 
-        var item = this.makeDocumentItem(id,title)
-        $localStorage.currentCollectionItem = item 
-    }
-    this.currentCollectionItem = function() { return $localStorage.currentCollectionItem }
-    
+
     this.setCurrentDocumentItem = function(id, title) { 
         var item = this.makeDocumentItem(id,title)
         $localStorage.currentDocumentItem = item  
@@ -102,44 +116,12 @@ module.exports = function($localStorage) {
     ///////// TOC //////////////////////
 
 
-    ///////// COLLECTION STACK //////////////////////
-
-    this.resetCollectionStack = function() {
-        this.setCurrentCollectionItem(0, '')
-        $localStorage.collectionStack = []
-    }
-    this.collectionStack = function() { return $localStorage.collectionStack || []}
-    
-    // Return element k steps from the top of the stack
-    this.collectionStackPeek = function(k) { 
-        
-        var n = this.collectionStack().length - k - 1
-        
-        if (n > -1) {
-            
-            return this.collectionStack()[n]
-        } 
-        else
-        {
-            var item = {}; item.id = 0; item.title = ''
-            return item
-        }
-    }
-    this.collectionStackTop = function() { return this.collectionStackPeek(0) }
-    this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
-    this.popCollectionStack = function() {
-
-        console.log('rule goUp, before pop: ' + JSON.stringify($localStorage.collectionStack))
-        return $localStorage.collectionStack.pop()
-        console.log('rule goUp, after pop: ' + JSON.stringify($localStorage.collectionStack))
-
-    }
-    
+    /// XXXX ////
     this.documentIsInDocumentList = function(item) {
         
         var matchId = function(item, listItem) { return (item.id == listItem['id'])}
         
-        var matches = this.documentList().filter(
+         var matches = this.documentList().filter(
             function(x) { return matchId(item, x) }
         ) || []   
         return (matches.length > 0) 
@@ -217,54 +199,94 @@ module.exports = function($localStorage) {
         }
       
     }
+    
+    
 
-    
-    
-    // Results of search
-    this.setDocumentList = function(array) { 
-        $localStorage.documentList = array
-        $localStorage.documentId = array[0]
-    }
-    this.documentList = function() { 
-        
-        return $localStorage.documentList 
-    
-    }
     this.documentCount = function() { 
         
-        if ($localStorage.documentList == undefined) {
+        if (this.documentList() == undefined) {
             
             return 0
         }
         else {
             
-            return $localStorage.documentList.length
+            return this.documentList().length
         }    
     }
     
-    
-    // Collection
-    
-    // Collection title
-    this.setCollectionTitle = function(collectionTitle) {
-        
-        $localStorage.collectionTitle = collectionTitle 
+
+
+    /// BEGIN MAIN STRUCTURE (JJJJ) ///
+
+    // Results of search
+    this.setDocumentList = function(array) {
+
+        $localStorage.documentList = array
+        $localStorage.documentId = array[0]
+        this.currentDocumentList = array
+
     }
-    this.collectionTitle = function() { return $localStorage.collectionTitle }
-    
-    // Collection id
-    this.setCollectionId = function(id) {
-        
-        $localStorage.collectionId = id 
+
+    this.resetDocumentList = function() {
+
+        this.currentDocumentList = $localStorage.documentList
+        // $localStorage.documentId = $localStorage.documentList[0]
+
     }
-    this.collectionId = function() { return $localStorage.collectionId }
-    
-    
+
+
+    this.documentList = function() {
+
+        if (this.currentDocumentList == undefined) {
+
+            if ($localStorage.currentDocumentList == undefined) {
+
+                return []
+
+            } else {
+
+                return $localStorage.currentDocumentList
+            }
+        }
+        else {
+
+            if (this.currentDocumentList.length == 0) {
+
+                return $localStorage.currentDocumentList
+
+            } else {
+
+                return this.currentDocumentList
+            }
+
+
+        }
+
+
+    }
+
+    this.document = function() {
+
+        if (this.currentDocument == undefined) {
+
+            return $localStorage.currentDocument
+        }
+        else {
+
+            return this.currentDocument
+
+        }
+    }
+
     // Update
     
     this.update = function(document) {
+
+        this.currentDocument = document
+
+        $localStorage.currentDocument = document
         
-        this.setAuthor( document['author'] )
+        this.setAuthor(document['author'] )
         
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
@@ -278,7 +300,8 @@ module.exports = function($localStorage) {
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
-        var links = document['links'] || {} 
+        var links = document['links'] || {}
+
         var subdocuments = links['documents'] || []
 
 
@@ -317,6 +340,8 @@ module.exports = function($localStorage) {
         return document['rendered_text']
         
     }
+
+    /// END MAIN STRUCTURE ///
     
     this.params = function(scope) {
 
@@ -360,5 +385,5 @@ module.exports = function($localStorage) {
         return doc['has_subdocuments']
     }
     
-      
+
 }

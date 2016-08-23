@@ -76,6 +76,8 @@
                   </div>
                 <div class="col-md-6">
                     <label class="editor-label">Attach as child of</label> <input type="text" ng-model="childOf" placeholder="123" style="margin-left:10px;width:50px;"><br/>
+                    <!--<label class='check-box-label'  for="detachCheckbox">Detach from parent </label> -->
+                    <!-- <input class='floating-box check-box' id="detachCheckbox" type="checkbox" ng-model="detachFromParent" ng-click="" />  -->
                     <label class="editor-label">Attach as sibling of</label> <input type="text" ng-model="siblingOf" placeholder="456" style="width:50px;"><br/>
                 </div>
                   <div class="col-md-2">
@@ -113,10 +115,22 @@
 
   <!-- RENDERED TEXT -->       
   <div style="margin-left:1em;">
+      <h4><a ng-hide="hideParent" ng-click="goUp()" ng-href="editdocument/{{parentId}}">{{ parentTitle }}</a></h4>
       <h3>{{ title }}</h3>
       <br />  
       <!-- <div style="width:90%;" ng-if="renderedText()" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div> -->
-      <div style="width:90%;" ng-bind-html="renderedText()" id="rendered-text"></div>   
+      <div  elem-ready="reloadMathJax()" ng-show="textKind" style="width:90%;" ng-bind-html="renderedText()" id="rendered-text"></div>
+
+      <div ng-show="imageKind" class="container fill">
+          <img src="{{attachmentUrl}}" />
+      </div>
+
+      <div ng-show="pdfKind" class="container fill">
+          <p><a ng-href="{{attachmentUrl}}" target="_blank">Link</a></p>
+          <iframe id="pdf-iframe" src={{attachmentUrl}} style="width:300px; height:400px;"> <p>Your browser does not support iframes.</p>
+          </iframe>
+
+      </div>
   </div>
 
 

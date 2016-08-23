@@ -9,7 +9,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     var queryObj =  $location.search()
     
     DocumentRouteService.getDocumentList($scope)
-    DocumentRouteService.getDocument($scope, doc_id, queryObj)
+    DocumentApiService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {

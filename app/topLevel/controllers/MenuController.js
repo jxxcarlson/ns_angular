@@ -25,11 +25,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     
   $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope, 'documents') }
   
-  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope, 'documents' }
+  $scope.allDocuments = function(){ SearchService.query('scope=all', $scope, 'documents') }
 
-  $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
+  $scope.randomDocuments = function(){ SearchService.query('random=50', $scope, 'documents') }
 
-  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope, 'documents' }
+  $scope.publicDocuments = function(){ SearchService.query('scope=public', $scope, 'documents') }
   
   /////
   

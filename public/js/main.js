@@ -307,57 +307,21 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
+module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
                            DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
 
- 
-    var id = $stateParams.id;
+
+    var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj =  $location.search()
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
-    // document.getElementById("toc").style.height = '300px' //(innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
-    // Process the given route
-    if (id == undefined) { 
-        DocumentRouteService.getDocumentList($scope) }
-        //documentKind = DocumentService.kind()
-        
-    else { 
-        DocumentRouteService.getDocument($scope, id, queryObj)     
-        // documentKind = DocumentService.kind()
-    }
+    console.log('SSS: Enter Doc ctrl with DOCUMENT id = ' + id)
+    DocumentApiService.getDocument($scope, id, queryObj)
 
-
-
-
-
-    //////
-    var imageRegex = new RegExp("image/")
-    var pdfRegex = new RegExp("application/pdf")
-
-    $scope.imageKind = imageRegex.test(DocumentService.kind())
-    $scope.pdfKind = pdfRegex.test(DocumentService.kind())
-    $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
-
-    if ($scope.imageKind || $scope.pdfKind ) {
-
-
-        $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-
-        console.log('ON SCOPE, ATTACHMENT URL = ' + $scope.attachmentUrl)
-    }
-
-    console.log('Kinds: ' + $scope.imageKind +', ' +  $scope.pdfKind +', ' +  $scope.textKind )
-    //////
-
-
-
-
-    
-    var documentKind = DocumentService.kind()
+    console.log('Ctrl, Kinds: ' + $scope.textKind +', ' +  $scope.pdfKind +', ' +  $scope.imageKind )
     
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
@@ -366,15 +330,16 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     $scope.reloadMathJax = function() {
         $timeout( 
          function() { 
-         MathJaxService.reload('ERERER:  element ready, reloading MathJax for ' + DocumentService.title() )},
-        100)
+         MathJaxService.reload('MMM, doc ctrl: reloading MathJax for ' + DocumentService.title() )},
+        500)
         
     }
     
     $scope.author = function(doc) {
         
         if (doc['author'] != UserService.username()) {
-            
+
+            console.log('Ctrl: author = ' + doc['author'])
             return doc['author'] + ": "
             
         } else {
@@ -384,12 +349,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         
         
     }
-    
-    $scope.goUp = function() {
-        
-        console.log('Rule goUp')
-        DocumentService.popCollectionStack()
-    }
+
     
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
@@ -397,23 +357,13 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
             $scope.statusPublic = 'private'
         }
 
-    
-    //$scope.$watch(function(scope) { 
-        // return $scope.renderedText },
-        // The below is totally useless -- it is called too
-        // early -- before the document state has been
-        // updated.
-        //
-        //
-        // MathJaxService.reload('DocumentController')              
-    // );
 
 }
 },{}],8:[function(require,module,exports){
-  module.exports = function($scope, $window, $document, $stateParams, $state, $http, $sce, $timeout,
+  module.exports = function($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
-
+''
         var id;
         var keyStrokeCount = 0
         
@@ -428,29 +378,93 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
       $http.get(url, options  )
           .then(function(response){
 
-              var document = response.data['document']
-              $scope.title = document['title']
-              $scope.editableTitle = $scope.title
-              $scope.editText = document['text']
-              $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
-              $scope.kind = DocumentService.kind(),
+              var document = response.data['document'] // JJJJ
+              DocumentService.update(response.data['document'])
+              var editDocument = DocumentService.document()
+              $scope.editDocument = editDocument
+              $scope.renderedText = function() { return $sce.trustAsHtml(editDocument.rendered_text); }
+              $scope.title = document.title
+              $scope.editableTitle = document.title
+              $scope.editText = document.text
+              $scope.kind = document.kind
+
+              var imageRegex = new RegExp("image/")
+              var pdfRegex = new RegExp("application/pdf")
+
+              $scope.imageKind = imageRegex.test($scope.kind)
+              $scope.pdfKind = pdfRegex.test($scope.kind)
+              $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
+
+              $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+              console.log('XXX(Editor), Kind: ' + $scope.kind)
+              console.log('XXX(Editor), Kind flags: ' + $scope.textKind, ', ' + $scope.pdfKind + ', ' + $scope.imageKind)
+
+
+              $scope.identifier = document.identifier
+              $scope.tags = document.tags
+
+
+              console.log('EEE, title = ' + $scope.editDocument.title)
+
               $scope.docArray = DocumentService.documentList()
               $scope.documentCount = DocumentService.documentCount()
 
-              $scope.identifier = DocumentService.identifier()
-              $scope.tags = DocumentService.tags()
 
+              /// HANDLE PARENT ///
+              var links = editDocument.links
+              var parent = links.parent || {}
+              if (parent == {}) {
 
-              $scope.updatePublicStatus = function() {
+                  $scope.parentId = 0
+                  $scope.parentTitle = ''
 
+              } else {
+
+                  $scope.parentId = parent.id
+                  $scope.parentTitle = parent.title
               }
+
+
+
+
+              if (DocumentService.getPublic()) {
+                  $scope.statusPublic = true
+              } else {
+                  $scope.statusPublic = false
+              }
+
 
               $scope.$watch(function(scope) {
                       return $scope.renderedText },
-                  MathJaxService.reload(DocumentService.kind(), 'EditController, get Document: ' + id)
+
+                  $timeout(
+                      function() {
+                          MathJaxService.reload(DocumentService.kind(), 'MMM:2, EditController, get Document: ' + id)
+                      },
+                      10
+                  )
+
               );
 
               DocumentService.update(document)
+
+
+              //////////
+
+
+              var _documentList = DocumentService.documentList()
+
+              if (_documentList.length == 0) {
+
+                  DocumentService.resetDocumentList()
+                  _documentList = $localStorage.documentList
+              }
+
+              $scope.docArray = _documentList || []
+
+
+              /////////////
 
              // $scope.statusPublic = DocumentService.getPublic()
 
@@ -461,9 +475,9 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
 
       $scope.text = DocumentService.text() // for word count
 
-      $scope.ifParentExists = (DocumentService.currentCollectionItem().id != 0)
-
       $scope.wordCount = $scope.text.split(' ').length
+
+      $scope.ifParentExists = true
 
       $scope.toggleParameterEditor = function() {
 
@@ -572,12 +586,19 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         }
         
          $scope.getDocKindClass = function(kk) {
-            
-            if (kk == DocumentService.kind()) {
-                return { "background-color" : "#efe" }
+
+            if ($scope.editDocument)  {
+
+                if (kk == $scope.editDocument.kind) {
+                    return { "background-color" : "#efe" }
+                } else {
+                    return {  }
+                }
             } else {
-                return {  } 
+
+                return { }
             }
+
         }
          
         $scope.setKind = function(kk) {
@@ -603,23 +624,24 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
           var id = DocumentService.currentDocumentItem().id
           var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
           DocumentApiService.update(params, $scope)
+          // $location.path('editdocument/' + id)
+          // SearchService.query('id=' + id, $scope, 'editdocument')
       }
 
 
 
         $scope.moveUp = function() {
 
-            var parent_id = DocumentService.currentCollectionItem().id
-            console.log('MOVE: ' + id + ' up in ' + parent_id )
-            DocumentApiService.move_subdocument(parent_id, id, 'move_up', $scope)
+            console.log('MOVE: ' + id + ' up in ' + $scope.parentId )
+            DocumentApiService.move_subdocument($scope.parentId, id, 'move_up', $scope)
 
         }
 
        $scope.moveDown = function() {
 
-          var parent_id = DocumentService.currentCollectionItem().id
-          console.log('MOVE: ' + id + ' down in ' + parent_id )
-          DocumentApiService.move_subdocument(parent_id, id, 'move_down', $scope)
+
+          console.log('MOVE: ' + id + ' down in ' + $scope.parentId )
+          DocumentApiService.move_subdocument($scope.parentId, id, 'move_down', $scope)
 
       }
 
@@ -663,24 +685,24 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
     
       console.log('NEW DOCUMENT CONTROLLER')
 
+      var _currentDocument = DocumentService.document()
+      var parent = _currentDocument.links.parent || {'id': 0, 'title': 'null'}
+
+
+      console.log('New ========')
+      console.log('XXX(New Doc), _currentDocument = ' + _currentDocument.id + ', ' + _currentDocument.title)
+      console.log('XXX(New Doc), parent.id = ' + parent.id)
+      console.log('new -------')
+      console.log('XXX(New Doc), parent = ' + JSON.stringify(parent))
+
+      $scope.parentDocumentTitle = parent.title
+      $scope.currentDocumentTitle = _currentDocument.title
+      console.log('New ========')
 
       // Set the parent document if there is one.
-      CollectionService.getCollectionItem($scope)
-      console.log('NDS: collectionTitle' + DocumentService.currentCollectionItem().title)
-      var parentTitle = DocumentService.currentCollectionItem().title || ''
-      if (parentTitle != '') {
 
-          $scope.parentDocumentTitle = DocumentService.currentCollectionItem().title
 
-      } else {
-
-          $scope.parentDocumentTitle = ''
-
-      }
-
-      $scope.currentDocumentTitle = DocumentService.currentDocumentItem().title
-
-      if ($scope.parentDocumentTitle != '' && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
+      if (parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
 
           $scope.ifparentdocument = true
       }
@@ -689,7 +711,7 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
           $scope.ifparentdocument = false
       }
 
-      if ($scope.parentDocumentTitle == '') {
+      if (parent.id == 0) {
 
           $scope.ifnewchild = true
 
@@ -697,6 +719,8 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
           $scope.ifnewchild = false
       }
+
+
 
       $scope.cancel  = function() {
 
@@ -711,55 +735,94 @@ module.exports = function($scope, $location, $state, $http, $localStorage, envSe
 
       $scope.submit = function() {
 
-      var access_token = UserService.accessToken()
-      var parameter = JSON.stringify({title:$scope.title, token:access_token, options: JSON.stringify($scope.formData),
-          current_document_id: DocumentService.currentDocumentItem().id, parent_document_id: DocumentService.currentCollectionItem().id});
-      var url = envService.read('apiUrl') + '/documents'
-      var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
-      var lastDocumentId = DocumentService.documentId()
+          console.log('GGG: before modfication, parent.id = ' + parent.id)
 
-      console.log('formData = ' + JSON.stringify($scope.formData)   )
-      
-      // Add the newly created document to the document list
-      // of the current document
-      if (hasSubdocuments) {
-          url += '?append=' +DocumentService.documentId()
-      }
-        
-      // Create document      
-      $http.post(url, parameter)
-      .then(function(response){
-            if (response.data['status'] == 'success') {
+          if ($scope.formData.child == false && $scope.formData.position == 'null' ) {
 
-                  console.log('Reponse OK, document created')
-                  
-                  var document = response.data['document']
-                  var id = document['id']
-                  
-                  
-                  if (hasSubdocuments == true) { 
-                      console.log('BRANCH A')
-                      console.log('**** lastDocumentId: '+ lastDocumentId)
-                      SearchService.query('id='+lastDocumentId, $scope, 'documents')
-                      
-                      // $location.path('/editdocument/' + id)
-                      // $state.go('editdocument', {}, {reload:true})
-                      
-                  } else {
-                      console.log('BRANCH B')
-                      $location.path('/editdocument/' + id)
-                      $state.go('editdocument', {}, {reload:true})
-                  }
-                  
-                  // SearchService.query('id='+id, $scope, 'editOneDocument')
+              parent = {'id': 0, 'title': 'null'}
 
-            } else {
+              var process_as_child = false
 
-                    console.log('BAD Reponse, document not created')
-                   $scope.message = response.data['error']
+          } else {
 
-            }
-      });
+              var process_as_child = true
+
+          }
+
+          console.log('GGG: process as child = ' + process_as_child)
+
+          var access_token = UserService.accessToken()
+          var parameter = JSON.stringify({title:$scope.title, token:access_token, options: JSON.stringify($scope.formData),
+              current_document_id: _currentDocument.id, parent_document_id: parent.id});
+          var url = envService.read('apiUrl') + '/documents'
+          var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
+          var lastDocumentId = DocumentService.documentId()
+          console.log('GGG: lastDocumentId = ' + lastDocumentId)
+
+          console.log('formData = ' + JSON.stringify($scope.formData)   )
+
+          // Add the newly created document to the document list
+          // of the current document
+          if (hasSubdocuments) {
+              url += '?append=' +DocumentService.documentId()
+          }
+
+          // Create document
+          $http.post(url, parameter)
+          .then(function(response){
+                if (response.data['status'] == 'success') {
+
+                      console.log('Reponse OK, document created')
+
+                      var newDocument = response.data['document']
+
+                      console.log('GGG: newDocument = ' + JSON.stringify(newDocument))
+                      var newdocumentId = newDocument['id']
+                      var newdocumentTitle = newDocument['title']
+
+
+                      if (process_as_child) {
+                          console.log('GGG: BRANCH A')
+                          // console.log('**** lastDocumentId: '+ lastDocumentId)
+                          // SearchService.query('id='+lastDocumentId, $scope, 'documents')
+                          console.log('GGG: parent: ' + parent.title)
+                          console.log('GGG: current doc: ' + _currentDocument.title)
+                          if (parent.id == 0) {
+
+                              console.log('GGG: I am going to go to new document ' + newdocumentTitle + ', ' + 'id = ' + newdocumentId)
+                              SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
+                              $scope.parentTitle = parent.title
+                              $scope.parentId = parent.id
+
+                          } else {
+
+                              console.log('GGG: I am going to go to document ' + parent.title + ', ' + 'id = ' + parent.id)
+                              SearchService.query('id=' + parent.id, $scope, 'documents')
+                          }
+
+
+                          // $location.path('/editdocument/' + parent.id)
+                          // $state.go('editdocument', {}, {reload:true})
+
+                          // $location.path('/editdocument/' + id)
+                          // $state.go('editdocument', {}, {reload:true})
+
+                      } else {
+                          console.log('GGG:BRANCH B, I am going to go to ' + document.title + ', id = ' + document.id  )
+                          SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                          // $location.path('/editdocument/' + document.id)
+                          // $state.go('editdocument', {}, {reload:true})
+                      }
+
+                      // SearchService.query('id='+id, $scope, 'editOneDocument')
+
+                } else {
+
+                        console.log('BAD Reponse, document not created')
+                       $scope.message = response.data['error']
+
+                }
+          });
     }
 }
 
@@ -775,10 +838,11 @@ module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService
     console.log('  -- PP: id =' + id)
 
 
-    DocumentRouteService.printDocument($scope, id, {})
+    DocumentApiService.printDocument($scope, id, {})
 
-    $scope.title = DocumentService.title()
-    $scope.printUrl = DocumentService.printUrl()
+    // $scope.title = DocumentService.title()
+    // $scope.printUrl = DocumentService.printUrl()
+    console.log('PRINT controller: printUrl = ' +  $scope.printUrl )
 
     $state.go('printdocument')
 
@@ -806,8 +870,6 @@ module.exports = function($scope, $state, $http, envService,
               var documents = jsonData['documents']
               
               DocumentService.setDocumentList(documents)
-              DocumentService.setCollectionTitle(undefined)
-              DocumentService.resetCollectionStack()
                 
               var id = documents[0]['id']
               var doc= documents[0]
@@ -818,13 +880,13 @@ module.exports = function($scope, $state, $http, envService,
               
               if (doc) {
                 var id = documents[0]['id']
-                DocumentApiService.getDocument(id, {}).then(function(response) {
+                DocumentApiService.getDocument($scope, id, {}).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'SearchController')              
+                    MathJaxService.reload(DocumentService.kind(), 'MMM, SearchController')
                 );                
               })  
               }
@@ -912,13 +974,15 @@ The purpose of DocumentApiServices is to communicate with the API server,
 performing the standard CRUD functons
 
 *****/
-module.exports = function($http, $q, $sce, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
-        var deferred = $q.defer();
 
-        this.getDocument = function(id, queryObj) {
+
+        this.getDocument = function(scope, id, queryObj) {
+
+            // var deferred = $q.defer();
             
-          console.log('*** DocApiService: getDocument') 
+          console.log('SSS, API, enter getDocument with id =' + id)
           
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
@@ -927,10 +991,70 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
           var options = { headers: { "accesstoken": UserService.accessToken() }}
           return  $http.get(url, options)
           .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-                var data = response.data
-                var document = data['document']                
+
+              if (scope == undefined) {
+
+                  console.log('XXX(API) -- WARNING!!  ** scope ** is UNDEFINED')
+              }
+
+                var documentHash = response.data['document']
+                console.log('SSS, API, getDocuments, id = ' + documentHash['id'], ', title = ', documentHash['title'])
+                DocumentService.update(documentHash)
+                var document = DocumentService.document()
+                console.log('1.1 XXX(API), title = ' + document.title)
+                console.log('1.2 XXX(API), text = ' + document.text.slice(0,20))
+                console.log('1.3 XXX(API), text = ' + document.rendered_text.slice(0,20))
+                scope.document = document
+                // scope.docArray = $localStorage.documentList
+                scope.docArray = DocumentService.documentList()
+                console.log('XXX(API), docArray has length ' + scope.docArray.length)
+
+                scope.title = document.title
+                scope.renderedText = function() {
+
+                    console.log('SSS, call renderedText set in API, getDocuments for ' +  document.id + '(' + documents.title + ')')
+
+                    return $sce.trustAsHtml(document.rendered_text);
+
+
+                }
+
+                var kind = document.kind
+                scope.kind = kind
+
+                var imageRegex = new RegExp("image/")
+                var pdfRegex = new RegExp("application/pdf")
+
+                scope.imageKind = imageRegex.test(kind)
+                scope.pdfKind = pdfRegex.test(kind)
+                scope.textKind = (!scope.imageKind && !scope.pdfKind)
+
+                console.log('SSS(API), Kind: ' + scope.kind)
+                console.log('SSS(API), Kind flags: ' + scope.textKind, ', ' + scope.pdfKind + ', ' + scope.imageKind)
+
+                if (scope.imageKind || scope.pdfKind ) {
+
+                  scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+                  console.log('SSS ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
+                }
+
+
+                var links = document.links
+                var parent = links.parent || {}
+                if (parent == {}) {
+
+                        scope.parentId = 0
+                        scope.parentTitle = ''
+
+                } else {
+
+                    scope.parentId = parent.id
+                    scope.parentTitle = parent.title
+                }
+
+
+                console.log('XXX(API), PARENT = ' + JSON.stringify(parent))
+
                 var links = document['links'] || {} 
                 var documents = links['documents'] || [] // JJJJ
                 
@@ -938,50 +1062,100 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                 // instead of the search results
                 if (documents.length > 0) {
                     
-                    console.log('*** Setting collecton title: ' + document['title'])
-                    DocumentService.setCollectionTitle(document['title'])
-                    DocumentService.setCollectionId(document['id'])
-                    DocumentService.setCurrentCollectionItem(document['id'], document['title'])
-                    
                     DocumentService.setDocumentList( documents )
+
                 } 
                 else 
                 {
-                    // console.log('*** Setting collecton title to NONE')
-                    // DocumentService.setCollectionTitle('none')
+                    console.log('XXX(API), documentS has length ZERO')
+                   // doesn't work // DocumentService.resetDocumentList()
                 }
-                
-                
-                DocumentService.update(document)
-                //if (queryObj.toc) { 
-                if (true) { 
-                    
-                    console.log('ucs - Updating collection stack: ' + id)
-                    DocumentService.updateCollectionStack() 
-                }
-                else
-                {
-                    
-                    console.log('ucs - NOT Updating collection stack: ' + id)
-                }
-                var cdi = DocumentService.currentDocumentItem()
-                
-                var isInDocList = DocumentService.documentIsInDocumentList(cdi)
-                
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                 MathJaxService.reload(DocumentService.kind(), 'DocumentApiService, getDocument')
-              
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
+
+
+              //////////
+
+              var _documentList = DocumentService.documentList()
+
+              if (_documentList.length == 0) {
+
+                  DocumentService.resetDocumentList()
+                  _documentList = $localStorage.documentList
+              }
+
+              if (UserService.accessToken() == '') {
+
+                  scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
+              }
+              else {
+
+                  scope.docArray = _documentList || []
+              }
+            /////////////
+
+            }, function () {
+                 MathJaxService.reload(DocumentService.kind(), 'MMM, ApiService, getDocument')
+
             })
+        } // End getDocument
+
+    this.getDocumentList = function(scope) {
+
+        console.log('XXX(API) enter getDocumentList')
+
+        var _documentList = DocumentService.documentList()
+
+        var _document
+
+        if (_documentList.length == 0) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
         }
+
+        console.log('XXX(API) document count = ' + _documentList.length)
+
+        if (_documentList == undefined) { console.log ('XXX(Route), _documentList is UNDEFINED')}
+
+        console.log('XXX(API) ' + _documentList.length + ' documents')
+
+
+        if (UserService.accessToken() == '') {
+
+            scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
+        }
+        else {
+
+            scope.docArray = _documentList || []
+        }
+
+        console.log('1. XXX(API), getDocumentList :: ' + _documentList)
+        console.log('2. XXX(API), getDocumentList :: ' + scope.docarray)
+
+        scope.documentCount = _documentList.length
+
+        console.log('3. XXX(API).getDocumentList: ' + scope.documentCount + ' documents')
+
+        if (document.links.parent == undefined) {
+
+            scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+        }
+        else
+        {
+            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
+            scope.tableOfContentsTitle = 'Contents'
+        }
+
+        scope.$watch(function(local_scope) {
+                return local_scope.renderedText },
+            MathJaxService.reload(DocumentService.kind(), 'MMM, API getDocumentList, doc = ' )
+        );
+
+    } // End getDocumentList
         
         
         this.search = function(searchText) {
+
+            var deferred = $q.defer();
                
             var url = envService.read('apiUrl') + '/documents' + '?' + $scope.searchText
             var options = { headers: { "accesstoken": UserService.accessToken() }}
@@ -1002,7 +1176,9 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
             })
         }
 
-    this.printDocument = function(id, queryObj) {
+    this.printDocument = function(scope, id, queryObj) {
+
+        var deferred = $q.defer();
 
         var url = envService.read('apiUrl') + '/printdocument/' + id
         var options = { headers: { "accesstoken": UserService.accessToken() }}
@@ -1012,7 +1188,8 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                 deferred.resolve(response.data);
                 var jsonData = response.data
                 var url = jsonData['url']
-                DocumentService.setPrintUrl(url)
+                console.log('PRINT urls in API: ' + url)
+                scope.printUrl = jsonData['url']
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -1025,15 +1202,17 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
         
 
         
-        
+        //// JJJJ ///
         this.update = function(params, scope) {
+
+            var deferred = $q.defer();
 
             console.log('API, DOCUMENT, UPDATE')
 
             var deferredRefresh = $q.defer();
      
             var parameter = JSON.stringify(params);
-            console.log('-- parameter: ' + parameter)
+
             if (params['query_string'] != undefined) {
 
                 var url = envService.read('apiUrl') + '/documents/' + params['id'] + '?' + params['query_string']
@@ -1051,14 +1230,17 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                     if (response.data['status'] == 'success') {
                         
                         var document = response.data['document']
+
+                        DocumentService.update(document)
+                        var _document = DocumentService.document()
                         
                         /* Update $scope */
-                        scope.title = document['title']
-                        scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                        scope.title = _document.title
+                        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
                         scope.message = 'Success!'
 
                         /* Update local storage */
-                        DocumentService.update(document)
+
                  
                     } else {
                         scope.message = response.data['error']
@@ -1068,7 +1250,13 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                 function(response) {
                     deferredRefresh.resolve(response)
                     console.log('AAAA: ' + JSON.stringify(response))
-                    MathJaxService.reload(DocumentService.kind(), 'AAAA: ')
+                    $timeout(
+                        function() {
+                            MathJaxService.reload(DocumentService.kind(), 'MMM, API, update, MathJax ')
+                        },
+                        10
+                    )
+
                 }, function(response) {
                     deferred.reject(response);
                      console.log('BBBB')
@@ -1078,6 +1266,8 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
 
 
     this.move_subdocument = function(parent_id, subdocument_id, command, scope) {
+
+        var deferred = $q.defer();
 
         // command is 'move_up' or 'move_down'
 
@@ -1103,11 +1293,6 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                     var documents = links['documents'] || []
                     if (documents.length > 0) {
 
-                        console.log('*** Setting collecton title: ' + document['title'])
-                        DocumentService.setCollectionTitle(document['title'])
-                        DocumentService.setCollectionId(document['id'])
-                        DocumentService.setCurrentCollectionItem(document['id'], document['title'])
-
                         DocumentService.setDocumentList( documents )
                     }
 
@@ -1130,7 +1315,7 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                 deferredRefresh.resolve(response)
                 console.log('AAAA: ' + JSON.stringify(response))
 
-                MathJaxService.reload(DocumentService.kind(), 'AAAA: ')
+                MathJaxService.reload(DocumentService.kind(), 'MMM, API, move subdoc ')
             }, function(response) {
                 deferred.reject(response);
                 console.log('BBBB')
@@ -1141,126 +1326,79 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
 
 }
 },{}],16:[function(require,module,exports){
-module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
+module.exports = function(DocumentService, $localStorage, DocumentApiService, CollectionService, $sce, MathJaxService, GlobalService, UserService) {
 
     this.getDocumentList = function(scope) {
+
+
+        var _documentList = DocumentService.documentList()
+
+        if (_documentList.length == 0) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
+        }
+
+        console.log('XXX(Route) document count = ' + _documentList.length)
+
+        if (_documentList == undefined) { console.log ('XXX(Route), _documentList is UNDEFINED')}
+
+        console.log('XXX(Route) ' + _documentList.length + ' documents')
+
+        if (_documentList.length == 0) {
+
+            var document = GlobalService.defaultDocumentHash()
+            _documentList = [document]
+
+        } else {
+
+            var document = _documentList[0]
+
+        }
         
-        
-        scope.title = DocumentService.title()
-        scope.text = DocumentService.text()
-        scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+        scope.title = document.title
+        scope.text = document.text
+        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
+
+
         if (UserService.accessToken() == '') {
 
-            scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
+            scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
         }
         else {
 
-            scope.docArray = DocumentService.documentList()
+            scope.docArray = _documentList || []
         }
 
-        console.log('DocuemntRouteService, getDocumentList :: ' + scope.docarray)
-        scope.documentCount = DocumentService.documentCount()
+        console.log('1. DocumentRouteService, getDocumentList :: ' + _documentList)
+        console.log('2. DocumentRouteService, getDocumentList :: ' + scope.docarray)
+
+        scope.documentCount = _documentList.length
         
-        console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
+        console.log('3. DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
-        if (DocumentService.currentCollectionItem().id == 0) {
-                    
-            scope.collectionTitle = undefined 
+        if (document.links.parent == undefined) {
+
             scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
         }
         else
         {
-            scope.collectionTitle = DocumentService.currentCollectionItem().title
-            scope.collectionId = DocumentService.currentCollectionItem().id
-            scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
+            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
         
         scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocumentList')              
+                    MathJaxService.reload(DocumentService.kind(), 'MMM, DocumentRouteService: getDocumentList')
                 );
         
     }
-    
-    
-    this.getDocument = function(scope, id, queryObj) {
-        console.log('DocumentRouteService.getDocument, id: ' + id)
-        DocumentApiService.getDocument(id, queryObj)
-        .then(
-            function (response) {
-                scope.title = DocumentService.title()
 
-
-                CollectionService.getCollectionItem(scope)
-
-                
-                scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
-                
-                var cdi = DocumentService.currentDocumentItem()
-                console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
-
-                
-                scope.text = DocumentService.text()
-                scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-
-                if (UserService.accessToken() == '') {
-
-                    scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
-                }
-                else {
-
-                    scope.docArray = DocumentService.documentList()
-                }
-                scope.numberOfDocuments = DocumentService.documentCount()
-
-
-                //////
-                var imageRegex = new RegExp("image/")
-                var pdfRegex = new RegExp("application/pdf")
-
-                scope.imageKind = imageRegex.test(DocumentService.kind())
-                scope.pdfKind = pdfRegex.test(DocumentService.kind())
-                scope.textKind = (!scope.imageKind && !scope.pdfKind)
-
-                if (scope.imageKind || scope.pdfKind ) {
-
-
-                    scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-                    // $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
-
-                    console.log('ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
-                }
-
-                console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
-                //////
-                
-                 if (DocumentService.getPublic() == true ) {
-                        scope.status = 'public'
-                    } else {
-                        scope.status = 'private'
-                    }
-                
-                scope.$watch(function(local_scope) { 
-                    return local_scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocument')              
-                );
-                
-            },
-            function (error) {
-                // handle errors here
-                // console.log(error.statusText);
-                console.log('ERROR!');
-            }
-        );
-
-    }
 
     this.printDocument = function(scope, id, queryObj) {
         DocumentApiService.printDocument(id, queryObj)
             .then(
-                function(respose) {
+                function(response) {
                    scope.printUrl = DocumentService.printUrl()
                     console.log("scope.printUrl: " + scope.printUrl )
 
@@ -1292,39 +1430,58 @@ module.exports = function($localStorage) {
     ***********/
 
 
+    this.parentId = function() {
+
+        var parent = this.document.links.parent
+        if (parent == undefined) {
+
+            console.log('PPP: parent id undefined')
+            return undefined
+
+        } else {
+
+            console.log('PPP: parent = ' + parent.id + ', ' + parent.title)
+            return parent.id
+        }
+    }
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
     this.setTitle = function(title) { $localStorage.title = title}
-    this.title = function() { return $localStorage.title }
+    this.title = function() { return this.document().title }
+
 
     this.setIdentifier = function(identifier) { $localStorage.identifier = identifier}
-    this.identifier = function() { return $localStorage.identifier }
+    this.identifier = function() { return this.document().identifier }
 
 
     this.setAuthor = function(author) { $localStorage.author = author}
-    this.author = function() { return $localStorage.author }
+    this.author = function() { return this.document().author }
     
     this.setText = function(text) { $localStorage.text = text }
-    this.text = function() { return $localStorage.text }
+    this.text = function() { return this.document().text }
     
     this.setKind= function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return $localStorage.documentKind }
+    this.kind = function() { return this.document().documentKind }
     
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
-    this.getPublic = function() { return $localStorage.public }
+    this.getPublic = function() { return this.document().public }
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
-    this.renderedText = function() { return $localStorage.renderedText }
+    this.renderedText = function() { return this.document().renderedText }
 
     this.setTags = function(tags) { $localStorage.tags = tags}
-    this.tags = function() { return $localStorage.tags  }
+    this.tags = function() { return  this.document().tags  }
 
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
-    this.printUrl = function() { return $localStorage.printUrl }
+    this.printUrl = function() { return this.document().printUrl }
 
+
+
+    //// SPECIAL (JJJJ) ////
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
@@ -1344,8 +1501,9 @@ module.exports = function($localStorage) {
 
         return $localStorage.attachmentUrl
     }
-    
-    
+
+
+    //// END (JJJJ) ////
     /********** Collection Management ***************/
     
     
@@ -1358,13 +1516,7 @@ module.exports = function($localStorage) {
         
         return obj
     }
-    
-    this.setCurrentCollectionItem = function(id, title) { 
-        var item = this.makeDocumentItem(id,title)
-        $localStorage.currentCollectionItem = item 
-    }
-    this.currentCollectionItem = function() { return $localStorage.currentCollectionItem }
-    
+
     this.setCurrentDocumentItem = function(id, title) { 
         var item = this.makeDocumentItem(id,title)
         $localStorage.currentDocumentItem = item  
@@ -1375,44 +1527,12 @@ module.exports = function($localStorage) {
     ///////// TOC //////////////////////
 
 
-    ///////// COLLECTION STACK //////////////////////
-
-    this.resetCollectionStack = function() {
-        this.setCurrentCollectionItem(0, '')
-        $localStorage.collectionStack = []
-    }
-    this.collectionStack = function() { return $localStorage.collectionStack || []}
-    
-    // Return element k steps from the top of the stack
-    this.collectionStackPeek = function(k) { 
-        
-        var n = this.collectionStack().length - k - 1
-        
-        if (n > -1) {
-            
-            return this.collectionStack()[n]
-        } 
-        else
-        {
-            var item = {}; item.id = 0; item.title = ''
-            return item
-        }
-    }
-    this.collectionStackTop = function() { return this.collectionStackPeek(0) }
-    this.pushCollectionStack = function(item) { $localStorage.collectionStack.push(item) }
-    this.popCollectionStack = function() {
-
-        console.log('rule goUp, before pop: ' + JSON.stringify($localStorage.collectionStack))
-        return $localStorage.collectionStack.pop()
-        console.log('rule goUp, after pop: ' + JSON.stringify($localStorage.collectionStack))
-
-    }
-    
+    /// XXXX ////
     this.documentIsInDocumentList = function(item) {
         
         var matchId = function(item, listItem) { return (item.id == listItem['id'])}
         
-        var matches = this.documentList().filter(
+         var matches = this.documentList().filter(
             function(x) { return matchId(item, x) }
         ) || []   
         return (matches.length > 0) 
@@ -1490,54 +1610,94 @@ module.exports = function($localStorage) {
         }
       
     }
+    
+    
 
-    
-    
-    // Results of search
-    this.setDocumentList = function(array) { 
-        $localStorage.documentList = array
-        $localStorage.documentId = array[0]
-    }
-    this.documentList = function() { 
-        
-        return $localStorage.documentList 
-    
-    }
     this.documentCount = function() { 
         
-        if ($localStorage.documentList == undefined) {
+        if (this.documentList() == undefined) {
             
             return 0
         }
         else {
             
-            return $localStorage.documentList.length
+            return this.documentList().length
         }    
     }
     
-    
-    // Collection
-    
-    // Collection title
-    this.setCollectionTitle = function(collectionTitle) {
-        
-        $localStorage.collectionTitle = collectionTitle 
+
+
+    /// BEGIN MAIN STRUCTURE (JJJJ) ///
+
+    // Results of search
+    this.setDocumentList = function(array) {
+
+        $localStorage.documentList = array
+        $localStorage.documentId = array[0]
+        this.currentDocumentList = array
+
     }
-    this.collectionTitle = function() { return $localStorage.collectionTitle }
-    
-    // Collection id
-    this.setCollectionId = function(id) {
-        
-        $localStorage.collectionId = id 
+
+    this.resetDocumentList = function() {
+
+        this.currentDocumentList = $localStorage.documentList
+        // $localStorage.documentId = $localStorage.documentList[0]
+
     }
-    this.collectionId = function() { return $localStorage.collectionId }
-    
-    
+
+
+    this.documentList = function() {
+
+        if (this.currentDocumentList == undefined) {
+
+            if ($localStorage.currentDocumentList == undefined) {
+
+                return []
+
+            } else {
+
+                return $localStorage.currentDocumentList
+            }
+        }
+        else {
+
+            if (this.currentDocumentList.length == 0) {
+
+                return $localStorage.currentDocumentList
+
+            } else {
+
+                return this.currentDocumentList
+            }
+
+
+        }
+
+
+    }
+
+    this.document = function() {
+
+        if (this.currentDocument == undefined) {
+
+            return $localStorage.currentDocument
+        }
+        else {
+
+            return this.currentDocument
+
+        }
+    }
+
     // Update
     
     this.update = function(document) {
+
+        this.currentDocument = document
+
+        $localStorage.currentDocument = document
         
-        this.setAuthor( document['author'] )
+        this.setAuthor(document['author'] )
         
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
@@ -1551,7 +1711,8 @@ module.exports = function($localStorage) {
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
-        var links = document['links'] || {} 
+        var links = document['links'] || {}
+
         var subdocuments = links['documents'] || []
 
 
@@ -1590,6 +1751,8 @@ module.exports = function($localStorage) {
         return document['rendered_text']
         
     }
+
+    /// END MAIN STRUCTURE ///
     
     this.params = function(scope) {
 
@@ -1633,7 +1796,7 @@ module.exports = function($localStorage) {
         return doc['has_subdocuments']
     }
     
-      
+
 }
 },{}],18:[function(require,module,exports){
 module.exports = function() {
@@ -1652,52 +1815,64 @@ module.exports = function() {
     
 }
 },{}],19:[function(require,module,exports){
-module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, envService, UserService, QueryParser) {
-    
-    console.log('SEARCH SERVICE')
+module.exports = function ($http, $sce, $state, $location, $q,
+                           DocumentService, envService, UserService, QueryParser) {
 
-    DocumentService.resetCollectionStack()
-    
-    var deferred = $q.defer();
-   
-    this.query = function(searchText, scope, destination) {
+
+    console.log('YYY, enter SEARCH SERVICE')
+
+    // var deferred = $q.defer();
+
+    console.log('SEARCH SERVICE(2)')
+
+    this.query = function (searchText, scope, destination) {
+
+        console.log('-- query: ' + searchText)
 
         var queryText = QueryParser.parse(searchText)
 
-        if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
-        
-        if (UserService.accessTokenValid() == false) {
-                
-                searchText += '&public'
-                
-            }
-        
-         var url = envService.read('apiUrl') + '/documents' + '?' + queryText
-         var options = { headers: { "accesstoken": UserService.accessToken() }}
-         return $http.get(url, options)
-        .then(function(response){
-              
-          var jsonData = response.data
-          var documents = jsonData['documents']
-          
-          if (scope != undefined) {
-              
-              scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-          }
-          
- 
-          DocumentService.setDocumentList(documents)
-          DocumentService.resetCollectionStack()
+        var url = envService.read('apiUrl') + '/documents' + '?' + queryText
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+        return $http.get(url, options)
+            .then(function (response) {
 
-          var id = documents[0]['id']
-          DocumentApiService.getDocument(id, {})
-          DocumentApiService.getDocument(id, {}).then(function(response) {
-                  
-                $state.go(destination, {}, {reload: true})
-              
-              }) 
-         })
+                var jsonData = response.data
+                var documents = jsonData['documents']
+                var firstDocument = jsonData['first_document']
+
+                DocumentService.setDocumentList(documents)
+                if (firstDocument == undefined) {
+
+                    console.log('ERROR: firstDocument ndt defined')
+
+                } else {
+
+                    DocumentService.update(firstDocument)
+                }
+
+
+                var currentDocument = DocumentService.document()
+
+                var dataValid = (currentDocument.id == firstDocument.id)
+
+                console.log('SSS: data is valid = ' + dataValid)
+
+                if (scope != undefined) {
+
+                    console.log('SSS(SearchService), scope OKKKK')
+                    
+                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+
+                } else {
+
+                    console.log('SSS(SearchService), WARNING: scope undefined')
+                }
+
+                $location.path('documents/' + currentDocument.id + '?toc')
+                $state.go('documents', {}, {reload: true})
+
+
+            })
     }
 }
 },{}],20:[function(require,module,exports){
@@ -2282,13 +2457,24 @@ module.exports = function ($http) {
  }
 },{}],31:[function(require,module,exports){
 module.exports = function() {
-    
+
     // this.clientServer = function() { return "localhost:3000" }
     // this.apiServer = function() { return "localhost:2300"}
-        
-    this.defaultDocumentID = function() { return 11 }
-    
+
+    this.defaultDocumentID = function () {
+        return 11
+    }
+    this.defaultDocumentHash = function () {
+        return {
+            "id": 11, "title": "Oops!",
+            "text": "Sorry, could not find that document",
+            "rendered_text": "Sorry, could not find that document",
+            "links": {}
+        }
+    }
 }
+
+
 },{}],32:[function(require,module,exports){
 
 // Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/
@@ -2428,7 +2614,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     var queryObj =  $location.search()
     
     DocumentRouteService.getDocumentList($scope)
-    DocumentRouteService.getDocument($scope, doc_id, queryObj)
+    DocumentApiService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
         if (doc['id'] == DocumentService.documentId() ) {
@@ -2473,11 +2659,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     
   $scope.userDocuments = function(){ SearchService.query('user=' + UserService.username(), $scope, 'documents') }
   
-  $scope.allDocuments = function(){ SearchService.query('scope=all'), $scope, 'documents' }
+  $scope.allDocuments = function(){ SearchService.query('scope=all', $scope, 'documents') }
 
-  $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
+  $scope.randomDocuments = function(){ SearchService.query('random=50', $scope, 'documents') }
 
-  $scope.publicDocuments = function(){ SearchService.query('scope=public'), $scope, 'documents' }
+  $scope.publicDocuments = function(){ SearchService.query('scope=public', $scope, 'documents') }
   
   /////
   
@@ -2686,7 +2872,19 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
                         foo, UserService, SearchService, envService, DocumentService) {
 
     var accessTokenValid = UserService.accessTokenValid()
-    var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
+    try {
+
+        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
+    }
+    catch(err) {
+
+        var documentEditable = false
+
+    }
+
+
 
     $scope.message = ''
 
@@ -2697,10 +2895,11 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
 
-    $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
+    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
     envService.set('production');
+
     
     
 });
@@ -2724,40 +2923,43 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"./controllers/MenuController":39,"angular":51}],41:[function(require,module,exports){
-    module.exports = function($state, $scope, $stateParams, $location, 
-                               UserApiService, UserService, DocumentService, MathJaxService, 
-                               SearchService, ImageSearchService) {
-        
-        
-        $scope.message = ""
-        
-        if (UserService.username) {
-            $scope.signinStatus = 'Signed in as ' + UserService.username()
-        } else {
-            $scope.signinStatus = 'No one signed in'
-        }
-        
-        $scope.submit = function() {
-          UserApiService.login($scope.username, $scope.password)
-          .then(
+module.exports = function ($state, $scope, $stateParams, $location, $window,
+                           UserApiService, UserService, DocumentService, MathJaxService,
+                           SearchService, ImageSearchService) {
+
+
+
+    $scope.message = ""
+
+    if (UserService.username) {
+        $scope.signinStatus = 'Signed in as ' + UserService.username()
+    } else {
+        $scope.signinStatus = 'No one signed in'
+    }
+
+    $scope.submit = function () {
+        UserApiService.login($scope.username, $scope.password)
+            .then(
                 function (result) {
-                  if (UserService.loginStatus() == 200) {
-                    console.log('SIGNING IN USER')  
-                    $scope.message = 'Success!'
-                    UserService.signin($scope)
-                    // ImageSearchService.query('scope=all', $state)
-                    SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
-                        function() {
-                            $state.go('documents', {}, {reload:true})
-                            MathJaxService.reload(DocumentService.kind(), 'SignIn')
-                        })
-                  } else {
-                    console.log('CANNOT SIGN IN USER')  
-                    UserService.signout()
-                    console.log('--------')
-                    DocumentService.clear() 
-                    $scope.message = "Sorry - no account or username and password don't match"
-                  }
+                    if (UserService.loginStatus() == 200) {
+                        console.log('SIGNING IN USER')
+                        $scope.message = 'Success!'
+                        UserService.signin($scope)
+                        // ImageSearchService.query('scope=all', $state)
+                        SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
+                            function () {
+                                // $window.location.reload()
+                                $state.go('documents', {}, {reload: true})
+                                MathJaxService.reload(DocumentService.kind(), 'MMM, SignIn')
+
+                            })
+                    } else {
+                        console.log('CANNOT SIGN IN USER')
+                        UserService.signout()
+                        console.log('--------')
+                        DocumentService.clear()
+                        $scope.message = "Sorry - no account or username and password don't match"
+                    }
                     // promise was fullfilled (regardless of outcome)
                     // checks for information will be peformed here
                 },
@@ -2765,8 +2967,8 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
                     console.log('ERROR!');
                 }
             );
-        }
-      }
+    }
+}
 
 },{}],42:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {

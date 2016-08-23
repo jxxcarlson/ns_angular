@@ -1,48 +1,60 @@
-module.exports = function($http, $state, $location, $q, DocumentApiService, 
-                           DocumentRouteService, DocumentService, envService, UserService, QueryParser) {
-    
-    console.log('SEARCH SERVICE')
+module.exports = function ($http, $sce, $state, $location, $q,
+                           DocumentService, envService, UserService, QueryParser) {
 
-    DocumentService.resetCollectionStack()
-    
-    var deferred = $q.defer();
-   
-    this.query = function(searchText, scope, destination) {
+
+    console.log('YYY, enter SEARCH SERVICE')
+
+    // var deferred = $q.defer();
+
+    console.log('SEARCH SERVICE(2)')
+
+    this.query = function (searchText, scope, destination) {
+
+        console.log('-- query: ' + searchText)
 
         var queryText = QueryParser.parse(searchText)
 
-        if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
-        
-        if (UserService.accessTokenValid() == false) {
-                
-                searchText += '&public'
-                
-            }
-        
-         var url = envService.read('apiUrl') + '/documents' + '?' + queryText
-         var options = { headers: { "accesstoken": UserService.accessToken() }}
-         return $http.get(url, options)
-        .then(function(response){
-              
-          var jsonData = response.data
-          var documents = jsonData['documents']
-          
-          if (scope != undefined) {
-              
-              scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-          }
-          
- 
-          DocumentService.setDocumentList(documents)
-          DocumentService.resetCollectionStack()
+        var url = envService.read('apiUrl') + '/documents' + '?' + queryText
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+        return $http.get(url, options)
+            .then(function (response) {
 
-          var id = documents[0]['id']
-          DocumentApiService.getDocument(id, {})
-          DocumentApiService.getDocument(id, {}).then(function(response) {
-                  
-                $state.go(destination, {}, {reload: true})
-              
-              }) 
-         })
+                var jsonData = response.data
+                var documents = jsonData['documents']
+                var firstDocument = jsonData['first_document']
+
+                DocumentService.setDocumentList(documents)
+                if (firstDocument == undefined) {
+
+                    console.log('ERROR: firstDocument ndt defined')
+
+                } else {
+
+                    DocumentService.update(firstDocument)
+                }
+
+
+                var currentDocument = DocumentService.document()
+
+                var dataValid = (currentDocument.id == firstDocument.id)
+
+                console.log('SSS: data is valid = ' + dataValid)
+
+                if (scope != undefined) {
+
+                    console.log('SSS(SearchService), scope OKKKK')
+                    
+                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
+
+                } else {
+
+                    console.log('SSS(SearchService), WARNING: scope undefined')
+                }
+
+                $location.path('documents/' + currentDocument.id + '?toc')
+                $state.go('documents', {}, {reload: true})
+
+
+            })
     }
 }

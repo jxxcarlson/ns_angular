@@ -143,3 +143,14 @@ input[type="submit"] {
 
     margin-bottom: 20px;
 }
+
+#newdocumentform p {
+
+    font-size:1.2em;
+}
+
+#newdocumentform strong {
+
+    font-weight:500;
+    color: darkred;
+}

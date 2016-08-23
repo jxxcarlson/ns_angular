@@ -1,123 +1,76 @@
-module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
+module.exports = function(DocumentService, $localStorage, DocumentApiService, CollectionService, $sce, MathJaxService, GlobalService, UserService) {
 
     this.getDocumentList = function(scope) {
+
+
+        var _documentList = DocumentService.documentList()
+
+        if (_documentList.length == 0) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
+        }
+
+        console.log('XXX(Route) document count = ' + _documentList.length)
+
+        if (_documentList == undefined) { console.log ('XXX(Route), _documentList is UNDEFINED')}
+
+        console.log('XXX(Route) ' + _documentList.length + ' documents')
+
+        if (_documentList.length == 0) {
+
+            var document = GlobalService.defaultDocumentHash()
+            _documentList = [document]
+
+        } else {
+
+            var document = _documentList[0]
+
+        }
         
-        
-        scope.title = DocumentService.title()
-        scope.text = DocumentService.text()
-        scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+        scope.title = document.title
+        scope.text = document.text
+        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
+
+
         if (UserService.accessToken() == '') {
 
-            scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
+            scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
         }
         else {
 
-            scope.docArray = DocumentService.documentList()
+            scope.docArray = _documentList || []
         }
 
-        console.log('DocuemntRouteService, getDocumentList :: ' + scope.docarray)
-        scope.documentCount = DocumentService.documentCount()
+        console.log('1. DocumentRouteService, getDocumentList :: ' + _documentList)
+        console.log('2. DocumentRouteService, getDocumentList :: ' + scope.docarray)
+
+        scope.documentCount = _documentList.length
         
-        console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
+        console.log('3. DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
-        if (DocumentService.currentCollectionItem().id == 0) {
-                    
-            scope.collectionTitle = undefined 
+        if (document.links.parent == undefined) {
+
             scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
         }
         else
         {
-            scope.collectionTitle = DocumentService.currentCollectionItem().title
-            scope.collectionId = DocumentService.currentCollectionItem().id
-            scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
+            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
         
         scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocumentList')              
+                    MathJaxService.reload(DocumentService.kind(), 'MMM, DocumentRouteService: getDocumentList')
                 );
         
     }
-    
-    
-    this.getDocument = function(scope, id, queryObj) {
-        console.log('DocumentRouteService.getDocument, id: ' + id)
-        DocumentApiService.getDocument(id, queryObj)
-        .then(
-            function (response) {
-                scope.title = DocumentService.title()
 
-
-                CollectionService.getCollectionItem(scope)
-
-                
-                scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
-                
-                var cdi = DocumentService.currentDocumentItem()
-                console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
-
-                
-                scope.text = DocumentService.text()
-                scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
-
-                if (UserService.accessToken() == '') {
-
-                    scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
-                }
-                else {
-
-                    scope.docArray = DocumentService.documentList()
-                }
-                scope.numberOfDocuments = DocumentService.documentCount()
-
-
-                //////
-                var imageRegex = new RegExp("image/")
-                var pdfRegex = new RegExp("application/pdf")
-
-                scope.imageKind = imageRegex.test(DocumentService.kind())
-                scope.pdfKind = pdfRegex.test(DocumentService.kind())
-                scope.textKind = (!scope.imageKind && !scope.pdfKind)
-
-                if (scope.imageKind || scope.pdfKind ) {
-
-
-                    scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-                    // $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
-
-                    console.log('ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
-                }
-
-                console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
-                //////
-                
-                 if (DocumentService.getPublic() == true ) {
-                        scope.status = 'public'
-                    } else {
-                        scope.status = 'private'
-                    }
-                
-                scope.$watch(function(local_scope) { 
-                    return local_scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocument')              
-                );
-                
-            },
-            function (error) {
-                // handle errors here
-                // console.log(error.statusText);
-                console.log('ERROR!');
-            }
-        );
-
-    }
 
     this.printDocument = function(scope, id, queryObj) {
         DocumentApiService.printDocument(id, queryObj)
             .then(
-                function(respose) {
+                function(response) {
                    scope.printUrl = DocumentService.printUrl()
                     console.log("scope.printUrl: " + scope.printUrl )
 

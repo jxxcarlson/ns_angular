@@ -170,7 +170,19 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
                         foo, UserService, SearchService, envService, DocumentService) {
 
     var accessTokenValid = UserService.accessTokenValid()
-    var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
+    try {
+
+        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
+    }
+    catch(err) {
+
+        var documentEditable = false
+
+    }
+
+
 
     $scope.message = ''
 
@@ -181,10 +193,11 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
 
-    $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
+    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
     envService.set('production');
+
     
     
 });

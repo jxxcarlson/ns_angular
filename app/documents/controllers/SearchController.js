@@ -20,8 +20,6 @@ module.exports = function($scope, $state, $http, envService,
               var documents = jsonData['documents']
               
               DocumentService.setDocumentList(documents)
-              DocumentService.setCollectionTitle(undefined)
-              DocumentService.resetCollectionStack()
                 
               var id = documents[0]['id']
               var doc= documents[0]
@@ -32,13 +30,13 @@ module.exports = function($scope, $state, $http, envService,
               
               if (doc) {
                 var id = documents[0]['id']
-                DocumentApiService.getDocument(id, {}).then(function(response) {
+                DocumentApiService.getDocument($scope, id, {}).then(function(response) {
                   
                 $state.go('documents', {}, {reload: true})
                 
                 $scope.$watch(function(scope) { 
                     return $scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'SearchController')              
+                    MathJaxService.reload(DocumentService.kind(), 'MMM, SearchController')
                 );                
               })  
               }

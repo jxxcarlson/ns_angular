@@ -5,57 +5,21 @@
 
 REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
+module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
                            DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
 
- 
-    var id = $stateParams.id;
+
+    var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj =  $location.search()
     
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
-    // document.getElementById("toc").style.height = '300px' //(innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
-    // Process the given route
-    if (id == undefined) { 
-        DocumentRouteService.getDocumentList($scope) }
-        //documentKind = DocumentService.kind()
-        
-    else { 
-        DocumentRouteService.getDocument($scope, id, queryObj)     
-        // documentKind = DocumentService.kind()
-    }
+    console.log('SSS: Enter Doc ctrl with DOCUMENT id = ' + id)
+    DocumentApiService.getDocument($scope, id, queryObj)
 
-
-
-
-
-    //////
-    var imageRegex = new RegExp("image/")
-    var pdfRegex = new RegExp("application/pdf")
-
-    $scope.imageKind = imageRegex.test(DocumentService.kind())
-    $scope.pdfKind = pdfRegex.test(DocumentService.kind())
-    $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
-
-    if ($scope.imageKind || $scope.pdfKind ) {
-
-
-        $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-
-        console.log('ON SCOPE, ATTACHMENT URL = ' + $scope.attachmentUrl)
-    }
-
-    console.log('Kinds: ' + $scope.imageKind +', ' +  $scope.pdfKind +', ' +  $scope.textKind )
-    //////
-
-
-
-
-    
-    var documentKind = DocumentService.kind()
+    console.log('Ctrl, Kinds: ' + $scope.textKind +', ' +  $scope.pdfKind +', ' +  $scope.imageKind )
     
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
@@ -64,15 +28,16 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     $scope.reloadMathJax = function() {
         $timeout( 
          function() { 
-         MathJaxService.reload('ERERER:  element ready, reloading MathJax for ' + DocumentService.title() )},
-        100)
+         MathJaxService.reload('MMM, doc ctrl: reloading MathJax for ' + DocumentService.title() )},
+        500)
         
     }
     
     $scope.author = function(doc) {
         
         if (doc['author'] != UserService.username()) {
-            
+
+            console.log('Ctrl: author = ' + doc['author'])
             return doc['author'] + ": "
             
         } else {
@@ -82,12 +47,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         
         
     }
-    
-    $scope.goUp = function() {
-        
-        console.log('Rule goUp')
-        DocumentService.popCollectionStack()
-    }
+
     
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
@@ -95,15 +55,5 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
             $scope.statusPublic = 'private'
         }
 
-    
-    //$scope.$watch(function(scope) { 
-        // return $scope.renderedText },
-        // The below is totally useless -- it is called too
-        // early -- before the document state has been
-        // updated.
-        //
-        //
-        // MathJaxService.reload('DocumentController')              
-    // );
 
 }
