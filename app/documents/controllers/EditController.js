@@ -23,19 +23,19 @@
               $scope.renderedText = function() { return $sce.trustAsHtml(editDocument.rendered_text); }
               $scope.title = document.title
               $scope.editableTitle = document.title
+              $scope.editText = document.text
+              $scope.kind = document.kind
+
+              $scope.identifier = document.identifier
+              $scope.tags = document.tags
 
 
               console.log('EEE, title = ' + $scope.editDocument.title)
 
-
-              $scope.editText = document['text']
-
-              $scope.kind = DocumentService.kind(),
-              $scope.docArray = DocumentService.documentList()
+               $scope.docArray = DocumentService.documentList()
               $scope.documentCount = DocumentService.documentCount()
 
-              $scope.identifier = DocumentService.identifier()
-              $scope.tags = DocumentService.tags()
+
 
 
               $scope.updatePublicStatus = function() {

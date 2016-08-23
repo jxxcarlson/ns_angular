@@ -219,17 +219,26 @@ module.exports = function($localStorage) {
         }
       
     }
-
     
     
     // Results of search
     this.setDocumentList = function(array) { 
         $localStorage.documentList = array
         $localStorage.documentId = array[0]
+        this.currentDocumentList = array
+
     }
     this.documentList = function() { 
-        
-        return $localStorage.documentList 
+
+        if (this.currentDocumentList == undefined) {
+
+            return $localStorage.currentDocumentList
+        }
+        else {
+
+            return this.currentDocumentList
+        }
+
     
     }
     this.documentCount = function() { 
