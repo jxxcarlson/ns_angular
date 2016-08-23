@@ -310,7 +310,10 @@ REFERENCE: https://github.com/gsklee/ngStorage
 module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
 
- 
+
+
+
+
     var id = $stateParams.id;
     var queryObj =  $location.search()
     
@@ -325,11 +328,25 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         //documentKind = DocumentService.kind()
         
     else { 
-        DocumentRouteService.getDocument($scope, id, queryObj)     
+        DocumentRouteService.getDocument($scope, id, queryObj)
+        console.log('XXX(2) DOCUMENT = ' + $scope.document)
         // documentKind = DocumentService.kind()
+        // console.log('XXX DOCUMENT = ' + JSON.stringify(DocumentService.document()))
+
     }
 
+    console.log('XXX(2) DOCUMENT = ' + DocumentService.document().title)
 
+    /**
+    if  ($scope.document.links.parent == undefined) {
+
+        console.log('XXX(2) DOCUMENT = ' + $scope.document.title + ', NO PARENT')
+
+    } else {
+
+        console.log('XXX(2) DOCUMENT = ' + $scope.document.title + ', ' + $scope.document.links.parent.title)
+    }
+     **/
 
 
 
@@ -413,7 +430,7 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
   module.exports = function($scope, $window, $document, $stateParams, $state, $http, $sce, $timeout,
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
-
+''
         var id;
         var keyStrokeCount = 0
         
@@ -428,11 +445,20 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
       $http.get(url, options  )
           .then(function(response){
 
-              var document = response.data['document']
-              $scope.title = document['title']
-              $scope.editableTitle = $scope.title
+              var document = response.data['document'] // JJJJ
+              DocumentService.update(response.data['document'])
+              var editDocument = DocumentService.document()
+              $scope.editDocument = editDocument
+              $scope.renderedText = function() { return $sce.trustAsHtml(editDocument.rendered_text); }
+              $scope.title = document.title
+              $scope.editableTitle = document.title
+
+
+              console.log('EEE, title = ' + $scope.editDocument.title)
+
+
               $scope.editText = document['text']
-              $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+
               $scope.kind = DocumentService.kind(),
               $scope.docArray = DocumentService.documentList()
               $scope.documentCount = DocumentService.documentCount()
@@ -944,6 +970,7 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                     DocumentService.setCurrentCollectionItem(document['id'], document['title'])
                     
                     DocumentService.setDocumentList( documents )
+
                 } 
                 else 
                 {
@@ -953,6 +980,15 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                 
                 
                 DocumentService.update(document)
+
+              if  (DocumentService.document().links.parent == undefined) {
+
+                  console.log('XXX(1) DOCUMENT = ' + DocumentService.document().title + ', NO PARENT')
+
+              } else {
+
+                  console.log('XXX(1) DOCUMENT = ' + DocumentService.document().title + ', ' + DocumentService.document().links.parent.title)
+              }
                 //if (queryObj.toc) { 
                 if (true) { 
                     
@@ -1189,7 +1225,14 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         DocumentApiService.getDocument(id, queryObj)
         .then(
             function (response) {
-                scope.title = DocumentService.title()
+
+                var document = DocumentService.document()
+                scope.document = document // NEEDED?
+
+                scope.title = document.title
+                scope.text = document.text
+                scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
+
 
 
                 CollectionService.getCollectionItem(scope)
@@ -1199,10 +1242,9 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
+                console.log('XXX(0) title = ' + scope.document.title)
 
-                
-                scope.text = DocumentService.text()
-                scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+
 
                 if (UserService.accessToken() == '') {
 
@@ -1225,16 +1267,11 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
 
                 if (scope.imageKind || scope.pdfKind ) {
 
-
                     scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-                    // $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
-
-                    console.log('ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
                 }
 
                 console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
-                //////
+
                 
                  if (DocumentService.getPublic() == true ) {
                         scope.status = 'public'
@@ -1249,8 +1286,7 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 
             },
             function (error) {
-                // handle errors here
-                // console.log(error.statusText);
+
                 console.log('ERROR!');
             }
         );
@@ -1334,6 +1370,8 @@ module.exports = function($localStorage) {
 
     this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
     this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
+
+
 
     this.setAttachmentUrl = function(url) {
 
@@ -1531,11 +1569,28 @@ module.exports = function($localStorage) {
         $localStorage.collectionId = id 
     }
     this.collectionId = function() { return $localStorage.collectionId }
-    
-    
+
+
+    this.document = function() {
+
+        if (this.currentDocument == undefined) {
+
+            return $localStorage.currentDocument
+        }
+        else {
+
+            return this.currentDocument
+
+        }
+    }
+
     // Update
     
     this.update = function(document) {
+
+        this.currentDocument = document
+
+        $localStorage.currentDocument = document
         
         this.setAuthor( document['author'] )
         
@@ -1551,7 +1606,8 @@ module.exports = function($localStorage) {
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
-        var links = document['links'] || {} 
+        var links = document['links'] || {}
+
         var subdocuments = links['documents'] || []
 
 
@@ -1633,7 +1689,7 @@ module.exports = function($localStorage) {
         return doc['has_subdocuments']
     }
     
-      
+
 }
 },{}],18:[function(require,module,exports){
 module.exports = function() {
@@ -2700,7 +2756,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.randomDocuments = function(){ SearchService.query('random=50'), $scope, 'documents' }
 
 
-    envService.set('production');
+    envService.set('development');
     
     
 });

@@ -46,7 +46,14 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         DocumentApiService.getDocument(id, queryObj)
         .then(
             function (response) {
-                scope.title = DocumentService.title()
+
+                var document = DocumentService.document()
+                scope.document = document // NEEDED?
+
+                scope.title = document.title
+                scope.text = document.text
+                scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
+
 
 
                 CollectionService.getCollectionItem(scope)
@@ -56,10 +63,9 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 
                 var cdi = DocumentService.currentDocumentItem()
                 console.log('**** DRS, currentDocumentItem: ' + cdi.id + ', ' + cdi.title + ', terminal = ' + DocumentService.currentDocumentIsTerminal())
+                console.log('XXX(0) title = ' + scope.document.title)
 
-                
-                scope.text = DocumentService.text()
-                scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+
 
                 if (UserService.accessToken() == '') {
 
@@ -82,16 +88,11 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
 
                 if (scope.imageKind || scope.pdfKind ) {
 
-
                     scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-                    // $scope.pdfImage = $sce.trustAsResourceUrl(ImageService.storageUrl())
-
-                    console.log('ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
                 }
 
                 console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
-                //////
+
                 
                  if (DocumentService.getPublic() == true ) {
                         scope.status = 'public'
@@ -106,8 +107,7 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 
             },
             function (error) {
-                // handle errors here
-                // console.log(error.statusText);
+
                 console.log('ERROR!');
             }
         );

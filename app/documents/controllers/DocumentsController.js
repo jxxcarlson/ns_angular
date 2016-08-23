@@ -8,7 +8,10 @@ REFERENCE: https://github.com/gsklee/ngStorage
 module.exports = function($scope, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService, 
                            DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
 
- 
+
+
+
+
     var id = $stateParams.id;
     var queryObj =  $location.search()
     
@@ -23,11 +26,25 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
         //documentKind = DocumentService.kind()
         
     else { 
-        DocumentRouteService.getDocument($scope, id, queryObj)     
+        DocumentRouteService.getDocument($scope, id, queryObj)
+        console.log('XXX(2) DOCUMENT = ' + $scope.document)
         // documentKind = DocumentService.kind()
+        // console.log('XXX DOCUMENT = ' + JSON.stringify(DocumentService.document()))
+
     }
 
+    console.log('XXX(2) DOCUMENT = ' + DocumentService.document().title)
 
+    /**
+    if  ($scope.document.links.parent == undefined) {
+
+        console.log('XXX(2) DOCUMENT = ' + $scope.document.title + ', NO PARENT')
+
+    } else {
+
+        console.log('XXX(2) DOCUMENT = ' + $scope.document.title + ', ' + $scope.document.links.parent.title)
+    }
+     **/
 
 
 

@@ -62,6 +62,8 @@ module.exports = function($localStorage) {
     this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
     this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
 
+
+
     this.setAttachmentUrl = function(url) {
 
         $localStorage.attachmentUrl = url
@@ -258,11 +260,28 @@ module.exports = function($localStorage) {
         $localStorage.collectionId = id 
     }
     this.collectionId = function() { return $localStorage.collectionId }
-    
-    
+
+
+    this.document = function() {
+
+        if (this.currentDocument == undefined) {
+
+            return $localStorage.currentDocument
+        }
+        else {
+
+            return this.currentDocument
+
+        }
+    }
+
     // Update
     
     this.update = function(document) {
+
+        this.currentDocument = document
+
+        $localStorage.currentDocument = document
         
         this.setAuthor( document['author'] )
         
@@ -278,7 +297,8 @@ module.exports = function($localStorage) {
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
-        var links = document['links'] || {} 
+        var links = document['links'] || {}
+
         var subdocuments = links['documents'] || []
 
 
@@ -360,5 +380,5 @@ module.exports = function($localStorage) {
         return doc['has_subdocuments']
     }
     
-      
+
 }

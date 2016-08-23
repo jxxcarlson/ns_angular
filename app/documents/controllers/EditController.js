@@ -1,7 +1,7 @@
   module.exports = function($scope, $window, $document, $stateParams, $state, $http, $sce, $timeout,
                              DocumentService, DocumentApiService, UserService, envService,
                              MathJaxService, hotkeys, $interval) {
-
+''
         var id;
         var keyStrokeCount = 0
         
@@ -16,11 +16,20 @@
       $http.get(url, options  )
           .then(function(response){
 
-              var document = response.data['document']
-              $scope.title = document['title']
-              $scope.editableTitle = $scope.title
+              var document = response.data['document'] // JJJJ
+              DocumentService.update(response.data['document'])
+              var editDocument = DocumentService.document()
+              $scope.editDocument = editDocument
+              $scope.renderedText = function() { return $sce.trustAsHtml(editDocument.rendered_text); }
+              $scope.title = document.title
+              $scope.editableTitle = document.title
+
+
+              console.log('EEE, title = ' + $scope.editDocument.title)
+
+
               $scope.editText = document['text']
-              $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+
               $scope.kind = DocumentService.kind(),
               $scope.docArray = DocumentService.documentList()
               $scope.documentCount = DocumentService.documentCount()

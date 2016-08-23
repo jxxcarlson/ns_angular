@@ -40,6 +40,7 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                     DocumentService.setCurrentCollectionItem(document['id'], document['title'])
                     
                     DocumentService.setDocumentList( documents )
+
                 } 
                 else 
                 {
@@ -49,6 +50,15 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
                 
                 
                 DocumentService.update(document)
+
+              if  (DocumentService.document().links.parent == undefined) {
+
+                  console.log('XXX(1) DOCUMENT = ' + DocumentService.document().title + ', NO PARENT')
+
+              } else {
+
+                  console.log('XXX(1) DOCUMENT = ' + DocumentService.document().title + ', ' + DocumentService.document().links.parent.title)
+              }
                 //if (queryObj.toc) { 
                 if (true) { 
                     
