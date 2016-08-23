@@ -1,35 +1,43 @@
 module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
 
     this.getDocumentList = function(scope) {
+
+
+        var _documentList = DocumentService.documentList()
+
+        var document = _documentList[0]
         
-        
-        scope.title = DocumentService.title()
-        scope.text = DocumentService.text()
-        scope.renderedText = function() { return $sce.trustAsHtml(DocumentService.renderedText()); }
+        scope.title = document.title
+        scope.text = document.text
+        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
+
+
         if (UserService.accessToken() == '') {
 
-            scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
+            scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
         }
         else {
 
-            scope.docArray = DocumentService.documentList()
+            scope.docArray = _documentList || []
         }
 
-        console.log('DocuemntRouteService, getDocumentList :: ' + scope.docarray)
-        scope.documentCount = DocumentService.documentCount()
+        console.log('1. DocumentRouteService, getDocumentList :: ' + _documentList)
+        console.log('2. DocumentRouteService, getDocumentList :: ' + scope.docarray)
+
+        scope.documentCount = _documentList.length
         
-        console.log('DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
+        console.log('3. DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
         
-        if (DocumentService.currentCollectionItem().id == 0) {
+        if (document.links.parent == undefined) {
                     
             scope.collectionTitle = undefined 
             scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
         }
         else
         {
-            scope.collectionTitle = DocumentService.currentCollectionItem().title
-            scope.collectionId = DocumentService.currentCollectionItem().id
-            scope.hideCollection = (DocumentService.collectionId() == DocumentService.documentId())
+            scope.collectionTitle = document.links.parent.title
+            scope.collectionId = document.links.parent.id
+            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
         

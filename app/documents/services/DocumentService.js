@@ -52,7 +52,7 @@ module.exports = function($localStorage) {
     this.renderedText = function() { return this.document().renderedText }
 
     this.setTags = function(tags) { $localStorage.tags = tags}
-    this.tags = function() { return     this.document().tags  }
+    this.tags = function() { return  this.document().tags  }
 
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
     this.printUrl = function() { return this.document().printUrl }
