@@ -23,35 +23,43 @@ module.exports = function($localStorage) {
     this.documentId = function() { return $localStorage.documentId }
     
     this.setTitle = function(title) { $localStorage.title = title}
-    this.title = function() { return $localStorage.title }
+    this.title = function() { return this.document().title }
+
+
+
+
+
 
     this.setIdentifier = function(identifier) { $localStorage.identifier = identifier}
-    this.identifier = function() { return $localStorage.identifier }
+    this.identifier = function() { return this.document().identifier }
 
 
     this.setAuthor = function(author) { $localStorage.author = author}
-    this.author = function() { return $localStorage.author }
+    this.author = function() { return this.document().author }
     
     this.setText = function(text) { $localStorage.text = text }
-    this.text = function() { return $localStorage.text }
+    this.text = function() { return this.document().text }
     
     this.setKind= function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return $localStorage.documentKind }
+    this.kind = function() { return this.document().documentKind }
     
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
-    this.getPublic = function() { return $localStorage.public }
+    this.getPublic = function() { return this.document().public }
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
-    this.renderedText = function() { return $localStorage.renderedText }
+    this.renderedText = function() { return this.document().renderedText }
 
     this.setTags = function(tags) { $localStorage.tags = tags}
-    this.tags = function() { return $localStorage.tags  }
+    this.tags = function() { return $this.document().tags  }
 
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
-    this.printUrl = function() { return $localStorage.printUrl }
+    this.printUrl = function() { return this.document().printUrl }
 
+
+
+    //// SPECIAL (JJJJ) ////
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
@@ -62,8 +70,6 @@ module.exports = function($localStorage) {
     this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
     this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
 
-
-
     this.setAttachmentUrl = function(url) {
 
         $localStorage.attachmentUrl = url
@@ -73,8 +79,9 @@ module.exports = function($localStorage) {
 
         return $localStorage.attachmentUrl
     }
-    
-    
+
+
+    //// END (JJJJ) ////
     /********** Collection Management ***************/
     
     
@@ -221,35 +228,16 @@ module.exports = function($localStorage) {
     }
     
     
-    // Results of search
-    this.setDocumentList = function(array) { 
-        $localStorage.documentList = array
-        $localStorage.documentId = array[0]
-        this.currentDocumentList = array
 
-    }
-    this.documentList = function() { 
-
-        if (this.currentDocumentList == undefined) {
-
-            return $localStorage.currentDocumentList
-        }
-        else {
-
-            return this.currentDocumentList
-        }
-
-    
-    }
     this.documentCount = function() { 
         
-        if ($localStorage.documentList == undefined) {
+        if (this.documentList() == undefined) {
             
             return 0
         }
         else {
             
-            return $localStorage.documentList.length
+            return this.documentList().length
         }    
     }
     
@@ -270,6 +258,29 @@ module.exports = function($localStorage) {
     }
     this.collectionId = function() { return $localStorage.collectionId }
 
+
+    /// BEGIN MAIN STRUCTURE (JJJJ) ///
+
+    // Results of search
+    this.setDocumentList = function(array) {
+        $localStorage.documentList = array
+        $localStorage.documentId = array[0]
+        this.currentDocumentList = array
+
+    }
+    this.documentList = function() {
+
+        if (this.currentDocumentList == undefined) {
+
+            return $localStorage.currentDocumentList
+        }
+        else {
+
+            return this.currentDocumentList
+        }
+
+
+    }
 
     this.document = function() {
 
@@ -346,6 +357,8 @@ module.exports = function($localStorage) {
         return document['rendered_text']
         
     }
+
+    /// END MAIN STRUCTURE ///
     
     this.params = function(scope) {
 
