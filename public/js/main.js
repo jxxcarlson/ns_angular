@@ -1180,14 +1180,29 @@ module.exports = function($http, $q, $sce, $state, $location, DocumentService, U
 
 }
 },{}],16:[function(require,module,exports){
-module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, UserService) {
+module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, GlobalService, UserService) {
 
     this.getDocumentList = function(scope) {
 
 
         var _documentList = DocumentService.documentList()
 
-        var document = _documentList[0]
+        if (_documentList == undefined) { console.log ('DRS, _documentList is UNDEFINED')}
+
+        console.log('DRS, ' + _documentList.length + ' documents')
+
+        if (_documentList.length == 0) {
+
+            var document = GlobalService.defaultDocumentHash()
+
+        } else {
+
+            var document = _documentList[0]
+            _documentList = [document]
+        }
+
+        console.log('DRS, document = ' + JSON.stringify(document))
+
         
         scope.title = document.title
         scope.text = document.text
@@ -1764,6 +1779,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     this.query = function(searchText, scope, destination) {
 
         var queryText = QueryParser.parse(searchText)
+
+        console.log('-- query: ' + queryText)
 
         if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
         
@@ -2382,13 +2399,24 @@ module.exports = function ($http) {
  }
 },{}],31:[function(require,module,exports){
 module.exports = function() {
-    
+
     // this.clientServer = function() { return "localhost:3000" }
     // this.apiServer = function() { return "localhost:2300"}
-        
-    this.defaultDocumentID = function() { return 11 }
-    
+
+    this.defaultDocumentID = function () {
+        return 11
+    }
+    this.defaultDocumentHash = function () {
+        return {
+            "id": 11, "title": "Oops!",
+            "text": "Sorry, could not find that document",
+            "rendered_text": "Sorry, could not find that document",
+            "links": {}
+        }
+    }
 }
+
+
 },{}],32:[function(require,module,exports){
 
 // Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/

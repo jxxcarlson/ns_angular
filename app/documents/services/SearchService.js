@@ -11,6 +11,8 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
 
         var queryText = QueryParser.parse(searchText)
 
+        console.log('-- query: ' + queryText)
+
         if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
         
         if (UserService.accessTokenValid() == false) {
