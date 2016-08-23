@@ -272,6 +272,14 @@ module.exports = function($localStorage) {
 
     }
 
+    this.resetDocumentList = function() {
+
+        this.currentDocumentList = $localStorage.documentList
+        // $localStorage.documentId = $localStorage.documentList[0]
+
+    }
+
+
     this.documentList = function() {
 
         if (this.currentDocumentList == undefined) {
@@ -287,7 +295,16 @@ module.exports = function($localStorage) {
         }
         else {
 
-            return this.currentDocumentList
+            if (this.currentDocumentList.length == 0) {
+
+                return $localStorage.currentDocumentList
+
+            } else {
+
+                return this.currentDocumentList
+            }
+
+
         }
 
 

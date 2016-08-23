@@ -6,12 +6,14 @@ module.exports = function($http, $state, $location, $q, DocumentApiService,
     DocumentService.resetCollectionStack()
     
     var deferred = $q.defer();
+
+    console.log('SEARCH SERVICE(2)')
    
     this.query = function(searchText, scope, destination) {
 
-        var queryText = QueryParser.parse(searchText)
-
         console.log('-- query: ' + queryText)
+
+        var queryText = QueryParser.parse(searchText)
 
         if (destination == undefined) { destination = 'documents' } // XXX: Bad code!!  Shouldn't be necessary
         

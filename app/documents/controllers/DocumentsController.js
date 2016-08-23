@@ -21,7 +21,9 @@ module.exports = function($scope, $window, $location, $timeout, $stateParams, $s
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
     // Process the given route
-    if (id == undefined) { 
+    if (id == undefined) {
+
+        console.log('DRS before: in doc controller, id == undefined')
         DocumentRouteService.getDocumentList($scope) }
         //documentKind = DocumentService.kind()
         

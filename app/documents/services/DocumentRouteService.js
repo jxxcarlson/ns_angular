@@ -1,9 +1,17 @@
-module.exports = function(DocumentService, DocumentApiService, CollectionService, $sce, MathJaxService, GlobalService, UserService) {
+module.exports = function(DocumentService, $localStorage, DocumentApiService, CollectionService, $sce, MathJaxService, GlobalService, UserService) {
 
     this.getDocumentList = function(scope) {
 
 
         var _documentList = DocumentService.documentList()
+
+        if (_documentList.length == 0) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
+        }
+
+        console.log('DRS(-1) document count = ' + _documentList.length)
 
         if (_documentList == undefined) { console.log ('DRS, _documentList is UNDEFINED')}
 
@@ -12,13 +20,15 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
         if (_documentList.length == 0) {
 
             var document = GlobalService.defaultDocumentHash()
+            _documentList = [document]
 
         } else {
 
             var document = _documentList[0]
-            _documentList = [document]
+
         }
 
+        console.log('DRS(00) document count = ' + _documentList.length)
         console.log('DRS, document = ' + JSON.stringify(document))
 
         
@@ -89,24 +99,52 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 console.log('XXX(0) title = ' + scope.document.title)
 
 
+                ///// xx  ////
+
+                var _documentList = DocumentService.documentList()
+
+                if (_documentList.length == 0) {
+
+                    DocumentService.resetDocumentList()
+                    _documentList = $localStorage.documentList
+                }
+
+                console.log('DRS(-1) document count = ' + _documentList.length)
+
+                if (_documentList == undefined) { console.log ('DRS, _documentList is UNDEFINED')}
+
+                console.log('DRS, ' + _documentList.length + ' documents')
+
+                if (_documentList.length == 0) {
+
+                    var document = GlobalService.defaultDocumentHash()
+                    _documentList = [document]
+
+                } else {
+
+                    var document = _documentList[0]
+
+                }
+
+                ///// xx ////
 
                 if (UserService.accessToken() == '') {
 
-                    scope.docArray = DocumentService.documentList().filter( function(x) { return x.public == true })
+                    scope.docArray = _documentList.filter( function(x) { return x.public == true })
                 }
                 else {
 
-                    scope.docArray = DocumentService.documentList()
+                    scope.docArray = _documentList
                 }
-                scope.numberOfDocuments = DocumentService.documentCount()
+                scope.numberOfDocuments = _documentList.length
 
 
                 //////
                 var imageRegex = new RegExp("image/")
                 var pdfRegex = new RegExp("application/pdf")
 
-                scope.imageKind = imageRegex.test(DocumentService.kind())
-                scope.pdfKind = pdfRegex.test(DocumentService.kind())
+                scope.imageKind = imageRegex.test(document.kind)
+                scope.pdfKind = pdfRegex.test(document.kind)
                 scope.textKind = (!scope.imageKind && !scope.pdfKind)
 
                 if (scope.imageKind || scope.pdfKind ) {
@@ -117,7 +155,7 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 console.log('Kinds: ' + scope.imageKind +', ' +  scope.pdfKind +', ' +  scope.textKind )
 
                 
-                 if (DocumentService.getPublic() == true ) {
+                 if (document.public == true ) {
                         scope.status = 'public'
                     } else {
                         scope.status = 'private'
@@ -125,7 +163,7 @@ module.exports = function(DocumentService, DocumentApiService, CollectionService
                 
                 scope.$watch(function(local_scope) { 
                     return local_scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'DocumentRouteService: getDocument')              
+                    MathJaxService.reload(document.kind, 'DocumentRouteService: getDocument')
                 );
                 
             },
