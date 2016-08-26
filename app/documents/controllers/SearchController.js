@@ -1,47 +1,8 @@
-module.exports = function($scope, $state, $http, envService,
-                           DocumentService, DocumentApiService, 
-                           MathJaxService, QueryParser, UserService) {
+module.exports = function($scope, SearchService) {
+
         $scope.doSearch = function(){
-            
-            var query = QueryParser.parse($scope.searchText)
-            
-            if (UserService.accessTokenValid() == false) {
-                
-                query += '&public'
-                
-            }
-            
-            var url = envService.read('apiUrl') + '/documents' + '?' + query
-            var options = { headers: { "accesstoken": UserService.accessToken() }}
-            $http.get(url, options)
-            .then(function(response){
-                              
-              var jsonData = response.data
-              var documents = jsonData['documents']
-              
-              DocumentService.setDocumentList(documents)
-                
-              var id = documents[0]['id']
-              var doc= documents[0]
-              
-              
-              $scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() 
-              
-              
-              if (doc) {
-                var id = documents[0]['id']
-                DocumentApiService.getDocument($scope, id, {}).then(function(response) {
-                  
-                $state.go('documents', {}, {reload: true})
-                
-                $scope.$watch(function(scope) { 
-                    return $scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'MMM, SearchController')
-                );                
-              })  
-              }
-              
-              
-            });
-      };
+
+            SearchService.query($scope.searchText, $scope, 'documents')
+
+      }
     }                                      
