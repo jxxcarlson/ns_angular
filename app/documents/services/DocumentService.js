@@ -92,8 +92,6 @@ module.exports = function($localStorage) {
     }
 
 
-    //// END (JJJJ) ////
-    /********** Collection Management ***************/
     
     
     // An item is an object with fields id and a title
@@ -111,95 +109,6 @@ module.exports = function($localStorage) {
         $localStorage.currentDocumentItem = item  
     }
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-
-
-    ///////// TOC //////////////////////
-
-
-    /// XXXX ////
-    this.documentIsInDocumentList = function(item) {
-        
-        var matchId = function(item, listItem) { return (item.id == listItem['id'])}
-        
-         var matches = this.documentList().filter(
-            function(x) { return matchId(item, x) }
-        ) || []   
-        return (matches.length > 0) 
-    }
-    
-    //XXX
-    this.currentDocumentIsTerminal = function() { 
-
-        return (this.subdocuments().length == 0) }
-    
-    this.isSiblingOfCurrentDocument = function(item) {  }
-    
-    
-    
-    this.itemsAreEqual = function(firstItem, secondItem) {
-            
-            if ((firstItem == undefined) && (secondItem == undefined)) {
-                
-                return true
-            }
-            else if ((firstItem == undefined) || (secondItem == undefined)) {
-                
-                return false
-            }
-            else
-            {
-                return (firstItem.id == secondItem.id)
-            }
-    }
-    
-    
-    this.updateCollectionStack = function() {
-        
-        var currentItem = this.currentDocumentItem()
-        var stackTop = this.collectionStackTop()
-
-        var currentIsTerminal = this.currentDocumentIsTerminal()
-        var currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
-
-        var report = function(message) {
-
-            var sts = JSON.stringify($localStorage.collectionStack)
-            var nSt = $localStorage.collectionStack.length
-            console.log(message + ', N = ' + nSt + ', S = ' + sts )
-            
-        }
-        
-        
-        if  (this.itemsAreEqual(stackTop, currentItem)) { 
-            
-           // this.popCollectionStack()
-           // report('Rule pop')
-        }
-        else if ( currentIsTerminal && !currentIsInDocumentList) {
-            
-            if (!this.itemsAreEqual(currentItem, stackTop)) { 
-            
-                this.pushCollectionStack(currentItem)
-                report('Rule 1')
-                
-            }    
-        }
-        else if ( !currentIsTerminal ) {
-            
-            if (!this.itemsAreEqual(currentItem, stackTop)) { 
-            
-                this.pushCollectionStack(currentItem)
-                report('Rule 2')
-                
-            }
-        }
-        else {
-
-            report('Rule no-op')
-        }
-      
-    }
-    
     
 
     this.documentCount = function() { 

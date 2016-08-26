@@ -176,7 +176,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":13,"./images":23,"./search":28,"./services":35,"./site":38,"./topLevel":40,"./user":47,"angular":51,"angular-route":49}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":13,"./images":21,"./search":26,"./services":33,"./site":36,"./topLevel":38,"./user":45,"angular":49,"angular-route":47}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -253,7 +253,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":51}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":49}],6:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
 
 
@@ -305,10 +305,10 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 // GET /documents
 // GET /documents/:id
 
-REFERENCE: https://github.com/gsklee/ngStorage
+// REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
+                           DocumentService, UserService, MathJaxService ) {
 
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
@@ -318,15 +318,11 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
-    console.log('SSS: Enter Doc ctrl with DOCUMENT id = ' + id)
     DocumentApiService.getDocument($scope, id, queryObj)
 
-    console.log('Ctrl, Kinds: ' + $scope.textKind +', ' +  $scope.pdfKind +', ' +  $scope.imageKind )
-    
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
-    
     $scope.reloadMathJax = function() {
         $timeout( 
          function() { 
@@ -347,10 +343,8 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
             return ""
         }
         
-        
     }
 
-    
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
         } else {
@@ -680,155 +674,113 @@ module.exports = function() {
 
 }
 },{}],10:[function(require,module,exports){
-module.exports = function($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService, CollectionService) {
-          
-    
-      console.log('NEW DOCUMENT CONTROLLER')
-
-      var _currentDocument = DocumentService.document()
-      var parent = _currentDocument.links.parent || {'id': 0, 'title': 'null'}
+module.exports = function ($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService) {
 
 
-      console.log('New ========')
-      console.log('XXX(New Doc), _currentDocument = ' + _currentDocument.id + ', ' + _currentDocument.title)
-      console.log('XXX(New Doc), parent.id = ' + parent.id)
-      console.log('new -------')
-      console.log('XXX(New Doc), parent = ' + JSON.stringify(parent))
+    var _currentDocument = DocumentService.document()
+    var parent = _currentDocument.links.parent || {'id': 0, 'title': 'null'}
 
-      $scope.parentDocumentTitle = parent.title
-      $scope.currentDocumentTitle = _currentDocument.title
-      console.log('New ========')
+    $scope.parentDocumentTitle = parent.title
+    $scope.currentDocumentTitle = _currentDocument.title
 
-      // Set the parent document if there is one.
+    // Set the parent document if there is one.
 
 
-      if (parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
+    if (parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
 
-          $scope.ifparentdocument = true
-      }
-      else {
+        $scope.ifparentdocument = true
+    }
+    else {
 
-          $scope.ifparentdocument = false
-      }
+        $scope.ifparentdocument = false
+    }
 
-      if (parent.id == 0) {
+    if (parent.id == 0) {
 
-          $scope.ifnewchild = true
+        $scope.ifnewchild = true
 
-      } else {
+    } else {
 
-          $scope.ifnewchild = false
-      }
+        $scope.ifnewchild = false
+    }
 
 
+    $scope.cancel = function () {
 
-      $scope.cancel  = function() {
+        console.log('CANCEL')
+        $state.go('documents')
 
-          console.log('CANCEL')
-          $state.go('documents')
+    }
+
+    $scope.formData = {'child': false, 'position': 'null'}
+
+
+    $scope.submit = function () {
+
+        if ($scope.formData.child == false && $scope.formData.position == 'null') {
+
+            parent = {'id': 0, 'title': 'null'}
+
+            var process_as_child = false
+
+        } else {
+
+            var process_as_child = true
 
         }
 
-      $scope.formData = { 'child': false, 'position': 'null'}
+        var access_token = UserService.accessToken()
+        var parameter = JSON.stringify({
+            title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
+            current_document_id: _currentDocument.id, parent_document_id: parent.id
+        });
+        var url = envService.read('apiUrl') + '/documents'
+        var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
 
+        // Add the newly created document to the document list
+        // of the current document
+        if (hasSubdocuments) {
+            url += '?append=' + DocumentService.documentId()
+        }
 
-
-      $scope.submit = function() {
-
-          console.log('GGG: before modfication, parent.id = ' + parent.id)
-
-          if ($scope.formData.child == false && $scope.formData.position == 'null' ) {
-
-              parent = {'id': 0, 'title': 'null'}
-
-              var process_as_child = false
-
-          } else {
-
-              var process_as_child = true
-
-          }
-
-          console.log('GGG: process as child = ' + process_as_child)
-
-          var access_token = UserService.accessToken()
-          var parameter = JSON.stringify({title:$scope.title, token:access_token, options: JSON.stringify($scope.formData),
-              current_document_id: _currentDocument.id, parent_document_id: parent.id});
-          var url = envService.read('apiUrl') + '/documents'
-          var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
-          var lastDocumentId = DocumentService.documentId()
-          console.log('GGG: lastDocumentId = ' + lastDocumentId)
-
-          console.log('formData = ' + JSON.stringify($scope.formData)   )
-
-          // Add the newly created document to the document list
-          // of the current document
-          if (hasSubdocuments) {
-              url += '?append=' +DocumentService.documentId()
-          }
-
-          // Create document
-          $http.post(url, parameter)
-          .then(function(response){
+        // Create document
+        $http.post(url, parameter)
+            .then(function (response) {
                 if (response.data['status'] == 'success') {
 
-                      console.log('Reponse OK, document created')
+                    var newDocument = response.data['document']
+                    var newdocumentId = newDocument['id']
 
-                      var newDocument = response.data['document']
+                    if (process_as_child) {
 
-                      console.log('GGG: newDocument = ' + JSON.stringify(newDocument))
-                      var newdocumentId = newDocument['id']
-                      var newdocumentTitle = newDocument['title']
+                        if (parent.id == 0) {
 
+                            SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
+                            $scope.parentTitle = parent.title
+                            $scope.parentId = parent.id
 
-                      if (process_as_child) {
-                          console.log('GGG: BRANCH A')
-                          // console.log('**** lastDocumentId: '+ lastDocumentId)
-                          // SearchService.query('id='+lastDocumentId, $scope, 'documents')
-                          console.log('GGG: parent: ' + parent.title)
-                          console.log('GGG: current doc: ' + _currentDocument.title)
-                          if (parent.id == 0) {
+                        } else {
 
-                              console.log('GGG: I am going to go to new document ' + newdocumentTitle + ', ' + 'id = ' + newdocumentId)
-                              SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
-                              $scope.parentTitle = parent.title
-                              $scope.parentId = parent.id
+                            SearchService.query('id=' + parent.id, $scope, 'documents')
+                        }
 
-                          } else {
+                    } else {
 
-                              console.log('GGG: I am going to go to document ' + parent.title + ', ' + 'id = ' + parent.id)
-                              SearchService.query('id=' + parent.id, $scope, 'documents')
-                          }
-
-
-                          // $location.path('/editdocument/' + parent.id)
-                          // $state.go('editdocument', {}, {reload:true})
-
-                          // $location.path('/editdocument/' + id)
-                          // $state.go('editdocument', {}, {reload:true})
-
-                      } else {
-                          console.log('GGG:BRANCH B, I am going to go to ' + document.title + ', id = ' + document.id  )
-                          SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
-                          // $location.path('/editdocument/' + document.id)
-                          // $state.go('editdocument', {}, {reload:true})
-                      }
-
-                      // SearchService.query('id='+id, $scope, 'editOneDocument')
+                        SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                    }
 
                 } else {
 
-                        console.log('BAD Reponse, document not created')
-                       $scope.message = response.data['error']
+                    $scope.message = response.data['error']
 
                 }
-          });
+            });
     }
 }
 
 },{}],11:[function(require,module,exports){
 module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService,
-                          DocumentService, DocumentRouteService ) {
+                          DocumentService ) {
 
     console.log('PP: controller PrintDocument')
 
@@ -901,11 +853,9 @@ module.exports = function($scope, $state, $http, envService,
 var app = require('angular').module('noteshareApp');
 
 app.service('DocumentApiService', require('./services/DocumentApiService')); 
-app.service('DocumentService', require('./services//DocumentService')); 
-app.service('DocumentRouteService', require('./services//DocumentRouteService')); 
+app.service('DocumentService', require('./services//DocumentService'));
 app.service('MathJaxService', require('./services/MathJaxService')); 
-app.service('SearchService', require('./services/SearchService'));  
-app.service('CollectionService', require('./services/CollectionService'));
+app.service('SearchService', require('./services/SearchService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))
@@ -918,52 +868,7 @@ app.controller('PrintDocumentController', require('./controllers/PrintDocumentCo
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/EditMenuController":9,"./controllers/NewDocumentController":10,"./controllers/PrintDocumentController":11,"./controllers/SearchController":12,"./services//DocumentRouteService":16,"./services//DocumentService":17,"./services/CollectionService":14,"./services/DocumentApiService":15,"./services/MathJaxService":18,"./services/SearchService":19,"angular":51}],14:[function(require,module,exports){
-module.exports = function(DocumentService) {
-
-
-    this.getCollectionItem = function(scope) {
-
-        var stackTop = DocumentService.collectionStackTop()
-
-        console.log('*** DRS, stackTop: ' + JSON.stringify(stackTop))
-
-        if (stackTop == undefined) {
-
-            console.log('QQ:0')
-            scope.collectionTitle = undefined
-            scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-
-        }
-        else
-        {
-            console.log('QQ:1 ')
-            var currentItem = DocumentService.currentDocumentItem()
-                // var collectionItem = {}
-            if (DocumentService.itemsAreEqual(stackTop, currentItem)) {
-
-                scope.collectionItem = DocumentService.collectionStackPeek(1)
-                console.log('QQ:2 ' + JSON.stringify(scope.collectionItem))
-            }
-            else
-            {
-                scope.collectionItem = stackTop
-                console.log('QQ:3 ' + JSON.stringify(scope.collectionItem))
-            }
-            scope.collectionTitle = scope.collectionItem.title
-            scope.collectionId = scope.collectionItem.id
-            console.log('QQ:4 id = ' + scope.collectionId)
-            console.log('QQ:4 title = ' + scope.collectionTitle)
-            scope.tableOfContentsTitle = 'Contents'
-
-        }
-
-    }
-
-
-
-}
-},{}],15:[function(require,module,exports){
+},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/EditMenuController":9,"./controllers/NewDocumentController":10,"./controllers/PrintDocumentController":11,"./controllers/SearchController":12,"./services//DocumentService":15,"./services/DocumentApiService":14,"./services/MathJaxService":16,"./services/SearchService":17,"angular":49}],14:[function(require,module,exports){
 /*****
  headers: { "accesstoken": UserService.accessToken(),
                             "Cache-control": "",
@@ -1325,90 +1230,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
         
 
 }
-},{}],16:[function(require,module,exports){
-module.exports = function(DocumentService, $localStorage, DocumentApiService, CollectionService, $sce, MathJaxService, GlobalService, UserService) {
-
-    this.getDocumentList = function(scope) {
-
-
-        var _documentList = DocumentService.documentList()
-
-        if (_documentList.length == 0) {
-
-            DocumentService.resetDocumentList()
-            _documentList = $localStorage.documentList
-        }
-
-        console.log('XXX(Route) document count = ' + _documentList.length)
-
-        if (_documentList == undefined) { console.log ('XXX(Route), _documentList is UNDEFINED')}
-
-        console.log('XXX(Route) ' + _documentList.length + ' documents')
-
-        if (_documentList.length == 0) {
-
-            var document = GlobalService.defaultDocumentHash()
-            _documentList = [document]
-
-        } else {
-
-            var document = _documentList[0]
-
-        }
-        
-        scope.title = document.title
-        scope.text = document.text
-        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
-
-
-        if (UserService.accessToken() == '') {
-
-            scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
-        }
-        else {
-
-            scope.docArray = _documentList || []
-        }
-
-        console.log('1. DocumentRouteService, getDocumentList :: ' + _documentList)
-        console.log('2. DocumentRouteService, getDocumentList :: ' + scope.docarray)
-
-        scope.documentCount = _documentList.length
-        
-        console.log('3. DocumentService.getDocumentList: ' + scope.documentCount + ' documents')
-        
-        if (document.links.parent == undefined) {
-
-            scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-        }
-        else
-        {
-            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
-            scope.tableOfContentsTitle = 'Contents'
-        }
-        
-        scope.$watch(function(local_scope) { 
-                    return local_scope.renderedText },
-                    MathJaxService.reload(DocumentService.kind(), 'MMM, DocumentRouteService: getDocumentList')
-                );
-        
-    }
-
-
-    this.printDocument = function(scope, id, queryObj) {
-        DocumentApiService.printDocument(id, queryObj)
-            .then(
-                function(response) {
-                   scope.printUrl = DocumentService.printUrl()
-                    console.log("scope.printUrl: " + scope.printUrl )
-
-                }
-            )
-
-    }
-
-}
-},{}],17:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -1503,8 +1325,6 @@ module.exports = function($localStorage) {
     }
 
 
-    //// END (JJJJ) ////
-    /********** Collection Management ***************/
     
     
     // An item is an object with fields id and a title
@@ -1522,95 +1342,6 @@ module.exports = function($localStorage) {
         $localStorage.currentDocumentItem = item  
     }
     this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-
-
-    ///////// TOC //////////////////////
-
-
-    /// XXXX ////
-    this.documentIsInDocumentList = function(item) {
-        
-        var matchId = function(item, listItem) { return (item.id == listItem['id'])}
-        
-         var matches = this.documentList().filter(
-            function(x) { return matchId(item, x) }
-        ) || []   
-        return (matches.length > 0) 
-    }
-    
-    //XXX
-    this.currentDocumentIsTerminal = function() { 
-
-        return (this.subdocuments().length == 0) }
-    
-    this.isSiblingOfCurrentDocument = function(item) {  }
-    
-    
-    
-    this.itemsAreEqual = function(firstItem, secondItem) {
-            
-            if ((firstItem == undefined) && (secondItem == undefined)) {
-                
-                return true
-            }
-            else if ((firstItem == undefined) || (secondItem == undefined)) {
-                
-                return false
-            }
-            else
-            {
-                return (firstItem.id == secondItem.id)
-            }
-    }
-    
-    
-    this.updateCollectionStack = function() {
-        
-        var currentItem = this.currentDocumentItem()
-        var stackTop = this.collectionStackTop()
-
-        var currentIsTerminal = this.currentDocumentIsTerminal()
-        var currentIsInDocumentList = this.documentIsInDocumentList(currentItem)
-
-        var report = function(message) {
-
-            var sts = JSON.stringify($localStorage.collectionStack)
-            var nSt = $localStorage.collectionStack.length
-            console.log(message + ', N = ' + nSt + ', S = ' + sts )
-            
-        }
-        
-        
-        if  (this.itemsAreEqual(stackTop, currentItem)) { 
-            
-           // this.popCollectionStack()
-           // report('Rule pop')
-        }
-        else if ( currentIsTerminal && !currentIsInDocumentList) {
-            
-            if (!this.itemsAreEqual(currentItem, stackTop)) { 
-            
-                this.pushCollectionStack(currentItem)
-                report('Rule 1')
-                
-            }    
-        }
-        else if ( !currentIsTerminal ) {
-            
-            if (!this.itemsAreEqual(currentItem, stackTop)) { 
-            
-                this.pushCollectionStack(currentItem)
-                report('Rule 2')
-                
-            }
-        }
-        else {
-
-            report('Rule no-op')
-        }
-      
-    }
-    
     
 
     this.documentCount = function() { 
@@ -1798,7 +1529,7 @@ module.exports = function($localStorage) {
     
 
 }
-},{}],18:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function() {
     
     this.reload = function(documentKind, message) {
@@ -1814,7 +1545,7 @@ module.exports = function() {
     }
     
 }
-},{}],19:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function ($http, $sce, $state, $location, $q,
                            DocumentService, envService, UserService, QueryParser) {
 
@@ -1875,7 +1606,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
             })
     }
 }
-},{}],20:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService, UserService) {
     
         $scope.doImageSearch = function(){
@@ -1912,7 +1643,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
     
     }
 
-},{}],21:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 
 /*****
 
@@ -2011,7 +1742,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 }
  
 
-},{}],22:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 /*
 GET /images
@@ -2083,7 +1814,7 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
 
     
 }
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2099,7 +1830,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":20,"./controllers/ImageUploadController":21,"./controllers/ImagesController":22,"./services/ImageApiService":24,"./services/ImageRouteService":25,"./services/ImageSearchService":26,"./services/ImageService":27,"angular":51}],24:[function(require,module,exports){
+},{"./controllers/ImageSearchController":18,"./controllers/ImageUploadController":19,"./controllers/ImagesController":20,"./services/ImageApiService":22,"./services/ImageRouteService":23,"./services/ImageSearchService":24,"./services/ImageService":25,"angular":49}],22:[function(require,module,exports){
 module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
@@ -2179,7 +1910,7 @@ module.exports = function($http, $q, ImageService, envService, UserService) {
     }
     
       }
-},{}],25:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 
 module.exports = function(ImageService, ImageApiService, $state) {
     
@@ -2217,7 +1948,7 @@ module.exports = function(ImageService, ImageApiService, $state) {
 
     }
 }
-},{}],26:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService, UserService) {
 
     
@@ -2252,7 +1983,7 @@ module.exports = function($http, $state, ImageService, ImageApiService, QueryPar
     }
 }
                   
-},{}],27:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -2366,14 +2097,14 @@ module.exports = function($localStorage) {
     
        
 }
-},{}],28:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":29,"angular":51}],29:[function(require,module,exports){
+},{"./services/QueryParser":27,"angular":49}],27:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -2430,7 +2161,7 @@ module.exports = function() {
     
     
     }
-},{}],30:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 // http://www.tutorialspoint.com/angularjs/angularjs_upload_file.htm
 
 module.exports = function ($http) {
@@ -2455,7 +2186,7 @@ module.exports = function ($http) {
 
     
  }
-},{}],31:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = function() {
 
     // this.clientServer = function() { return "localhost:3000" }
@@ -2475,7 +2206,7 @@ module.exports = function() {
 }
 
 
-},{}],32:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 // Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/
 // Demo: http://cheynewallace.github.io/angular-s3-upload/
@@ -2524,7 +2255,7 @@ module.exports = function(file) {
     });
 
 }
-},{}],33:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = function(Math) {
      
     this.reportTime = function() {
@@ -2537,7 +2268,7 @@ module.exports = function(Math) {
         return sec + "::" + ms
     }
 }
-},{}],34:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -2545,7 +2276,7 @@ module.exports = function(Math) {
             return val;
         }
     }
-},{}],35:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2560,8 +2291,8 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 
-},{"./FileUpload":30,"./GlobalService":31,"./PSFileUpload":32,"./UtilityService":33,"./foo":34,"angular":51}],36:[function(require,module,exports){
-module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentRouteService, DocumentService, MathJaxService, UserService) {
+},{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":49}],34:[function(require,module,exports){
+module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, MathJaxService, UserService) {
     
     console.log('SITE CONTROLLER')
     
@@ -2585,7 +2316,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
     SearchService.query(queryString, $scope, 'documents')
     .then(function(response){
         $scope.site = id
-        DocumentRouteService.getDocumentList($scope)
+        DocumentApiService.getDocumentList($scope)
         $scope.docStyle = function(doc) {
             if (doc['id'] == DocumentService.documentId()) { return { "background-color" : "#fee" }}
         }
@@ -2602,8 +2333,8 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
        
     })       
 }
-},{}],37:[function(require,module,exports){
-module.exports = function($stateParams, $state, $scope, $location, DocumentService, DocumentRouteService) {
+},{}],35:[function(require,module,exports){
+module.exports = function($stateParams, $state, $scope, $location, DocumentService) {
     
     console.log('SITE DOCUMENT CONTROLLER')
     
@@ -2613,7 +2344,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     
     var queryObj =  $location.search()
     
-    DocumentRouteService.getDocumentList($scope)
+    DocumentApiService.getDocumentList($scope)
     DocumentApiService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
@@ -2623,7 +2354,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     }
     
 }
-},{}],38:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2631,7 +2362,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('SiteController', require('./SiteController'))
 app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
-},{"./SiteController":36,"./SiteDocumentController":37,"angular":51}],39:[function(require,module,exports){
+},{"./SiteController":34,"./SiteDocumentController":35,"angular":49}],37:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, MathJaxService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
@@ -2699,7 +2430,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   /////
   
 }
-},{}],40:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /***********
 
 Advanced routing and resolves
@@ -2898,7 +2629,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
     
     
@@ -2922,7 +2653,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/MenuController":39,"angular":51}],41:[function(require,module,exports){
+},{"./controllers/MenuController":37,"angular":49}],39:[function(require,module,exports){
 module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $location, $window,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
@@ -2988,7 +2719,7 @@ module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $
     }
 }
 
-},{}],42:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {
 
     console.log('Sign out ...')
@@ -3007,7 +2738,7 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
         
 }
 
-},{}],43:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
@@ -3040,7 +2771,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
 }
     
     
-},{}],44:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage, envService) {
 
         var deferred = $q.defer();
@@ -3096,7 +2827,7 @@ module.exports = function($http, $q, $localStorage, envService) {
       }
 
 
-},{}],45:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -3109,7 +2840,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],46:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function($localStorage) {
     
 /*****
@@ -3215,7 +2946,7 @@ State variables:
 
  
 }
-},{}],47:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -3231,7 +2962,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":41,"./SignOutController":42,"./SignUpController":43,"./UserApiService":44,"./UserController":45,"./UserService":46,"angular":51}],48:[function(require,module,exports){
+},{"./SignInController":39,"./SignOutController":40,"./SignUpController":41,"./UserApiService":42,"./UserController":43,"./UserService":44,"angular":49}],46:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -4302,11 +4033,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],49:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":48}],50:[function(require,module,exports){
+},{"./angular-route":46}],48:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36075,8 +35806,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],51:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":50}]},{},[1]);
+},{"./angular":48}]},{},[1]);

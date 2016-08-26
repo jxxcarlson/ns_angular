@@ -1,4 +1,4 @@
-module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentRouteService, DocumentService, MathJaxService, UserService) {
+module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, MathJaxService, UserService) {
     
     console.log('SITE CONTROLLER')
     
@@ -22,7 +22,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
     SearchService.query(queryString, $scope, 'documents')
     .then(function(response){
         $scope.site = id
-        DocumentRouteService.getDocumentList($scope)
+        DocumentApiService.getDocumentList($scope)
         $scope.docStyle = function(doc) {
             if (doc['id'] == DocumentService.documentId()) { return { "background-color" : "#fee" }}
         }

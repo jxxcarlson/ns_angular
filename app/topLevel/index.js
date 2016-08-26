@@ -196,7 +196,7 @@ app.controller('MainController', function($scope, $http, $state, $location, $loc
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
     
     

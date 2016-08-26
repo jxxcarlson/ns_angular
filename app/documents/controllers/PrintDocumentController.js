@@ -1,5 +1,5 @@
 module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService,
-                          DocumentService, DocumentRouteService ) {
+                          DocumentService ) {
 
     console.log('PP: controller PrintDocument')
 

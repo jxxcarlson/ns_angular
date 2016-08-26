@@ -3,10 +3,10 @@
 // GET /documents
 // GET /documents/:id
 
-REFERENCE: https://github.com/gsklee/ngStorage
+// REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, CollectionService, DocumentRouteService, UserService, MathJaxService ) {
+                           DocumentService, UserService, MathJaxService ) {
 
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
@@ -16,15 +16,11 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
 
-    console.log('SSS: Enter Doc ctrl with DOCUMENT id = ' + id)
     DocumentApiService.getDocument($scope, id, queryObj)
 
-    console.log('Ctrl, Kinds: ' + $scope.textKind +', ' +  $scope.pdfKind +', ' +  $scope.imageKind )
-    
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
-    
     $scope.reloadMathJax = function() {
         $timeout( 
          function() { 
@@ -45,10 +41,8 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
             return ""
         }
         
-        
     }
 
-    
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
         } else {

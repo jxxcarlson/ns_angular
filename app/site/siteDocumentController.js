@@ -1,4 +1,4 @@
-module.exports = function($stateParams, $state, $scope, $location, DocumentService, DocumentRouteService) {
+module.exports = function($stateParams, $state, $scope, $location, DocumentService) {
     
     console.log('SITE DOCUMENT CONTROLLER')
     
@@ -8,7 +8,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     
     var queryObj =  $location.search()
     
-    DocumentRouteService.getDocumentList($scope)
+    DocumentApiService.getDocumentList($scope)
     DocumentApiService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
