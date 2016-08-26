@@ -25,7 +25,8 @@ var app = require('angular').module('noteshareApp');
 
 
 app.controller('MenuController', require('./controllers/MenuController'))
-// app.controller('AboutController', require('./controllers/AboutController'))
+app.controller('MainController', require('./controllers/MainController'))
+app.controller('AboutController', require('./controllers/AboutController'))
 
     // configure our routes
 
@@ -164,55 +165,6 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 });
 
 
-
-// create the controller and inject Angular's $scope
-app.controller('MainController', function($scope, $http, $state, $location, $localStorage,
-                        foo, UserService, SearchService, envService, DocumentService) {
-
-    var accessTokenValid = UserService.accessTokenValid()
-
-    try {
-
-        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
-
-    }
-    catch(err) {
-
-        var documentEditable = false
-
-    }
-
-
-
-    $scope.message = ''
-
-    foo.myFunc('MainController')
-    $scope.currentSite = UserService.getCurrentSite()
-    $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
-     
-    $scope.accessTokenValid = accessTokenValid
-    $scope.documentEditable = documentEditable
-
-    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
-
-
-    envService.set('development');
-
-    
-    
-});
-
-
-app.controller('AboutController', function($scope, foo, envService) {
-    
-    
-    $scope.message = 'Look! I am an about page ....';
-    foo.myFunc('AboutController')   
-
-    $scope.clientUrl = envService.read('clientUrl')
-    $scope.apiUrl = envService.read('apiUrl')
-    
-});
 
 
 

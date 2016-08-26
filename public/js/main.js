@@ -176,7 +176,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":13,"./images":21,"./search":26,"./services":33,"./site":36,"./topLevel":38,"./user":45,"angular":49,"angular-route":47}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":13,"./images":21,"./search":26,"./services":33,"./site":36,"./topLevel":40,"./user":47,"angular":51,"angular-route":49}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -253,7 +253,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":49}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":51}],6:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
 
 
@@ -868,7 +868,7 @@ app.controller('PrintDocumentController', require('./controllers/PrintDocumentCo
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/EditMenuController":9,"./controllers/NewDocumentController":10,"./controllers/PrintDocumentController":11,"./controllers/SearchController":12,"./services//DocumentService":15,"./services/DocumentApiService":14,"./services/MathJaxService":16,"./services/SearchService":17,"angular":49}],14:[function(require,module,exports){
+},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/EditMenuController":9,"./controllers/NewDocumentController":10,"./controllers/PrintDocumentController":11,"./controllers/SearchController":12,"./services//DocumentService":15,"./services/DocumentApiService":14,"./services/MathJaxService":16,"./services/SearchService":17,"angular":51}],14:[function(require,module,exports){
 /*****
  headers: { "accesstoken": UserService.accessToken(),
                             "Cache-control": "",
@@ -1830,7 +1830,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":18,"./controllers/ImageUploadController":19,"./controllers/ImagesController":20,"./services/ImageApiService":22,"./services/ImageRouteService":23,"./services/ImageSearchService":24,"./services/ImageService":25,"angular":49}],22:[function(require,module,exports){
+},{"./controllers/ImageSearchController":18,"./controllers/ImageUploadController":19,"./controllers/ImagesController":20,"./services/ImageApiService":22,"./services/ImageRouteService":23,"./services/ImageSearchService":24,"./services/ImageService":25,"angular":51}],22:[function(require,module,exports){
 module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
@@ -2104,7 +2104,7 @@ var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":27,"angular":49}],27:[function(require,module,exports){
+},{"./services/QueryParser":27,"angular":51}],27:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -2291,7 +2291,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 
-},{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":49}],34:[function(require,module,exports){
+},{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":51}],34:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, MathJaxService, UserService) {
     
     console.log('SITE CONTROLLER')
@@ -2362,7 +2362,59 @@ var app = require('angular').module('noteshareApp');
 app.controller('SiteController', require('./SiteController'))
 app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
-},{"./SiteController":34,"./SiteDocumentController":35,"angular":49}],37:[function(require,module,exports){
+},{"./SiteController":34,"./SiteDocumentController":35,"angular":51}],37:[function(require,module,exports){
+
+module.exports = function($scope, foo, envService) {
+
+
+    $scope.message = 'Look! I am an about page ....';
+    foo.myFunc('AboutController')
+
+    $scope.clientUrl = envService.read('clientUrl')
+    $scope.apiUrl = envService.read('apiUrl')
+
+}
+
+
+},{}],38:[function(require,module,exports){
+
+module.exports = function($scope, $http, $state, $location, $localStorage,
+                                          foo, UserService, SearchService, envService, DocumentService) {
+
+    var accessTokenValid = UserService.accessTokenValid()
+
+    try {
+
+        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+
+    }
+    catch(err) {
+
+        var documentEditable = false
+
+    }
+
+
+
+    $scope.message = ''
+
+    foo.myFunc('MainController')
+    $scope.currentSite = UserService.getCurrentSite()
+    $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
+
+    $scope.accessTokenValid = accessTokenValid
+    $scope.documentEditable = documentEditable
+
+    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
+
+
+    envService.set('development');
+
+
+
+}
+
+},{}],39:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, MathJaxService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
@@ -2430,7 +2482,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   /////
   
 }
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /***********
 
 Advanced routing and resolves
@@ -2458,7 +2510,8 @@ var app = require('angular').module('noteshareApp');
 
 
 app.controller('MenuController', require('./controllers/MenuController'))
-// app.controller('AboutController', require('./controllers/AboutController'))
+app.controller('MainController', require('./controllers/MainController'))
+app.controller('AboutController', require('./controllers/AboutController'))
 
     // configure our routes
 
@@ -2598,62 +2651,13 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 
 
-// create the controller and inject Angular's $scope
-app.controller('MainController', function($scope, $http, $state, $location, $localStorage,
-                        foo, UserService, SearchService, envService, DocumentService) {
-
-    var accessTokenValid = UserService.accessTokenValid()
-
-    try {
-
-        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
-
-    }
-    catch(err) {
-
-        var documentEditable = false
-
-    }
-
-
-
-    $scope.message = ''
-
-    foo.myFunc('MainController')
-    $scope.currentSite = UserService.getCurrentSite()
-    $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
-     
-    $scope.accessTokenValid = accessTokenValid
-    $scope.documentEditable = documentEditable
-
-    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
-
-
-    envService.set('development');
-
-    
-    
-});
-
-
-app.controller('AboutController', function($scope, foo, envService) {
-    
-    
-    $scope.message = 'Look! I am an about page ....';
-    foo.myFunc('AboutController')   
-
-    $scope.clientUrl = envService.read('clientUrl')
-    $scope.apiUrl = envService.read('apiUrl')
-    
-});
-
 
 
 app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/MenuController":37,"angular":49}],39:[function(require,module,exports){
+},{"./controllers/AboutController":37,"./controllers/MainController":38,"./controllers/MenuController":39,"angular":51}],41:[function(require,module,exports){
 module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $location, $window,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
@@ -2719,7 +2723,7 @@ module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $
     }
 }
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {
 
     console.log('Sign out ...')
@@ -2738,7 +2742,7 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
         
 }
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
@@ -2771,7 +2775,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
 }
     
     
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function($http, $q, $localStorage, envService) {
 
         var deferred = $q.defer();
@@ -2827,7 +2831,7 @@ module.exports = function($http, $q, $localStorage, envService) {
       }
 
 
-},{}],43:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -2840,7 +2844,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function($localStorage) {
     
 /*****
@@ -2946,7 +2950,7 @@ State variables:
 
  
 }
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2962,7 +2966,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":39,"./SignOutController":40,"./SignUpController":41,"./UserApiService":42,"./UserController":43,"./UserService":44,"angular":49}],46:[function(require,module,exports){
+},{"./SignInController":41,"./SignOutController":42,"./SignUpController":43,"./UserApiService":44,"./UserController":45,"./UserService":46,"angular":51}],48:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -4033,11 +4037,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":46}],48:[function(require,module,exports){
+},{"./angular-route":48}],50:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -35806,8 +35810,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":48}]},{},[1]);
+},{"./angular":50}]},{},[1]);
