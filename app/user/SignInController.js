@@ -1,9 +1,9 @@
-module.exports = function ($state, $scope, $stateParams, $location, $window,
+module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $location, $window,
                            UserApiService, UserService, DocumentService, MathJaxService,
-                           SearchService, ImageSearchService) {
+                           SearchService) {
 
 
-
+    var deferred = $q.defer();
     $scope.message = ""
 
     if (UserService.username) {
@@ -41,6 +41,24 @@ module.exports = function ($state, $scope, $stateParams, $location, $window,
                 function (error) {
                     console.log('ERROR!');
                 }
-            );
+            ).then(
+
+                function(response) {
+
+                    deferred.resolve(response)
+
+                    $timeout(
+                        function() {
+
+                            console.log('I am a satisfied with your sign in process')
+                            $window.location.reload()
+
+                        },
+                        500
+                    )
+
+
+                }
+        )
     }
 }
