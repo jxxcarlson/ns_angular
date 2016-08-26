@@ -32,19 +32,9 @@
               $scope.imageKind = imageRegex.test($scope.kind)
               $scope.pdfKind = pdfRegex.test($scope.kind)
               $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
-
               $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-              console.log('XXX(Editor), Kind: ' + $scope.kind)
-              console.log('XXX(Editor), Kind flags: ' + $scope.textKind, ', ' + $scope.pdfKind + ', ' + $scope.imageKind)
-
-
               $scope.identifier = document.identifier
               $scope.tags = document.tags
-
-
-              console.log('EEE, title = ' + $scope.editDocument.title)
-
               $scope.docArray = DocumentService.documentList()
               $scope.documentCount = DocumentService.documentCount()
 
@@ -62,8 +52,6 @@
                   $scope.parentId = parent.id
                   $scope.parentTitle = parent.title
               }
-
-
 
 
               if (DocumentService.getPublic()) {
@@ -88,9 +76,6 @@
               DocumentService.update(document)
 
 
-              //////////
-
-
               var _documentList = DocumentService.documentList()
 
               if (_documentList.length == 0) {
@@ -102,21 +87,11 @@
               $scope.docArray = _documentList || []
 
 
-              /////////////
-
-             // $scope.statusPublic = DocumentService.getPublic()
-
-
           })
 
-      // $state.go($state.$current, null, { reload: true })
-
       $scope.text = DocumentService.text() // for word count
-
       $scope.wordCount = $scope.text.split(' ').length
-
       $scope.ifParentExists = true
-
       $scope.toggleParameterEditor = function() {
 
           $scope.identifier = DocumentService.identifier()
@@ -125,15 +100,11 @@
           $scope.showTools = !$scope.showTools
       }
 
-      console.log('INITIAL editOptions: ' + JSON.stringify($scope.editOptions))
 
-
-      
       // Set heights of window parts
       var innerHeight = $window.innerHeight
       document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
       document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
-      
       
       // Editor hotkeys (not working)
       hotkeys.bindTo($scope)
@@ -200,8 +171,7 @@
            } else {       
                $scope.textDirty = true
                keyStrokeCount += 1    
-               console.log('key up: ' + event.keyCode + ', count = ' + keyStrokeCount)
-           
+
                if (keyStrokeCount == 10) {
                    keyStrokeCount = 0
                    DocumentApiService.update(DocumentService.params($scope), $scope)
@@ -240,8 +210,7 @@
         }
          
         $scope.setKind = function(kk) {
-            
-            console.log('Set document kind to ' + kk)
+
             var id = DocumentService.documentId()
             var params = {id: id, kind: kk, author_name: DocumentService.author()}
             DocumentApiService.update(params, $scope)
@@ -249,7 +218,6 @@
 
       $scope.setParams = function(kk) {
 
-          console.log('Set document kind to ' + kk)
           var id = DocumentService.documentId()
           var params = {id: id, tags: $scope.tags,
               identifier: $scope.identifier, author_name: DocumentService.author()}
@@ -258,39 +226,26 @@
 
       $scope.attachDocument = function() {
 
-          console.log('Attach current document  ' + $scope.childOf)
           var id = DocumentService.currentDocumentItem().id
           var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
           DocumentApiService.update(params, $scope)
-          // $location.path('editdocument/' + id)
-          // SearchService.query('id=' + id, $scope, 'editdocument')
-      }
 
+      }
 
 
         $scope.moveUp = function() {
 
-            console.log('MOVE: ' + id + ' up in ' + $scope.parentId )
             DocumentApiService.move_subdocument($scope.parentId, id, 'move_up', $scope)
 
         }
 
        $scope.moveDown = function() {
 
-
-          console.log('MOVE: ' + id + ' down in ' + $scope.parentId )
           DocumentApiService.move_subdocument($scope.parentId, id, 'move_down', $scope)
 
       }
-
-        // Get most recent document from server
-
-
         // update document
         $scope.updateDocument = function() {
-           
-            console.log('EDITOR, updateDocument')
-
 
             DocumentApiService.update(DocumentService.params($scope), $scope)        
         

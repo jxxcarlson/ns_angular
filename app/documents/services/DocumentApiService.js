@@ -14,10 +14,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
         this.getDocument = function(scope, id, queryObj) {
 
-            // var deferred = $q.defer();
-            
-          console.log('SSS, API, enter getDocument with id =' + id)
-          
+
           if (id == undefined) {
               id = GlobalService.defaultDocumentID()
           }
@@ -32,24 +29,16 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
               }
 
                 var documentHash = response.data['document']
-                console.log('SSS, API, getDocuments, id = ' + documentHash['id'], ', title = ', documentHash['title'])
+
                 DocumentService.update(documentHash)
                 var document = DocumentService.document()
-                console.log('1.1 XXX(API), title = ' + document.title)
-                console.log('1.2 XXX(API), text = ' + document.text.slice(0,20))
-                console.log('1.3 XXX(API), text = ' + document.rendered_text.slice(0,20))
-                scope.document = document
-                // scope.docArray = $localStorage.documentList
-                scope.docArray = DocumentService.documentList()
-                console.log('XXX(API), docArray has length ' + scope.docArray.length)
 
+                scope.document = document
+                scope.docArray = DocumentService.documentList()
                 scope.title = document.title
                 scope.renderedText = function() {
 
-                    console.log('SSS, call renderedText set in API, getDocuments for ' +  document.id + '(' + documents.title + ')')
-
                     return $sce.trustAsHtml(document.rendered_text);
-
 
                 }
 
@@ -63,15 +52,11 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 scope.pdfKind = pdfRegex.test(kind)
                 scope.textKind = (!scope.imageKind && !scope.pdfKind)
 
-                console.log('SSS(API), Kind: ' + scope.kind)
-                console.log('SSS(API), Kind flags: ' + scope.textKind, ', ' + scope.pdfKind + ', ' + scope.imageKind)
-
                 if (scope.imageKind || scope.pdfKind ) {
 
                   scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-                  console.log('SSS ON SCOPE, ATTACHMENT URL = ' + scope.attachmentUrl)
-                }
 
+                }
 
                 var links = document.links
                 var parent = links.parent || {}
@@ -87,8 +72,6 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 }
 
 
-                console.log('XXX(API), PARENT = ' + JSON.stringify(parent))
-
                 var links = document['links'] || {} 
                 var documents = links['documents'] || [] // JJJJ
                 
@@ -99,14 +82,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                     DocumentService.setDocumentList( documents )
 
                 } 
-                else 
-                {
-                    console.log('XXX(API), documentS has length ZERO')
-                   // doesn't work // DocumentService.resetDocumentList()
-                }
 
-
-              //////////
 
               var _documentList = DocumentService.documentList()
 
@@ -134,8 +110,6 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
     this.getDocumentList = function(scope) {
 
-        console.log('XXX(API) enter getDocumentList')
-
         var _documentList = DocumentService.documentList()
 
         var _document
@@ -146,11 +120,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
             _documentList = $localStorage.documentList
         }
 
-        console.log('XXX(API) document count = ' + _documentList.length)
-
         if (_documentList == undefined) { console.log ('XXX(Route), _documentList is UNDEFINED')}
-
-        console.log('XXX(API) ' + _documentList.length + ' documents')
 
 
         if (UserService.accessToken() == '') {
@@ -162,12 +132,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
             scope.docArray = _documentList || []
         }
 
-        console.log('1. XXX(API), getDocumentList :: ' + _documentList)
-        console.log('2. XXX(API), getDocumentList :: ' + scope.docarray)
-
         scope.documentCount = _documentList.length
-
-        console.log('3. XXX(API).getDocumentList: ' + scope.documentCount + ' documents')
 
         if (document.links.parent == undefined) {
 
@@ -222,7 +187,6 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 deferred.resolve(response.data);
                 var jsonData = response.data
                 var url = jsonData['url']
-                console.log('PRINT urls in API: ' + url)
                 scope.printUrl = jsonData['url']
                 // promise is returned
                 return deferred.promise;
@@ -240,11 +204,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
         this.update = function(params, scope) {
 
             var deferred = $q.defer();
-
-            console.log('API, DOCUMENT, UPDATE')
-
             var deferredRefresh = $q.defer();
-     
             var parameter = JSON.stringify(params);
 
             if (params['query_string'] != undefined) {
@@ -259,8 +219,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
             
             $http.post(url, parameter, options)
                 .then(function(response){
-                
-                    console.log('  -- status: ' + response.data['status'])
+
                     if (response.data['status'] == 'success') {
                         
                         var document = response.data['document']
@@ -272,18 +231,15 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                         scope.title = _document.title
                         scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
                         scope.message = 'Success!'
-
-                        /* Update local storage */
-
                  
                     } else {
+
                         scope.message = response.data['error']
                     }
 
                 }).then( 
                 function(response) {
                     deferredRefresh.resolve(response)
-                    console.log('AAAA: ' + JSON.stringify(response))
                     $timeout(
                         function() {
                             MathJaxService.reload(DocumentService.kind(), 'MMM, API, update, MathJax ')
@@ -293,7 +249,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
                 }, function(response) {
                     deferred.reject(response);
-                     console.log('BBBB')
+
                 })
             
         }
@@ -305,16 +261,11 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
         // command is 'move_up' or 'move_down'
 
-        console.log('API, DOCUMENT, MOVE SUBDOCUMENT')
-
-
         var deferredRefresh = $q.defer();
 
         var parameter = JSON.stringify({author_name: DocumentService.author()});
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
         var options = { headers: { "accesstoken": UserService.accessToken() }}
-
-        console.log('MOVE: url = ' + url)
 
         $http.post(url, parameter, options)
             .then(function(response){

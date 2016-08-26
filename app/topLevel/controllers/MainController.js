@@ -16,7 +16,6 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
 
-
     $scope.message = ''
 
     foo.myFunc('MainController')
