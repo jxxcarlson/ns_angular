@@ -716,7 +716,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                         } else {
 
-                            SearchService.query('id=' + parent.id, $scope, 'documents')
+                            //SearchService.query('id=' + parent.id, $scope, 'documents')
+                            SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
                         }
 
                     } else {
