@@ -345,6 +345,10 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
         
     }
 
+
+    if ($scope.tableOfContentsTitle == undefined) {  $scope.tableOfContentsTitle = "Contents (" + DocumentService.documentCount() + ")" }
+
+
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
         } else {
@@ -928,7 +932,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
         }
         else
         {
-            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
+            // scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
 

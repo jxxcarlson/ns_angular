@@ -43,6 +43,10 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
         
     }
 
+
+    if ($scope.tableOfContentsTitle == undefined) {  $scope.tableOfContentsTitle = "Contents (" + DocumentService.documentCount() + ")" }
+
+
     if (DocumentService.getPublic()) {
             $scope.statusPublic = 'public'
         } else {

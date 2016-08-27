@@ -140,7 +140,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
         }
         else
         {
-            scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
+            // scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
             scope.tableOfContentsTitle = 'Contents'
         }
 
