@@ -272,6 +272,10 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 
     var doDelete = function() {
 
+        var parentId = DocumentService.parentId()
+
+        console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
+        console.log('DDD, parentId  = ' + parentId)
 
         var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id
         var options = { headers: { "accesstoken": UserService.accessToken() }}
@@ -283,7 +287,21 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
                 if (response.data['status'] == 'success') {
 
                     console.log('Response OK, document deleted')
-                    SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
+
+                    if (parentId == undefined) {
+
+                        console.log('DDD, searching user')
+
+                        SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
+
+                    } else {
+
+                        console.log('DDD, searching for parent')
+
+                        SearchService.query('id=' + parentId, $scope, 'documents')
+                    }
+
+
 
 
 
@@ -1117,17 +1135,19 @@ module.exports = function($localStorage) {
 
     this.parentId = function() {
 
-        var parent = this.document.links.parent
-        if (parent == undefined) {
 
-            console.log('PPP: parent id undefined')
-            return undefined
+        var links = this.document().links
+        var parent = links.parent || {}
+        if (parent == {}) {
+
+            return 0
 
         } else {
 
-            console.log('PPP: parent = ' + parent.id + ', ' + parent.title)
             return parent.id
+
         }
+
     }
 
     this.setDocumentId = function(id) { $localStorage.documentId = id }
@@ -1147,7 +1167,7 @@ module.exports = function($localStorage) {
     this.setText = function(text) { $localStorage.text = text }
     this.text = function() { return this.document().text }
     
-    this.setKind= function(kind) { $localStorage.documentKind = kind }
+    this.setKind = function(kind) { $localStorage.documentKind = kind }
     this.kind = function() { return this.document().documentKind }
     
     this.setPublic= function(value) { 
@@ -2259,7 +2279,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
 
 

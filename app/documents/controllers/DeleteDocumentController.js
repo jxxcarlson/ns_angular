@@ -16,6 +16,10 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 
     var doDelete = function() {
 
+        var parentId = DocumentService.parentId()
+
+        console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
+        console.log('DDD, parentId  = ' + parentId)
 
         var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id
         var options = { headers: { "accesstoken": UserService.accessToken() }}
@@ -27,7 +31,21 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
                 if (response.data['status'] == 'success') {
 
                     console.log('Response OK, document deleted')
-                    SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
+
+                    if (parentId == undefined) {
+
+                        console.log('DDD, searching user')
+
+                        SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
+
+                    } else {
+
+                        console.log('DDD, searching for parent')
+
+                        SearchService.query('id=' + parentId, $scope, 'documents')
+                    }
+
+
 
 
 

@@ -21,17 +21,19 @@ module.exports = function($localStorage) {
 
     this.parentId = function() {
 
-        var parent = this.document.links.parent
-        if (parent == undefined) {
 
-            console.log('PPP: parent id undefined')
-            return undefined
+        var links = this.document().links
+        var parent = links.parent || {}
+        if (parent == {}) {
+
+            return 0
 
         } else {
 
-            console.log('PPP: parent = ' + parent.id + ', ' + parent.title)
             return parent.id
+
         }
+
     }
 
     this.setDocumentId = function(id) { $localStorage.documentId = id }
@@ -51,7 +53,7 @@ module.exports = function($localStorage) {
     this.setText = function(text) { $localStorage.text = text }
     this.text = function() { return this.document().text }
     
-    this.setKind= function(kind) { $localStorage.documentKind = kind }
+    this.setKind = function(kind) { $localStorage.documentKind = kind }
     this.kind = function() { return this.document().documentKind }
     
     this.setPublic= function(value) { 
