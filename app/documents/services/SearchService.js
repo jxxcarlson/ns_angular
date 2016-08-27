@@ -40,17 +40,6 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
                 console.log('SSS: data is valid = ' + dataValid)
 
-                if (scope != undefined) {
-
-                    console.log('SSS(SearchService), scope OKKKK')
-                    
-                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-
-                } else {
-
-                    console.log('SSS(SearchService), WARNING: scope undefined')
-                }
-
                 $location.path('documents/' + currentDocument.id + '?toc')
                 $state.go('documents', {}, {reload: true})
 

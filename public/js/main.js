@@ -310,6 +310,9 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
                            DocumentService, UserService, MathJaxService ) {
 
+    console.log('DDD, ENTER DOCS CONTROLLER')
+    console.log('DDD, $stateParams.id: ' + $stateParams.id)
+    console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj =  $location.search()
@@ -322,6 +325,7 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
 
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
+
 
     $scope.reloadMathJax = function() {
         $timeout( 
@@ -344,9 +348,6 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
         }
         
     }
-
-
-    if ($scope.tableOfContentsTitle == undefined) {  $scope.tableOfContentsTitle = "Contents (" + DocumentService.documentCount() + ")" }
 
 
     if (DocumentService.getPublic()) {
@@ -926,16 +927,6 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
         scope.documentCount = _documentList.length
 
-        if (document.links.parent == undefined) {
-
-            scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-        }
-        else
-        {
-            // scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
-            scope.tableOfContentsTitle = 'Contents'
-        }
-
         scope.$watch(function(local_scope) {
                 return local_scope.renderedText },
             MathJaxService.reload(DocumentService.kind(), 'MMM, API getDocumentList, doc = ' )
@@ -1459,17 +1450,6 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var dataValid = (currentDocument.id == firstDocument.id)
 
                 console.log('SSS: data is valid = ' + dataValid)
-
-                if (scope != undefined) {
-
-                    console.log('SSS(SearchService), scope OKKKK')
-                    
-                    scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-
-                } else {
-
-                    console.log('SSS(SearchService), WARNING: scope undefined')
-                }
 
                 $location.path('documents/' + currentDocument.id + '?toc')
                 $state.go('documents', {}, {reload: true})
@@ -2280,7 +2260,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
 
     envService.set('production');
-    
+
 
 
 

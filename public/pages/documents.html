@@ -3,7 +3,7 @@
   <div class="col-md-4" >
     <div style="margin-left:2em;">
 
-    <h3> {{ tableOfContentsTitle }} </h3>
+    <h3> Contents ({{ docArray.length }}) </h3>
     <br />
     <div id="toc">
         <p class="toc-item " ng-repeat="doc in docArray" ng-style="docStyle(doc)"><i ng-show="hasSubdocument(doc)" class="fa fa-caret-right">&nbsp;</i><a href="{{doc['url']}}?toc"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a></p>
@@ -15,7 +15,7 @@
   <div class="col-md-8">
     <div style="margin-left:1em;">
         <h3 style="margin-left:20px">
-            <a ng-hide="hideParent" ng-click="goUp()" ng-href="documents/{{parentId}}">{{ parentTitle }}</a>
+            <a ng-hide="hideParent" ng-click="goUp()" ng-href="documents/{{parentId}}?toc">{{ parentTitle }}</a>
         </h3>
         <h2 style="margin-left:20px"> {{ title }} </h2>
         <br/>

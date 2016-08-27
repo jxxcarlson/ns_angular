@@ -8,6 +8,9 @@
 module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
                            DocumentService, UserService, MathJaxService ) {
 
+    console.log('DDD, ENTER DOCS CONTROLLER')
+    console.log('DDD, $stateParams.id: ' + $stateParams.id)
+    console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj =  $location.search()
@@ -20,6 +23,7 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
 
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
+
 
     $scope.reloadMathJax = function() {
         $timeout( 
@@ -42,9 +46,6 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
         }
         
     }
-
-
-    if ($scope.tableOfContentsTitle == undefined) {  $scope.tableOfContentsTitle = "Contents (" + DocumentService.documentCount() + ")" }
 
 
     if (DocumentService.getPublic()) {

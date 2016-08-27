@@ -134,16 +134,6 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
         scope.documentCount = _documentList.length
 
-        if (document.links.parent == undefined) {
-
-            scope.tableOfContentsTitle = 'Search results (' + DocumentService.documentCount() + ')'
-        }
-        else
-        {
-            // scope.hideCollection = (document.links.parent.id == DocumentService.documentId())
-            scope.tableOfContentsTitle = 'Contents'
-        }
-
         scope.$watch(function(local_scope) {
                 return local_scope.renderedText },
             MathJaxService.reload(DocumentService.kind(), 'MMM, API getDocumentList, doc = ' )
