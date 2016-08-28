@@ -190,8 +190,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     //// JJJJ ///
     this.update = function (params, scope) {
 
-        var deferred = $q.defer();
-        var deferredRefresh = $q.defer();
         var parameter = JSON.stringify(params);
 
         if (params['query_string'] != undefined) {
@@ -226,32 +224,13 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     scope.message = response.data['error']
                 }
 
-            }).then(
-            function (response) {
-                deferredRefresh.resolve(response)
-                $timeout(
-                    function () {
-                        MathJaxService.reload(DocumentService.kind(), 'MMM, API, update, MathJax ')
-                    },
-                    10
-                )
-
-            }, function (response) {
-                deferred.reject(response);
-
             })
 
     }
 
 
     this.move_subdocument = function (parent_id, subdocument_id, command, scope) {
-
-        var deferred = $q.defer();
-
-        // command is 'move_up' or 'move_down'
-
-        var deferredRefresh = $q.defer();
-
+        
         var parameter = JSON.stringify({author_name: DocumentService.author()});
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
@@ -286,15 +265,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     scope.message = response.data['error']
                 }
 
-            }).then(
-            function (response) {
-                deferredRefresh.resolve(response)
-                console.log('AAAA: ' + JSON.stringify(response))
-
-                MathJaxService.reload(DocumentService.kind(), 'MMM, API, move subdoc ')
-            }, function (response) {
-                deferred.reject(response);
-                console.log('BBBB')
             })
 
     }
