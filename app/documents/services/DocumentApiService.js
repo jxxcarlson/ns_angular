@@ -136,11 +136,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
         scope.documentCount = _documentList.length
 
-        scope.$watch(function (local_scope) {
-                return local_scope.renderedText
-            },
-            MathJaxService.reload(DocumentService.kind(), 'MMM, API getDocumentList, doc = ')
-        );
 
     } // End getDocumentList
 
