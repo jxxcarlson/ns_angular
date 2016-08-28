@@ -1,4 +1,4 @@
-module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, MathJaxService, UserService) {
+module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, UserService) {
     
     console.log('SITE CONTROLLER')
     

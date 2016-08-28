@@ -230,7 +230,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
 
     this.move_subdocument = function (parent_id, subdocument_id, command, scope) {
-        
+
         var parameter = JSON.stringify({author_name: DocumentService.author()});
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
         var options = {headers: {"accesstoken": UserService.accessToken()}}

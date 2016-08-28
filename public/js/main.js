@@ -318,23 +318,22 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 
 }
 },{}],7:[function(require,module,exports){
-
 // ROUTES PROCESSED:
 // GET /documents
 // GET /documents/:id
 
 // REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, UserService, MathJaxService ) {
+module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
+                           DocumentService, UserService, MathJaxService) {
 
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
     console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
-    var queryObj =  $location.search()
-    
+    var queryObj = $location.search()
+
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
@@ -345,34 +344,36 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
 
-    $scope.reloadMathJax = function() {
-        $timeout( 
-         function() { 
-         MathJaxService.reload('MMM, doc ctrl: reloading MathJax for ' + DocumentService.title() )},
-        500)
-        
+    $scope.reloadMathJax = function () {
+        $timeout(
+            function () {
+                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload(DocumentService.kind(), message)
+            },
+            500)
+
     }
-    
-    $scope.author = function(doc) {
-        
+
+    $scope.author = function (doc) {
+
         if (doc['author'] != UserService.username()) {
 
             console.log('Ctrl: author = ' + doc['author'])
             return doc['author'] + ": "
-            
+
         } else {
-            
+
             return ""
         }
-        
+
     }
 
 
     if (DocumentService.getPublic()) {
-            $scope.statusPublic = 'public'
-        } else {
-            $scope.statusPublic = 'private'
-        }
+        $scope.statusPublic = 'public'
+    } else {
+        $scope.statusPublic = 'private'
+    }
 
 
 }
@@ -815,29 +816,28 @@ app.controller('PrintDocumentController', require('./controllers/PrintDocumentCo
                             "Pragma": "" 
                           }
 
-The purpose of DocumentApiServices is to communicate with the API server,
-performing the standard CRUD functons
+ The purpose of DocumentApiServices is to communicate with the API server,
+ performing the standard CRUD functons
 
-*****/
-module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
-
-
-
-        this.getDocument = function(scope, id, queryObj) {
+ *****/
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
 
 
-          if (id == undefined) {
-              id = GlobalService.defaultDocumentID()
-          }
-          var url = envService.read('apiUrl') + '/documents/' + id
-          var options = { headers: { "accesstoken": UserService.accessToken() }}
-          return  $http.get(url, options)
-          .then(function (response) {
+    this.getDocument = function (scope, id, queryObj) {
 
-              if (scope == undefined) {
 
-                  console.log('XXX(API) -- WARNING!!  ** scope ** is UNDEFINED')
-              }
+        if (id == undefined) {
+            id = GlobalService.defaultDocumentID()
+        }
+        var url = envService.read('apiUrl') + '/documents/' + id
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+        return $http.get(url, options)
+            .then(function (response) {
+
+                if (scope == undefined) {
+
+                    console.log('XXX(API) -- WARNING!!  ** scope ** is UNDEFINED')
+                }
 
                 var documentHash = response.data['document']
 
@@ -847,7 +847,7 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 scope.document = document
                 scope.docArray = DocumentService.documentList()
                 scope.title = document.title
-                scope.renderedText = function() {
+                scope.renderedText = function () {
 
                     return $sce.trustAsHtml(document.rendered_text);
 
@@ -863,9 +863,9 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 scope.pdfKind = pdfRegex.test(kind)
                 scope.textKind = (!scope.imageKind && !scope.pdfKind)
 
-                if (scope.imageKind || scope.pdfKind ) {
+                if (scope.imageKind || scope.pdfKind) {
 
-                  scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+                    scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
 
                 }
 
@@ -873,8 +873,8 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 var parent = links.parent || {}
                 if (parent == {}) {
 
-                        scope.parentId = 0
-                        scope.parentTitle = ''
+                    scope.parentId = 0
+                    scope.parentTitle = ''
 
                 } else {
 
@@ -883,43 +883,42 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 }
 
 
-                var links = document['links'] || {} 
+                var links = document['links'] || {}
                 var documents = links['documents'] || [] // JJJJ
-                
+
                 // If the document has subdocuments, display them
                 // instead of the search results
                 if (documents.length > 0) {
-                    
-                    DocumentService.setDocumentList( documents )
 
-                } 
+                    DocumentService.setDocumentList(documents)
+
+                }
 
 
-              var _documentList = DocumentService.documentList()
+                var _documentList = DocumentService.documentList()
 
-              if (_documentList.length == 0) {
+                if (_documentList.length == 0) {
 
-                  DocumentService.resetDocumentList()
-                  _documentList = $localStorage.documentList
-              }
+                    DocumentService.resetDocumentList()
+                    _documentList = $localStorage.documentList
+                }
 
-              if (UserService.accessToken() == '') {
+                if (UserService.accessToken() == '') {
 
-                  scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
-              }
-              else {
+                    scope.docArray = _documentList.filter(function (x) {
+                            return x.public == true
+                        }) || []
+                }
+                else {
 
-                  scope.docArray = _documentList || []
-              }
-            /////////////
-
-            }, function () {
-                 MathJaxService.reload(DocumentService.kind(), 'MMM, ApiService, getDocument')
+                    scope.docArray = _documentList || []
+                }
+                /////////////
 
             })
-        } // End getDocument
+    } // End getDocument
 
-    this.getDocumentList = function(scope) {
+    this.getDocumentList = function (scope) {
 
         var _documentList = DocumentService.documentList()
 
@@ -931,12 +930,16 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
             _documentList = $localStorage.documentList
         }
 
-        if (_documentList == undefined) { console.log ('XXX(Route), _documentList is UNDEFINED')}
+        if (_documentList == undefined) {
+            console.log('XXX(Route), _documentList is UNDEFINED')
+        }
 
 
         if (UserService.accessToken() == '') {
 
-            scope.docArray = _documentList.filter( function(x) { return x.public == true }) || []
+            scope.docArray = _documentList.filter(function (x) {
+                    return x.public == true
+                }) || []
         }
         else {
 
@@ -945,27 +948,23 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
 
         scope.documentCount = _documentList.length
 
-        scope.$watch(function(local_scope) {
-                return local_scope.renderedText },
-            MathJaxService.reload(DocumentService.kind(), 'MMM, API getDocumentList, doc = ' )
-        );
 
     } // End getDocumentList
-        
-        
-        this.search = function(searchText) {
 
-            var deferred = $q.defer();
-               
-            var url = envService.read('apiUrl') + '/documents' + '?' + $scope.searchText
-            var options = { headers: { "accesstoken": UserService.accessToken() }}
-            return  $http.get(url, options)
+
+    this.search = function (searchText) {
+
+        var deferred = $q.defer();
+
+        var url = envService.read('apiUrl') + '/documents' + '?' + $scope.searchText
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+        return $http.get(url, options)
             .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
                 var jsonData = response.data
                 var documents = jsonData['documents']
-                DocumentService.setDocumentList( documents )
+                DocumentService.setDocumentList(documents)
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -974,15 +973,15 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 // promise is returned
                 return deferred.promise;
             })
-        }
+    }
 
-    this.printDocument = function(scope, id, queryObj) {
+    this.printDocument = function (scope, id, queryObj) {
 
         var deferred = $q.defer();
 
         var url = envService.read('apiUrl') + '/printdocument/' + id
-        var options = { headers: { "accesstoken": UserService.accessToken() }}
-        return  $http.get(url, options)
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+        return $http.get(url, options)
             .then(function (response) {
                 // promise is fulfilled
                 deferred.resolve(response.data);
@@ -998,78 +997,58 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                 return deferred.promise;
             })
     }
-        
 
-        
-        //// JJJJ ///
-        this.update = function(params, scope) {
 
-            var deferred = $q.defer();
-            var deferredRefresh = $q.defer();
-            var parameter = JSON.stringify(params);
+    //// JJJJ ///
+    this.update = function (params, scope) {
 
-            if (params['query_string'] != undefined) {
+        var parameter = JSON.stringify(params);
 
-                var url = envService.read('apiUrl') + '/documents/' + params['id'] + '?' + params['query_string']
-            }
-            else {
+        if (params['query_string'] != undefined) {
 
-                var url = envService.read('apiUrl') + '/documents/' + params['id']
-            }
-            var options = { headers: { "accesstoken": UserService.accessToken() }}
-            
-            $http.post(url, parameter, options)
-                .then(function(response){
-
-                    if (response.data['status'] == 'success') {
-                        
-                        var document = response.data['document']
-
-                        DocumentService.update(document)
-                        var _document = DocumentService.document()
-                        
-                        /* Update $scope */
-                        scope.title = _document.title
-                        scope.renderedText = function() { return $sce.trustAsHtml(document.rendered_text); }
-                        scope.message = 'Success!'
-                 
-                    } else {
-
-                        scope.message = response.data['error']
-                    }
-
-                }).then( 
-                function(response) {
-                    deferredRefresh.resolve(response)
-                    $timeout(
-                        function() {
-                            MathJaxService.reload(DocumentService.kind(), 'MMM, API, update, MathJax ')
-                        },
-                        10
-                    )
-
-                }, function(response) {
-                    deferred.reject(response);
-
-                })
-            
+            var url = envService.read('apiUrl') + '/documents/' + params['id'] + '?' + params['query_string']
         }
+        else {
+
+            var url = envService.read('apiUrl') + '/documents/' + params['id']
+        }
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, parameter, options)
+            .then(function (response) {
+
+                if (response.data['status'] == 'success') {
+
+                    var document = response.data['document']
+
+                    DocumentService.update(document)
+                    var _document = DocumentService.document()
+
+                    /* Update $scope */
+                    scope.title = _document.title
+                    scope.renderedText = function () {
+                        return $sce.trustAsHtml(document.rendered_text);
+                    }
+                    scope.message = 'Success!'
+
+                } else {
+
+                    scope.message = response.data['error']
+                }
+
+            })
+
+    }
 
 
-    this.move_subdocument = function(parent_id, subdocument_id, command, scope) {
-
-        var deferred = $q.defer();
-
-        // command is 'move_up' or 'move_down'
-
-        var deferredRefresh = $q.defer();
+    this.move_subdocument = function (parent_id, subdocument_id, command, scope) {
 
         var parameter = JSON.stringify({author_name: DocumentService.author()});
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
-        var options = { headers: { "accesstoken": UserService.accessToken() }}
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         $http.post(url, parameter, options)
-            .then(function(response){
+            .then(function (response) {
 
                 console.log('  -- status: ' + response.data['status'])
                 if (response.data['status'] == 'success') {
@@ -1079,36 +1058,29 @@ module.exports = function($http, $timeout, $q, $sce, $localStorage, $state, $loc
                     var documents = links['documents'] || []
                     if (documents.length > 0) {
 
-                        DocumentService.setDocumentList( documents )
+                        DocumentService.setDocumentList(documents)
                     }
 
                     /* Update $scope */
                     scope.title = document['title']
-                    scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+                    scope.renderedText = function () {
+                        return $sce.trustAsHtml(document['rendered_text']);
+                    }
                     scope.message = 'Success!'
 
                     /* Update local storage */
                     DocumentService.update(document)
                     $location.path('editdocument/' + subdocument_id)
-                    $state.go('editdocument', {}, {reload:true})
+                    $state.go('editdocument', {}, {reload: true})
 
                 } else {
                     scope.message = response.data['error']
                 }
 
-            }).then(
-            function(response) {
-                deferredRefresh.resolve(response)
-                console.log('AAAA: ' + JSON.stringify(response))
-
-                MathJaxService.reload(DocumentService.kind(), 'MMM, API, move subdoc ')
-            }, function(response) {
-                deferred.reject(response);
-                console.log('BBBB')
             })
 
     }
-        
+
 
 }
 },{}],15:[function(require,module,exports){
@@ -1168,7 +1140,7 @@ module.exports = function($localStorage) {
     this.text = function() { return this.document().text }
     
     this.setKind = function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return this.document().documentKind }
+    this.kind = function() { return $localStorage.documentKind }
     
     this.setPublic= function(value) { 
         $localStorage.public = value 
@@ -1416,13 +1388,12 @@ module.exports = function($localStorage) {
 module.exports = function() {
     
     this.reload = function(documentKind, message) {
-        console.log('**** ***** IN MathJaxService, documentKind = ' + documentKind)
-        //if (documentKind == 'asciidoc-latex') {
-        if ('asciidoc-latex' == 'asciidoc-latex') {
+        console.log('* MathJaxService, documentKind = ' + documentKind)
+        if (documentKind == 'asciidoc-latex') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
-            console.log(message + ": reloadMathJax called " + message); 
+            console.log(message + ": reloadMathJax called ");
         } else {
-            console.log(message + ": skipping MathJax reload " + message);
+            console.log(message + ": skipping MathJax reload ");
         }
         
     }
@@ -1552,7 +1523,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             filename: file.name,
             title: $scope.formData.title,
             source: $scope.formData.source,
-            attach: true, // $scope.formData.attach,
+            attach: $scope.formData.attach,
             type: file.type,
             owner: UserService.username()
         };
@@ -1568,7 +1539,6 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  headers: { 'Content-Type': file.type },
                  data: file
                 }
-            var file_url = response.url
             
              // 2. Upload file to S3
             $http(req)
@@ -1589,9 +1559,6 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                         console.log('_IMAGE: FORK A, parent document = ' + response['parent_document'])
 
                         SearchService.query('id=' + response['parent_document'])
-                        // $location.path(response['parent_id'])
-                        // $state.go('documents', {id: response['parent_id']})
-
 
                     }
                     else {
@@ -2164,7 +2131,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 },{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":51}],34:[function(require,module,exports){
-module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, MathJaxService, UserService) {
+module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, UserService) {
     
     console.log('SITE CONTROLLER')
     
@@ -2279,7 +2246,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('prodoction');
 
 
 
@@ -2288,7 +2255,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
 },{}],39:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
-                            UserService, MathJaxService, SearchService,
+                            UserService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
   $scope.items = [
     'The first choice!',
@@ -2530,7 +2497,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"./controllers/AboutController":37,"./controllers/MainController":38,"./controllers/MenuController":39,"angular":51}],41:[function(require,module,exports){
-module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $location, $window,
+module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $window,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
 
@@ -2549,48 +2516,36 @@ module.exports = function ($state, $scope,$window, $timeout, $q, $stateParams, $
             .then(
                 function (result) {
                     if (UserService.loginStatus() == 200) {
-                        console.log('SIGNING IN USER')
                         $scope.message = 'Success!'
                         UserService.signin($scope)
-                        // ImageSearchService.query('scope=all', $state)
                         SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                             function () {
-                                // $window.location.reload()
                                 $state.go('documents', {}, {reload: true})
-                                MathJaxService.reload(DocumentService.kind(), 'MMM, SignIn')
-
                             })
                     } else {
-                        console.log('CANNOT SIGN IN USER')
                         UserService.signout()
-                        console.log('--------')
                         DocumentService.clear()
                         $scope.message = "Sorry - no account or username and password don't match"
                     }
-                    // promise was fullfilled (regardless of outcome)
-                    // checks for information will be peformed here
                 },
                 function (error) {
                     console.log('ERROR!');
                 }
             ).then(
+            function (response) {
 
-                function(response) {
+                deferred.resolve(response)
 
-                    deferred.resolve(response)
+                $timeout(
+                    function () {
 
-                    $timeout(
-                        function() {
+                        console.log('I am a satisfied with your sign in process')
+                        $window.location.reload()
 
-                            console.log('I am a satisfied with your sign in process')
-                            $window.location.reload()
-
-                        },
-                        500
-                    )
-
-
-                }
+                    },
+                    500
+                )
+            }
         )
     }
 }

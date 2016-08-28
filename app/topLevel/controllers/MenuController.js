@@ -1,5 +1,5 @@
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
-                            UserService, MathJaxService, SearchService,
+                            UserService, SearchService,
                             DocumentApiService, DocumentService, hotkeys) {
   $scope.items = [
     'The first choice!',
