@@ -28,7 +28,7 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
     $scope.reloadMathJax = function() {
         $timeout( 
          function() { 
-         MathJaxService.reload('MMM, doc ctrl: reloading MathJax for ' + DocumentService.title() )},
+         MathJaxService.reload('MMM, doc ctrl: reloading MathJax for ' + DocumentService.title() + ', kind = ' + DocumentService.kind())},
         500)
         
     }

@@ -34,7 +34,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
             filename: file.name,
             title: $scope.formData.title,
             source: $scope.formData.source,
-            attach: true, // $scope.formData.attach,
+            attach: $scope.formData.attach,
             type: file.type,
             owner: UserService.username()
         };
@@ -50,7 +50,6 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                  headers: { 'Content-Type': file.type },
                  data: file
                 }
-            var file_url = response.url
             
              // 2. Upload file to S3
             $http(req)
@@ -71,9 +70,6 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
                         console.log('_IMAGE: FORK A, parent document = ' + response['parent_document'])
 
                         SearchService.query('id=' + response['parent_document'])
-                        // $location.path(response['parent_id'])
-                        // $state.go('documents', {id: response['parent_id']})
-
 
                     }
                     else {
