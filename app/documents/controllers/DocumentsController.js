@@ -1,20 +1,19 @@
-
 // ROUTES PROCESSED:
 // GET /documents
 // GET /documents/:id
 
 // REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, UserService, MathJaxService ) {
+module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
+                           DocumentService, UserService, MathJaxService) {
 
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
     console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
-    var queryObj =  $location.search()
-    
+    var queryObj = $location.search()
+
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
@@ -25,34 +24,36 @@ module.exports = function($scope, $state, $window, $location, $timeout, $statePa
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
 
-    $scope.reloadMathJax = function() {
-        $timeout( 
-         function() { 
-         MathJaxService.reload('MMM, doc ctrl: reloading MathJax for ' + DocumentService.title() + ', kind = ' + DocumentService.kind())},
-        500)
-        
+    $scope.reloadMathJax = function () {
+        $timeout(
+            function () {
+                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload(DocumentService.kind(), message)
+            },
+            500)
+
     }
-    
-    $scope.author = function(doc) {
-        
+
+    $scope.author = function (doc) {
+
         if (doc['author'] != UserService.username()) {
 
             console.log('Ctrl: author = ' + doc['author'])
             return doc['author'] + ": "
-            
+
         } else {
-            
+
             return ""
         }
-        
+
     }
 
 
     if (DocumentService.getPublic()) {
-            $scope.statusPublic = 'public'
-        } else {
-            $scope.statusPublic = 'private'
-        }
+        $scope.statusPublic = 'public'
+    } else {
+        $scope.statusPublic = 'private'
+    }
 
 
 }
