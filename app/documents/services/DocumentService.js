@@ -54,7 +54,7 @@ module.exports = function($localStorage) {
     this.text = function() { return this.document().text }
     
     this.setKind = function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return this.document().documentKind }
+    this.kind = function() { return $localStorage.documentKind }
     
     this.setPublic= function(value) { 
         $localStorage.public = value 
