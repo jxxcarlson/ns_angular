@@ -591,6 +591,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
          
         $scope.setKind = function(kk) {
 
+            console.log('*** kk ' + kk)
             var id = DocumentService.documentId()
             var params = {id: id, kind: kk, author_name: DocumentService.author()}
             DocumentApiService.update(params, $scope)
@@ -2246,7 +2247,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
 
 

@@ -135,8 +135,6 @@
                 updateCount += 1
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
-
-                // MathJaxService.reload(DocumentService.kind())
                 $scope.textDirty = false
             }
 
@@ -197,7 +195,8 @@
 
             if ($scope.editDocument)  {
 
-                if (kk == $scope.editDocument.kind) {
+                // if (kk == $scope.editDocument.kind) {
+                if (kk == DocumentService.kind()) {
                     return { "background-color" : "#efe" }
                 } else {
                     return {  }
@@ -211,6 +210,7 @@
          
         $scope.setKind = function(kk) {
 
+            console.log('*** kk ' + kk)
             var id = DocumentService.documentId()
             var params = {id: id, kind: kk, author_name: DocumentService.author()}
             DocumentApiService.update(params, $scope)
