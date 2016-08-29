@@ -136,6 +136,12 @@
                 updateCount += 1
                 // console.log('callAtInterval:  UPDATE')
                 DocumentApiService.update(DocumentService.params($scope), $scope)
+                $timeout(
+                    function () {
+                        var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                        MathJaxService.reload(DocumentService.kind(), message)
+                    },
+                    500)
                 $scope.textDirty = false
             }
 
