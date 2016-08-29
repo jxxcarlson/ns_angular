@@ -518,6 +518,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
             if ($scope.textDirty) {
                 updateCount += 1
                 // console.log('callAtInterval:  UPDATE')
+                $scope.wordCount = DocumentService.text().split(' ').length
                 DocumentApiService.update(DocumentService.params($scope), $scope)
                 $timeout(
                     function () {
@@ -563,6 +564,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
           if (event.keyCode == 27) {
               // console.log('ESCAPE pressed -- saving document')
+              $scope.wordCount = DocumentService.text().split(' ').length
               DocumentApiService.update(DocumentService.params($scope), $scope)
               $timeout(
                   function () {

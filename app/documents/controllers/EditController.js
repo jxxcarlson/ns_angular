@@ -135,6 +135,7 @@
             if ($scope.textDirty) {
                 updateCount += 1
                 // console.log('callAtInterval:  UPDATE')
+                $scope.wordCount = DocumentService.text().split(' ').length
                 DocumentApiService.update(DocumentService.params($scope), $scope)
                 $timeout(
                     function () {
@@ -180,6 +181,7 @@
 
           if (event.keyCode == 27) {
               // console.log('ESCAPE pressed -- saving document')
+              $scope.wordCount = DocumentService.text().split(' ').length
               DocumentApiService.update(DocumentService.params($scope), $scope)
               $timeout(
                   function () {
