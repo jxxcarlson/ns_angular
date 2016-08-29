@@ -515,8 +515,6 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                 updateCount += 1
 
                 DocumentApiService.update(DocumentService.params($scope), $scope)
-
-                // MathJaxService.reload(DocumentService.kind())
                 $scope.textDirty = false
             }
 
@@ -577,7 +575,8 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
             if ($scope.editDocument)  {
 
-                if (kk == $scope.editDocument.kind) {
+                // if (kk == $scope.editDocument.kind) {
+                if (kk == DocumentService.kind()) {
                     return { "background-color" : "#efe" }
                 } else {
                     return {  }
@@ -2247,7 +2246,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('development');
+    envService.set('production');
 
 
 
