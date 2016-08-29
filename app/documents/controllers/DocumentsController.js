@@ -4,7 +4,7 @@
 
 // REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
+module.exports = function ( $scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
                            DocumentService, UserService, MathJaxService) {
 
     console.log('DDD, ENTER DOCS CONTROLLER')
@@ -23,6 +23,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
+    // http://stackoverflow.com/questions/14502006/working-with-scope-emit-and-on
+    // $scope.$emit('documentChosen', [1,2,3]);
+    // $rootScope.$broadcast('documentChosen', [1,2,3]);
 
     $scope.reloadMathJax = function () {
         $timeout(

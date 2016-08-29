@@ -32,7 +32,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   $scope.publicDocuments = function(){ SearchService.query('scope=public', $scope, 'documents') }
   
   /////
-  
+  //$scope.$on('someEvent', function(event, data) { console.log('WWW' + data); });
   
   // You can pass it an object.  This hotkey will not be unbound unless manually removed
   // using the hotkeys.del() method

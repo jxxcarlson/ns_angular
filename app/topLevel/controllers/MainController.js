@@ -7,6 +7,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     try {
 
         var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
+        var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.author() != UserService.username())
 
     }
     catch(err) {
@@ -14,7 +15,6 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
         var documentEditable = false
 
     }
-
 
     $scope.message = ''
 
@@ -24,6 +24,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.accessTokenValid = accessTokenValid
     $scope.documentEditable = documentEditable
+    $scope.documentCanShowSource = documentCanShowSource
 
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 

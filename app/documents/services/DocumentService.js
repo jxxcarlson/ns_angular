@@ -193,6 +193,8 @@ module.exports = function($localStorage) {
     
     this.update = function(document) {
 
+        console.log('EEE: Edit Controller, update')
+
         this.currentDocument = document
 
         $localStorage.currentDocument = document
@@ -202,20 +204,14 @@ module.exports = function($localStorage) {
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
         this.setDocumentId( document['id'] )
-        
         this.setCurrentDocumentItem(document['id'], document['title'])
-        
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
-        
         this.setKind( document['kind'])
         this.setPublic(document['public'])
         
         var links = document['links'] || {}
-
         var subdocuments = links['documents'] || []
-
-
         var resources = links['resources']
         if (resources != undefined) {
 
@@ -233,21 +229,12 @@ module.exports = function($localStorage) {
             }
         }
 
-
-        console.log('attachmentUrl: ' + attachmentUrl)
-
-
-
         var tags = document['tags'] || {}
 
         this.setTags(tags)
-
         this.setIdentifier(document['identifier'])
-
         this.setSubdocuments(subdocuments)
-
         this.setHasSubdocuments(document['has_subdocuments'])
-        
         return document['rendered_text']
         
     }

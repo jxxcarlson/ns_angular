@@ -4,7 +4,7 @@
 ''
         var id;
         var keyStrokeCount = 0
-        
+
         if ($stateParams.id != undefined) {
             id = $stateParams.id
         } else {
@@ -80,6 +80,7 @@
       $scope.text = DocumentService.text() // for word count
       $scope.wordCount = $scope.text.split(' ').length
       $scope.ifParentExists = true
+      // $scope.showTools = !$scope.documentCanShowSource
       $scope.toggleParameterEditor = function() {
 
           $scope.identifier = DocumentService.identifier()
@@ -89,11 +90,22 @@
       }
 
 
+      $scope.reloadMathJax = function () {
+          $timeout(
+              function () {
+                  var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                  MathJaxService.reload(DocumentService.kind(), message)
+              },
+              500)
+
+      }
+
+
       // Set heights of window parts
       var innerHeight = $window.innerHeight
       document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
       document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
-      
+
       // Editor hotkeys (not working)
       hotkeys.bindTo($scope)
         .add({
@@ -105,7 +117,7 @@
             DocumentApiService.update(DocumentService.params($scope), $scope)
           }
         })
-      
+
       hotkeys.bindTo($scope)
         .add({
           combo: 'ctrl-w',
@@ -115,13 +127,14 @@
             alert('WW')
           }
         })
-           
-    
+
+
         // Auto refresh
         var callAtInterval = function() {
+
             if ($scope.textDirty) {
                 updateCount += 1
-
+                // console.log('callAtInterval:  UPDATE')
                 DocumentApiService.update(DocumentService.params($scope), $scope)
                 $scope.textDirty = false
             }
@@ -129,8 +142,8 @@
 
         }
 
-        var periodicUpdate 
-        if (DocumentService.kind() == 'asciidoctor-latex') {
+        var periodicUpdate
+        if (DocumentService.kind() == 'asciidoc-latex') {
 
             periodicUpdate = $interval(callAtInterval, 60*1000);  // 1 minute
 
@@ -145,44 +158,65 @@
         $scope.$on("$destroy", function(){
             $interval.cancel(periodicUpdate);
         });
-      
-      
-      // update document command bound to key up for control key
-        $scope.refreshText = function() {
-            
-
-           if (event.keyCode  == 27) {
-               // console.log('ESCAPE pressed -- saving document')
-               DocumentApiService.update(DocumentService.params($scope), $scope)
-               MathJaxService.reload(DocumentService.kind(), 'MMM:0, EditController, get Document: ' + id)
-           } else {       
-               $scope.textDirty = true
-               keyStrokeCount += 1    
-
-               if (keyStrokeCount == 10) {
-                   keyStrokeCount = 0
-                   DocumentApiService.update(DocumentService.params($scope), $scope)
-                   $scope.wordCount = DocumentService.text().split(' ').length
-                   $scope.textDirty = false
 
 
+      // update document command bound to key up for escaoe key
+      $scope.refreshText = function() {
 
-               }
-           }  
-        }
+          //console.log('refreshText')
+
+          var strokesBeforeUpdate = 1000
+          // This is so that users can view source but
+          // not be able to edit it (or rather save any edits)
+          if ($scope.documentCanShowSource) {
+              return
+          }
+
+          if (event.keyCode == 27) {
+              // console.log('ESCAPE pressed -- saving document')
+              DocumentApiService.update(DocumentService.params($scope), $scope)
+              $timeout(
+                  function () {
+                      var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                      MathJaxService.reload(DocumentService.kind(), message)
+                  },
+                  500)
+          } else {
+              ////
+              $scope.textDirty = true
+              keyStrokeCount += 1
+              //console.log('Else clause, strokes = ' + keyStrokeCount)
+              if (keyStrokeCount == strokesBeforeUpdate) {
+                  //console.log('EEE: updating text = ' + keyStrokeCount)
+                  if (keyStrokeCount == strokesBeforeUpdate) {
+
+                      keyStrokeCount = 0
+                      //console.log('Calling API service, update')
+                      DocumentApiService.update(DocumentService.params($scope), $scope)
+                      $scope.wordCount = DocumentService.text().split(' ').length
+                      $scope.textDirty = false
+                  } else {
+
+                      //console.log('---')
+                  }
+
+              }
+              ////
+          }
+      }
 
 
-        
+
         $scope.docStyle = DocumentService.tocStyle
         $scope.publicStyle = function() {
-            
+
             if ($scope.statusPublic) {
                 return { "background-color": "#fee", "padding": "3px"}
             } else {
                 return { "padding": "3px"}
             }
         }
-        
+
          $scope.getDocKindClass = function(kk) {
 
             if ($scope.editDocument)  {
@@ -199,10 +233,10 @@
             }
 
         }
-         
+
         $scope.setKind = function(kk) {
 
-            console.log('*** kk ' + kk)
+            //console.log('*** kk ' + kk)
             var id = DocumentService.documentId()
             var params = {id: id, kind: kk, author_name: DocumentService.author()}
             DocumentApiService.update(params, $scope)
@@ -239,8 +273,12 @@
         // update document
         $scope.updateDocument = function() {
 
-            DocumentApiService.update(DocumentService.params($scope), $scope)        
-        
+            DocumentApiService.update(DocumentService.params($scope), $scope)
+
         }
+
+      $scope.showTools2 = $scope.showTools && !$scope.documentCanShowSource
+
+
 
 }
