@@ -441,18 +441,6 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
               }
 
 
-              $scope.$watch(function(scope) {
-                      return $scope.renderedText },
-
-                  $timeout(
-                      function() {
-                          MathJaxService.reload(DocumentService.kind(), 'MMM:2, EditController, get Document: ' + id)
-                      },
-                      10
-                  )
-
-              );
-
               DocumentService.update(document)
 
 
@@ -546,6 +534,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
            if (event.keyCode  == 27) {
                // console.log('ESCAPE pressed -- saving document')
                DocumentApiService.update(DocumentService.params($scope), $scope)
+               MathJaxService.reload(DocumentService.kind(), 'MMM:0, EditController, get Document: ' + id)
            } else {       
                $scope.textDirty = true
                keyStrokeCount += 1    
@@ -555,6 +544,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                    DocumentApiService.update(DocumentService.params($scope), $scope)
                    $scope.wordCount = DocumentService.text().split(' ').length
                    $scope.textDirty = false
+
+
+
                }
            }  
         }
@@ -2246,7 +2238,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    // envService.set('development');
 
 
 

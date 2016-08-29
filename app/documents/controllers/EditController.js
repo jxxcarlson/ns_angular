@@ -61,18 +61,6 @@
               }
 
 
-              $scope.$watch(function(scope) {
-                      return $scope.renderedText },
-
-                  $timeout(
-                      function() {
-                          MathJaxService.reload(DocumentService.kind(), 'MMM:2, EditController, get Document: ' + id)
-                      },
-                      10
-                  )
-
-              );
-
               DocumentService.update(document)
 
 
@@ -166,6 +154,7 @@
            if (event.keyCode  == 27) {
                // console.log('ESCAPE pressed -- saving document')
                DocumentApiService.update(DocumentService.params($scope), $scope)
+               MathJaxService.reload(DocumentService.kind(), 'MMM:0, EditController, get Document: ' + id)
            } else {       
                $scope.textDirty = true
                keyStrokeCount += 1    
@@ -175,6 +164,9 @@
                    DocumentApiService.update(DocumentService.params($scope), $scope)
                    $scope.wordCount = DocumentService.text().split(' ').length
                    $scope.textDirty = false
+
+
+
                }
            }  
         }
