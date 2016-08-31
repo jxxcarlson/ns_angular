@@ -194,9 +194,9 @@
               $scope.textDirty = true
               keyStrokeCount += 1
               //console.log('Else clause, strokes = ' + keyStrokeCount)
-              if (keyStrokeCount == strokesBeforeUpdate) {
+              ///if (keyStrokeCount == strokesBeforeUpdate) {
                   //console.log('EEE: updating text = ' + keyStrokeCount)
-                  if (keyStrokeCount == strokesBeforeUpdate) {
+                  if (keyStrokeCount == strokesBeforeUpdate && $scope.kind != 'asciidoc-latex' ){
 
                       keyStrokeCount = 0
                       //console.log('Calling API service, update')
@@ -208,7 +208,7 @@
                       //console.log('---')
                   }
 
-              }
+             /// }
               ////
           }
       }

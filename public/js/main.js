@@ -577,9 +577,9 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
               $scope.textDirty = true
               keyStrokeCount += 1
               //console.log('Else clause, strokes = ' + keyStrokeCount)
-              if (keyStrokeCount == strokesBeforeUpdate) {
+              ///if (keyStrokeCount == strokesBeforeUpdate) {
                   //console.log('EEE: updating text = ' + keyStrokeCount)
-                  if (keyStrokeCount == strokesBeforeUpdate) {
+                  if (keyStrokeCount == strokesBeforeUpdate && $scope.kind != 'asciidoc-latex' ){
 
                       keyStrokeCount = 0
                       //console.log('Calling API service, update')
@@ -591,7 +591,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
                       //console.log('---')
                   }
 
-              }
+             /// }
               ////
           }
       }
@@ -2285,7 +2285,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
 
 
