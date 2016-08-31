@@ -172,7 +172,7 @@
 
           //console.log('refreshText')
 
-          var strokesBeforeUpdate = 1000
+          var strokesBeforeUpdate = 10
           // This is so that users can view source but
           // not be able to edit it (or rather save any edits)
           if ($scope.documentCanShowSource) {

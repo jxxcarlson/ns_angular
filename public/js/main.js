@@ -555,7 +555,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
           //console.log('refreshText')
 
-          var strokesBeforeUpdate = 1000
+          var strokesBeforeUpdate = 10
           // This is so that users can view source but
           // not be able to edit it (or rather save any edits)
           if ($scope.documentCanShowSource) {
@@ -861,7 +861,7 @@ app.controller('PrintDocumentController', require('./controllers/PrintDocumentCo
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
 
 
     this.getDocument = function (scope, id, queryObj) {
@@ -1071,6 +1071,16 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                         return $sce.trustAsHtml(document.rendered_text);
                     }
                     scope.message = 'Success!'
+
+                    console.log('*** childOf = ' + scope.childOf)
+                    if (scope.childOf != undefined) {
+                        console.log('*** I will go to ' + scope.childOf)
+                        SearchService.query('id='+scope.childOf,scope, '')
+                        // location.path('editdocument/' + scope.childOf)
+                        // $state.go('editdocument', {}, {reload: true})
+                    } else {
+                        console.log('*** chldOf was undefined')
+                    }
 
                 } else {
 
