@@ -1,0 +1,47 @@
+
+<div class="row" ng-controller="UserPreferenceController as ctrl">
+
+    <div class="col-md-4" >
+        <div style="margin-left:2em;">
+
+
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div style="margin-left:1em;">
+            <br/>
+            <br/>
+            <h2>Preferences for {{ctrl.username}} </a></h2>
+
+
+            <div ng-controller="MenuController">
+                <div class="btn-group" uib-dropdown is-open="status.isopen">
+                    <button id="single-button" type="button" class="btn" uib-dropdown-toggle
+                            ng-disabled="disabled">
+                        Doc format <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu"
+                        aria-labelledby="single-button">
+                        <li role="menuitem" ng-click="setKind('text')"
+                            ng-style="ctrl.getDocKindClass('text')">Text
+                        </li>
+                        <li role="menuitem" ng-click="setKind('asciidoc')"
+                            ng-style="ctrl.getDocKindClass('asciidoc')">Asciidoc
+                        </li>
+                        <li role="menuitem" ng-click="setKind('asciidoc-ms')"
+                            ng-style="ctrl.getDocKindClass('asciidoc-ms')">Asciidoc-MS
+                        </li>
+                        <li role="menuitem" ng-click="setKind('asciidoc-latex')"
+                            ng-style="ctrl.getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

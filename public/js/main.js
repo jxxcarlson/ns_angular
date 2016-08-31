@@ -176,7 +176,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":13,"./images":21,"./search":26,"./services":33,"./site":36,"./topLevel":40,"./user":47,"angular":51,"angular-route":49}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":13,"./images":21,"./search":26,"./services":33,"./site":36,"./topLevel":41,"./user":48,"angular":52,"angular-route":50}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -253,7 +253,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":51}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":52}],6:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
 
 
@@ -850,7 +850,7 @@ app.controller('PrintDocumentController', require('./controllers/PrintDocumentCo
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/EditMenuController":9,"./controllers/NewDocumentController":10,"./controllers/PrintDocumentController":11,"./controllers/SearchController":12,"./services//DocumentService":15,"./services/DocumentApiService":14,"./services/MathJaxService":16,"./services/SearchService":17,"angular":51}],14:[function(require,module,exports){
+},{"./controllers/DeleteDocumentController":6,"./controllers/DocumentsController":7,"./controllers/EditController":8,"./controllers/EditMenuController":9,"./controllers/NewDocumentController":10,"./controllers/PrintDocumentController":11,"./controllers/SearchController":12,"./services//DocumentService":15,"./services/DocumentApiService":14,"./services/MathJaxService":16,"./services/SearchService":17,"angular":52}],14:[function(require,module,exports){
 /*****
  headers: { "accesstoken": UserService.accessToken(),
                             "Cache-control": "",
@@ -861,7 +861,7 @@ app.controller('PrintDocumentController', require('./controllers/PrintDocumentCo
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
 
 
     this.getDocument = function (scope, id, queryObj) {
@@ -1071,6 +1071,16 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                         return $sce.trustAsHtml(document.rendered_text);
                     }
                     scope.message = 'Success!'
+
+                    console.log('*** childOf = ' + scope.childOf)
+                    if (scope.childOf != undefined) {
+                        console.log('*** I will go to ' + scope.childOf)
+                        SearchService.query('id='+scope.childOf,scope, '')
+                        // location.path('editdocument/' + scope.childOf)
+                        // $state.go('editdocument', {}, {reload: true})
+                    } else {
+                        console.log('*** chldOf was undefined')
+                    }
 
                 } else {
 
@@ -1697,7 +1707,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":18,"./controllers/ImageUploadController":19,"./controllers/ImagesController":20,"./services/ImageApiService":22,"./services/ImageRouteService":23,"./services/ImageSearchService":24,"./services/ImageService":25,"angular":51}],22:[function(require,module,exports){
+},{"./controllers/ImageSearchController":18,"./controllers/ImageUploadController":19,"./controllers/ImagesController":20,"./services/ImageApiService":22,"./services/ImageRouteService":23,"./services/ImageSearchService":24,"./services/ImageService":25,"angular":52}],22:[function(require,module,exports){
 module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
@@ -1971,7 +1981,7 @@ var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":27,"angular":51}],27:[function(require,module,exports){
+},{"./services/QueryParser":27,"angular":52}],27:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -2158,7 +2168,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 
-},{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":51}],34:[function(require,module,exports){
+},{"./FileUpload":28,"./GlobalService":29,"./PSFileUpload":30,"./UtilityService":31,"./foo":32,"angular":52}],34:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, UserService) {
     
     console.log('SITE CONTROLLER')
@@ -2229,7 +2239,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('SiteController', require('./SiteController'))
 app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
-},{"./SiteController":34,"./SiteDocumentController":35,"angular":51}],37:[function(require,module,exports){
+},{"./SiteController":34,"./SiteDocumentController":35,"angular":52}],37:[function(require,module,exports){
 
 module.exports = function($scope, foo, envService) {
 
@@ -2275,7 +2285,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
 
 
@@ -2351,6 +2361,36 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   
 }
 },{}],40:[function(require,module,exports){
+module.exports = function ($scope, UserService, UserApiService) {
+
+    var self = this
+
+    self.username = UserService.username()
+
+
+    UserApiService.getPreferences(self.username, self)
+
+    console.log('foo = ' + self.foo)
+    console.log('default doc type = ' + UserService.getPreferences().default_document_type)
+
+    self.getDocKindClass = function (kk) {
+
+        if (kk == UserService.getPreferences().default_document_type) {
+            return {"background-color": "#efe"}
+        } else {
+            return {}
+        }
+        
+    }
+
+    self.setPreferences = function (kk) {
+        var params = {set_default_document_type: kk, author_name: UserService.username()}
+        //  UserApiService.updatePreferences(params, $scope)
+    }
+
+
+}
+},{}],41:[function(require,module,exports){
 /***********
 
 Advanced routing and resolves
@@ -2380,6 +2420,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('MenuController', require('./controllers/MenuController'))
 app.controller('MainController', require('./controllers/MainController'))
 app.controller('AboutController', require('./controllers/AboutController'))
+app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
     // configure our routes
 
@@ -2499,8 +2540,14 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     
         .state('getimage', {
             url: '/images/:id',
-            templateUrl : 'pages/images.html',
+            templateUrl: 'pages/images.html',
             controller  : 'ImagesController'
+        })
+
+        .state('userpreferences', {
+            url: '/userpreferences',
+            templateUrl: 'pages/userpreferences.html',
+            controller: 'UserPreferenceController'
         })
     
 
@@ -2525,7 +2572,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/AboutController":37,"./controllers/MainController":38,"./controllers/MenuController":39,"angular":51}],41:[function(require,module,exports){
+},{"./controllers/AboutController":37,"./controllers/MainController":38,"./controllers/MenuController":39,"./controllers/UserPreferenceController":40,"angular":52}],42:[function(require,module,exports){
 module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $window,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
@@ -2579,7 +2626,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     }
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {
 
     console.log('Sign out ...')
@@ -2598,7 +2645,7 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
         
 }
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
@@ -2631,63 +2678,96 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
 }
     
     
-},{}],44:[function(require,module,exports){
-module.exports = function($http, $q, $localStorage, envService) {
-
-        var deferred = $q.defer();
-        
-        this.login = function(username, password) {
-          return $http.get(envService.read('apiUrl') + '/users/' + username + '?' + password)
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-                var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        ;
-        }
-        
-        this.newUser = function(username, email, password) {
-            
-          var parameter = JSON.stringify({username:username, email:email, password: password});
-          console.log(parameter);
-          return $http.post(envService.read('apiUrl') + '/users/create', parameter)
-          
-          .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
-
-                var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
-
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
-            })
-        ;
-        }
-
-      }
-
-
 },{}],45:[function(require,module,exports){
+module.exports = function ($http, $q, $localStorage, envService) {
+
+    var deferred = $q.defer();
+
+    this.login = function (username, password) {
+        return $http.get(envService.read('apiUrl') + '/users/' + username + '?' + password)
+            .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+            ;
+    }
+
+    this.newUser = function (username, email, password) {
+
+        var parameter = JSON.stringify({username: username, email: email, password: password});
+        console.log(parameter);
+        return $http.post(envService.read('apiUrl') + '/users/create', parameter)
+
+            .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+            ;
+    }
+
+    this.getPreferences = function(username, controller) {
+
+        controller.foo = 'bar'
+    }
+
+    this.updatePreferences = function (username, parameters) {
+
+        var parameter = JSON.stringify({username: username, email: email, password: password});
+        console.log(parameter);
+        return $http.post(envService.read('apiUrl') + '/users/update_preferences', parameter)
+
+            .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+                $localStorage.username = username
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+            ;
+    }
+
+
+}
+
+
+},{}],46:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -2700,7 +2780,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function($localStorage) {
     
 /*****
@@ -2804,9 +2884,27 @@ State variables:
       return 'OK'
   }
 
+  this.setPreferences = function(jsonPacket) {
+
+      this.preferences = jsonPacket
+      $localStorage.preferences = this.preferences
+
+  }
+
+  this.getPreferences = function() {
+
+      if (this.preferences == undefined) {
+
+          // this.preferences = $localStorage.preferences
+          this.preferences = {'default_document_type': 'text'}
+      }
+
+      return this.preferences || {}
+
+  }
  
 }
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2822,7 +2920,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":41,"./SignOutController":42,"./SignUpController":43,"./UserApiService":44,"./UserController":45,"./UserService":46,"angular":51}],48:[function(require,module,exports){
+},{"./SignInController":42,"./SignOutController":43,"./SignUpController":44,"./UserApiService":45,"./UserController":46,"./UserService":47,"angular":52}],49:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -3893,11 +3991,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":48}],50:[function(require,module,exports){
+},{"./angular-route":49}],51:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -35666,8 +35764,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":50}]},{},[1]);
+},{"./angular":51}]},{},[1]);

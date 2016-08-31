@@ -1,128 +1,145 @@
 <!-- index.html -->
-    <!DOCTYPE html>
-  <html ng-app="noteshareApp" font-size: 16px;>
-    <head>
-      <meta charset="utf-8">
-      <base ui-sref="home">
-      <!-- CSS REFERENCE: http://getbootstrap.com/css/ -->
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />    
-      <!-- SCROLLS -->
-      <!-- load bootstrap and fontawesome via CDN -->
-        
-      <!-- <link rel="stylesheet" href="/style/materialize.css" />  -->  
-      <!-- <link rel="stylesheet" href="/style/asciidoctor.css" /> -->
-      <link rel="stylesheet" href="/style/foundation-potion.css" />    
-      <link rel="stylesheet" href="/style/coderay.css" />
-      <link rel="stylesheet" href="/style/extras.css" /> 
-        
-       
-       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> 
-      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" /> 
+<!DOCTYPE html>
+<html ng-app="noteshareApp" font-size: 16px;>
+<head>
+    <meta charset="utf-8">
+    <base ui-sref="home">
+    <!-- CSS REFERENCE: http://getbootstrap.com/css/ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <!-- SCROLLS -->
+    <!-- load bootstrap and fontawesome via CDN -->
 
-      <link rel="stylesheet" href="/style/style.css" />
+    <!-- <link rel="stylesheet" href="/style/materialize.css" />  -->
+    <!-- <link rel="stylesheet" href="/style/asciidoctor.css" /> -->
+    <link rel="stylesheet" href="/style/foundation-potion.css"/>
+    <link rel="stylesheet" href="/style/coderay.css"/>
+    <link rel="stylesheet" href="/style/extras.css"/>
 
 
-      <!-- SPELLS -->
-      <!-- load angular and angular route via CDN -->
-         
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
-   
-      <!-- Issue with ngStorage -- have to load as above, not with var angular = require('angular'); --
-        If one does that, ngStorage does not know about module angular -->
-    
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
-      <script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-      <script src="https://sdk.amazonaws.com/js/aws-sdk-2.4.11.min.js"></script>    
-      <script src="/js/ng-file-upload.min.js"></script>    
-      <script src="/js/ui-bootstrap.js"></script>    
-      <script src="/js/hotkeys.js"></script> 
-      <script src="/js/angular-environment.min.js"></script>   
-      <script src="/js/angular-confirm.min.js"></script>
-      <script src="/js/main.js"></script>
-    </head>
-    <body ng-controller="MainController">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css"/>
 
-        <!-- HEADER AND NAVBAR -->
-        <header>
-            <nav class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" ui-sref="home">Manuscripta.io</a>
-                </div>
+    <link rel="stylesheet" href="/style/style.css"/>
 
-                <ul class="nav navbar-nav navbar-left">
-                    <li><a ui-sref="documents">DOCUMENTS</a></li>
-                    
-                    
-                    <li style="margin-top:10px;">
-                        <div ng-controller="MenuController">
-                            <div class="btn-group" uib-dropdown is-open="status.isopen">
-                              <button id="single-button" type="button" class="btn" uib-dropdown-toggle ng-disabled="disabled">
+
+    <!-- SPELLS -->
+    <!-- load angular and angular route via CDN -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
+
+    <!-- Issue with ngStorage -- have to load as above, not with var angular = require('angular'); --
+      If one does that, ngStorage does not know about module angular -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+    <script type="text/javascript" async
+            src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.4.11.min.js"></script>
+    <script src="/js/ng-file-upload.min.js"></script>
+    <script src="/js/ui-bootstrap.js"></script>
+    <script src="/js/hotkeys.js"></script>
+    <script src="/js/angular-environment.min.js"></script>
+    <script src="/js/angular-confirm.min.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body ng-controller="MainController">
+
+<!-- HEADER AND NAVBAR -->
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" ui-sref="home">Manuscripta.io</a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-left">
+                <li><a ui-sref="documents">DOCUMENTS</a></li>
+
+
+                <li style="margin-top:10px;">
+                    <div ng-controller="MenuController">
+                        <div class="btn-group" uib-dropdown is-open="status.isopen">
+                            <button id="single-button" type="button" class="btn" uib-dropdown-toggle
+                                    ng-disabled="disabled">
                                 Tools <span class="caret"></span>
-                              </button>
-                              <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                                  <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="newdocument">New Document</a></li>
-                                <li role="menuitem" ng-show="documentEditable"><a ui-sref="editdocument">Edit Document</a></li>
-                                <li role="menuitem" ng-show="documentCanShowSource"><a ui-sref="editdocument">Show Source</a></li>
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="printdocument">Print Document</a></li>
-                                <li role="menuitem" ng-show="documentEditable"><a ui-sref="deletedocument">Delete Document</a></li>
+                            </button>
+                            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="newdocument">New Document</a>
+                                </li>
+                                <li role="menuitem" ng-show="documentEditable"><a ui-sref="editdocument">Edit
+                                    Document</a></li>
+                                <li role="menuitem" ng-show="documentCanShowSource"><a ui-sref="editdocument">Show
+                                    Source</a></li>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="printdocument">Print
+                                    Document</a></li>
+                                <li role="menuitem" ng-show="documentEditable"><a ui-sref="deletedocument">Delete
+                                    Document</a></li>
                                 <li class="divider"></li>
-                                <li role="menuitem"><a href="http://{{host}}/site/{{currentSite}}">Go to {{currentSite}}</a></li>  
+                                <li role="menuitem"><a href="http://{{host}}/site/{{currentSite}}">Go to
+                                    {{currentSite}}</a></li>
                                 <li class="divider"></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="images">Images</a></li>
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="imageupload">Upload image/pdf</a></li>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="imageupload">Upload
+                                    image/pdf</a></li>
                                 <li class="divider"></li>
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="userDocuments()">User documents</a></li> 
-                                <li role="menuitem"><a ui-sref="documents" ng-click="publicDocuments()">Public documents</a></li>  
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="allDocuments()">All documents</a></li>
-                              </ul>
-                            </div>
-                        </div>
-                    </li>
-                    
-                </ul>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents"
+                                                                                  ng-click="userDocuments()">User
+                                    documents</a></li>
+                                <li role="menuitem"><a ui-sref="documents" ng-click="publicDocuments()">Public
+                                    documents</a></li>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents"
+                                                                                  ng-click="allDocuments()">All
+                                    documents</a></li>
 
-                <ul class="nav navbar-nav navbar-center" style="margin-left:3em;">
-                    
-                    
-                   
-                    <li>   
-                      <form class="form-horizontal" style="margin-top:14px;">
+                                <li class="divider"></li>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="userpreferences">User
+                                    Preferences</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-center" style="margin-left:3em;">
+
+
+                <li>
+                    <form class="form-horizontal" style="margin-top:14px;">
                         <div class="form-group">
-                          <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
-                          <div ng-controller="searchController">
-                            <input class="search-box" ng-enter="doSearch(  )" ng-model="searchText" placeholder=" document search ..."/>
-                          </div>
-                          <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
+                            <!-- http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/ -->
+                            <div ng-controller="searchController">
+                                <input class="search-box" ng-enter="doSearch(  )" ng-model="searchText"
+                                       placeholder=" document search ..."/>
+                            </div>
+                            <!--<input type="text" class="form-control" id="search" ng-model="search" ng-enter="testFunction()">  -->
 
                         </div>
-                      </form>
-                    </li> 
-                    
-                    
-                </ul>
+                    </form>
+                </li>
 
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a ui-sref="documents" ng-click="randomDocuments()"><i class="fa fa-random"></i> Explore</a></li>
-                    <li><a ui-sref="signin"><i class="fa fa-home"></i> Home</a></li>
-                    <li><a ui-sref="about"><i class="fa fa-comment"></i> About</a></li>
-                </ul>
-            </div>
-            </nav>
-        </header>
 
-        <!-- MAIN CONTENT AND INJECTED VIEWS -->
-        <!-- MAIN CONTENT AND INJECTED VIEWS -->
-        <div id="main">
-            <!-- angular templating -->
-            <!-- this is where content will be injected -->
-            <div ui-view></div>
+            </ul>
 
+            <ul class="nav navbar-nav navbar-right">
+                <li><a ui-sref="documents" ng-click="randomDocuments()"><i class="fa fa-random"></i> Explore</a></li>
+                <li><a ui-sref="signin"><i class="fa fa-home"></i> Home</a></li>
+                <li><a ui-sref="about"><i class="fa fa-comment"></i> About</a></li>
+            </ul>
         </div>
+    </nav>
+</header>
 
-    </body>
-    </html>
+<!-- MAIN CONTENT AND INJECTED VIEWS -->
+<!-- MAIN CONTENT AND INJECTED VIEWS -->
+<div id="main">
+    <!-- angular templating -->
+    <!-- this is where content will be injected -->
+    <div ui-view></div>
+
+</div>
+
+</body>
+</html>
