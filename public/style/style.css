@@ -132,6 +132,16 @@ input[type="submit"] {
     font-size: 16pt;
 }
 
+input[type=file] { width: 400px; font-size: 0.6em;  }
+
+input[type="file"]{
+
+}
+
+input[type="file"]::-webkit-file-upload-button{
+
+}
+
 
 .editor-label {
 
