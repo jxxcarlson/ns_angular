@@ -670,6 +670,11 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
       $scope.showTools2 = $scope.showTools && !$scope.documentCanShowSource
 
+      $scope.backupDocument = function() {
+
+          console.log('Controller: backupDocument')
+          DocumentApiService.backupDocument() }
+
 
 
 }
@@ -1127,6 +1132,23 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 } else {
                     scope.message = response.data['error']
                 }
+
+            })
+
+    }
+
+    this.backupDocument = function() {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.currentDocumentItem().id
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('  -- status: ' + response.data['status'])
+
 
             })
 
@@ -2285,7 +2307,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('productions');
 
 
 

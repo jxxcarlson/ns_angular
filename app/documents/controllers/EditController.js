@@ -287,6 +287,11 @@
 
       $scope.showTools2 = $scope.showTools && !$scope.documentCanShowSource
 
+      $scope.backupDocument = function() {
+
+          console.log('Controller: backupDocument')
+          DocumentApiService.backupDocument() }
+
 
 
 }

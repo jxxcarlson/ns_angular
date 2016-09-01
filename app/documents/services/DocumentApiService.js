@@ -279,5 +279,22 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
+    this.backupDocument = function() {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.currentDocumentItem().id
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('  -- status: ' + response.data['status'])
+
+
+            })
+
+    }
+
 
 }
