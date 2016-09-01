@@ -242,6 +242,10 @@
 
         }
 
+        $scope.backup_number = DocumentService.document().backup_number
+
+        console.log('Number of backups: ' + DocumentService.document().backup_number)
+
         $scope.setKind = function(kk) {
 
             //console.log('*** kk ' + kk)

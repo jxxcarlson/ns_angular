@@ -625,6 +625,10 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
         }
 
+        $scope.backup_number = DocumentService.document().backup_number
+
+        console.log('Number of backups: ' + DocumentService.document().backup_number)
+
         $scope.setKind = function(kk) {
 
             //console.log('*** kk ' + kk)
@@ -1356,6 +1360,8 @@ module.exports = function($localStorage) {
 
         this.currentDocument = document
 
+        console.log('*** IN DOC SERVICE, TITLE = ' +  this.currentDocument.title)
+        console.log('*** IN DOC SERVICE, BUNO = ' +  this.currentDocument.backup_number)
         $localStorage.currentDocument = document
         
         this.setAuthor(document['author'] )
@@ -2309,8 +2315,6 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     envService.set('production');
 
-
-    
 
 
 

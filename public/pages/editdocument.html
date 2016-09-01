@@ -7,16 +7,16 @@
             <h3> Contents ({{ documentCount }})</h3>
 
             <div ng-show="ifParentExists&&!documentCanShowSource">
-                <button style="background-color:white; color:#666; padding:5px 10px; font-size:1.2em;">Move</button>
-                <button ng-click="moveUp()"
-                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Up
+                <button title = "Move up" ng-click="moveUp()"
+                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;"><i class="fa fa-arrow-up"></i>
                 </button>
-                <button ng-click="moveDown()"
-                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;">Down
+                <button  title = "Move down" ng-click="moveDown()"
+                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;"><i class="fa fa-arrow-down"></i>
                 </button>
+                <button ng-hide="documentCanShowSource"  title = "Document tools" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="toggleParameterEditor()"><i class="fa fa-cog"></i></button>
+                <button ng-hide="documentCanShowSource" title = "Make backup" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="backupDocument()"><i class="fa fa-save"></i></button>
             </div>
-            <p ng-hide="documentCanShowSource" style="margin-top:8px; width:183px" class="neutral-box" ng-click="toggleParameterEditor()">Settings</p>
-            <p ng-hide="documentCanShowSource" style="margin-top:8px; width:183px" class="neutral-box" ng-click="backupDocument()">Backup</p>
+
             <br/>
             <br/>
 
@@ -112,8 +112,10 @@
                             Attach
                         </button>
                     </div>
-                </div>
 
+
+                </div>
+                <p>Number of backups: {{backup_number}}</p>
 
                 <!-- <pre>{{editOptions}}</pre> -->
 
