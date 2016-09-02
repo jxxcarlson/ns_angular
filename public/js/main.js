@@ -625,8 +625,13 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
         }
 
-      $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
-      $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
+        if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
+
+            $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
+            $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
+
+        }
+
 
         console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
 
