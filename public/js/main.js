@@ -260,9 +260,8 @@ module.exports = function(DocumentService) {
 
     self.documentTitle = DocumentService.currentDocumentItem().title
     self.backupNumber = DocumentService.getBackupNumber()
-    self.backupDate = DocumentService.getBackupDate()
+    self.backupDate = DocumentService.getBackupDate().replace('T', ' at ').replace('+00:00', '')
     self.backupText = DocumentService.getBackupText()
-
 }
 },{}],7:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
