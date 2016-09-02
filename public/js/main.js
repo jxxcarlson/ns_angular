@@ -2396,9 +2396,9 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('development');
+    envService.set('production');
 
-
+  // foo d
 
 
 
