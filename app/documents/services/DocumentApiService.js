@@ -296,5 +296,27 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
+    this.getBackupText = function(backup_number) {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('backup view status: ' + response.data['status'])
+                console.log('  -- backup text length ' + response.data['backup_text'].length)
+
+                DocumentService.putBackup(response.data)
+                $location.path('backups/')
+                $state.go('backups', {}, {reload: true})
+
+
+            })
+
+    }
+
 
 }

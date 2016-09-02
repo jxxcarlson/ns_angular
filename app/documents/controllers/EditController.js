@@ -78,12 +78,14 @@
 
                   $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
                   $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
-                  $scope.showBackup = true
+                  $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
 
               } else {
 
                   $scope.showBackup = false
               }
+
+              console.log('showBackup = ' +  $scope.showBackup )
 
 
           })
@@ -307,6 +309,18 @@
 
           console.log('Controller: backupDocument')
           DocumentApiService.backupDocument() }
+
+
+      $scope.displayLastBackup = function() {
+
+          DocumentApiService.getBackupText($scope.lastBackupNumber)
+      }
+
+
+      $scope.displayBackup = function(backupNumber) {
+
+            DocumentApiService.getBackupText(backupNumber)
+      }
 
 
 

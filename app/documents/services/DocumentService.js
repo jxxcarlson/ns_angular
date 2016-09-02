@@ -70,7 +70,31 @@ module.exports = function($localStorage) {
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
     this.printUrl = function() { return this.document().printUrl }
 
+    this.putBackup = function(data) {
 
+        $localStorage.backupText = data['backup_text']
+        $localStorage.backupNumber = data['backup_number']
+        $localStorage.backupDate = data['backup_date']
+
+        console.log('DS, putBackup, text: ' + $localStorage.backupText)
+        console.log('DS, putBackup, number: ' + $localStorage.backupNumber)
+        console.log('DS, putBackup, date: ' + $localStorage.backupDate)
+    }
+
+    this.getBackupText = function(text) {
+
+        return $localStorage.backupText
+    }
+
+    this.getBackupNumber = function() {
+
+        return $localStorage.backupNumber
+    }
+
+    this.getBackupDate = function() {
+
+        return $localStorage.backupDate
+    }
 
     //// SPECIAL (JJJJ) ////
     // Subdocuments of current document
@@ -282,6 +306,7 @@ module.exports = function($localStorage) {
 
         return doc['has_subdocuments']
     }
+
     
 
 }

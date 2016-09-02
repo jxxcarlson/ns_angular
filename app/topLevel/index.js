@@ -156,13 +156,18 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl: 'pages/userpreferences.html',
             controller: 'UserPreferenceController'
         })
-    
+
+        .state('backups', {
+            url: '/backups',
+            templateUrl: 'pages/backups.html',
+            controller: 'BackupController'
+        })
 
         .state('imageupload', {
-            url: '/imageupload',
-            templateUrl : 'pages/imageupload.html',
-            controller  : 'ImageUploadController'
-        });
+        url: '/imageupload',
+        templateUrl : 'pages/imageupload.html',
+        controller  : 'ImageUploadController'
+    });
     
     $locationProvider.html5Mode({
       enabled: true,

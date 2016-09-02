@@ -1,0 +1,25 @@
+
+<div class="row" ng-controller="BackupController as ctrl">
+
+    <div class="col-md-4" >
+        <div style="margin-left:2em;">
+
+
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div style="margin-left:1em;">
+            <br/>
+            <br/>
+            <h2>Backup #{{ctrl.backupNumber}} of {{ctrl.documentTitle}}</a></h2>
+            <p>Last modification: {{ctrl.backupDate}} GMT</p>
+
+            <br><br>
+            <pre>{{ctrl.backupText}}</pre>
+
+
+        </div>
+    </div>
+
+</div>

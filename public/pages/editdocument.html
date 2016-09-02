@@ -115,7 +115,7 @@
 
 
                 </div>
-                <p nt-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at {{lastBackupDate}}</p>
+                <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at {{lastBackupDate}} <button ng-click="displayLastBackup()">View</button></p>
 
                 <!-- <pre>{{editOptions}}</pre> -->
 
