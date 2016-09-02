@@ -1361,8 +1361,6 @@ module.exports = function($localStorage) {
 
         this.currentDocument = document
 
-        console.log('*** IN DOC SERVICE, TITLE = ' +  this.currentDocument.title)
-        console.log('*** IN DOC SERVICE, BUNO = ' +  this.currentDocument.backup_number)
         $localStorage.currentDocument = document
         
         this.setAuthor(document['author'] )
