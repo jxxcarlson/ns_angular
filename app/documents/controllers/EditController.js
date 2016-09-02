@@ -242,8 +242,8 @@
 
         }
 
-        $scope.lastBackupNumber = editDocument.dict['backup_number']
-        $scope.lastBackupDate = editDocument.dict['backup_date']
+      $scope.lastBackupNumber = DocumentService.document().dict['backup_number']
+      $scope.lastBackupDate = DocumentService.document().dict['backup_date']
 
         console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
 
