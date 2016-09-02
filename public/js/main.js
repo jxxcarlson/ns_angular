@@ -2323,7 +2323,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
 
 
@@ -2425,7 +2425,7 @@ module.exports = function ($scope, UserService, UserApiService) {
     self.setKind = function(kk) {
 
         console.log('I set the doc_format to ' + kk)
-        UserApiService.updatePreferences('doc_format=' + kk)
+        UserApiService.updatePreferences('doc_format', kk)
     }
 
     self.setPreferences = function (kk) {
@@ -2789,9 +2789,13 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
 
     }
 
-    this.updatePreferences = function (command) {
+    this.updatePreferences = function (key, value) {
 
+
+        UserService.setPreference(key, value)
+        var command = key + '=' + value
         var username = UserService.username()
+
         // var email = UserService.email()
 
         // var parameter = JSON.stringify({username: username, email: email, password: password});
@@ -2934,6 +2938,12 @@ State variables:
       this.preferences = jsonPacket
       $localStorage.preferences = this.preferences
 
+  }
+
+  this.setPreference = function(key, value) {
+
+
+      this.preferences[key] = value
   }
 
 

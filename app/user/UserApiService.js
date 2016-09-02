@@ -63,9 +63,13 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
 
     }
 
-    this.updatePreferences = function (command) {
+    this.updatePreferences = function (key, value) {
 
+
+        UserService.setPreference(key, value)
+        var command = key + '=' + value
         var username = UserService.username()
+
         // var email = UserService.email()
 
         // var parameter = JSON.stringify({username: username, email: email, password: password});

@@ -23,7 +23,7 @@ module.exports = function ($scope, UserService, UserApiService) {
     self.setKind = function(kk) {
 
         console.log('I set the doc_format to ' + kk)
-        UserApiService.updatePreferences('doc_format=' + kk)
+        UserApiService.updatePreferences('doc_format', kk)
     }
 
     self.setPreferences = function (kk) {

@@ -108,6 +108,12 @@ State variables:
 
   }
 
+  this.setPreference = function(key, value) {
+
+
+      this.preferences[key] = value
+  }
+
 
 
   this.getPreferences = function() {
