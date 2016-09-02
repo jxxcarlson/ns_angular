@@ -457,6 +457,17 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
               $scope.docArray = _documentList || []
 
+              if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
+
+                  $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
+                  $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
+                  $scope.showBackup = true
+
+              } else {
+
+                  $scope.showBackup = false
+              }
+
 
           })
 
@@ -625,16 +636,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
         }
 
-        if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
 
-            $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
-            $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
-            $scope.showBackup = true
-
-        } else {
-
-            $scope.showBackup = false
-        }
 
 
         console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
