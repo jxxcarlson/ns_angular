@@ -2323,7 +2323,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('development');
+    envService.set('production');
 
 
 
@@ -2410,11 +2410,11 @@ module.exports = function ($scope, UserService, UserApiService) {
     UserApiService.getPreferences(self.username, self)
 
     console.log('foo = ' + self.foo)
-    console.log('default doc type = ' + UserService.getPreferences().default_document_type)
+    console.log('default doc type = ' + UserService.getPreferences().doc_format)
 
     self.getDocKindClass = function (kk) {
 
-        if (kk == UserService.getPreferences().default_document_type) {
+        if (kk == UserService.getPreferences().doc_format) {
             return {"background-color": "#efe"}
         } else {
             return {}
@@ -2422,8 +2422,14 @@ module.exports = function ($scope, UserService, UserApiService) {
         
     }
 
+    self.setKind = function(kk) {
+
+        console.log('I set the doc_format to ' + kk)
+        UserApiService.updatePreferences('doc_format=' + kk)
+    }
+
     self.setPreferences = function (kk) {
-        var params = {set_default_document_type: kk, author_name: UserService.username()}
+        var params = {doc_format: kk}
         //  UserApiService.updatePreferences(params, $scope)
     }
 
@@ -2718,7 +2724,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
     
     
 },{}],45:[function(require,module,exports){
-module.exports = function ($http, $q, $localStorage, envService) {
+module.exports = function ($http, $q, $localStorage, envService, UserService) {
 
     var deferred = $q.defer();
 
@@ -2772,34 +2778,34 @@ module.exports = function ($http, $q, $localStorage, envService) {
 
     this.getPreferences = function(username, controller) {
 
-        controller.foo = 'bar'
-    }
-
-    this.updatePreferences = function (username, parameters) {
-
-        var parameter = JSON.stringify({username: username, email: email, password: password});
-        console.log(parameter);
-        return $http.post(envService.read('apiUrl') + '/users/update_preferences', parameter)
+        return $http.get(envService.read('apiUrl') + '/get_preferences/' + UserService.username())
 
             .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
 
                 var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
+                UserService.setPreferences(data['preferences'])
 
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
             })
-            ;
+
+    }
+
+    this.updatePreferences = function (command) {
+
+        var username = UserService.username()
+        // var email = UserService.email()
+
+        // var parameter = JSON.stringify({username: username, email: email, password: password});
+        var parameter = {}
+        console.log(parameter);
+        return $http.post(envService.read('apiUrl') + '/update_preferences/' + username + '?' + command, parameter)
+
+            .then(function (response) {
+
+
+            }, function (response) {
+
+            })
+
     }
 
 
@@ -2930,12 +2936,13 @@ State variables:
 
   }
 
+
+
   this.getPreferences = function() {
 
       if (this.preferences == undefined) {
 
-          // this.preferences = $localStorage.preferences
-          this.preferences = {'default_document_type': 'text'}
+          this.preferences = {'doc_format': 'text'}
       }
 
       return this.preferences || {}

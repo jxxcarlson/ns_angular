@@ -1,4 +1,4 @@
-module.exports = function ($http, $q, $localStorage, envService) {
+module.exports = function ($http, $q, $localStorage, envService, UserService) {
 
     var deferred = $q.defer();
 
@@ -52,34 +52,34 @@ module.exports = function ($http, $q, $localStorage, envService) {
 
     this.getPreferences = function(username, controller) {
 
-        controller.foo = 'bar'
-    }
-
-    this.updatePreferences = function (username, parameters) {
-
-        var parameter = JSON.stringify({username: username, email: email, password: password});
-        console.log(parameter);
-        return $http.post(envService.read('apiUrl') + '/users/update_preferences', parameter)
+        return $http.get(envService.read('apiUrl') + '/get_preferences/' + UserService.username())
 
             .then(function (response) {
-                // promise is fulfilled
-                deferred.resolve(response.data);
 
                 var data = response.data
-                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
-                $localStorage.accessToken = data['token']
-                $localStorage.loginStatus = data['status']
-                $localStorage.username = username
+                UserService.setPreferences(data['preferences'])
 
-                // promise is returned
-                return deferred.promise;
-            }, function (response) {
-                // the following line rejects the promise
-                deferred.reject(response);
-                // promise is returned
-                return deferred.promise;
             })
-            ;
+
+    }
+
+    this.updatePreferences = function (command) {
+
+        var username = UserService.username()
+        // var email = UserService.email()
+
+        // var parameter = JSON.stringify({username: username, email: email, password: password});
+        var parameter = {}
+        console.log(parameter);
+        return $http.post(envService.read('apiUrl') + '/update_preferences/' + username + '?' + command, parameter)
+
+            .then(function (response) {
+
+
+            }, function (response) {
+
+            })
+
     }
 
 

@@ -23,16 +23,16 @@
                     </button>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu"
                         aria-labelledby="single-button">
-                        <li role="menuitem" ng-click="setKind('text')"
+                        <li role="menuitem" ng-click="ctrl.setKind('text')"
                             ng-style="ctrl.getDocKindClass('text')">Text
                         </li>
-                        <li role="menuitem" ng-click="setKind('asciidoc')"
+                        <li role="menuitem" ng-click="ctrl.setKind('asciidoc')"
                             ng-style="ctrl.getDocKindClass('asciidoc')">Asciidoc
                         </li>
-                        <li role="menuitem" ng-click="setKind('asciidoc-ms')"
+                        <li role="menuitem" ng-click="ctrl.setKind('asciidoc-ms')"
                             ng-style="ctrl.getDocKindClass('asciidoc-ms')">Asciidoc-MS
                         </li>
-                        <li role="menuitem" ng-click="setKind('asciidoc-latex')"
+                        <li role="menuitem" ng-click="ctrl.setKind('asciidoc-latex')"
                             ng-style="ctrl.getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX
                         </li>
 

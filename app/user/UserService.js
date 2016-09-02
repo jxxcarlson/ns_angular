@@ -108,12 +108,13 @@ State variables:
 
   }
 
+
+
   this.getPreferences = function() {
 
       if (this.preferences == undefined) {
 
-          // this.preferences = $localStorage.preferences
-          this.preferences = {'default_document_type': 'text'}
+          this.preferences = {'doc_format': 'text'}
       }
 
       return this.preferences || {}

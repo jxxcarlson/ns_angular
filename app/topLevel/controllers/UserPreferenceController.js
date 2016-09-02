@@ -8,11 +8,11 @@ module.exports = function ($scope, UserService, UserApiService) {
     UserApiService.getPreferences(self.username, self)
 
     console.log('foo = ' + self.foo)
-    console.log('default doc type = ' + UserService.getPreferences().default_document_type)
+    console.log('default doc type = ' + UserService.getPreferences().doc_format)
 
     self.getDocKindClass = function (kk) {
 
-        if (kk == UserService.getPreferences().default_document_type) {
+        if (kk == UserService.getPreferences().doc_format) {
             return {"background-color": "#efe"}
         } else {
             return {}
@@ -20,8 +20,14 @@ module.exports = function ($scope, UserService, UserApiService) {
         
     }
 
+    self.setKind = function(kk) {
+
+        console.log('I set the doc_format to ' + kk)
+        UserApiService.updatePreferences('doc_format=' + kk)
+    }
+
     self.setPreferences = function (kk) {
-        var params = {set_default_document_type: kk, author_name: UserService.username()}
+        var params = {doc_format: kk}
         //  UserApiService.updatePreferences(params, $scope)
     }
 
