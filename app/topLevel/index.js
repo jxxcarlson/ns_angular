@@ -27,6 +27,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('MenuController', require('./controllers/MenuController'))
 app.controller('MainController', require('./controllers/MainController'))
 app.controller('AboutController', require('./controllers/AboutController'))
+app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
     // configure our routes
 
@@ -146,8 +147,14 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     
         .state('getimage', {
             url: '/images/:id',
-            templateUrl : 'pages/images.html',
+            templateUrl: 'pages/images.html',
             controller  : 'ImagesController'
+        })
+
+        .state('userpreferences', {
+            url: '/userpreferences',
+            templateUrl: 'pages/userpreferences.html',
+            controller: 'UserPreferenceController'
         })
     
 

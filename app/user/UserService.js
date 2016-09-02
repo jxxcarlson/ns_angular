@@ -101,5 +101,23 @@ State variables:
       return 'OK'
   }
 
+  this.setPreferences = function(jsonPacket) {
+
+      this.preferences = jsonPacket
+      $localStorage.preferences = this.preferences
+
+  }
+
+  this.getPreferences = function() {
+
+      if (this.preferences == undefined) {
+
+          // this.preferences = $localStorage.preferences
+          this.preferences = {'default_document_type': 'text'}
+      }
+
+      return this.preferences || {}
+
+  }
  
 }
