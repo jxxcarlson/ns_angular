@@ -77,7 +77,7 @@
               if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
 
                   $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
-                  $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
+                  $scope.lastBackupDate = (DocumentService.document().dict['backup']['date']).replace('T', ' at ').replace('+00:00', '')
                   $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
 
               } else {
