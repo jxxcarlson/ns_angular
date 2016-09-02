@@ -627,7 +627,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
         $scope.backup_number = DocumentService.document().backup_number
 
-        console.log('Number of backups: ' + DocumentService.document().backup_number)
+        console.log('*** DICT: ' + DocumentService.document().dict)
 
         $scope.setKind = function(kk) {
 
