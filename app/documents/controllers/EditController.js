@@ -246,7 +246,11 @@
 
             $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
             $scope.lastBackupDate = DocumentService.document().dict['backup']['date']
+            $scope.showBackup = true
 
+        } else {
+
+            $scope.showBackup = false
         }
 
 
