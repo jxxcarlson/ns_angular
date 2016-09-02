@@ -244,7 +244,7 @@
 
         $scope.backup_number = DocumentService.document().backup_number
 
-        console.log('*** DICT: ' + DocumentService.document().dict)
+        console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
 
         $scope.setKind = function(kk) {
 
