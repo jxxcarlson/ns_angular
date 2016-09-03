@@ -15,6 +15,8 @@
                 </button>
                 <button ng-hide="documentCanShowSource"  title = "Document tools" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="toggleParameterEditor()"><i class="fa fa-cog"></i></button>
                 <button ng-hide="documentCanShowSource" title = "Make backup" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="backupDocument()"><i class="fa fa-save"></i></button>
+                <button ng-hide="documentCanShowSource" title = "Check out/in" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="toggleCheckoutDocument()"><i class="fa fa-check"></i></button>
+                <span style="margin-left:0.3em;">{{checkedOutMessage}}</span>
             </div>
 
             <br/>

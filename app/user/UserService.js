@@ -42,8 +42,12 @@ State variables:
  
  
  this.username = function() {
-    return $localStorage.username;
+    return $localStorage.username || '';
   }
+
+    this.user_id = function() {
+        return $localStorage.user_id || 0;
+    }
  
   this.accessToken = function() {
     var token = $localStorage.accessToken

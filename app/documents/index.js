@@ -6,6 +6,7 @@ app.service('DocumentApiService', require('./services/DocumentApiService'));
 app.service('DocumentService', require('./services//DocumentService'));
 app.service('MathJaxService', require('./services/MathJaxService')); 
 app.service('SearchService', require('./services/SearchService'));
+app.service('PermissionService', require('./services/PermissionService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))

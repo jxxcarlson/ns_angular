@@ -222,7 +222,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     console.log('*** childOf = ' + scope.childOf)
                     if (scope.childOf != undefined) {
                         console.log('*** I will go to ' + scope.childOf)
-                        SearchService.query('id='+scope.childOf,scope, '')
+                        SearchService.query('id=' + scope.childOf, scope, '')
                         // location.path('editdocument/' + scope.childOf)
                         // $state.go('editdocument', {}, {reload: true})
                     } else {
@@ -279,7 +279,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
-    this.backupDocument = function() {
+    this.backupDocument = function () {
 
         console.log('API: backupDocument')
 
@@ -296,7 +296,35 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
-    this.getBackupText = function(backup_number) {
+    this.postRequest = function (request, scope) {
+
+        console.log('API: postRequest: ' + request)
+
+        var url = envService.read('apiUrl') + '/' + request
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('  -- reply: ' + response.data['reply'])
+                var status = response.data['reply']
+                console.log('*** in API, postRequest, status = ' + status)
+                if (status == 'checked_in') {
+
+                    scope.checkedOutMessage = ''
+
+                } else {
+
+                    scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
+                }
+
+                scope.checkedOutTo = response.data['reply']
+
+            })
+
+    }
+
+    this.getBackupText = function (backup_number) {
 
         console.log('API: backupDocument')
 

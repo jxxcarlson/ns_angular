@@ -176,7 +176,7 @@ https://www.npmjs.com/package/ng-storage
 
 
 
-},{"./directives":5,"./documents":14,"./images":22,"./search":27,"./services":34,"./site":37,"./topLevel":42,"./user":49,"angular":53,"angular-route":51}],2:[function(require,module,exports){
+},{"./directives":5,"./documents":14,"./images":23,"./search":28,"./services":35,"./site":38,"./topLevel":43,"./user":50,"angular":54,"angular-route":52}],2:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -253,7 +253,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":53}],6:[function(require,module,exports){
+},{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":54}],6:[function(require,module,exports){
 module.exports = function(DocumentService) {
 
   var self = this
@@ -391,330 +391,351 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
 }
 },{}],9:[function(require,module,exports){
-  module.exports = function($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
-                             DocumentService, DocumentApiService, UserService, envService,
-                             MathJaxService, hotkeys, $interval) {
-''
-        var id;
-        var keyStrokeCount = 0
+module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
+                           DocumentService, DocumentApiService, UserService, envService,
+                           MathJaxService, hotkeys, $interval) {
+    ''
+    var id;
+    var keyStrokeCount = 0
 
-        if ($stateParams.id != undefined) {
-            id = $stateParams.id
-        } else {
-            id = DocumentService.documentId();
-        }
+    if ($stateParams.id != undefined) {
+        id = $stateParams.id
+    } else {
+        id = DocumentService.documentId();
+    }
 
-      var url = envService.read('apiUrl') + '/documents/' + id
-      var options = { headers: { "accesstoken": UserService.accessToken() }}
-      $http.get(url, options  )
-          .then(function(response){
+    var url = envService.read('apiUrl') + '/documents/' + id
+    var options = {headers: {"accesstoken": UserService.accessToken()}}
 
-              var document = response.data['document'] // JJJJ
-              DocumentService.update(response.data['document'])
-              var editDocument = DocumentService.document()
-              $scope.editDocument = editDocument
-              $scope.renderedText = function() { return $sce.trustAsHtml(editDocument.rendered_text); }
-              $scope.title = document.title
-              $scope.editableTitle = document.title
-              $scope.editText = document.text
-              $scope.kind = document.kind
+    $http.get(url, options)
+        .then(function (response) {
 
-              var imageRegex = new RegExp("image/")
-              var pdfRegex = new RegExp("application/pdf")
+            var document = response.data['document'] // JJJJ
+            DocumentService.update(response.data['document'])
+            var editDocument = DocumentService.document()
+            $scope.editDocument = editDocument
+            $scope.renderedText = function () {
+                return $sce.trustAsHtml(editDocument.rendered_text);
+            }
+            $scope.title = document.title
+            $scope.editableTitle = document.title
+            $scope.editText = document.text
+            $scope.kind = document.kind
+            $scope.checkedOutTo = document.dict['checked_out_to']
 
-              $scope.imageKind = imageRegex.test($scope.kind)
-              $scope.pdfKind = pdfRegex.test($scope.kind)
-              $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
-              $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-              $scope.identifier = document.identifier
-              $scope.tags = document.tags
-              $scope.docArray = DocumentService.documentList()
-              $scope.documentCount = DocumentService.documentCount()
+            if ($scope.checkedOutTo == '') {
 
+                $scope.checkedOutMessage = ''
 
-              /// HANDLE PARENT ///
-              var links = editDocument.links
-              var parent = links.parent || {}
-              if (parent == {}) {
+            } else {
 
-                  $scope.parentId = 0
-                  $scope.parentTitle = ''
-
-              } else {
-
-                  $scope.parentId = parent.id
-                  $scope.parentTitle = parent.title
-              }
+                $scope.checkedOutMessage = 'Checked out to ' + $scope.checkedOutTo
+            }
 
 
-              if (DocumentService.getPublic()) {
-                  $scope.statusPublic = true
-              } else {
-                  $scope.statusPublic = false
-              }
+            console.log('*** ' + $scope.title + ' checked out to ' + $scope.checkedOutTo)
+
+            var imageRegex = new RegExp("image/")
+            var pdfRegex = new RegExp("application/pdf")
+
+            $scope.imageKind = imageRegex.test($scope.kind)
+            $scope.pdfKind = pdfRegex.test($scope.kind)
+            $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
+            $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+            $scope.identifier = document.identifier
+            $scope.tags = document.tags
+            $scope.docArray = DocumentService.documentList()
+            $scope.documentCount = DocumentService.documentCount()
 
 
-              DocumentService.update(document)
+            /// HANDLE PARENT ///
+            var links = editDocument.links
+            var parent = links.parent || {}
+            if (parent == {}) {
+
+                $scope.parentId = 0
+                $scope.parentTitle = ''
+
+            } else {
+
+                $scope.parentId = parent.id
+                $scope.parentTitle = parent.title
+            }
 
 
-              var _documentList = DocumentService.documentList()
-
-              if (_documentList.length == 0) {
-
-                  DocumentService.resetDocumentList()
-                  _documentList = $localStorage.documentList
-              }
-
-              $scope.docArray = _documentList || []
-
-              if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
-
-                  $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
-                  $scope.lastBackupDate = (DocumentService.document().dict['backup']['date']).replace('T', ' at ').replace('+00:00', '')
-                  $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
-
-              } else {
-
-                  $scope.showBackup = false
-              }
-
-              console.log('showBackup = ' +  $scope.showBackup )
+            if (DocumentService.getPublic()) {
+                $scope.statusPublic = true
+            } else {
+                $scope.statusPublic = false
+            }
 
 
-          })
-
-      $scope.text = DocumentService.text() // for word count
-      $scope.wordCount = $scope.text.split(' ').length
-      $scope.ifParentExists = true
-      // $scope.showTools = !$scope.documentCanShowSource
-      $scope.toggleParameterEditor = function() {
-
-          $scope.identifier = DocumentService.identifier()
-          $scope.tags = DocumentService.tags()
-          $scope.kind = DocumentService.kind()
-          $scope.showTools = !$scope.showTools
-      }
+            DocumentService.update(document)
 
 
-      $scope.reloadMathJax = function () {
-          $timeout(
-              function () {
-                  var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                  MathJaxService.reload(DocumentService.kind(), message)
-              },
-              500)
+            var _documentList = DocumentService.documentList()
 
-      }
+            if (_documentList.length == 0) {
+
+                DocumentService.resetDocumentList()
+                _documentList = $localStorage.documentList
+            }
+
+            $scope.docArray = _documentList || []
+
+            if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
+
+                $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
+                $scope.lastBackupDate = (DocumentService.document().dict['backup']['date']).replace('T', ' at ').replace('+00:00', '')
+                $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
+
+            } else {
+
+                $scope.showBackup = false
+            }
+
+            console.log('showBackup = ' + $scope.showBackup)
 
 
-      // Set heights of window parts
-      var innerHeight = $window.innerHeight
-      document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
-      document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
-
-      // Editor hotkeys (not working)
-      hotkeys.bindTo($scope)
-        .add({
-          combo: 'ctrl-s',
-          description: 'blah blah',
-          allowIn: ['INPUT', 'TEXTAREA'],
-          callback: function() {
-            alert('SAVE DOCUMENT')
-            DocumentApiService.update(DocumentService.params($scope), $scope)
-          }
         })
 
-      hotkeys.bindTo($scope)
+    $scope.text = DocumentService.text() // for word count
+    $scope.wordCount = $scope.text.split(' ').length
+    $scope.ifParentExists = true
+    // $scope.showTools = !$scope.documentCanShowSource
+    $scope.toggleParameterEditor = function () {
+
+        $scope.identifier = DocumentService.identifier()
+        $scope.tags = DocumentService.tags()
+        $scope.kind = DocumentService.kind()
+        $scope.showTools = !$scope.showTools
+    }
+
+    $scope.toggleCheckoutDocument = function() {
+
+        console.log('*** CHECK IN/OUT')
+        request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
+        DocumentApiService.postRequest(request, $scope)
+    }
+
+    $scope.reloadMathJax = function () {
+        $timeout(
+            function () {
+                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload(DocumentService.kind(), message)
+            },
+            500)
+
+    }
+
+
+    // Set heights of window parts
+    var innerHeight = $window.innerHeight
+    document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
+    document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
+
+    // Editor hotkeys (not working)
+    hotkeys.bindTo($scope)
         .add({
-          combo: 'ctrl-w',
-          allowIn: ['INPUT', 'TEXTAREA'],
-          description: 'blah blah',
-          callback: function() {
-            alert('WW')
-          }
-        })
-
-
-        // Auto refresh
-        var callAtInterval = function() {
-
-            if ($scope.textDirty) {
-                updateCount += 1
-                // console.log('callAtInterval:  UPDATE')
-                $scope.wordCount = DocumentService.text().split(' ').length
+            combo: 'ctrl-s',
+            description: 'blah blah',
+            allowIn: ['INPUT', 'TEXTAREA'],
+            callback: function () {
+                alert('SAVE DOCUMENT')
                 DocumentApiService.update(DocumentService.params($scope), $scope)
-                $timeout(
-                    function () {
-                        var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                        MathJaxService.reload(DocumentService.kind(), message)
-                    },
-                    500)
-                $scope.textDirty = false
             }
+        })
+
+    hotkeys.bindTo($scope)
+        .add({
+            combo: 'ctrl-w',
+            allowIn: ['INPUT', 'TEXTAREA'],
+            description: 'blah blah',
+            callback: function () {
+                alert('WW')
+            }
+        })
 
 
+    // Auto refresh
+    var callAtInterval = function () {
+
+        if ($scope.textDirty) {
+            updateCount += 1
+            // console.log('callAtInterval:  UPDATE')
+            $scope.wordCount = DocumentService.text().split(' ').length
+            DocumentApiService.update(DocumentService.params($scope), $scope)
+            $timeout(
+                function () {
+                    var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                    MathJaxService.reload(DocumentService.kind(), message)
+                },
+                500)
+            $scope.textDirty = false
         }
 
-        var periodicUpdate
-        if (DocumentService.kind() == 'asciidoc-latex') {
 
-            periodicUpdate = $interval(callAtInterval, 60*1000);  // 1 minute
+    }
+
+    var periodicUpdate
+    if (DocumentService.kind() == 'asciidoc-latex') {
+
+        periodicUpdate = $interval(callAtInterval, 60 * 1000);  // 1 minute
 
 
+    } else {
+
+        periodicUpdate = $interval(callAtInterval, 500) // 0.5 second
+    }
+
+    var updateCount = 0
+
+    $scope.$on("$destroy", function () {
+        $interval.cancel(periodicUpdate);
+    });
+
+
+    // update document command bound to key up for escaoe key
+    $scope.refreshText = function () {
+
+        //console.log('refreshText')
+
+        var strokesBeforeUpdate = 10
+        // This is so that users can view source but
+        // not be able to edit it (or rather save any edits)
+        if ($scope.documentCanShowSource) {
+            return
+        }
+
+        if (event.keyCode == 27) {
+            // console.log('ESCAPE pressed -- saving document')
+            $scope.wordCount = DocumentService.text().split(' ').length
+            DocumentApiService.update(DocumentService.params($scope), $scope)
+            $timeout(
+                function () {
+                    var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                    MathJaxService.reload(DocumentService.kind(), message)
+                },
+                500)
+        } else {
+            ////
+            $scope.textDirty = true
+            keyStrokeCount += 1
+            //console.log('Else clause, strokes = ' + keyStrokeCount)
+            ///if (keyStrokeCount == strokesBeforeUpdate) {
+            //console.log('EEE: updating text = ' + keyStrokeCount)
+            if (keyStrokeCount == strokesBeforeUpdate && $scope.kind != 'asciidoc-latex') {
+
+                keyStrokeCount = 0
+                //console.log('Calling API service, update')
+                DocumentApiService.update(DocumentService.params($scope), $scope)
+                $scope.wordCount = DocumentService.text().split(' ').length
+                $scope.textDirty = false
+            } else {
+
+                //console.log('---')
+            }
+
+            /// }
+            ////
+        }
+    }
+
+
+    $scope.docStyle = DocumentService.tocStyle
+    $scope.publicStyle = function () {
+
+        if ($scope.statusPublic) {
+            return {"background-color": "#fee", "padding": "3px"}
+        } else {
+            return {"padding": "3px"}
+        }
+    }
+
+    $scope.getDocKindClass = function (kk) {
+
+        if ($scope.editDocument) {
+
+            // if (kk == $scope.editDocument.kind) {
+            if (kk == DocumentService.kind()) {
+                return {"background-color": "#efe"}
+            } else {
+                return {}
+            }
         } else {
 
-            periodicUpdate = $interval(callAtInterval, 500) // 0.5 second
+            return {}
         }
 
-        var updateCount = 0
-
-        $scope.$on("$destroy", function(){
-            $interval.cancel(periodicUpdate);
-        });
+    }
 
 
-      // update document command bound to key up for escaoe key
-      $scope.refreshText = function() {
+    console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
 
-          //console.log('refreshText')
+    $scope.setKind = function (kk) {
 
-          var strokesBeforeUpdate = 10
-          // This is so that users can view source but
-          // not be able to edit it (or rather save any edits)
-          if ($scope.documentCanShowSource) {
-              return
-          }
+        //console.log('*** kk ' + kk)
+        var id = DocumentService.documentId()
+        var params = {id: id, kind: kk, author_name: DocumentService.author()}
+        DocumentApiService.update(params, $scope)
+    }
 
-          if (event.keyCode == 27) {
-              // console.log('ESCAPE pressed -- saving document')
-              $scope.wordCount = DocumentService.text().split(' ').length
-              DocumentApiService.update(DocumentService.params($scope), $scope)
-              $timeout(
-                  function () {
-                      var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                      MathJaxService.reload(DocumentService.kind(), message)
-                  },
-                  500)
-          } else {
-              ////
-              $scope.textDirty = true
-              keyStrokeCount += 1
-              //console.log('Else clause, strokes = ' + keyStrokeCount)
-              ///if (keyStrokeCount == strokesBeforeUpdate) {
-                  //console.log('EEE: updating text = ' + keyStrokeCount)
-                  if (keyStrokeCount == strokesBeforeUpdate && $scope.kind != 'asciidoc-latex' ){
+    $scope.setParams = function (kk) {
 
-                      keyStrokeCount = 0
-                      //console.log('Calling API service, update')
-                      DocumentApiService.update(DocumentService.params($scope), $scope)
-                      $scope.wordCount = DocumentService.text().split(' ').length
-                      $scope.textDirty = false
-                  } else {
-
-                      //console.log('---')
-                  }
-
-             /// }
-              ////
-          }
-      }
-
-
-
-        $scope.docStyle = DocumentService.tocStyle
-        $scope.publicStyle = function() {
-
-            if ($scope.statusPublic) {
-                return { "background-color": "#fee", "padding": "3px"}
-            } else {
-                return { "padding": "3px"}
-            }
+        var id = DocumentService.documentId()
+        var params = {
+            id: id, tags: $scope.tags,
+            identifier: $scope.identifier, author_name: DocumentService.author()
         }
+        DocumentApiService.update(params, $scope)
+    }
 
-         $scope.getDocKindClass = function(kk) {
+    $scope.attachDocument = function () {
 
-            if ($scope.editDocument)  {
+        var id = DocumentService.currentDocumentItem().id
+        var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
+        DocumentApiService.update(params, $scope)
 
-                // if (kk == $scope.editDocument.kind) {
-                if (kk == DocumentService.kind()) {
-                    return { "background-color" : "#efe" }
-                } else {
-                    return {  }
-                }
-            } else {
-
-                return { }
-            }
-
-        }
+    }
 
 
+    $scope.moveUp = function () {
+
+        DocumentApiService.move_subdocument($scope.parentId, id, 'move_up', $scope)
+
+    }
+
+    $scope.moveDown = function () {
+
+        DocumentApiService.move_subdocument($scope.parentId, id, 'move_down', $scope)
+
+    }
+    // update document
+    $scope.updateDocument = function () {
+
+        DocumentApiService.update(DocumentService.params($scope), $scope)
+
+    }
+
+    $scope.showTools2 = $scope.showTools && !$scope.documentCanShowSource
+
+    $scope.backupDocument = function () {
+
+        console.log('Controller: backupDocument')
+        DocumentApiService.backupDocument()
+    }
 
 
-        console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
+    $scope.displayLastBackup = function () {
 
-        $scope.setKind = function(kk) {
-
-            //console.log('*** kk ' + kk)
-            var id = DocumentService.documentId()
-            var params = {id: id, kind: kk, author_name: DocumentService.author()}
-            DocumentApiService.update(params, $scope)
-        }
-
-      $scope.setParams = function(kk) {
-
-          var id = DocumentService.documentId()
-          var params = {id: id, tags: $scope.tags,
-              identifier: $scope.identifier, author_name: DocumentService.author()}
-          DocumentApiService.update(params, $scope)
-      }
-
-      $scope.attachDocument = function() {
-
-          var id = DocumentService.currentDocumentItem().id
-          var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
-          DocumentApiService.update(params, $scope)
-
-      }
+        DocumentApiService.getBackupText($scope.lastBackupNumber)
+    }
 
 
-        $scope.moveUp = function() {
+    $scope.displayBackup = function (backupNumber) {
 
-            DocumentApiService.move_subdocument($scope.parentId, id, 'move_up', $scope)
-
-        }
-
-       $scope.moveDown = function() {
-
-          DocumentApiService.move_subdocument($scope.parentId, id, 'move_down', $scope)
-
-      }
-        // update document
-        $scope.updateDocument = function() {
-
-            DocumentApiService.update(DocumentService.params($scope), $scope)
-
-        }
-
-      $scope.showTools2 = $scope.showTools && !$scope.documentCanShowSource
-
-      $scope.backupDocument = function() {
-
-          console.log('Controller: backupDocument')
-          DocumentApiService.backupDocument() }
-
-
-      $scope.displayLastBackup = function() {
-
-          DocumentApiService.getBackupText($scope.lastBackupNumber)
-      }
-
-
-      $scope.displayBackup = function(backupNumber) {
-
-            DocumentApiService.getBackupText(backupNumber)
-      }
-
+        DocumentApiService.getBackupText(backupNumber)
+    }
 
 
 }
@@ -883,6 +904,7 @@ app.service('DocumentApiService', require('./services/DocumentApiService'));
 app.service('DocumentService', require('./services//DocumentService'));
 app.service('MathJaxService', require('./services/MathJaxService')); 
 app.service('SearchService', require('./services/SearchService'));
+app.service('PermissionService', require('./services/PermissionService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))
@@ -896,7 +918,7 @@ app.controller('BackupController', require('./controllers/BackupController'))
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/BackupController":6,"./controllers/DeleteDocumentController":7,"./controllers/DocumentsController":8,"./controllers/EditController":9,"./controllers/EditMenuController":10,"./controllers/NewDocumentController":11,"./controllers/PrintDocumentController":12,"./controllers/SearchController":13,"./services//DocumentService":16,"./services/DocumentApiService":15,"./services/MathJaxService":17,"./services/SearchService":18,"angular":53}],15:[function(require,module,exports){
+},{"./controllers/BackupController":6,"./controllers/DeleteDocumentController":7,"./controllers/DocumentsController":8,"./controllers/EditController":9,"./controllers/EditMenuController":10,"./controllers/NewDocumentController":11,"./controllers/PrintDocumentController":12,"./controllers/SearchController":13,"./services//DocumentService":16,"./services/DocumentApiService":15,"./services/MathJaxService":17,"./services/PermissionService":18,"./services/SearchService":19,"angular":54}],15:[function(require,module,exports){
 /*****
  headers: { "accesstoken": UserService.accessToken(),
                             "Cache-control": "",
@@ -1121,7 +1143,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     console.log('*** childOf = ' + scope.childOf)
                     if (scope.childOf != undefined) {
                         console.log('*** I will go to ' + scope.childOf)
-                        SearchService.query('id='+scope.childOf,scope, '')
+                        SearchService.query('id=' + scope.childOf, scope, '')
                         // location.path('editdocument/' + scope.childOf)
                         // $state.go('editdocument', {}, {reload: true})
                     } else {
@@ -1178,7 +1200,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
-    this.backupDocument = function() {
+    this.backupDocument = function () {
 
         console.log('API: backupDocument')
 
@@ -1195,7 +1217,35 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
-    this.getBackupText = function(backup_number) {
+    this.postRequest = function (request, scope) {
+
+        console.log('API: postRequest: ' + request)
+
+        var url = envService.read('apiUrl') + '/' + request
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('  -- reply: ' + response.data['reply'])
+                var status = response.data['reply']
+                console.log('*** in API, postRequest, status = ' + status)
+                if (status == 'checked_in') {
+
+                    scope.checkedOutMessage = ''
+
+                } else {
+
+                    scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
+                }
+
+                scope.checkedOutTo = response.data['reply']
+
+            })
+
+    }
+
+    this.getBackupText = function (backup_number) {
 
         console.log('API: backupDocument')
 
@@ -1548,6 +1598,17 @@ module.exports = function() {
     
 }
 },{}],18:[function(require,module,exports){
+module.exports = function(DocumentService, UserService) {
+
+
+    this.canEdit = function() {
+
+       if  (DocumentService.document().owner_id == UserService.user_id()) { return true }
+       return false
+    }
+}
+
+},{}],19:[function(require,module,exports){
 module.exports = function ($http, $sce, $state, $location, $q,
                            DocumentService, envService, UserService, QueryParser) {
 
@@ -1597,7 +1658,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
             })
     }
 }
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService, UserService) {
     
         $scope.doImageSearch = function(){
@@ -1634,7 +1695,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
     
     }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 
 /*****
 
@@ -1729,7 +1790,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 }
  
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 
 /*
 GET /images
@@ -1801,7 +1862,7 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
 
     
 }
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -1817,7 +1878,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":19,"./controllers/ImageUploadController":20,"./controllers/ImagesController":21,"./services/ImageApiService":23,"./services/ImageRouteService":24,"./services/ImageSearchService":25,"./services/ImageService":26,"angular":53}],23:[function(require,module,exports){
+},{"./controllers/ImageSearchController":20,"./controllers/ImageUploadController":21,"./controllers/ImagesController":22,"./services/ImageApiService":24,"./services/ImageRouteService":25,"./services/ImageSearchService":26,"./services/ImageService":27,"angular":54}],24:[function(require,module,exports){
 module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
@@ -1897,7 +1958,7 @@ module.exports = function($http, $q, ImageService, envService, UserService) {
     }
     
       }
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 
 module.exports = function(ImageService, ImageApiService, $state) {
     
@@ -1935,7 +1996,7 @@ module.exports = function(ImageService, ImageApiService, $state) {
 
     }
 }
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService, UserService) {
 
     
@@ -1970,7 +2031,7 @@ module.exports = function($http, $state, ImageService, ImageApiService, QueryPar
     }
 }
                   
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -2084,14 +2145,14 @@ module.exports = function($localStorage) {
     
        
 }
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":28,"angular":53}],28:[function(require,module,exports){
+},{"./services/QueryParser":29,"angular":54}],29:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -2148,7 +2209,7 @@ module.exports = function() {
     
     
     }
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // http://www.tutorialspoint.com/angularjs/angularjs_upload_file.htm
 
 module.exports = function ($http) {
@@ -2173,7 +2234,7 @@ module.exports = function ($http) {
 
     
  }
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = function() {
 
     // this.clientServer = function() { return "localhost:3000" }
@@ -2193,7 +2254,7 @@ module.exports = function() {
 }
 
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 
 // Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/
 // Demo: http://cheynewallace.github.io/angular-s3-upload/
@@ -2242,7 +2303,7 @@ module.exports = function(file) {
     });
 
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function(Math) {
      
     this.reportTime = function() {
@@ -2255,7 +2316,7 @@ module.exports = function(Math) {
         return sec + "::" + ms
     }
 }
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -2263,7 +2324,7 @@ module.exports = function(Math) {
             return val;
         }
     }
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2278,7 +2339,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 
-},{"./FileUpload":29,"./GlobalService":30,"./PSFileUpload":31,"./UtilityService":32,"./foo":33,"angular":53}],35:[function(require,module,exports){
+},{"./FileUpload":30,"./GlobalService":31,"./PSFileUpload":32,"./UtilityService":33,"./foo":34,"angular":54}],36:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, UserService) {
     
     console.log('SITE CONTROLLER')
@@ -2320,7 +2381,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
        
     })       
 }
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, DocumentService) {
     
     console.log('SITE DOCUMENT CONTROLLER')
@@ -2341,7 +2402,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     }
     
 }
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2349,7 +2410,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('SiteController', require('./SiteController'))
 app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
-},{"./SiteController":35,"./SiteDocumentController":36,"angular":53}],38:[function(require,module,exports){
+},{"./SiteController":36,"./SiteDocumentController":37,"angular":54}],39:[function(require,module,exports){
 
 module.exports = function($scope, foo, envService) {
 
@@ -2363,7 +2424,7 @@ module.exports = function($scope, foo, envService) {
 }
 
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
                                           foo, UserService, SearchService, envService, DocumentService) {
@@ -2395,7 +2456,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
   // foo d
 
@@ -2403,10 +2464,10 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
 }
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, SearchService,
-                            DocumentApiService, DocumentService, hotkeys) {
+                            DocumentApiService, DocumentService, PermissionService, hotkeys) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -2436,6 +2497,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   $scope.randomDocuments = function(){ SearchService.query('random=50', $scope, 'documents') }
 
   $scope.publicDocuments = function(){ SearchService.query('scope=public', $scope, 'documents') }
+
+
+  $scope.doEditDocument = function() {
+
+    if (PermissionService.canEdit()) { $state.go('editdocument') }
+
+  }
   
   /////
   //$scope.$on('someEvent', function(event, data) { console.log('WWW' + data); });
@@ -2446,7 +2514,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     combo: 'ctrl+e',
       description: 'Edit document',
       allowIn: ['INPUT','TEXTAREA'],
-      callback: function() { $state.go('editdocument') }
+      callback: function() {
+
+        console.log('*** author name = '  + DocumentService.document().author_name)
+        console.log('*** title = '  + DocumentService.document().title)
+        console.log('*** owner_id = '  + DocumentService.document().owner_id)
+        console.log('*** user name = '  +  UserService.username())
+        console.log('*** user id = '  +  UserService.username())
+
+        if (PermissionService.canEdit()) { $state.go('editdocument') }
+    }
   });
     
   hotkeys.add({
@@ -2471,7 +2548,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   /////
   
 }
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = function ($scope, UserService, UserApiService) {
 
     var self = this
@@ -2507,7 +2584,7 @@ module.exports = function ($scope, UserService, UserApiService) {
 
 
 }
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /***********
 
 Advanced routing and resolves
@@ -2694,7 +2771,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/AboutController":38,"./controllers/MainController":39,"./controllers/MenuController":40,"./controllers/UserPreferenceController":41,"angular":53}],43:[function(require,module,exports){
+},{"./controllers/AboutController":39,"./controllers/MainController":40,"./controllers/MenuController":41,"./controllers/UserPreferenceController":42,"angular":54}],44:[function(require,module,exports){
 module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $window,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
@@ -2748,7 +2825,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     }
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {
 
     console.log('Sign out ...')
@@ -2767,7 +2844,7 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
         
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
@@ -2800,7 +2877,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
 }
     
     
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function ($http, $q, $localStorage, envService, UserService) {
 
     var deferred = $q.defer();
@@ -2815,6 +2892,7 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
                 $localStorage.accessToken = data['token']
                 $localStorage.loginStatus = data['status']
                 $localStorage.username = username
+                $localStorage.user_id = data['user_id']
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -2893,7 +2971,7 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
 }
 
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -2906,7 +2984,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = function($localStorage) {
     
 /*****
@@ -2951,8 +3029,12 @@ State variables:
  
  
  this.username = function() {
-    return $localStorage.username;
+    return $localStorage.username || '';
   }
+
+    this.user_id = function() {
+        return $localStorage.user_id || 0;
+    }
  
   this.accessToken = function() {
     var token = $localStorage.accessToken
@@ -3037,7 +3119,7 @@ State variables:
   }
  
 }
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -3053,7 +3135,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":43,"./SignOutController":44,"./SignUpController":45,"./UserApiService":46,"./UserController":47,"./UserService":48,"angular":53}],50:[function(require,module,exports){
+},{"./SignInController":44,"./SignOutController":45,"./SignUpController":46,"./UserApiService":47,"./UserController":48,"./UserService":49,"angular":54}],51:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -4124,11 +4206,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":50}],52:[function(require,module,exports){
+},{"./angular-route":51}],53:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -35897,8 +35979,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":52}]},{},[1]);
+},{"./angular":53}]},{},[1]);

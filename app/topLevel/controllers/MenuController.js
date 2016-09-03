@@ -1,6 +1,6 @@
 module.exports = function ($scope, $rootScope, $log, $location, $state, 
                             UserService, SearchService,
-                            DocumentApiService, DocumentService, hotkeys) {
+                            DocumentApiService, DocumentService, PermissionService, hotkeys) {
   $scope.items = [
     'The first choice!',
     'And another choice for you.',
@@ -30,6 +30,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   $scope.randomDocuments = function(){ SearchService.query('random=50', $scope, 'documents') }
 
   $scope.publicDocuments = function(){ SearchService.query('scope=public', $scope, 'documents') }
+
+
+  $scope.doEditDocument = function() {
+
+    if (PermissionService.canEdit()) { $state.go('editdocument') }
+
+  }
   
   /////
   //$scope.$on('someEvent', function(event, data) { console.log('WWW' + data); });
@@ -40,7 +47,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     combo: 'ctrl+e',
       description: 'Edit document',
       allowIn: ['INPUT','TEXTAREA'],
-      callback: function() { $state.go('editdocument') }
+      callback: function() {
+
+        console.log('*** author name = '  + DocumentService.document().author_name)
+        console.log('*** title = '  + DocumentService.document().title)
+        console.log('*** owner_id = '  + DocumentService.document().owner_id)
+        console.log('*** user name = '  +  UserService.username())
+        console.log('*** user id = '  +  UserService.username())
+
+        if (PermissionService.canEdit()) { $state.go('editdocument') }
+    }
   });
     
   hotkeys.add({

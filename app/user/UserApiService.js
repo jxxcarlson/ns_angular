@@ -12,6 +12,7 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
                 $localStorage.accessToken = data['token']
                 $localStorage.loginStatus = data['status']
                 $localStorage.username = username
+                $localStorage.user_id = data['user_id']
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
