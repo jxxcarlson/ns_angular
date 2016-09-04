@@ -33,6 +33,7 @@
         <div>
 
 
+            <!-- EDITOR SETTINGS -->
             <div ng-show="showTools" style="margin-left:40px;background-color:#eee; padding:20px;">
 
 
@@ -120,7 +121,13 @@
                 <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at {{lastBackupDate}} GMT</p>
                 <button ng-click="displayLastBackup()">View</button>
 
-                <!-- <pre>{{editOptions}}</pre> -->
+                <br>
+                <br>
+                <h4>Access Control Lists</h4>
+
+                <p ng-repeat="acl in aclList"> {{acl}} </p>
+
+                <!-- END OF EDITOR SETTINGS -->
 
 
             </div>

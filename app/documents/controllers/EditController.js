@@ -29,6 +29,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.editText = document.text
             $scope.kind = document.kind
             $scope.checkedOutTo = document.dict['checked_out_to']
+            $scope.aclList = document.dict['acl']
 
             if ($scope.checkedOutTo == '') {
 
@@ -106,6 +107,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         })
 
+
+
     $scope.text = DocumentService.text() // for word count
     $scope.wordCount = $scope.text.split(' ').length
     $scope.ifParentExists = true
@@ -121,9 +124,28 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.toggleCheckoutDocument = function() {
 
         console.log('*** CHECK IN/OUT')
-        request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
+        var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
         DocumentApiService.postRequest(request, $scope)
+            .then(function (response) {
+
+                console.log('  -- reply: ' + response.data['reply'])
+                var status = response.data['reply']
+                console.log('*** in API, postRequest, status = ' + status)
+                if (status == 'checked_in') {
+
+                    $scope.checkedOutMessage = ''
+
+                } else {
+
+                    $scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
+                }
+
+                $scope.checkedOutTo = response.data['reply']
+
+            })
     }
+
+
 
     $scope.reloadMathJax = function () {
         $timeout(

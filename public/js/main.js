@@ -422,6 +422,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.editText = document.text
             $scope.kind = document.kind
             $scope.checkedOutTo = document.dict['checked_out_to']
+            $scope.aclList = document.dict['acl']
 
             if ($scope.checkedOutTo == '') {
 
@@ -499,6 +500,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         })
 
+
+
     $scope.text = DocumentService.text() // for word count
     $scope.wordCount = $scope.text.split(' ').length
     $scope.ifParentExists = true
@@ -514,9 +517,28 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.toggleCheckoutDocument = function() {
 
         console.log('*** CHECK IN/OUT')
-        request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
+        var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
         DocumentApiService.postRequest(request, $scope)
+            .then(function (response) {
+
+                console.log('  -- reply: ' + response.data['reply'])
+                var status = response.data['reply']
+                console.log('*** in API, postRequest, status = ' + status)
+                if (status == 'checked_in') {
+
+                    $scope.checkedOutMessage = ''
+
+                } else {
+
+                    $scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
+                }
+
+                $scope.checkedOutTo = response.data['reply']
+
+            })
     }
+
+
 
     $scope.reloadMathJax = function () {
         $timeout(
@@ -1224,24 +1246,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         var url = envService.read('apiUrl') + '/' + request
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
-        $http.post(url, {}, options)
-            .then(function (response) {
+        return $http.post(url, {}, options)
 
-                console.log('  -- reply: ' + response.data['reply'])
-                var status = response.data['reply']
-                console.log('*** in API, postRequest, status = ' + status)
-                if (status == 'checked_in') {
-
-                    scope.checkedOutMessage = ''
-
-                } else {
-
-                    scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
-                }
-
-                scope.checkedOutTo = response.data['reply']
-
-            })
 
     }
 
@@ -2549,7 +2555,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
   
 }
 },{}],42:[function(require,module,exports){
-module.exports = function ($scope, UserService, UserApiService) {
+module.exports = function ($scope, UserService, UserApiService, DocumentApiService) {
 
     var self = this
 
@@ -2557,6 +2563,58 @@ module.exports = function ($scope, UserService, UserApiService) {
 
 
     UserApiService.getPreferences(self.username, self)
+
+
+    var request = 'acl?acls_of_owner=' + UserService.username()
+    DocumentApiService.postRequest(request, $scope)
+        .then(function (response) {
+
+            var data = JSON.parse(response.data['acl_list'])
+            console.log('ACL DATA: ' + data)
+            console.log('ACL DATA LENGTH: ' + data.length)
+            console.log('ACL DATA first item: ' + data[0])
+
+            var stringify_list = function(array) {
+
+                var str = ""
+                array.forEach(function(element) { str += element + ', '})
+                return str.slice(0, str.length - 2)
+            }
+
+            var stringify_pair_list = function(array) {
+
+                var str = ""
+                array.forEach(function(element) { str += element[1] + ', '})
+                return str.slice(0, str.length - 2)
+            }
+
+            var prettify = function(item) {
+
+                var obj = {}
+                obj.name = item.name
+                obj.permission = item.permission
+                obj.members  = stringify_list(item.members)
+                obj.documents =  stringify_pair_list(item.documents)
+                return obj
+            }
+
+            var list = []
+            var counter = 0
+
+            data.forEach( function(item) {
+
+                list.push({
+                    "id": counter,
+                    "acl": prettify(item)
+                })
+            })
+
+            console.log('*** acl list: ' + JSON.stringify(list))
+
+            self.aclList = list
+
+        })
+
 
     console.log('foo = ' + self.foo)
     console.log('default doc type = ' + UserService.getPreferences().doc_format)

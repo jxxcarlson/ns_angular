@@ -164,3 +164,9 @@ input[type="file"]::-webkit-file-upload-button{
     font-weight:500;
     color: darkred;
 }
+
+#acl-list li {
+
+    list-style-type: none;
+    margin-left:1em;
+}

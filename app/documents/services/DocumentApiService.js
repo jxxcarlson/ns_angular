@@ -303,24 +303,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         var url = envService.read('apiUrl') + '/' + request
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
-        $http.post(url, {}, options)
-            .then(function (response) {
+        return $http.post(url, {}, options)
 
-                console.log('  -- reply: ' + response.data['reply'])
-                var status = response.data['reply']
-                console.log('*** in API, postRequest, status = ' + status)
-                if (status == 'checked_in') {
-
-                    scope.checkedOutMessage = ''
-
-                } else {
-
-                    scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
-                }
-
-                scope.checkedOutTo = response.data['reply']
-
-            })
 
     }
 
