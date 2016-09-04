@@ -2640,6 +2640,32 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
         //  UserApiService.updatePreferences(params, $scope)
     }
 
+    self.addUserToAcl = function() {
+
+        console.log('add user ' + self.usernameForAcl + ' to acl ' + self.aclNameForUser)
+    }
+    self.removeUserFromAcl = function() {
+
+        console.log('remove user ' + self.usernameForAcl + ' from acl ' + self.aclNameForUser)
+    }
+
+    self.addDocumentToAcl = function() {
+
+        console.log('add document ' + self.documentIdForAcl + ' to acl ' + self.aclNameForDocument)
+    }
+    self.removeDocumentFromAcl = function() {
+
+        console.log('remove document ' + self.documentIdForAcl + ' from acl ' + self.aclNameForDocument)
+    }
+
+    self.createAcl = function() {
+
+        console.log('create ACL ' + self.aclNameCD + ' with permission ' + self.permissionForAcl)
+    }
+    self.destroyAcl = function() {
+
+        console.log('destroy ACL ' + self.aclNameCD)
+    }
 
 }
 },{}],43:[function(require,module,exports){

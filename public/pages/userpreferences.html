@@ -1,14 +1,15 @@
 
 <div class="row" ng-controller="UserPreferenceController as ctrl">
 
-    <div class="col-md-4" >
+
+    <div class="col-md-2" >
         <div style="margin-left:2em;">
 
 
         </div>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-4">
         <div style="margin-left:1em;">
             <br/>
             <br/>
@@ -52,6 +53,73 @@
 
             </div>
 
+
+        </div>
+    </div>
+
+    <div class="col-md-6" >
+        <div style="margin-left:2em;">
+
+            <h4>Mange Access Control Lists</h4>
+            <div style="font-size:12pt;">
+                <table>
+                    <tr>
+                        <td>
+                            <button id='addUserToAcl' ng-click="ctrl.addUserToAcl()">Add</button> <button  id='removeUserFromAcl' ng-click="ctrl.removeUserFromAcl()">Remove</button></td>
+                        <td>
+                            User</td>
+                        <td>
+                            <input id = 'addUDocumentToAcl' type="text"placeholder = "username" class="acl-input" id = 'addUDocumentToAcl' ng-model="ctrl.usernameForAcl" >
+                        </td>
+                        <td>
+                            to/from
+                        </td>
+                        <td>
+                            <input type="text"placeholder = "acl" class="acl-input" ng-model="ctrl.aclNameForUser" >
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <button ng-click="ctrl.addDocumentToAcl()">Add</button> <button ng-click="ctrl.removeDocumentFromAcl()">Remove</button></td>
+                        <td>
+                            Document
+                        </td>
+                        <td>
+                            <input type="text"placeholder = "id" class="acl-input" ng-model="ctrl.documentIdForAcl">
+                        </td>
+                        <td>
+                            to/from
+                        </td>
+                        <td>
+                            <input type="text"placeholder = "acl" class="acl-input" ng-model="ctrl.aclNameForDocument">
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td>
+                            <button ng-click="ctrl.createAcl()" >Create</button> <button ng-click="ctrl.destroyAcl()" >Destroy</button>
+                        <td>
+                            ACL
+                        </td>
+                        <td>
+                            <input type="text"placeholder = "name" class="acl-input" ng-model="ctrl.aclNameCD" >
+                        </td>
+                        <td>
+                            with permission
+                        </td>
+                        <td>
+                            <input type="text"placeholder = "edit | read" class="acl-input" ng-model="ctrl.permissionForAcl" >
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </div>
 
         </div>
     </div>
