@@ -36,6 +36,17 @@ module.exports = function($localStorage) {
 
     }
 
+    this.setPermissions = function(permissions) {
+
+        $localStorage.permissions = permissions
+    }
+
+
+    this.permissions = function() {
+
+        return $localStorage.permissions
+    }
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     

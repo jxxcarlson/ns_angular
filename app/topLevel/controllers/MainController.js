@@ -1,12 +1,11 @@
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
-                                          foo, UserService, SearchService, envService, DocumentService) {
+                                          foo, UserService, SearchService, envService, DocumentService, PermissionService) {
 
     var accessTokenValid = UserService.accessTokenValid()
 
     try {
 
-        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
         var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.author() != UserService.username())
 
     }
@@ -23,13 +22,13 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
 
     $scope.accessTokenValid = accessTokenValid
-    $scope.documentEditable = documentEditable
+    $scope.documentEditable = PermissionService.canEdit()
     $scope.documentCanShowSource = documentCanShowSource
 
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('development');
+    envService.set('production');
 
   // foo d
 

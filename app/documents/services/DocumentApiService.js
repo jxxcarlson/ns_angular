@@ -28,6 +28,10 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 }
 
                 var documentHash = response.data['document']
+                var permissions = response.data['permissions']
+                DocumentService.setPermissions(permissions)
+
+                console.log('DocumentApiService, permissions = ' + JSON.stringify(permissions))
 
                 DocumentService.update(documentHash)
                 var document = DocumentService.document()
@@ -190,6 +194,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     //// JJJJ ///
     this.update = function (params, scope) {
 
+        console.log('Doc Api, update enter')
+
         var parameter = JSON.stringify(params);
 
         if (params['query_string'] != undefined) {
@@ -205,6 +211,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         $http.post(url, parameter, options)
             .then(function (response) {
 
+                console.log('Doc Api, status = ' +  response.data['status'])
                 if (response.data['status'] == 'success') {
 
                     var document = response.data['document']

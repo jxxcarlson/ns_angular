@@ -393,7 +393,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 },{}],9:[function(require,module,exports){
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            DocumentService, DocumentApiService, UserService, envService,
-                           MathJaxService, hotkeys, $interval) {
+                           MathJaxService, PermissionService, hotkeys, $interval) {
     ''
     var id;
     var keyStrokeCount = 0
@@ -620,13 +620,17 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     // update document command bound to key up for escaoe key
     $scope.refreshText = function () {
 
-        //console.log('refreshText')
+        console.log('refreshText')
 
         var strokesBeforeUpdate = 10
         // This is so that users can view source but
         // not be able to edit it (or rather save any edits)
-        if ($scope.documentCanShowSource) {
+        if (PermissionService.canEdit() == false) {
+            console.log('&&& permission to edit denied')
             return
+        } else {
+
+            console.log('&&& permission to edit granted')
         }
 
         if (event.keyCode == 27) {
@@ -971,6 +975,10 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 }
 
                 var documentHash = response.data['document']
+                var permissions = response.data['permissions']
+                DocumentService.setPermissions(permissions)
+
+                console.log('DocumentApiService, permissions = ' + JSON.stringify(permissions))
 
                 DocumentService.update(documentHash)
                 var document = DocumentService.document()
@@ -1133,6 +1141,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     //// JJJJ ///
     this.update = function (params, scope) {
 
+        console.log('Doc Api, update enter')
+
         var parameter = JSON.stringify(params);
 
         if (params['query_string'] != undefined) {
@@ -1148,6 +1158,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         $http.post(url, parameter, options)
             .then(function (response) {
 
+                console.log('Doc Api, status = ' +  response.data['status'])
                 if (response.data['status'] == 'success') {
 
                     var document = response.data['document']
@@ -1312,6 +1323,17 @@ module.exports = function($localStorage) {
 
         }
 
+    }
+
+    this.setPermissions = function(permissions) {
+
+        $localStorage.permissions = permissions
+    }
+
+
+    this.permissions = function() {
+
+        return $localStorage.permissions
     }
 
     this.setDocumentId = function(id) { $localStorage.documentId = id }
@@ -1610,48 +1632,17 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
     this.canEdit = function () {
 
 
-        console.log('&&& CAN EDIT, entry')
+        value = (DocumentService.permissions().indexOf('edit') > -1)
 
-        if (DocumentService.document().owner_id == UserService.user_id()) {
+        console.log('&&& CAN EDIT, value = ' + value)
 
-
-            console.log('&&& CAN EDIT, permission granted (1)')
-            return true
-
-        } else {
-
-            console.log('&&& CAN EDIT, interrogating ACLS (2)')
-            var request = 'acl?grant_permission=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username() + '&permission=edit'
-            DocumentApiService.postRequest(request, {})
-                .then(function (response) {
-
-
-                    console.log('*** PERMISSSION GRANTED: ' + response.data['permission_granted'])
-
-                    if (response.data['permission_granted'] == true) {
-
-                        $state.go('editdocument')
-                    }
-
-
-                })
-
-
-        }
+        return value
 
     }
 
     this.canRead = function () {
 
-        if (DocumentService.getPublic == true || DocumentService.document().owner_id == UserService.user_id()) {
-
-            return true
-
-        } else {
-
-            return false
-
-        }
+        (DocumentService.permissions().indexOf('read') > -1)
 
     }
 }
@@ -2475,13 +2466,12 @@ module.exports = function($scope, foo, envService) {
 },{}],40:[function(require,module,exports){
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
-                                          foo, UserService, SearchService, envService, DocumentService) {
+                                          foo, UserService, SearchService, envService, DocumentService, PermissionService) {
 
     var accessTokenValid = UserService.accessTokenValid()
 
     try {
 
-        var documentEditable = (UserService.accessTokenValid() && DocumentService.author() == UserService.username())
         var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.author() != UserService.username())
 
     }
@@ -2498,13 +2488,13 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
 
     $scope.accessTokenValid = accessTokenValid
-    $scope.documentEditable = documentEditable
+    $scope.documentEditable = PermissionService.canEdit()
     $scope.documentCanShowSource = documentCanShowSource
 
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('development');
+    envService.set('production');
 
   // foo d
 

@@ -1,6 +1,6 @@
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            DocumentService, DocumentApiService, UserService, envService,
-                           MathJaxService, hotkeys, $interval) {
+                           MathJaxService, PermissionService, hotkeys, $interval) {
     ''
     var id;
     var keyStrokeCount = 0
@@ -227,13 +227,17 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     // update document command bound to key up for escaoe key
     $scope.refreshText = function () {
 
-        //console.log('refreshText')
+        console.log('refreshText')
 
         var strokesBeforeUpdate = 10
         // This is so that users can view source but
         // not be able to edit it (or rather save any edits)
-        if ($scope.documentCanShowSource) {
+        if (PermissionService.canEdit() == false) {
+            console.log('&&& permission to edit denied')
             return
+        } else {
+
+            console.log('&&& permission to edit granted')
         }
 
         if (event.keyCode == 27) {
