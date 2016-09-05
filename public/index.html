@@ -68,14 +68,14 @@
                             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="newdocument">New Document</a>
                                 </li>
-                                <li role="menuitem" ng-show="documentEditable" ng-click="doEditDocument()"><a href="#">Edit
+                                <li role="menuitem" ng-show="accessTokenValid" ng-click="doEditDocument()"><a href="#">Edit
                                     Document</a></li>
                                 <!-- <li role="menuitem" ng-show="documentCanShowSource"><a ui-sref="editdocument">Show -->
-                                <li role="menuitem" ng-show="documentCanShowSource"><a ui-sref="editdocument">Show
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="editdocument">Show
                                     Source</a></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="printdocument">Print
                                     Document</a></li>
-                                <li role="menuitem" ng-show="documentEditable"><a ui-sref="deletedocument">Delete
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="deletedocument">Delete
                                     Document</a></li>
                                 <li class="divider"></li>
                                 <li role="menuitem"><a href="http://{{host}}/site/{{currentSite}}">Go to

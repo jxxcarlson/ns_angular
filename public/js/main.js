@@ -1604,13 +1604,55 @@ module.exports = function() {
     
 }
 },{}],18:[function(require,module,exports){
-module.exports = function(DocumentService, UserService) {
+module.exports = function (DocumentService, DocumentApiService, UserService, $state ) {
 
 
-    this.canEdit = function() {
+    this.canEdit = function () {
 
-       if  (DocumentService.document().owner_id == UserService.user_id()) { return true }
-       return false
+
+        console.log('&&& CAN EDIT, entry')
+
+        if (DocumentService.document().owner_id == UserService.user_id()) {
+
+
+            console.log('&&& CAN EDIT, permission granted (1)')
+            return true
+
+        } else {
+
+            console.log('&&& CAN EDIT, interrogating ACLS (2)')
+            var request = 'acl?grant_permission=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username() + '&permission=edit'
+            DocumentApiService.postRequest(request, {})
+                .then(function (response) {
+
+
+                    console.log('*** PERMISSSION GRANTED: ' + response.data['permission_granted'])
+
+                    if (response.data['permission_granted'] == true) {
+
+                        $state.go('editdocument')
+                    }
+
+
+                })
+
+
+        }
+
+    }
+
+    this.canRead = function () {
+
+        if (DocumentService.getPublic == true || DocumentService.document().owner_id == UserService.user_id()) {
+
+            return true
+
+        } else {
+
+            return false
+
+        }
+
     }
 }
 
@@ -2462,7 +2504,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
   // foo d
 
