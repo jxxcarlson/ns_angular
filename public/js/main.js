@@ -1632,7 +1632,15 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
     this.canEdit = function () {
 
 
-        value = (DocumentService.permissions().indexOf('edit') > -1)
+        if (DocumentService.permissions() == undefined) {
+
+            value = false
+
+        } else {
+
+            value = (DocumentService.permissions().indexOf('edit') > -1)
+        }
+
 
         console.log('&&& CAN EDIT, value = ' + value)
 
