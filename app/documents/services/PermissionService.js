@@ -11,6 +11,16 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
         } else {
 
             value = (DocumentService.permissions().indexOf('edit') > -1)
+
+
+            var checkedOutTo = DocumentService.checkedOutTo()
+
+            if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
+
+                console.log('Access denied because document is checked out to ' + checkedOutTo)
+
+                value = false
+            }
         }
 
 

@@ -47,6 +47,16 @@ module.exports = function($localStorage) {
         return $localStorage.permissions
     }
 
+    this.setCheckedOutTo = function(value) {
+
+        $localStorage.checkeOutTo = value
+    }
+
+    this.checkedOutTo = function() {
+
+        return $localStorage.checkeOutTo
+    }
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     

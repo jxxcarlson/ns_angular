@@ -1,21 +1,32 @@
 <div class="row">
 
     <div class="col-md-2">
-        <div style="margin-left:1em;" >
+        <div style="margin-left:1em;">
 
 
             <h3> Contents ({{ documentCount }})</h3>
 
-            <div ng-show="ifParentExists&&!documentCanShowSource">
-                <button title = "Move up" ng-click="moveUp()"
-                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;"><i class="fa fa-arrow-up"></i>
+            <!-- <div ng-show="ifParentExists&&showTools"> -->
+            <div ng-show="ifParentExists">
+                <button title="Move up" ng-click="moveUp()"
+                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;"><i
+                        class="fa fa-arrow-up"></i>
                 </button>
-                <button  title = "Move down" ng-click="moveDown()"
-                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;"><i class="fa fa-arrow-down"></i>
+                <button title="Move down" ng-click="moveDown()"
+                        style="background-color:#666; color:white; padding:5px 10px; font-size:1.2em;"><i
+                        class="fa fa-arrow-down"></i>
                 </button>
-                <button ng-hide="documentCanShowSource"  title = "Document tools" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="toggleParameterEditor()"><i class="fa fa-cog"></i></button>
-                <button ng-hide="documentCanShowSource" title = "Make backup" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="backupDocument()"><i class="fa fa-save"></i></button>
-                <button ng-hide="documentCanShowSource" title = "Check out/in" style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;" ng-click="toggleCheckoutDocument()"><i class="fa fa-check"></i></button>
+            </div>
+            <div>
+                <button title="Document tools"
+                        style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;"
+                        ng-click="toggleParameterEditor()"><i class="fa fa-cog"></i></button>
+                <button title="Make backup"
+                        style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;"
+                        ng-click="backupDocument()"><i class="fa fa-save"></i></button>
+                <button title="Check out/in"
+                        style="margin-top:8px;background-color:#aaa; color:white; padding:5px 10px; font-size:1.2em;"
+                        ng-click="toggleCheckoutDocument()"><i class="fa fa-check"></i></button>
                 <span style="margin-left:0.3em;">{{checkedOutMessage}}</span>
             </div>
 
@@ -118,7 +129,8 @@
 
 
                 </div>
-                <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at {{lastBackupDate}} GMT</p>
+                <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at
+                    {{lastBackupDate}} GMT</p>
                 <button ng-click="displayLastBackup()">View</button>
 
                 <br>
@@ -162,7 +174,8 @@
             <h3>{{ title }}</h3>
             <br/>
             <!-- <div style="width:90%;" ng-if="renderedText()" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div> -->
-            <div elem-ready="reloadMathJax()" ng-show="textKind" style="width:90%;padding-bottom:500px;" ng-bind-html="renderedText()"
+            <div elem-ready="reloadMathJax()" ng-show="textKind" style="width:90%;padding-bottom:500px;"
+                 ng-bind-html="renderedText()"
                  id="rendered-text"></div>
 
             <div ng-show="imageKind" class="container fill">

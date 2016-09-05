@@ -410,9 +410,34 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $http.get(url, options)
         .then(function (response) {
 
+            ///////////
+
+            var permissions = response.data['permissions']
+            var checkedOutTo = response.data['checked_out_to']
+
+            DocumentService.setPermissions(permissions)
+            DocumentService.setCheckedOutTo(checkedOutTo)
+
+            console.log('EditController, permissions = ' + JSON.stringify(permissions))
+            console.log('EditController, checkedOutTo = ' + checkedOutTo)
+
+            if (permissions.indexOf('edit') == -1 ) {
+
+                console.log('Edit controller, get, permission DENIED')
+                $state.go('documents')
+
+            } else {
+
+                console.log('Edit controller, get, permission GRANTED')
+            }
+
+            //////////
+
             var document = response.data['document'] // JJJJ
             DocumentService.update(response.data['document'])
             var editDocument = DocumentService.document()
+
+
             $scope.editDocument = editDocument
             $scope.renderedText = function () {
                 return $sce.trustAsHtml(editDocument.rendered_text);
@@ -424,7 +449,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.checkedOutTo = document.dict['checked_out_to']
             $scope.aclList = document.dict['acl']
 
-            if ($scope.checkedOutTo == '') {
+            if ($scope.checkedOutTo == '' || $scope.checkedOutTo == undefined ) {
 
                 $scope.checkedOutMessage = ''
 
@@ -505,7 +530,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.text = DocumentService.text() // for word count
     $scope.wordCount = $scope.text.split(' ').length
     $scope.ifParentExists = true
-    // $scope.showTools = !$scope.documentCanShowSource
+    $scope.showTools = false
     $scope.toggleParameterEditor = function () {
 
         $scope.identifier = DocumentService.identifier()
@@ -526,14 +551,20 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 console.log('*** in API, postRequest, status = ' + status)
                 if (status == 'checked_in') {
 
-                    $scope.checkedOutMessage = ''
+                    $scope.checkedOutMessage = 'Not checked out'
 
                 } else {
 
-                    $scope.checkedOutMessage = 'Checked out to ' + response.data['reply']
-                }
+                    if (status == undefined) {
 
-                $scope.checkedOutTo = response.data['reply']
+                        $scope.checkedOutMessage = 'Not checked out'
+
+                    } else {
+
+                        $scope.checkedOutMessage = 'Checked out to ' + status
+                    }
+
+                }
 
             })
     }
@@ -976,9 +1007,13 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 var documentHash = response.data['document']
                 var permissions = response.data['permissions']
+                var checkedOutTo = response.data['checked_out_to']
+
                 DocumentService.setPermissions(permissions)
+                DocumentService.setCheckedOutTo(checkedOutTo)
 
                 console.log('DocumentApiService, permissions = ' + JSON.stringify(permissions))
+                console.log('DocumentApiService, checkedOutTo = ' + checkedOutTo)
 
                 DocumentService.update(documentHash)
                 var document = DocumentService.document()
@@ -1336,6 +1371,16 @@ module.exports = function($localStorage) {
         return $localStorage.permissions
     }
 
+    this.setCheckedOutTo = function(value) {
+
+        $localStorage.checkeOutTo = value
+    }
+
+    this.checkedOutTo = function() {
+
+        return $localStorage.checkeOutTo
+    }
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
@@ -1639,6 +1684,16 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
         } else {
 
             value = (DocumentService.permissions().indexOf('edit') > -1)
+
+
+            var checkedOutTo = DocumentService.checkedOutTo()
+
+            if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
+
+                console.log('Access denied because document is checked out to ' + checkedOutTo)
+
+                value = false
+            }
         }
 
 
