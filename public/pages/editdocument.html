@@ -45,49 +45,56 @@
 
 
             <!-- EDITOR SETTINGS -->
-            <div ng-show="showTools" style="margin-left:40px;background-color:#eee; padding:20px;">
+            <div ng-show="showTools" style="margin-left:40px;background-color:#eee;">
 
 
-                <div class="row editor-row">
+                <div class="row editor-row" style="background-color:#ddd">
 
-                    <div class="col-md-8">
-                        <label class='check-box-label' ng-style="publicStyle()" for="publicCheckbox">Public</label>
-                        <input class='floating-box check-box' id="publicCheckbox" type="checkbox"
-                               ng-model="statusPublic" ng-click="updateDocument()"/>
-                    </div>
+                    <div>
+                        <div class="col-md-8">
+                            <label class='check-box-label' ng-style="publicStyle()" for="publicCheckbox">Public</label>
+                            <input class='floating-box check-box' id="publicCheckbox" type="checkbox"
+                                   ng-model="statusPublic" ng-click="updateDocument()"/>
+                            <br>
+                            <p style="margin-left:5px;">ID: {{documentId}}</p>
+                        </div>
 
-                    <div class="col-md-4">
-                        <li style="margin-top:0; list-style-type:none">
-                            <div>
-                                <div class="btn-group" uib-dropdown is-open="status.isopen">
-                                    <button id="single-button" type="button" class="btn" uib-dropdown-toggle
-                                            ng-disabled="disabled">
-                                        Doc format <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" uib-dropdown-menu role="menu"
-                                        aria-labelledby="single-button">
-                                        <li role="menuitem" ng-click="setKind('text')"
-                                            ng-style="getDocKindClass('text')">Text
-                                        </li>
-                                        <li role="menuitem" ng-click="setKind('asciidoc')"
-                                            ng-style="getDocKindClass('asciidoc')">Asciidoc
-                                        </li>
-                                        <li role="menuitem" ng-click="setKind('asciidoc-ms')"
-                                            ng-style="getDocKindClass('asciidoc-ms')">Asciidoc-MS
-                                        </li>
-                                        <li role="menuitem" ng-click="setKind('asciidoc-latex')"
-                                            ng-style="getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX
-                                        </li>
 
-                                    </ul>
+                        <div class="col-md-4">
+                            <li style="margin-top:0; list-style-type:none">
+                                <div>
+                                    <div class="btn-group" uib-dropdown is-open="status.isopen">
+                                        <button id="single-button" type="button" class="btn" uib-dropdown-toggle
+                                                ng-disabled="disabled">
+                                            Doc format <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" uib-dropdown-menu role="menu"
+                                            aria-labelledby="single-button">
+                                            <li role="menuitem" ng-click="setKind('text')"
+                                                ng-style="getDocKindClass('text')">Text
+                                            </li>
+                                            <li role="menuitem" ng-click="setKind('asciidoc')"
+                                                ng-style="getDocKindClass('asciidoc')">Asciidoc
+                                            </li>
+                                            <li role="menuitem" ng-click="setKind('asciidoc-ms')"
+                                                ng-style="getDocKindClass('asciidoc-ms')">Asciidoc-MS
+                                            </li>
+                                            <li role="menuitem" ng-click="setKind('asciidoc-latex')"
+                                                ng-style="getDocKindClass('asciidoc-latex')">Asciidoc-LaTeX
+                                            </li>
+
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+
+                        </div>
+
+
                     </div>
                 </div>
 
-
-                <div class="row editor-row" style="margin-top:40px;">
+                <div class="row editor-row" style="margin-top:0; background-color:#eee;">
                     <div class="col-md-2">
                         <label class="editor-label">Tags</label>
                         <label class="editor-label">Identifier</label>
@@ -105,7 +112,7 @@
                 </div>
 
 
-                <div class="row editor-row" style="margin-top:40px;">
+                <div class="row editor-row" style="background-color:#ddd;">
                     <div class="col-md-4">
 
                     </div>
@@ -129,15 +136,18 @@
 
 
                 </div>
-                <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at
-                    {{lastBackupDate}} GMT</p>
-                <button ng-click="displayLastBackup()">View</button>
 
-                <br>
-                <br>
-                <h4>Access Control Lists</h4>
+                <div class="row editor-row" style="background-color:#eee;">
+                    <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at
+                        {{lastBackupDate}} GMT</p>
+                    <button ng-show="showBackup" ng-click="displayLastBackup()">View</button>
 
-                <p ng-repeat="acl in aclList"> {{acl}} </p>
+                    <br>
+                    <br>
+                    <h4 ng-show="showBackup">Access Control Lists</h4>
+
+                    <p ng-repeat="acl in aclList"> {{acl}} </p>
+                </div>
 
                 <!-- END OF EDITOR SETTINGS -->
 

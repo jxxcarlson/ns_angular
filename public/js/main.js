@@ -476,6 +476,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.tags = document.tags
             $scope.docArray = DocumentService.documentList()
             $scope.documentCount = DocumentService.documentCount()
+            $scope.documentId = DocumentService.currentDocumentItem().id
 
 
             /// HANDLE PARENT ///
