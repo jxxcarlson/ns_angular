@@ -1322,7 +1322,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
 }
 },{}],16:[function(require,module,exports){
-module.exports = function($localStorage) {
+module.exports = function($localStorage, UserService) {
     
     
     /**********
@@ -1636,14 +1636,28 @@ module.exports = function($localStorage) {
         $localStorage.documentCount = 0       
     }
     
-   this.tocStyle = function(doc) { 
+   this.tocStyle = function(doc) {
+       
         var css = {}
         if (doc['id'] == $localStorage.documentId ) {
-            css["background-color"] = "#fee"
+            css["background-color"] = "#ddf"
         }
         if (doc['public'] == true ) {
             css["font-style"] = "italic"
         }
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
+           css["background-color"] = "#fdd"
+       }
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == $localStorage.documentId ) {
+           css["background-color"] = "#fbb"
+       }
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
+           css["background-color"] = "#dfd"
+       }
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == $localStorage.documentId  ) {
+           css["background-color"] = "#8f8"
+       }
+
         return css
     }
 
