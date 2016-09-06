@@ -188,3 +188,5 @@ input[type="file"]::-webkit-file-upload-button{
     list-style-type: none;
     margin-left:1em;
 }
+
+.compact p { margin-bottom:9; }
