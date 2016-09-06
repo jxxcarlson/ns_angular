@@ -414,14 +414,18 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
             var permissions = response.data['permissions']
             var checkedOutTo = response.data['checked_out_to']
+            var canShowSource = response.data['can_show_source']
+
+            console.log('*** canShowSource = ' + canShowSource)
 
             DocumentService.setPermissions(permissions)
             DocumentService.setCheckedOutTo(checkedOutTo)
+            DocumentService.setCanShowSource(canShowSource)
 
             console.log('EditController, permissions = ' + JSON.stringify(permissions))
             console.log('EditController, checkedOutTo = ' + checkedOutTo)
 
-            if (permissions.indexOf('edit') == -1 ) {
+            if (permissions.indexOf('edit') == -1 && canShowSource == 'no') {
 
                 console.log('Edit controller, get, permission DENIED')
                 $state.go('documents')
@@ -1379,6 +1383,19 @@ module.exports = function($localStorage, UserService) {
     this.checkedOutTo = function() {
 
         return $localStorage.checkeOutTo
+    }
+
+
+
+
+    this.setCanShowSource = function(value) {
+
+        $localStorage.canShowSource = value
+    }
+
+    this.canShowSource = function() {
+
+        return $localStorage.canShowSource
     }
 
     this.setDocumentId = function(id) { $localStorage.documentId = id }

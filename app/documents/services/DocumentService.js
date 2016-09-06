@@ -57,6 +57,19 @@ module.exports = function($localStorage, UserService) {
         return $localStorage.checkeOutTo
     }
 
+
+
+
+    this.setCanShowSource = function(value) {
+
+        $localStorage.canShowSource = value
+    }
+
+    this.canShowSource = function() {
+
+        return $localStorage.canShowSource
+    }
+
     this.setDocumentId = function(id) { $localStorage.documentId = id }
     this.documentId = function() { return $localStorage.documentId }
     
