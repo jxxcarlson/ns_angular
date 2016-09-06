@@ -1637,7 +1637,7 @@ module.exports = function($localStorage, UserService) {
     }
     
    this.tocStyle = function(doc) {
-       
+
         var css = {}
         if (doc['id'] == $localStorage.documentId ) {
             css["background-color"] = "#ddf"
