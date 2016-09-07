@@ -35,7 +35,7 @@ gulp.task('prod', function(){
         .pipe(gulp.dest('tmp/'));
     gulp.src(['tmp/MainController.js'])
       .pipe(gulp.dest('app/topLevel/controllers/'))
-      .pipe(gulp.dest('MainController.js'));
+      //.pipe(gulp.dest('MainController.js'));
 });
 
 gulp.task('dev', function(){
@@ -44,7 +44,7 @@ gulp.task('dev', function(){
         .pipe(gulp.dest('tmp/'));
     gulp.src(['tmp/MainController.js'])
         .pipe(gulp.dest('app/topLevel/controllers/'))
-        .pipe(gulp.dest('MainController.js'));
+        // .pipe(gulp.dest('MainController.js'));
 });
 
 gulp.task('foo', function(){
