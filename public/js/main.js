@@ -395,14 +395,16 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                            DocumentService, DocumentApiService, UserService, envService,
                            MathJaxService, PermissionService, hotkeys, $interval) {
     ''
-    var id;
+    var id
     var keyStrokeCount = 0
+
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
     } else {
-        id = DocumentService.documentId();
+        id = DocumentService.currentDocumentItem().id;
     }
+
 
     var url = envService.read('apiUrl') + '/documents/' + id
     var options = {headers: {"accesstoken": UserService.accessToken()}}
@@ -2590,7 +2592,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
   // foo d
 

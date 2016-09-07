@@ -2,14 +2,16 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                            DocumentService, DocumentApiService, UserService, envService,
                            MathJaxService, PermissionService, hotkeys, $interval) {
     ''
-    var id;
+    var id
     var keyStrokeCount = 0
+
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
     } else {
-        id = DocumentService.documentId();
+        id = DocumentService.currentDocumentItem().id;
     }
+
 
     var url = envService.read('apiUrl') + '/documents/' + id
     var options = {headers: {"accesstoken": UserService.accessToken()}}
