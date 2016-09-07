@@ -3043,6 +3043,10 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
         $scope.signinStatus = 'No one signed in'
     }
 
+
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+
+
     $scope.submit = function () {
         UserApiService.login($scope.username, $scope.password)
             .then(
