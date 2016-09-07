@@ -1,15 +1,19 @@
-<div class="row" style="height:1000px; background-image:url('http://psurl.s3.amazonaws.com/images/jc/blueprint-xx-23b9.jpg');">
+<div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-1"></div>
 
-        <br/>
+    <div class="col-md-4"
+         style="padding-bottom:70px; margin-top:25px; background-image:url('http://psurl.s3.amazonaws.com/images/jc/blueprint-xx-40-23b9.jpg')">
+
+
         <div ng-controller='UserController' style="font-size: 16pt;">
             <p ng-model="signedIn"></p>
 
             <!-- SIGN OUT FORM -->
-            <div ng-show="userStatus == 'signedIn'" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+            <div ng-show="userStatus == 'signedIn'"
+                 style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
                 <h1>Signed in as {{username}}</h1>
-                <br />
+                <br/>
                 <div ng-controller="SignOutController">
                     <button ng-click="signout()">Sign out</button>
                 </div>
@@ -17,7 +21,8 @@
             <!-- END SIGN OUT FORM -->
 
             <!-- SIGN IN FORM -->
-            <div ng-controller="SigninController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+            <div ng-controller="SigninController"
+                 style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
                 <div ng-hide="userStatus == 'signedIn'">
                     <h1>Sign in</h1>
                     <br>
@@ -26,16 +31,18 @@
 
                         <div class="form-group">
                             <label for="username">User name</label>
-                            <input type="text" class="form-control" id="username" ng-model="username" placeholder="At least four characters">
+                            <input type="text" class="form-control" id="username" ng-model="username"
+                                   placeholder="At least four characters">
                         </div>
 
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="text" class="form-control" id="password" ng-model="password" placeholder="At least eight characters">
+                            <input type="text" class="form-control" id="password" ng-model="password"
+                                   placeholder="At least eight characters">
                         </div>
 
                         <br>
-                        <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
+                        <input type="submit" id="submit" value="Sign in" class="btn btn-default"/>
                     </form>
 
                     <br/><br/>
@@ -49,45 +56,48 @@
 
     </div>
 
-    <div class="col-md-6" >
+    <div class="col-md-7">
 
+        <div style="margin-left:40px">
+            <h3>Manuscripta.io</h3>
+            <div style="">
 
-        <div style="margin-top:60px;">
+                <p style="max-width:30em;">
+                    Manuscripta.io is a site for lecture notes, problem sets, technical documentation, and suchlike.
+                    A way to share knowledge. To put your material online, just <a href="/signup">sign up</a>
+                    for a free account. (We are still in the beta test and would love your feedack.)
+                <p>
+                </p>
 
-            <p style="max-width:30em;">
-                Manuscripta.io is a site for lecture notes, problem sets, technical documentation, and suchlike.
-                A way to share knowledge.  To put your material online, just <a href="/signup">sign up</a>
-                for a free account.  (We are still in the beta test and would love your feedack.)<p>
-            </p>
-
-        </div>
-
-        <br>
-
-        <div>
-            <h3>Selected links</h3>
-            <p class="compact" ><a href="/documents/jc.qft">Lectures on Quantum Field Theory</a></p>
-            <p class="tail"><a href="http://www.manuscripta.io/documents/156?toc">Math 676</a></p>
-
-            <p class="compact"><a href="/documents/system.user_manual">Manuscripta User Manual</a></p>
-            <p class="compact" ><a href="/documents/jc.asciidoc_guide">Asciidoc Guide</a></p>
-
-        </div>
-
-        <br>
-        <br>
-        <div style="max-width:30em;">
-
-            <p>Advantages of <a href="/signup">signing up</a>: your own account, good format for printing documents,
-            create and publish your own documents.  You will see this and much more in the <strong>tools menu</strong>
-                after you sign up.</p>
+            </div>
 
             <br>
-            <p>Questions?  Bugs? Feedback? Contact jxxcarlson at gmail</p>
+
+            <div>
+                <h3>Selected links</h3>
+                <p class="compact"><a href="/documents/jc.qft">Lectures on Quantum Field Theory</a></p>
+                <p class="tail"><a href="http://www.manuscripta.io/documents/156?toc">Math 676</a></p>
+
+                <p class="compact"><a href="/documents/system.user_manual">Manuscripta User Manual</a></p>
+                <p class="compact"><a href="/documents/jc.asciidoc_guide">Asciidoc Guide</a></p>
+
+            </div>
+
+            <br>
+            <br>
+            <div style="max-width:30em;">
+
+                <p>Advantages of <a href="/signup">signing up</a>: your own account, good format for printing documents,
+                    create and publish your own documents. You will see this and much more in the <strong>tools
+                        menu</strong>
+                    after you sign up.</p>
+
+                <br>
+                <p>Questions? Bugs? Feedback? Contact jxxcarlson at gmail</p>
+
+            </div>
 
         </div>
-
-
 
     </div>
 
