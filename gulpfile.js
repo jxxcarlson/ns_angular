@@ -33,18 +33,18 @@ gulp.task('prod', function(){
     gulp.src(['app/topLevel/controllers/MainController.js'])
     .pipe(replace("development", "production"))
     .pipe(gulp.dest('tmp/'));
-    gulp.src(['tmp/index.js'])
+    gulp.src(['tmp/MainController.js'])
       .pipe(gulp.dest('app/topLevel/'))
-    // .pipe(gulp.dest('build/file.txt'));
+      .pipe(gulp.dest('MainController.js'));
 });
 
 gulp.task('dev', function(){
-  console.log('\n    Configuring for development\n')
-  gulp.src(['app/topLevel/controllers/MainController.js'])
-    .pipe(replace("production", "development"))
-    .pipe(gulp.dest('tmp/'));
-  gulp.src(['tmp/index.js'])
-     .pipe(gulp.dest('app/topLevel/'))
+    gulp.src(['app/topLevel/controllers/MainController.js'])
+        .pipe(replace("production", "development"))
+        .pipe(gulp.dest('tmp/'));
+    gulp.src(['tmp/MainController.js'])
+        .pipe(gulp.dest('app/topLevel/'))
+        .pipe(gulp.dest('MainController.js'));
 });
 
 gulp.task('foo', function(){
