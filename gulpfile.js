@@ -30,7 +30,7 @@ var replace = require('gulp-replace');
 
 gulp.task('prod', function(){
   console.log('\n    Configuring for production\n')
-  gulp.src(['app/topLevel/index.js'])
+    gulp.src(['app/topLevel/controllers/MainController.js'])
     .pipe(replace("development", "production"))
     .pipe(gulp.dest('tmp/'));
     gulp.src(['tmp/index.js'])
@@ -40,7 +40,7 @@ gulp.task('prod', function(){
 
 gulp.task('dev', function(){
   console.log('\n    Configuring for development\n')
-  gulp.src(['app/topLevel/index.js'])
+  gulp.src(['app/topLevel/controllers/MainController.js'])
     .pipe(replace("production", "development"))
     .pipe(gulp.dest('tmp/'));
   gulp.src(['tmp/index.js'])
