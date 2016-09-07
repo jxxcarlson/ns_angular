@@ -192,4 +192,5 @@ input[type="file"]::-webkit-file-upload-button{
     margin-left:1em;
 }
 
-.compact p { margin-bottom:9; }
+p.compact  { margin-bottom:0; }
+p.tail  { margin-bottom:0.4em; }

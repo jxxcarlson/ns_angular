@@ -2675,7 +2675,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         console.log('USER DOCUMENTs ...')            
         SearchService.query('user=' + UserService.username(), $scope)
       }
-  });    
+  });
+
+  hotkeys.add({
+    combo: 'ctrl+p',
+    description: 'Print document',
+    allowIn: ['INPUT','TEXTAREA'],
+    callback: function() {
+      console.log('PRINT DOCUMENTs ...')
+      DocumentApiService.printDocument($scope, DocumentService.currentDocumentItem().id, {})
+      $state.go('printdocument')
+    }
+  });
     
 
     
