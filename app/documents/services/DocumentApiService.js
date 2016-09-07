@@ -210,6 +210,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
             var url = envService.read('apiUrl') + '/documents/' + params['id']
         }
+
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         $http.post(url, parameter, options)
