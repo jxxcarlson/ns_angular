@@ -12,6 +12,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         id = DocumentService.currentDocumentItem().id;
     }
 
+    $scope.lastBackupNumber = 'none'
 
     var url = envService.read('apiUrl') + '/documents/' + id
     var options = {headers: {"accesstoken": UserService.accessToken()}}
@@ -88,6 +89,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.documentId = DocumentService.currentDocumentItem().id
 
 
+
             /// HANDLE PARENT ///
             var links = editDocument.links
             var parent = links.parent || {}
@@ -125,13 +127,22 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
             if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
 
-                $scope.lastBackupNumber = DocumentService.document().dict['backup']['number']
-                $scope.lastBackupDate = (DocumentService.document().dict['backup']['date']).replace('T', ' at ').replace('+00:00', '')
+
+                var backupNumber = DocumentService.document().dict['backup']['number']
+
+                $scope.lastBackupNumber = backupNumber
+
+                var t = DocumentService.document().dict['backup']['date'].split(':')
+                t = t[0]+ ':' + t[1]
+                t = t.replace('T', ', ')
+
+                $scope.lastBackupDate = t + ' GMT'
                 $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
 
             } else {
 
                 $scope.showBackup = false
+
             }
 
             console.log('showBackup = ' + $scope.showBackup)
