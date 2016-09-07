@@ -31,10 +31,10 @@ var replace = require('gulp-replace');
 gulp.task('prod', function(){
   console.log('\n    Configuring for production\n')
     gulp.src(['app/topLevel/controllers/MainController.js'])
-    .pipe(replace("development", "production"))
-    .pipe(gulp.dest('tmp/'));
+        .pipe(replace("development", "production"))
+        .pipe(gulp.dest('tmp/'));
     gulp.src(['tmp/MainController.js'])
-      .pipe(gulp.dest('app/topLevel/'))
+      .pipe(gulp.dest('app/topLevel/controllers/'))
       .pipe(gulp.dest('MainController.js'));
 });
 
@@ -43,7 +43,7 @@ gulp.task('dev', function(){
         .pipe(replace("production", "development"))
         .pipe(gulp.dest('tmp/'));
     gulp.src(['tmp/MainController.js'])
-        .pipe(gulp.dest('app/topLevel/'))
+        .pipe(gulp.dest('app/topLevel/controllers/'))
         .pipe(gulp.dest('MainController.js'));
 });
 
