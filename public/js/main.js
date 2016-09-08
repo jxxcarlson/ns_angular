@@ -772,6 +772,20 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         }
     }
 
+    $scope.checkoutButtonClass = function() {
+
+        if (DocumentService.setCheckedOutTo(checkedOutTo).length > 0 ){
+
+            return {"backgroundColor": "red"}
+
+        }  else  {
+
+            return {"backgroundColor": "green"}
+        }
+
+
+    }
+
     $scope.getDocKindClass = function (kk) {
 
         if ($scope.editDocument) {
