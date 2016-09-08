@@ -23,7 +23,7 @@
 
             <tr ng-repeat="row in ctrl.backupLog">
                 <td>{{row.backup_number}}</td>
-                <td><button ng-click="ctrl.getBackup(1, 13)">View</button></td>
+                <td><button ng-click="ctrl.getBackup(row.id, row.backup_number)">View</button></td>
                 <td>{{row.id}}</td>
                 <td>{{row.title}}</td>
                 <td>{{row.length}}</td>
