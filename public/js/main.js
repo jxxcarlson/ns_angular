@@ -254,14 +254,59 @@ app.directive('file', require('./File'))
 
 
 },{"./File":2,"./elemReady":3,"./enterOnKeyPress":4,"angular":54}],6:[function(require,module,exports){
-module.exports = function(DocumentService) {
+module.exports = function(DocumentApiService, UserService) {
 
-  var self = this
 
-    self.documentTitle = DocumentService.currentDocumentItem().title
-    self.backupNumber = DocumentService.getBackupNumber()
-    self.backupDate = DocumentService.getBackupDate().replace('T', ' at ').replace('+00:00', '')
-    self.backupText = DocumentService.getBackupText()
+    var self = this
+
+    self.username = UserService.username()
+
+    self.getBackup = function(id, backupNumber) {
+
+        console.log('id: ' + id + ', backup number ' + backupNumber)
+    }
+
+    self.getLog = function() {
+
+        var request = 'backup?log_as_json=' + self.username + '&title=' + self.backupTitle
+        DocumentApiService.postRequest(request, {})
+            .then(
+                function(response) {
+
+                    self.backupLog = response.data['log_as_json']
+
+                    console.log(this.backupLog)
+
+
+                }
+            )
+
+    }
+
+    self.getBackup = function(id, backupNumber) {
+
+        var request = 'backup?view=' + id + '&number=' + backupNumber
+        DocumentApiService.postRequest(request, {})
+            .then(
+                function(response) {
+
+                    self.backupText = response.data['backup_text']
+
+                }
+            )
+
+    }
+
+    // backup?view=151&number=1
+
+    self.fixDate = function(date) {
+
+        // var parts = date.split(':')
+        //return (parts[0] + parts[1]).replace('T', ' ') + ' GMT'
+        return 'foo' // (parts[0] + parts[1])
+    }
+
+
 }
 },{}],7:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
@@ -988,12 +1033,12 @@ app.controller('editDocumentController', require('./controllers/EditController')
 app.controller('EditMenuController', require('./controllers/EditMenuController'))
 app.controller('DeleteDocumentController', require('./controllers/DeleteDocumentController'))
 app.controller('PrintDocumentController', require('./controllers/PrintDocumentController'))
-app.controller('BackupController', require('./controllers/BackupController'))
+app.controller('BackupManagerController', require('./controllers/BackupManagerController'))
 
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/BackupController":6,"./controllers/DeleteDocumentController":7,"./controllers/DocumentsController":8,"./controllers/EditController":9,"./controllers/EditMenuController":10,"./controllers/NewDocumentController":11,"./controllers/PrintDocumentController":12,"./controllers/SearchController":13,"./services//DocumentService":16,"./services/DocumentApiService":15,"./services/MathJaxService":17,"./services/PermissionService":18,"./services/SearchService":19,"angular":54}],15:[function(require,module,exports){
+},{"./controllers/BackupManagerController":6,"./controllers/DeleteDocumentController":7,"./controllers/DocumentsController":8,"./controllers/EditController":9,"./controllers/EditMenuController":10,"./controllers/NewDocumentController":11,"./controllers/PrintDocumentController":12,"./controllers/SearchController":13,"./services//DocumentService":16,"./services/DocumentApiService":15,"./services/MathJaxService":17,"./services/PermissionService":18,"./services/SearchService":19,"angular":54}],15:[function(require,module,exports){
 /*****
  headers: { "accesstoken": UserService.accessToken(),
                             "Cache-control": "",
@@ -3016,6 +3061,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             url: '/backups',
             templateUrl: 'pages/backups.html',
             controller: 'BackupController'
+        })
+
+        .state('backupmanager', {
+            url: '/backupmanager',
+            templateUrl: 'pages/backupmanager.html',
+            controller: 'BackupManagerController'
         })
 
         .state('imageupload', {

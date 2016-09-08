@@ -1,0 +1,44 @@
+<!-- backup?read_log=jc&title=wave -->
+
+<div class="row" ng-controller="BackupManagerController as ctrl">
+
+
+    <div class="col-md-6">
+
+        <h2>Backup Manager</h2>
+
+        <input type="text" ng-model="ctrl.backupTitle" placeholder="Word from title">
+        <button ng-click="ctrl.getLog()">Get Log</button>
+
+
+        <table>
+            <tr>
+                <td>N</td>
+                <td></td>
+                <td>ID</td>
+                <td>Title</td>
+                <td>Length</td>
+                <td>Timestamp</td>
+            </tr>
+
+            <tr ng-repeat="row in ctrl.backupLog">
+                <td>{{row.backup_number}}</td>
+                <td><button ng-click="ctrl.getBackup(1, 13)">View</button></td>
+                <td>{{row.id}}</td>
+                <td>{{row.title}}</td>
+                <td>{{row.length}}</td>
+                <td>{{row.timestamp.replace('T', ' at ').replace('+00:00', ' GMT')}}</td>
+            </tr>
+
+        </table>
+
+
+    </div>
+
+    <div class="col-md-6">
+
+        <pre>{{ctrl.backupText}}</pre>
+
+    </div>
+
+</div>
