@@ -1,14 +1,50 @@
-module.exports = function(DocumentApiService, UserService) {
+module.exports = function(DocumentApiService, UserService, $location) {
 
 
     var self = this
 
+    console.log('*** BackupManager, query = ' + JSON.stringify($location.search()))
+
     self.username = UserService.username()
+
+    self.getLogForId = function(id) {
+
+        var request = 'backup?log_as_json=' + self.username + '&title=' + id
+        DocumentApiService.postRequest(request, {})
+            .then(
+                function(response) {
+
+                    self.backupLog = response.data['log_as_json']
+
+                    console.log(this.backupLog)
+
+                }
+            )
+
+    }
+
+    var queryObject = $location.search()
+    if (queryObject['id'] == undefined) {
+
+        console.log('*** ID not defined')
+
+    } else {
+
+        console.log('*** ID = ' + queryObject['id'])
+        self.getLogForId(queryObject['id'])
+    }
+
+
+
+
+
 
     self.getBackup = function(id, backupNumber) {
 
         console.log('id: ' + id + ', backup number ' + backupNumber)
     }
+
+
 
     self.getLog = function() {
 

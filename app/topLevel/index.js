@@ -164,7 +164,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         })
 
         .state('backupmanager', {
-            url: '/backupmanager',
+            url: '/backupmanager?id',
             templateUrl: 'pages/backupmanager.html',
             controller: 'BackupManagerController'
         })

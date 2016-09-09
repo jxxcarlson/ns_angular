@@ -28,8 +28,8 @@
                         style="margin-top:8px; color:white; padding:5px 10px; font-size:1.2em;"
                         ng-click="toggleCheckoutDocument()"><i class="fa fa-check"></i></button>
                 <span style="margin-left:0.3em;">{{checkedOutMessage}}</span>
-                <p style="font-size:0.8em;margin-bottom:0; margin-top:5px;"> User backup: {{lastBackupNumber}}</p>
-                <p style="font-size:0.8em">{{lastBackupDate}}</p>
+                <p style="font-size:0.95em;margin-bottom:0; margin-top:5px;"> <a ui-sref="backupmanager(foo())">User backup: {{lastBackupNumber}}</a></p>
+                <p style="font-size:0.75em">{{lastBackupDate}}</p>
             </div>
 
             <br/>
@@ -142,7 +142,8 @@
                 <div class="row editor-row" style="background-color:#eee;">
                     <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at
                         {{lastBackupDate}}</p>
-                    <button ng-show="showBackup" ng-click="displayLastBackup()">View</button>
+
+                    <a ui-sref="backupmanager(foo())">Show backup logs</a>
 
                     <br>
                     <br>

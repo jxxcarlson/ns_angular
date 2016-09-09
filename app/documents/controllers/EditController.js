@@ -63,7 +63,11 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.checkedOutTo = document.dict['checked_out_to']
             $scope.aclList = document.dict['acl']
 
-            if ($scope.checkedOutTo == '' || $scope.checkedOutTo == undefined ) {
+            var backupId = DocumentService.currentDocumentItem().id
+            $scope.foo = function() { return {'id': backupId } }
+
+
+            if ($scope.checkedOutTo == '' || $scope.checkedOutTo == undefined) {
 
                 $scope.checkedOutMessage = ''
 
@@ -73,34 +77,31 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             }
 
 
-            $scope.checkoutButtonClass = function() {
+            $scope.checkoutButtonClass = function () {
 
                 // console.log('***, ZZZ checked out to ' + checkedOutTo)
 
-                if (checkedOutTo.length > 0 ){
+                if (checkedOutTo.length > 0) {
 
                     // console.log('***, ZZZ, RED')
 
                     if (checkedOutTo == UserService.username()) {
 
-                        return {"background-color": "#4f4" }
+                        return {"background-color": "#4f4"}
 
                     } else {
 
-                        return {"background-color": "#f44" }
+                        return {"background-color": "#f44"}
                     }
 
 
-
-
-                }  else  {
+                } else {
 
                     // console.log('***, ZZZ, GRAY')
 
-                    return {"background-color": "#aaa" }
+                    return {"background-color": "#aaa"}
                 }
             }
-
 
 
             console.log('*** ' + $scope.title + ' checked out to ' + $scope.checkedOutTo)
@@ -117,7 +118,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.docArray = DocumentService.documentList()
             $scope.documentCount = DocumentService.documentCount()
             $scope.documentId = DocumentService.currentDocumentItem().id
-
 
 
             /// HANDLE PARENT ///
@@ -163,7 +163,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 $scope.lastBackupNumber = backupNumber
 
                 var t = DocumentService.document().dict['backup']['date'].split(':')
-                t = t[0]+ ':' + t[1]
+                t = t[0] + ':' + t[1]
                 t = t.replace('T', ', ')
 
                 $scope.lastBackupDate = t + ' GMT'
@@ -181,7 +181,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         })
 
 
-
     $scope.text = DocumentService.text() // for word count
     $scope.wordCount = $scope.text.split(' ').length
     $scope.ifParentExists = true
@@ -194,7 +193,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         $scope.showTools = !$scope.showTools
     }
 
-    $scope.toggleCheckoutDocument = function() {
+    $scope.toggleCheckoutDocument = function () {
 
         console.log('*** CHECK IN/OUT')
         var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
@@ -227,7 +226,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
             })
     }
-
 
 
     $scope.reloadMathJax = function () {
@@ -369,8 +367,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     }
 
 
-
-
     $scope.getDocKindClass = function (kk) {
 
         if ($scope.editDocument) {
@@ -448,7 +444,15 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.displayLastBackup = function () {
 
-        DocumentApiService.getBackupText($scope.lastBackupNumber)
+        console.log('*** Display last backup')
+
+        var id = DocumentService.currentDocumentItem().id
+
+        $location.path('backupmanager?id=' + id)
+        $state.go('backupmanager?id=' + id, {}, {})
+
+
+
     }
 
 
