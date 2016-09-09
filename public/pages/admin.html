@@ -1,0 +1,27 @@
+<div class="row" ng-controller="AdminController as ctrl">
+    <div class="col=md-6" style="margin-left:3em">
+        <h2>Admin</h2>
+
+        <h3>Users</h3>
+
+        <button ng-click="ctrl.getUsers()" >Get users</button>
+        <p>Users: {{ctrl.userCount}}</p>
+        <table>
+            <tr ng-repeat="row in ctrl.userList">
+                <td>
+                    {{row.id}}
+                </td>
+
+                <td>
+                    {{row.name}}
+                </td>
+
+                <td>
+                   {{ row.email}}
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>

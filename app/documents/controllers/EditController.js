@@ -463,5 +463,5 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         DocumentApiService.getBackupText(backupNumber)
     }
     **/
-    
+
 }

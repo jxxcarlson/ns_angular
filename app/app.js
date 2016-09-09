@@ -61,6 +61,7 @@ require('./documents')
 require('./images')
 require('./search')
 require('./site')
+require('./admin')
 
 
 

@@ -127,6 +127,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
+                <li ng-show="UserIsAdmin"><a ui-sref="admin"><i class="fa fa-random"></i> Admin</a></li>
                 <li><a ui-sref="documents" ng-click="randomDocuments()"><i class="fa fa-random"></i> Explore</a></li>
                 <li><a ui-sref="signin"><i class="fa fa-home"></i> Home</a></li>
                 <li><a ui-sref="about"><i class="fa fa-comment"></i> About</a></li>

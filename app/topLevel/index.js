@@ -169,6 +169,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'BackupManagerController'
         })
 
+        .state('admin', {
+            url: '/admin',
+            templateUrl: 'pages/admin.html',
+            controller: 'AdminController'
+        })
+
         .state('imageupload', {
         url: '/imageupload',
         templateUrl : 'pages/imageupload.html',

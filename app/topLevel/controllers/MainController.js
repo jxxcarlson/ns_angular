@@ -25,6 +25,8 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.documentEditable = PermissionService.canEdit()
     $scope.documentCanShowSource = documentCanShowSource
 
+    $scope.userIsAdmin = (UserService.username == 'c')
+
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
