@@ -434,7 +434,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.showTools2 = $scope.showTools && !$scope.documentCanShowSource
 
-    /**
+
     $scope.backupDocument = function () {
 
         console.log('Controller: backupDocument')
@@ -442,7 +442,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     }
 
-
+   /**
     $scope.displayLastBackup = function () {
 
         console.log('*** Display last backup')
@@ -461,7 +461,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         DocumentApiService.getBackupText(backupNumber)
     }
-     **/
+    **/
+
 
 
 }
