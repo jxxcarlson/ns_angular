@@ -3279,13 +3279,14 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 }
 
 },{}],47:[function(require,module,exports){
-module.exports = function($scope, $state, $stateParams, UserService, DocumentService) {
+module.exports = function($scope, $state, $stateParams, UserService, DocumentService, $localStorage) {
 
     console.log('Sign out ...')
     
     $scope.signout = function() { 
         UserService.signout() 
         DocumentService.clear()
+        $localStorage.$reset();
         $state.transitionTo($state.current, $stateParams, {reload: true, inherit: false, notify: true });
         console.log('SIGNING OUT ...') 
     }
