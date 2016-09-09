@@ -657,6 +657,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.text = DocumentService.text() // for word count
     $scope.wordCount = $scope.text.split(' ').length
+    $scope.documentCharacterCount = $scope.text.length
     $scope.ifParentExists = true
     $scope.showTools = false
     $scope.toggleParameterEditor = function () {
@@ -936,9 +937,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         DocumentApiService.getBackupText(backupNumber)
     }
     **/
-
-
-
+    
 }
 },{}],10:[function(require,module,exports){
 module.exports = function() {
