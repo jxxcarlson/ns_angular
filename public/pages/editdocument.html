@@ -140,13 +140,7 @@
                 </div>
 
                 <div class="row editor-row" style="background-color:#eee;">
-                    <p ng-show="showBackup" style="font-size:0.95em">Last backup: #{{lastBackupNumber}} at
-                        {{lastBackupDate}}</p>
 
-                    <a ui-sref="backupmanager(foo())">Show backup logs</a>
-
-                    <br>
-                    <br>
                     <h4 ng-show="showBackup">Access Control Lists</h4>
 
                     <p ng-repeat="acl in aclList"> {{acl}} </p>
