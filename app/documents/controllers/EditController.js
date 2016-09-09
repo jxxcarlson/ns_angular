@@ -222,7 +222,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 }
 
                 $scope.checkoutButtonClass()
-               
+
                 $state.go('editdocument', {}, {reload: true})
 
             })
@@ -442,6 +442,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         console.log('Controller: backupDocument')
         DocumentApiService.backupDocument()
+
     }
 
 

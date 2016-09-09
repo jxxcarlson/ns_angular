@@ -301,7 +301,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         $http.post(url, {}, options)
             .then(function (response) {
 
-                console.log('  -- status: ' + response.data['status'])
+                console.log('  -- backup, status: ' + response.data['status'])
+                $state.go('editdocument', {}, {reload: true})
 
 
             })
