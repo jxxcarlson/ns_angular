@@ -511,6 +511,36 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             }
 
 
+            $scope.checkoutButtonClass = function() {
+
+                // console.log('***, ZZZ checked out to ' + checkedOutTo)
+
+                if (checkedOutTo.length > 0 ){
+
+                    // console.log('***, ZZZ, RED')
+
+                    if (checkedOutTo == UserService.username()) {
+
+                        return {"background-color": "#4f4" }
+
+                    } else {
+
+                        return {"background-color": "#f44" }
+                    }
+
+
+
+
+                }  else  {
+
+                    // console.log('***, ZZZ, GRAY')
+
+                    return {"background-color": "#aaa" }
+                }
+            }
+
+
+
             console.log('*** ' + $scope.title + ' checked out to ' + $scope.checkedOutTo)
 
             var imageRegex = new RegExp("image/")
@@ -628,6 +658,10 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     }
 
                 }
+
+                $scope.checkoutButtonClass()
+               
+                $state.go('editdocument', {}, {reload: true})
 
             })
     }
@@ -772,19 +806,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         }
     }
 
-    $scope.checkoutButtonClass = function() {
-
-        if (DocumentService.setCheckedOutTo(checkedOutTo).length > 0 ){
-
-            return {"backgroundColor": "red"}
-
-        }  else  {
-
-            return {"backgroundColor": "green"}
-        }
 
 
-    }
 
     $scope.getDocKindClass = function (kk) {
 
@@ -1456,6 +1479,8 @@ module.exports = function($localStorage, UserService) {
 
     this.checkedOutTo = function() {
 
+        console.log('** yada: checked out to ' + $localStorage.checkeOutTo)
+
         return $localStorage.checkeOutTo
     }
 
@@ -1728,6 +1753,8 @@ module.exports = function($localStorage, UserService) {
     }
     
    this.tocStyle = function(doc) {
+
+       // console.log(doc['title'] + " checked_out_to = " + doc['checked_out_to'])
 
         var css = {}
         if (doc['id'] == $localStorage.documentId ) {

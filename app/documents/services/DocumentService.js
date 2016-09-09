@@ -54,6 +54,8 @@ module.exports = function($localStorage, UserService) {
 
     this.checkedOutTo = function() {
 
+        console.log('** yada: checked out to ' + $localStorage.checkeOutTo)
+
         return $localStorage.checkeOutTo
     }
 
@@ -326,6 +328,8 @@ module.exports = function($localStorage, UserService) {
     }
     
    this.tocStyle = function(doc) {
+
+       // console.log(doc['title'] + " checked_out_to = " + doc['checked_out_to'])
 
         var css = {}
         if (doc['id'] == $localStorage.documentId ) {
