@@ -393,9 +393,6 @@ module.exports = function(DocumentApiService, UserService, $location) {
                     self.deletedDocuments = response.data['documents']
                     self.numberOfDeletedDocuments = response.data['document_count']
 
-                    console.log('Deleted docs: ' + JSON.stringify(self.deletedDocuments))
-                    console.log('N = ' + self.numberOfDeletedDocuments)
-
                 }
             )
 
