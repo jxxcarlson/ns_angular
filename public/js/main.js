@@ -1251,6 +1251,12 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 var _documentList = DocumentService.documentList()
 
+                if (_documentList == undefined) {
+
+                    DocumentService.resetDocumentList()
+                    _documentList = $localStorage.documentList
+                }
+
                 if (_documentList.length == 0) {
 
                     DocumentService.resetDocumentList()
