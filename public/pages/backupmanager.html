@@ -37,17 +37,14 @@
 
 
         <div style="margin-left:3em;">
-            <h2>Deleted Files</h2>
+            <h2>Deleted Files{{ctrl.numberOfDeletedDocuments}} </h2>
             <button ng-click="ctrl.getDeletedDocuments()">Get Deleted Documents</button>
-
-            <p>{{ctrl.numberOfDeletedDocuments}} deleted documents</p>
 
             <table>
                 <tr>
                     <td></td>
                     <td>ID</td>
                     <td>Title</td>
-                    <td>Length</td>
                     <td>Timestamp</td>
                 </tr>
 
@@ -58,8 +55,7 @@
                     </td>
                     <td>{{row.id}}</td>
                     <td>{{row.title}}</td>
-                    <td>{{row.length}}</td>
-                    <td>{{row.timestamp.replace('T', ' at ').replace('+00:00', ' GMT')}}</td>
+                    <td>{{row.updated_at.replace('T', ' at ').replace('+00:00', ' GMT')}}</td>
                 </tr>
 
             </table>
