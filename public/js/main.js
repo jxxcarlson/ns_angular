@@ -402,6 +402,7 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
 
         var parentId = DocumentService.parentId()
 
+
         console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
         console.log('DDD, parentId  = ' + parentId)
 
@@ -415,12 +416,13 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
                 if (response.data['status'] == 'success') {
 
                     console.log('Response OK, document deleted')
+                    console.log('2. DDD, parentId  = ' + parentId)
 
-                    if (parentId == undefined) {
+                    if (parentId == undefined || parentId == 0) {
 
                         console.log('DDD, searching user')
 
-                        SearchService.query('scope=user.' + UserService.username(), $scope, 'documents')
+                        SearchService.query('user=' + UserService.username(), $scope, 'documents')
 
                     } else {
 
