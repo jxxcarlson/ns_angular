@@ -87,4 +87,26 @@ module.exports = function(DocumentApiService, UserService, $location) {
     }
 
 
+    self.getDeletedDocuments = function () {
+
+        console.log('getDeletedDocuments !!')
+
+
+        var request = 'documents?deleted=' + UserService.username()
+        DocumentApiService.getRequest(request, {})
+            .then(
+                function (response) {
+
+                    self.deletedDocuments = response.data['documents']
+                    self.numberOfDeletedDocuments = response.data['document_count']
+
+                    console.log('Deleted docs: ' + JSON.stringify(self.deletedDocuments))
+                    console.log('N = ' + self.numberOfDeletedDocuments)
+
+                }
+            )
+
+
+    }
+
 }

@@ -327,6 +327,18 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
+    this.getRequest = function (request, scope) {
+
+        console.log('API: postRequest: ' + request)
+
+        var url = envService.read('apiUrl') + '/' + request
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        return $http.get(url, {}, options)
+
+
+    }
+
     this.getBackupText = function (backup_number) {
 
         console.log('API: backupDocument')

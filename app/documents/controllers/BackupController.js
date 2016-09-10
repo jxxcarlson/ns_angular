@@ -1,6 +1,11 @@
-module.exports = function (DocumentService) {
+module.exports = function (DocumentApiService, DocumentService, UserService) {
 
     var self = this
+
+    self.barr = function() {
+
+        console.log('BARR')
+    }
 
     self.documentTitle = DocumentService.currentDocumentItem().title
     //self.backupNumber = DocumentService.getBackupNumber()
@@ -20,4 +25,11 @@ module.exports = function (DocumentService) {
             )
 
     }
+
+
+
+
+
+
+
 }

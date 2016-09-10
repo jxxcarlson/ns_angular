@@ -380,6 +380,28 @@ module.exports = function(DocumentApiService, UserService, $location) {
     }
 
 
+    self.getDeletedDocuments = function () {
+
+        console.log('getDeletedDocuments !!')
+
+
+        var request = 'documents?deleted=' + UserService.username()
+        DocumentApiService.getRequest(request, {})
+            .then(
+                function (response) {
+
+                    self.deletedDocuments = response.data['documents']
+                    self.numberOfDeletedDocuments = response.data['document_count']
+
+                    console.log('Deleted docs: ' + JSON.stringify(self.deletedDocuments))
+                    console.log('N = ' + self.numberOfDeletedDocuments)
+
+                }
+            )
+
+
+    }
+
 }
 },{}],9:[function(require,module,exports){
 module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
@@ -1483,6 +1505,18 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         return $http.post(url, {}, options)
+
+
+    }
+
+    this.getRequest = function (request, scope) {
+
+        console.log('API: postRequest: ' + request)
+
+        var url = envService.read('apiUrl') + '/' + request
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        return $http.get(url, {}, options)
 
 
     }

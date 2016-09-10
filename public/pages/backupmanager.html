@@ -1,9 +1,7 @@
-<!-- backup?read_log=jc&title=wave -->
-
 <div class="row" ng-controller="BackupManagerController as ctrl">
 
-
     <div class="col-md-6">
+
 
         <div style="margin-left:3em;">
             <h2>Backup Manager</h2>
@@ -36,7 +34,40 @@
             </table>
 
         </div>
+
+
+        <div style="margin-left:3em;">
+            <h2>Deleted Files</h2>
+            <button ng-click="ctrl.getDeletedDocuments()">Get Deleted Documents</button>
+
+            <p>{{ctrl.numberOfDeletedDocuments}} deleted documents</p>
+
+            <table>
+                <tr>
+                    <td></td>
+                    <td>ID</td>
+                    <td>Title</td>
+                    <td>Length</td>
+                    <td>Timestamp</td>
+                </tr>
+
+                <tr ng-repeat="row in ctrl.deletedDocuments">
+                    <td>
+                        <button>Trash</button>
+                        <button>Undelete</button>
+                    </td>
+                    <td>{{row.id}}</td>
+                    <td>{{row.title}}</td>
+                    <td>{{row.length}}</td>
+                    <td>{{row.timestamp.replace('T', ' at ').replace('+00:00', ' GMT')}}</td>
+                </tr>
+
+            </table>
+
+        </div>
+
     </div>
+
 
     <div class="col-md-6">
 
@@ -45,3 +76,4 @@
     </div>
 
 </div>
+
