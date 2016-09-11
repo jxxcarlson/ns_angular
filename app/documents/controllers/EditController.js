@@ -74,6 +74,14 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.statusPublic = false
         }
 
+        /////
+
+        $scope.text = DocumentService.text() // for word count
+        $scope.wordCount = $scope.text.split(' ').length
+        $scope.documentCharacterCount = $scope.text.length
+        $scope.ifParentExists = true
+        $scope.showTools = false
+
     }
 
     var setupBackup = function(document) {
@@ -109,8 +117,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
             if (this.checkedOutTo.length > 0) {
 
-                // console.log('***, ZZZ, RED')
-
                 if (this.checkedOutTo == UserService.username()) {
 
                     return {"background-color": "#4f4"}
@@ -122,8 +128,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
 
             } else {
-
-                // console.log('***, ZZZ, GRAY')
 
                 return {"background-color": "#aaa"}
             }
@@ -142,7 +146,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     var handleParent = function(document) {
 
-        /// HANDLE PARENT ///
         var links = document.links
         var parent = links.parent || {}
         if (parent == {}) {
@@ -172,7 +175,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     }
 
-    //// GET DOCUMENT ////
+    //// GET DOCUMENTL: EXECUTED ////
     $http.get(url, options)
         .then(function (response) {
 
@@ -195,12 +198,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         })  /// END OF GET DOCUMENT
 
-
-    $scope.text = DocumentService.text() // for word count
-    $scope.wordCount = $scope.text.split(' ').length
-    $scope.documentCharacterCount = $scope.text.length
-    $scope.ifParentExists = true
-    $scope.showTools = false
 
     // Set heights of window parts
     var innerHeight = $window.innerHeight
@@ -265,7 +262,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     });
 
 
-    // update document command bound to key up for escaoe key
+    //// 2. REFRESH TEXT: update document command bound to key up for escape key ////
+    
     $scope.refreshText = function () {
 
         console.log('refreshText')
