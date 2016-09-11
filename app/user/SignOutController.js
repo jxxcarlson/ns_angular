@@ -3,9 +3,8 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
     console.log('Sign out ...')
     
     $scope.signout = function() { 
-        UserService.signout() 
-        DocumentService.clear()
-        $localStorage.$reset();
+        UserService.signout()
+        $localStorage.$reset()
         $state.transitionTo($state.current, $stateParams, {reload: true, inherit: false, notify: true });
         console.log('SIGNING OUT ...') 
     }

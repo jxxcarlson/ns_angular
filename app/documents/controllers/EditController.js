@@ -14,163 +14,183 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.lastBackupNumber = 'none'
 
+
+    //// VARS AND FUNCTIONS FOR GET DOCUMENT ////
+
     var url = envService.read('apiUrl') + '/documents/' + id
     var options = {headers: {"accesstoken": UserService.accessToken()}}
 
-    $http.get(url, options)
-        .then(function (response) {
+    var setPermissions = function(data) {
 
-            //// SET PERMISSIONS ////
+        this.permissions = data['permissions']
+        this.checkedOutTo = data['checked_out_to']
+        this.canShowSource = data['can_show_source']
 
-            var permissions = response.data['permissions']
-            var checkedOutTo = response.data['checked_out_to']
-            var canShowSource = response.data['can_show_source']
+        DocumentService.setPermissions(permissions)
+        DocumentService.setCheckedOutTo(checkedOutTo)
+        DocumentService.setCanShowSource(canShowSource)
 
-            DocumentService.setPermissions(permissions)
-            DocumentService.setCheckedOutTo(checkedOutTo)
-            DocumentService.setCanShowSource(canShowSource)
-            
-            if (permissions.indexOf('edit') == -1 && canShowSource == 'no') {
+        if (this.permissions.indexOf('edit') == -1 && this.canShowSource == 'no') {
 
-                console.log('Edit controller, get, permission DENIED')
-                $state.go('documents')
+            console.log('Edit controller, get, permission DENIED')
+            $state.go('documents')
 
-            } else {
+        } else {
 
-                console.log('Edit controller, get, permission GRANTED')
-            }
+            console.log('Edit controller, get, permission GRANTED')
+        }
 
-            //////////
+    }
 
-            var document = response.data['document'] // JJJJ
-            DocumentService.update(response.data['document'])
-            var editDocument = DocumentService.document()
+    var setScope = function(document) {
+
+        $scope.editDocument = document
+
+        $scope.documentId = document.id
+        $scope.title = document.title
+        $scope.editableTitle = document.title
+        $scope.editText = document.text
+        $scope.kind = document.kind
+        $scope.aclList = document.dict['acl']
+
+        var imageRegex = new RegExp("image/")
+        var pdfRegex = new RegExp("application/pdf")
+
+        $scope.imageKind = imageRegex.test(document.kind)
+        $scope.pdfKind = pdfRegex.test(document.kind)
+        $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
+        $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+        $scope.identifier = document.identifier
+        $scope.tags = document.tags
+        $scope.docArray = DocumentService.documentList()
+        $scope.documentCount = DocumentService.documentCount()
+
+        // if (DocumentService.getPublic()) {
+
+        console.log('*** document.public = ' + document.public)
+        if (document.public) {
+            $scope.statusPublic = true
+        } else {
+            $scope.statusPublic = false
+        }
+
+    }
+
+    var setupBackup = function(document) {
+
+        $scope.backupDocumentId = function() { return {'id':  document.id } }
+
+        if (document.dict && document.dict['backup']) {
 
 
-            $scope.editDocument = editDocument
-            $scope.renderedText = function () {
-                return $sce.trustAsHtml(editDocument.rendered_text);
-            }
-            $scope.title = document.title
-            $scope.editableTitle = document.title
-            $scope.editText = document.text
-            $scope.kind = document.kind
-            $scope.checkedOutTo = document.dict['checked_out_to']
-            $scope.aclList = document.dict['acl']
+            var backupNumber = document.dict['backup']['number']
 
-            var backupId = DocumentService.currentDocumentItem().id
+            $scope.lastBackupNumber = backupNumber
 
+            var t = DocumentService.document().dict['backup']['date'].split(':')
+            t = t[0] + ':' + t[1]
+            t = t.replace('T', ', ')
 
-            $scope.foo = function() { return {'id': backupId } }
+            $scope.lastBackupDate = t + ' GMT'
+            $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
 
+        } else {
 
-            if ($scope.checkedOutTo == '' || $scope.checkedOutTo == undefined) {
+            $scope.showBackup = false
 
-                $scope.checkedOutMessage = ''
+        }
+    }
 
-            } else {
+    var setupCheckout = function() {
 
-                $scope.checkedOutMessage = 'Checked out to ' + $scope.checkedOutTo
-            }
+        $scope.checkedOutTo = this.checkedOutTo // XXX // document.dict['checked_out_to']
 
+        $scope.checkoutButtonClass = function () {
 
-            $scope.checkoutButtonClass = function () {
+            if (this.checkedOutTo.length > 0) {
 
-                if (checkedOutTo.length > 0) {
+                // console.log('***, ZZZ, RED')
 
-                    // console.log('***, ZZZ, RED')
+                if (this.checkedOutTo == UserService.username()) {
 
-                    if (checkedOutTo == UserService.username()) {
-
-                        return {"background-color": "#4f4"}
-
-                    } else {
-
-                        return {"background-color": "#f44"}
-                    }
-
+                    return {"background-color": "#4f4"}
 
                 } else {
 
-                    // console.log('***, ZZZ, GRAY')
-
-                    return {"background-color": "#aaa"}
+                    return {"background-color": "#f44"}
                 }
-            }
 
-
-            console.log('*** ' + $scope.title + ' checked out to ' + $scope.checkedOutTo)
-
-            var imageRegex = new RegExp("image/")
-            var pdfRegex = new RegExp("application/pdf")
-
-            $scope.imageKind = imageRegex.test($scope.kind)
-            $scope.pdfKind = pdfRegex.test($scope.kind)
-            $scope.textKind = (!$scope.imageKind && !$scope.pdfKind)
-            $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-            $scope.identifier = document.identifier
-            $scope.tags = document.tags
-            $scope.docArray = DocumentService.documentList()
-            $scope.documentCount = DocumentService.documentCount()
-            $scope.documentId = DocumentService.currentDocumentItem().id
-
-
-            /// HANDLE PARENT ///
-            var links = editDocument.links
-            var parent = links.parent || {}
-            if (parent == {}) {
-
-                $scope.parentId = 0
-                $scope.parentTitle = ''
 
             } else {
 
-                $scope.parentId = parent.id
-                $scope.parentTitle = parent.title
+                // console.log('***, ZZZ, GRAY')
+
+                return {"background-color": "#aaa"}
             }
+        }
+
+        if ($scope.checkedOutTo == '' || $scope.checkedOutTo == undefined) {
+
+            $scope.checkedOutMessage = ''
+
+        } else {
+
+            $scope.checkedOutMessage = 'Checked out to ' + $scope.checkedOutTo
+        }
+    }
 
 
-            if (DocumentService.getPublic()) {
-                $scope.statusPublic = true
-            } else {
-                $scope.statusPublic = false
-            }
+    var handleParent = function(document) {
 
+        /// HANDLE PARENT ///
+        var links = document.links
+        var parent = links.parent || {}
+        if (parent == {}) {
 
+            $scope.parentId = 0
+            $scope.parentTitle = ''
+
+        } else {
+
+            $scope.parentId = parent.id
+            $scope.parentTitle = parent.title
+        }
+
+    }
+
+    var setupDocArray = function() {
+
+        var _documentList = DocumentService.documentList()
+
+        if (_documentList.length == 0) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
+        }
+
+        $scope.docArray = _documentList || []
+
+    }
+
+    //// GET DOCUMENT ////
+    $http.get(url, options)
+        .then(function (response) {
+
+            setPermissions(response.data)
+            var document = response.data['document']
+
+            // WHY?
+            // DocumentService.update(document)
+
+            setScope(document)
+            handleParent(document)
+            setupBackup(document)
+            setupCheckout()
+
+            // WHY??
             DocumentService.update(document)
 
-
-            var _documentList = DocumentService.documentList()
-
-            if (_documentList.length == 0) {
-
-                DocumentService.resetDocumentList()
-                _documentList = $localStorage.documentList
-            }
-
-            $scope.docArray = _documentList || []
-
-            if (DocumentService.document().dict && DocumentService.document().dict['backup']) {
-
-
-                var backupNumber = DocumentService.document().dict['backup']['number']
-
-                $scope.lastBackupNumber = backupNumber
-
-                var t = DocumentService.document().dict['backup']['date'].split(':')
-                t = t[0] + ':' + t[1]
-                t = t.replace('T', ', ')
-
-                $scope.lastBackupDate = t + ' GMT'
-                $scope.showBackup = true // !($scope.lastBackupNumber == undefined)
-
-            } else {
-
-                $scope.showBackup = false
-
-            }
-
-            console.log('showBackup = ' + $scope.showBackup)
+            setupDocArray()
 
 
         })  /// END OF GET DOCUMENT
@@ -181,47 +201,18 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.documentCharacterCount = $scope.text.length
     $scope.ifParentExists = true
     $scope.showTools = false
-    $scope.toggleParameterEditor = function () {
 
-        $scope.identifier = DocumentService.identifier()
-        $scope.tags = DocumentService.tags()
-        $scope.kind = DocumentService.kind()
-        $scope.showTools = !$scope.showTools
-    }
+    // Set heights of window parts
+    var innerHeight = $window.innerHeight
+    document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
+    document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
 
-    $scope.toggleCheckoutDocument = function () {
 
-        console.log('*** CHECK IN/OUT')
-        var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
-        DocumentApiService.postRequest(request, $scope)
-            .then(function (response) {
 
-                console.log('  -- reply: ' + response.data['reply'])
-                var status = response.data['reply']
-                console.log('*** in API, postRequest, status = ' + status)
-                if (status == 'checked_in') {
 
-                    $scope.checkedOutMessage = 'Not checked out'
 
-                } else {
+    //// FUNCTIONS FOR UPADATE AND RELOAD ////
 
-                    if (status == undefined) {
-
-                        $scope.checkedOutMessage = 'Not checked out'
-
-                    } else {
-
-                        $scope.checkedOutMessage = 'Checked out to ' + status
-                    }
-
-                }
-
-                $scope.checkoutButtonClass()
-
-                $state.go('editdocument', {}, {reload: true})
-
-            })
-    }
 
 
     $scope.reloadMathJax = function () {
@@ -235,35 +226,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     }
 
 
-    // Set heights of window parts
-    var innerHeight = $window.innerHeight
-    document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
-    document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
+    //// 1. PERIODIC UPDATE ////
 
-    // Editor hotkeys (not working)
-    hotkeys.bindTo($scope)
-        .add({
-            combo: 'ctrl-s',
-            description: 'blah blah',
-            allowIn: ['INPUT', 'TEXTAREA'],
-            callback: function () {
-                alert('SAVE DOCUMENT')
-                DocumentApiService.update(DocumentService.params($scope), $scope)
-            }
-        })
-
-    hotkeys.bindTo($scope)
-        .add({
-            combo: 'ctrl-w',
-            allowIn: ['INPUT', 'TEXTAREA'],
-            description: 'blah blah',
-            callback: function () {
-                alert('WW')
-            }
-        })
-
-
-    // Auto refresh
     var callAtInterval = function () {
 
         if ($scope.textDirty) {
@@ -283,15 +247,15 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     }
 
-    var periodicUpdate
+
     if (DocumentService.kind() == 'asciidoc-latex') {
 
-        periodicUpdate = $interval(callAtInterval, 60 * 1000);  // 1 minute
+        var periodicUpdate = $interval(callAtInterval, 60 * 1000);  // 1 minute
 
 
     } else {
 
-        periodicUpdate = $interval(callAtInterval, 500) // 0.5 second
+        var periodicUpdate = $interval(callAtInterval, 500) // 0.5 second
     }
 
     var updateCount = 0
@@ -354,6 +318,48 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     //// FUNCTION DEFINITIONS ////
 
+    $scope.toggleParameterEditor = function () {
+
+        $scope.identifier = DocumentService.identifier()
+        $scope.tags = DocumentService.tags()
+        $scope.kind = DocumentService.kind()
+        $scope.showTools = !$scope.showTools
+    }
+
+    $scope.toggleCheckoutDocument = function () {
+
+        console.log('*** CHECK IN/OUT')
+        var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
+        DocumentApiService.postRequest(request, $scope)
+            .then(function (response) {
+
+                console.log('  -- reply: ' + response.data['reply'])
+                var status = response.data['reply']
+                console.log('*** in API, postRequest, status = ' + status)
+                if (status == 'checked_in') {
+
+                    $scope.checkedOutMessage = 'Not checked out'
+
+                } else {
+
+                    if (status == undefined) {
+
+                        $scope.checkedOutMessage = 'Not checked out'
+
+                    } else {
+
+                        $scope.checkedOutMessage = 'Checked out to ' + status
+                    }
+
+                }
+
+                $scope.checkoutButtonClass()
+
+                $state.go('editdocument', {}, {reload: true})
+
+            })
+    }
+
     $scope.docStyle = DocumentService.tocStyle
 
     $scope.publicStyle = function () {
@@ -370,7 +376,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if ($scope.editDocument) {
 
-            // if (kk == $scope.editDocument.kind) {
             if (kk == DocumentService.kind()) {
                 return {"background-color": "#efe"}
             } else {
@@ -437,6 +442,32 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         DocumentApiService.backupDocument()
 
     }
+
+
+    //// KEY BINDINGS ////
+
+    // Editor hotkeys (not working)
+    hotkeys.bindTo($scope)
+        .add({
+            combo: 'ctrl-s',
+            description: 'blah blah',
+            allowIn: ['INPUT', 'TEXTAREA'],
+            callback: function () {
+                alert('SAVE DOCUMENT')
+                DocumentApiService.update(DocumentService.params($scope), $scope)
+            }
+        })
+
+    hotkeys.bindTo($scope)
+        .add({
+            combo: 'ctrl-w',
+            allowIn: ['INPUT', 'TEXTAREA'],
+            description: 'blah blah',
+            callback: function () {
+                alert('WW')
+            }
+        })
+
 
 
 }

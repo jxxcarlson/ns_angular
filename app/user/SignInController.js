@@ -17,6 +17,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 
 
     $scope.submit = function () {
+
         UserApiService.login($scope.username, $scope.password)
             .then(
                 function (result) {
@@ -29,7 +30,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
                             })
                     } else {
                         UserService.signout()
-                        DocumentService.clear()
+                        $localStorage.$reset()
                         $scope.message = "Sorry - no account or username and password don't match"
                     }
                 },

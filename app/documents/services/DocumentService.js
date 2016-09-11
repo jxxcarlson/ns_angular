@@ -303,8 +303,14 @@ module.exports = function($localStorage, UserService) {
     
     this.params = function(scope) {
 
+
+        console.log('*** DS, params')
+        console.log('*** DS, params, id = ' + this.document().id)
+        console.log('*** DS, params, title = ' + this.document().title)
+        console.log('*** DS, params, author = ' + this.document().author)
+
         var _params = { 
-                    id: this.documentId(), 
+                    id: this.document().id,
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
                     text: scope.editText,
