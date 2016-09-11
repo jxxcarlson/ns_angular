@@ -64,6 +64,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.aclList = document.dict['acl']
 
             var backupId = DocumentService.currentDocumentItem().id
+
+
             $scope.foo = function() { return {'id': backupId } }
 
 

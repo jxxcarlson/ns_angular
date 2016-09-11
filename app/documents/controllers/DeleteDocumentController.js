@@ -1,11 +1,10 @@
-module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
+module.exports = function($scope, $stateParams, $confirm, $location, $state, $http, UserService, DocumentService, envService, SearchService) {
 
+    var optionObj = $location.search()
+    console.log('IN DELETE, query = ' + JSON.stringify(optionObj))
+    console.log('IN DELETE, stateParams = ' + $stateParams.option)
+   //  console.log('**** params = ' + JSON.stringify(params))
 
-    console.log('DELETE DOCUMENT CONTROLLER: ' + DocumentService.currentDocumentItem().title)
-
-
-
-    console.log('-- SUBMIT')
 
     $confirm({text: 'Are you sure you want to delete ' + DocumentService.currentDocumentItem().title + '?'})
         .then(function() {
@@ -17,6 +16,10 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
     var doDelete = function() {
 
         var parentId = DocumentService.parentId()
+        var optionObj = $location.search()
+
+
+
 
 
         console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())

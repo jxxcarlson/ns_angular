@@ -127,10 +127,21 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'editDocumentController'
         })
 
+
+        // http://benfoster.io/blog/ui-router-optional-parameters
+        // http://best-web-creation.com/articles/view/id/angular-js-ui-router-opt-params?lang=en
+        // http://stackoverflow.com/questions/30225424/angular-ui-router-more-optional-parameters-in-one-state
         .state('deletedocument', {
-            url: '/deletedocument',
+            url: '/deletedocument/mode',
             templateUrl : 'pages/documents.html',
-            controller  : 'DeleteDocumentController'
+            controller  : 'DeleteDocumentController',
+            params : { mode: {value: 'soft'} }
+
+
+            /*
+            controller: function($scope, $stateParams) {
+                $scope.mode = $stateParams.mode;
+            } */
         })
 
         .state('signup', {

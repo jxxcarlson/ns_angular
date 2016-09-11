@@ -316,7 +316,7 @@ module.exports = function(DocumentApiService, UserService, $location) {
 
     }
 
-    var queryObject = $location.search()
+        var queryObject = $location.search()
     if (queryObject['id'] == undefined) {
 
         console.log('*** ID not defined')
@@ -401,14 +401,13 @@ module.exports = function(DocumentApiService, UserService, $location) {
 
 }
 },{}],9:[function(require,module,exports){
-module.exports = function($scope, $confirm, $state, $http, UserService, DocumentService, envService, SearchService) {
+module.exports = function($scope, $stateParams, $confirm, $location, $state, $http, UserService, DocumentService, envService, SearchService) {
 
+    var optionObj = $location.search()
+    console.log('IN DELETE, query = ' + JSON.stringify(optionObj))
+    console.log('IN DELETE, stateParams = ' + $stateParams.option)
+   //  console.log('**** params = ' + JSON.stringify(params))
 
-    console.log('DELETE DOCUMENT CONTROLLER: ' + DocumentService.currentDocumentItem().title)
-
-
-
-    console.log('-- SUBMIT')
 
     $confirm({text: 'Are you sure you want to delete ' + DocumentService.currentDocumentItem().title + '?'})
         .then(function() {
@@ -420,6 +419,10 @@ module.exports = function($scope, $confirm, $state, $http, UserService, Document
     var doDelete = function() {
 
         var parentId = DocumentService.parentId()
+        var optionObj = $location.search()
+
+
+
 
 
         console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
@@ -478,7 +481,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
-    console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
+    // console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
@@ -596,6 +599,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             $scope.aclList = document.dict['acl']
 
             var backupId = DocumentService.currentDocumentItem().id
+
+
             $scope.foo = function() { return {'id': backupId } }
 
 
@@ -3190,10 +3195,21 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'editDocumentController'
         })
 
+
+        // http://benfoster.io/blog/ui-router-optional-parameters
+        // http://best-web-creation.com/articles/view/id/angular-js-ui-router-opt-params?lang=en
+        // http://stackoverflow.com/questions/30225424/angular-ui-router-more-optional-parameters-in-one-state
         .state('deletedocument', {
-            url: '/deletedocument',
+            url: '/deletedocument/mode',
             templateUrl : 'pages/documents.html',
-            controller  : 'DeleteDocumentController'
+            controller  : 'DeleteDocumentController',
+            params : { mode: {value: 'soft'} }
+
+
+            /*
+            controller: function($scope, $stateParams) {
+                $scope.mode = $stateParams.mode;
+            } */
         })
 
         .state('signup', {

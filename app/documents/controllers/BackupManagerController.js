@@ -23,7 +23,7 @@ module.exports = function(DocumentApiService, UserService, $location) {
 
     }
 
-    var queryObject = $location.search()
+        var queryObject = $location.search()
     if (queryObject['id'] == undefined) {
 
         console.log('*** ID not defined')
