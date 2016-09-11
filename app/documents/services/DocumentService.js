@@ -72,8 +72,11 @@ module.exports = function($localStorage, UserService) {
         return $localStorage.canShowSource
     }
 
-    this.setDocumentId = function(id) { $localStorage.documentId = id }
-    this.documentId = function() { return $localStorage.documentId }
+    this.documentId = function() {
+        var id = this.currentDocumentItem().id
+        console.log('*** NOTE! this.documentId = ' + id)
+        return id
+    }
     
     this.setTitle = function(title) { $localStorage.title = title}
     this.title = function() { return this.document().title }
@@ -263,7 +266,6 @@ module.exports = function($localStorage, UserService) {
         
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
-        this.setDocumentId( document['id'] )
         this.setCurrentDocumentItem(document['id'], document['title'])
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
@@ -319,20 +321,8 @@ module.exports = function($localStorage, UserService) {
         
         return _params
     }
-    
-    this.clear = function() {
-        
-        $localStorage.title = ''
-        $localStorage.documentId = ''
-        $localStorage.text = ''
-        $localStorage.renderedText = ''
-        $localStorage.kind = ''
-        $localStorage.public = false
-        
-        $localStorage.documentList = []
-        $localStorage.documentCount = 0       
-    }
-    
+
+
    this.tocStyle = function(doc) {
 
        // console.log(doc['title'] + " checked_out_to = " + doc['checked_out_to'])
