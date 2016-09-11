@@ -555,21 +555,16 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $http.get(url, options)
         .then(function (response) {
 
-            ///////////
+            //// SET PERMISSIONS ////
 
             var permissions = response.data['permissions']
             var checkedOutTo = response.data['checked_out_to']
             var canShowSource = response.data['can_show_source']
 
-            console.log('*** canShowSource = ' + canShowSource)
-
             DocumentService.setPermissions(permissions)
             DocumentService.setCheckedOutTo(checkedOutTo)
             DocumentService.setCanShowSource(canShowSource)
-
-            console.log('EditController, permissions = ' + JSON.stringify(permissions))
-            console.log('EditController, checkedOutTo = ' + checkedOutTo)
-
+            
             if (permissions.indexOf('edit') == -1 && canShowSource == 'no') {
 
                 console.log('Edit controller, get, permission DENIED')
@@ -615,8 +610,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
 
             $scope.checkoutButtonClass = function () {
-
-                // console.log('***, ZZZ checked out to ' + checkedOutTo)
 
                 if (checkedOutTo.length > 0) {
 
@@ -715,7 +708,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             console.log('showBackup = ' + $scope.showBackup)
 
 
-        })
+        })  /// END OF GET DOCUMENT
 
 
     $scope.text = DocumentService.text() // for word count
@@ -894,7 +887,10 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     }
 
 
+    //// FUNCTION DEFINITIONS ////
+
     $scope.docStyle = DocumentService.tocStyle
+
     $scope.publicStyle = function () {
 
         if ($scope.statusPublic) {
@@ -921,9 +917,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         }
 
     }
-
-
-    console.log('*** DICT: ' + JSON.stringify(DocumentService.document().dict))
 
     $scope.setKind = function (kk) {
 
@@ -980,26 +973,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     }
 
-   /**
-    $scope.displayLastBackup = function () {
-
-        console.log('*** Display last backup')
-
-        var id = DocumentService.currentDocumentItem().id
-
-        $location.path('backupmanager?id=' + id)
-        $state.go('backupmanager?id=' + id, {}, {})
-
-
-
-    }
-
-
-    $scope.displayBackup = function (backupNumber) {
-
-        DocumentApiService.getBackupText(backupNumber)
-    }
-    **/
 
 }
 },{}],12:[function(require,module,exports){
@@ -2816,7 +2789,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
 
-    envService.set('production');
+    envService.set('development');
 
   // ABCDEF
 
