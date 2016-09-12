@@ -798,7 +798,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
 
     //// 2. REFRESH TEXT: update document command bound to key up for escape key ////
-    
+
     $scope.refreshText = function () {
 
         console.log('refreshText')
@@ -1028,33 +1028,36 @@ module.exports = function() {
 module.exports = function ($scope, $location, $state, $http, $localStorage, envService, UserService, SearchService, DocumentService) {
 
 
-    var _currentDocument = DocumentService.document()
-    var parent = _currentDocument.links.parent || {'id': 0, 'title': 'null'}
-
-    $scope.parentDocumentTitle = parent.title
-    $scope.currentDocumentTitle = _currentDocument.title
-
-    // Set the parent document if there is one.
+    var self = this
+    self.currentDocument = DocumentService.document()
+    self.parent = self.currentDocument.links.parent || {'id': 0, 'title': 'null'}
 
 
-    if (parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
+    var setupScope = function(document) {
 
-        $scope.ifparentdocument = true
+
+        $scope.currentDocumentTitle = self.currentDocument.title
+        $scope.parentDocumentTitle = self.parent.title
+
+
+        if (self.parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
+
+            $scope.ifparentdocument = true
+        }
+        else {
+
+            $scope.ifparentdocument = false
+        }
+
+        if (self.parent.id == 0) {
+
+            $scope.ifnewchild = true
+
+        } else {
+
+            $scope.ifnewchild = false
+        }
     }
-    else {
-
-        $scope.ifparentdocument = false
-    }
-
-    if (parent.id == 0) {
-
-        $scope.ifnewchild = true
-
-    } else {
-
-        $scope.ifnewchild = false
-    }
-
 
     $scope.cancel = function () {
 
@@ -1063,14 +1066,12 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
     }
 
+    setupScope()
     $scope.formData = {'child': false, 'position': 'null'}
-
 
     $scope.submit = function () {
 
         if ($scope.formData.child == false && $scope.formData.position == 'null') {
-
-            parent = {'id': 0, 'title': 'null'}
 
             var process_as_child = false
 
@@ -1083,8 +1084,12 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         var access_token = UserService.accessToken()
         var parameter = JSON.stringify({
             title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
-            current_document_id: _currentDocument.id, parent_document_id: parent.id
+            current_document_id: self.currentDocument.id, parent_document_id: self.parent.id
         });
+
+
+        console.log('**** OPTIONS: ' + JSON.stringify($scope.formData))
+
         var url = envService.read('apiUrl') + '/documents'
         var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
 
@@ -1104,15 +1109,14 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                     if (process_as_child) {
 
-                        if (parent.id == 0) {
+                        if (self.parent.id == 0) {
 
                             SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
-                            $scope.parentTitle = parent.title
-                            $scope.parentId = parent.id
+                            $scope.parentTitle = self.parent.title
+                            $scope.parentId = self.parent.id
 
                         } else {
 
-                            //SearchService.query('id=' + parent.id, $scope, 'documents')
                             SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
                         }
 

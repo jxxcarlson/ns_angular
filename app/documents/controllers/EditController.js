@@ -263,7 +263,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
 
     //// 2. REFRESH TEXT: update document command bound to key up for escape key ////
-    
+
     $scope.refreshText = function () {
 
         console.log('refreshText')
