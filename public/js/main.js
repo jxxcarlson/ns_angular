@@ -1088,7 +1088,7 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         });
 
 
-        console.log('**** OPTIONS: ' + JSON.stringify($scope.formData))
+        console.log('**** parameter: ' + parameter)
 
         var url = envService.read('apiUrl') + '/documents'
         var hasSubdocuments = (DocumentService.subdocumentCount() > 0)
