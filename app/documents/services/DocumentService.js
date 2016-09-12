@@ -328,7 +328,7 @@ module.exports = function($localStorage, UserService) {
        // console.log(doc['title'] + " checked_out_to = " + doc['checked_out_to'])
 
         var css = {}
-        if (doc['id'] == $localStorage.documentId ) {
+        if (doc['id'] == $localStorage.currentDocumentItem.id) {
             css["background-color"] = "#ddf"
         }
         if (doc['public'] == true ) {
