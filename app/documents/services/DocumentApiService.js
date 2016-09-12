@@ -329,7 +329,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     this.getRequest = function (request, scope) {
 
-        console.log('API: postRequest: ' + request)
+        console.log('API: getRequest: ' + request)
 
         var url = envService.read('apiUrl') + '/' + request
         var options = {headers: {"accesstoken": UserService.accessToken()}}
@@ -341,7 +341,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     this.deleteRequest = function (request, scope) {
 
-        console.log('API: postRequest: ' + request)
+        console.log('API: deleteRequest: ' + request)
 
         var url = envService.read('apiUrl') + '/' + request
         console.log('URL: ' + url)
