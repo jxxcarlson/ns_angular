@@ -27,6 +27,12 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
         var request = 'hotlist/' + UserService.username()
 
+        var value = DocumentService.useHotList()
+        value = !value
+        DocumentService.setUseHotList(value)
+
+        if (value == false) { return }
+
         DocumentApiService.getRequest(request, $scope)
             .then(function (request ) {
 
@@ -40,10 +46,14 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.userDocuments = function () {
+
+        DocumentService.setUseHotList(false)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
+
+        DocumentService.setUseHotList(false)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
@@ -52,6 +62,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.publicDocuments = function () {
+
+        DocumentService.setUseHotList(false)
         SearchService.query('scope=public', $scope, 'documents')
     }
 
@@ -88,21 +100,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     });
 
     hotkeys.add({
-        combo: 'ctrl+v',
-        description: 'View docuemnt',
-        allowIn: ['INPUT', 'TEXTAREA'],
+        combo: 'ctrl+h',
+        description: 'Hot list',
+        // allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
+            console.log('toggle hot lists ...')
+            $scope.hotList()
             $state.go('documents')
-        }
-    });
-
-    hotkeys.add({
-        combo: 'ctrl+u',
-        description: 'User documents',
-        allowIn: ['INPUT', 'TEXTAREA'],
-        callback: function () {
-            console.log('USER DOCUMENTs ...')
-            SearchService.query('user=' + UserService.username(), $scope)
         }
     });
 
@@ -117,6 +121,25 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         }
     });
 
+
+    hotkeys.add({
+        combo: 'ctrl+u',
+        description: 'User documents',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('USER DOCUMENTs ...')
+            SearchService.query('user=' + UserService.username(), $scope)
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+v',
+        description: 'View docuemnt',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            $state.go('documents')
+        }
+    });
 
     /////
 

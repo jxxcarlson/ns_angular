@@ -239,6 +239,17 @@ module.exports = function($localStorage, UserService) {
 
     }
 
+    this.setUseHotList = function(value) {
+
+        $localStorage.useHotList = value
+    }
+
+
+    this.useHotList = function() {
+
+        return $localStorage.useHotList
+    }
+
     this.document = function() {
 
         if (this.currentDocument == undefined) {

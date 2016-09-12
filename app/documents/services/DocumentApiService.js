@@ -84,7 +84,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 // If the document has subdocuments, display them
                 // instead of the search results
-                if (documents.length > 0) {
+                if (documents.length > 0 && DocumentService.useHotList() == false) {
+                // if (documents.length > 0) {
 
                     DocumentService.setDocumentList(documents)
 
@@ -124,7 +125,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
         var _documentList = DocumentService.documentList()
 
-        var _document
 
         if (_documentList.length == 0) {
 
