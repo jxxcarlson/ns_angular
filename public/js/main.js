@@ -291,7 +291,7 @@ app.directive('file', require('./File'))
 
 
 },{"./File":4,"./elemReady":5,"./enterOnKeyPress":6,"angular":56}],8:[function(require,module,exports){
-module.exports = function(DocumentApiService, UserService, $location) {
+module.exports = function(DocumentApiService, UserService, $location, $confirm) {
 
 
     var self = this
@@ -403,6 +403,16 @@ module.exports = function(DocumentApiService, UserService, $location) {
 
     self.trashDoc = function(id) {
 
+        $confirm({text: 'Are you sure you want to trash this document?  THIS ACTION CANNOT BE UNDONE '})
+            .then(function() {
+                self.doTrashDoc(id)
+            });
+    }
+
+
+
+    self.doTrashDoc  = function(id) {
+
         console.log('Trash document ' + id)
         var url = 'documents/' + id + '?mode=hard'
         DocumentApiService.deleteRequest(url, {})
@@ -414,6 +424,7 @@ module.exports = function(DocumentApiService, UserService, $location) {
 
                 }
             )
+
     }
 
 
