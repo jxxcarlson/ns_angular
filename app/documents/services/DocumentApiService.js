@@ -339,6 +339,25 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
+    this.deleteRequest = function (request, scope) {
+
+        console.log('API: postRequest: ' + request)
+
+        var url = envService.read('apiUrl') + '/' + request
+        console.log('URL: ' + url)
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+
+        // var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id + '?mode=soft'
+
+
+        console.log('ACCESS TOKEN: ' + UserService.accessToken())
+
+
+        return $http.delete(url, options)
+
+
+    }
+
     this.getBackupText = function (backup_number) {
 
         console.log('API: backupDocument')

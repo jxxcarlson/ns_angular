@@ -380,6 +380,7 @@ module.exports = function(DocumentApiService, UserService, $location) {
     }
 
 
+
     self.getDeletedDocuments = function () {
 
         console.log('getDeletedDocuments !!')
@@ -397,6 +398,38 @@ module.exports = function(DocumentApiService, UserService, $location) {
             )
 
 
+    }
+
+
+    self.trashDoc = function(id) {
+
+        console.log('Trash document ' + id)
+        var url = 'documents/' + id + '?mode=hard'
+        DocumentApiService.deleteRequest(url, {})
+            .then(
+                function(response) {
+
+                    console.log(JSON.stringify(response.data))
+                    self.getDeletedDocuments()
+
+                }
+            )
+    }
+
+
+    self.undeleteDoc = function(id) {
+
+        console.log('Undelete document ' + id)
+        var url = 'documents/' + id + '?mode=undelete'
+        DocumentApiService.deleteRequest(url, {})
+            .then(
+                function(response) {
+
+                    console.log(JSON.stringify(response.data))
+                    self.getDeletedDocuments()
+
+                }
+            )
     }
 
 }
@@ -428,7 +461,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
         console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
         console.log('DDD, parentId  = ' + parentId)
 
-        var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id
+        var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id + '?mode=soft'
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         console.log('access token: ' + UserService.accessToken())
 
@@ -1525,6 +1558,25 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         return $http.get(url, {}, options)
+
+
+    }
+
+    this.deleteRequest = function (request, scope) {
+
+        console.log('API: postRequest: ' + request)
+
+        var url = envService.read('apiUrl') + '/' + request
+        console.log('URL: ' + url)
+        var options = { headers: { "accesstoken": UserService.accessToken() }}
+
+        // var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id + '?mode=soft'
+
+
+        console.log('ACCESS TOKEN: ' + UserService.accessToken())
+
+
+        return $http.delete(url, options)
 
 
     }

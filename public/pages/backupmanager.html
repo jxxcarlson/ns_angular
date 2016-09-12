@@ -42,7 +42,7 @@
 
             <table>
                 <tr>
-                    <td></td>
+                    <td>Action</td>
                     <td>ID</td>
                     <td>Title</td>
                     <td>Last Update</td>
@@ -50,8 +50,8 @@
 
                 <tr ng-repeat="row in ctrl.deletedDocuments">
                     <td>
-                        <button>Trash</button>
-                        <button>Undelete</button>
+                        <button ng-click="ctrl.trashDoc(row.id)">Trash</button>
+                        <button ng-click="ctrl.undeleteDoc(row.id)">Undelete</button>
                     </td>
                     <td>{{row.id}}</td>
                     <td>{{row.title}}</td>

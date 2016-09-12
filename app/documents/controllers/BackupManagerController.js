@@ -87,6 +87,7 @@ module.exports = function(DocumentApiService, UserService, $location) {
     }
 
 
+
     self.getDeletedDocuments = function () {
 
         console.log('getDeletedDocuments !!')
@@ -104,6 +105,38 @@ module.exports = function(DocumentApiService, UserService, $location) {
             )
 
 
+    }
+
+
+    self.trashDoc = function(id) {
+
+        console.log('Trash document ' + id)
+        var url = 'documents/' + id + '?mode=hard'
+        DocumentApiService.deleteRequest(url, {})
+            .then(
+                function(response) {
+
+                    console.log(JSON.stringify(response.data))
+                    self.getDeletedDocuments()
+
+                }
+            )
+    }
+
+
+    self.undeleteDoc = function(id) {
+
+        console.log('Undelete document ' + id)
+        var url = 'documents/' + id + '?mode=undelete'
+        DocumentApiService.deleteRequest(url, {})
+            .then(
+                function(response) {
+
+                    console.log(JSON.stringify(response.data))
+                    self.getDeletedDocuments()
+
+                }
+            )
     }
 
 }
