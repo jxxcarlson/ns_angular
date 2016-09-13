@@ -576,6 +576,16 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
     }
 
+    if ( UserService.username() == undefined || UserService.username() == '') {
+
+        console.log('Setting hotlist to false')
+        DocumentService.setUseHotList(false)
+
+    } else {
+
+        console.log('Not setting hotlist to anything')
+    }
+
 
     if (DocumentService.getPublic()) {
         $scope.statusPublic = 'public'
