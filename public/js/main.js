@@ -770,15 +770,12 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             setPermissions(response.data)
             var document = response.data['document']
 
-            // WHY?
-            // DocumentService.update(document)
-
             setScope(document)
             handleParent(document)
             setupBackup(document)
             setupCheckout()
 
-            // WHY??
+            // WHY?
             DocumentService.update(document)
 
             setupDocArray()
