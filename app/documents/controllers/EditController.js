@@ -56,7 +56,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         $scope.renderedText = function () {
 
             return $sce.trustAsHtml(document.rendered_text)
-            
+
         }
 
         var imageRegex = new RegExp("image/")
