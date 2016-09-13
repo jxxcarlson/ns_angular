@@ -53,6 +53,12 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         $scope.kind = document.kind
         $scope.aclList = document.dict['acl']
 
+        $scope.renderedText = function () {
+
+            return $sce.trustAsHtml(document.rendered_text)
+            
+        }
+
         var imageRegex = new RegExp("image/")
         var pdfRegex = new RegExp("application/pdf")
 
@@ -186,11 +192,13 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             handleParent(document)
             setupBackup(document)
             setupCheckout()
+            setupDocArray()
 
             // WHY?
-            DocumentService.update(document)
+            //DocumentService.update(document)
+            // $scope.refreshText()
 
-            setupDocArray()
+
 
 
         })  /// END OF GET DOCUMENT
