@@ -250,6 +250,18 @@ module.exports = function($localStorage, UserService) {
         return $localStorage.useHotList
     }
 
+    this.stashDocumentList = function() {
+
+        $localStorage.stashedDocumentList = $localStorage.documentList
+    }
+
+    this.popDocumentList = function(scope) {
+
+        $localStorage.documentList = $localStorage.stashedDocumentList
+        this.setDocumentList($localStorage.documentList)
+
+    }
+
     this.document = function() {
 
         if (this.currentDocument == undefined) {

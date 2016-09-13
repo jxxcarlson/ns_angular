@@ -192,5 +192,11 @@ input[type="file"]::-webkit-file-upload-button{
     margin-left:1em;
 }
 
+#acl-list input[type="text"] {
+
+    font-size: 11pt;
+    height:25px;
+}
+
 p.compact  { margin-bottom:0; }
 p.tail  { margin-bottom:0.4em; }

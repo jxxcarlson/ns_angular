@@ -37,11 +37,20 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
     }
 
+    if(DocumentService.useHotList()) {
+
+        $scope.tocTitle = 'Hotlist'
+
+    } else {
+
+        $scope.tocTitle = 'Contents'
+    }
+
+
     $scope.author = function (doc) {
 
         if (doc['author'] != UserService.username()) {
 
-            console.log('Ctrl: author = ' + doc['author'])
             return doc['author'] + ": "
 
         } else {

@@ -23,27 +23,44 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
 
-    $scope.hotList = function () {
+    var getHotList = function () {
 
         var request = 'hotlist/' + UserService.username()
 
-        var value = DocumentService.useHotList()
-        value = !value
-        DocumentService.setUseHotList(value)
-
-        if (value == false) { return }
+        DocumentService.stashDocumentList()
 
         DocumentApiService.getRequest(request, $scope)
-            .then(function (request ) {
+            .then(function (request) {
 
                 var hotlist = request.data['hotlist']
 
                 console.log('HOTLIST: ' + JSON.stringify(hotlist))
+                DocumentService.stashDocumentList()
                 DocumentService.setDocumentList(hotlist)
                 $state.go('documents', {}, {'reload': true})
 
             })
     }
+
+    $scope.hotList = function () {
+
+        var value = DocumentService.useHotList()
+        value = !value
+        DocumentService.setUseHotList(value)
+        console.log('** Set hot list to ' + value)
+
+        if (value == true) {
+
+            getHotList()
+
+        } else {
+
+            DocumentService.popDocumentList($scope)
+            $state.go('documents', {}, {'reload': true})
+        }
+
+    }
+
 
     $scope.userDocuments = function () {
 
@@ -106,7 +123,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         callback: function () {
             console.log('toggle hot lists ...')
             $scope.hotList()
-            $state.go('documents')
+            // $state.go('documents')
         }
     });
 

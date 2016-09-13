@@ -41,8 +41,19 @@
             </div>
 
             <div id="acl-list">
-                <h4 style="margin-top:2em;">Access Control Lists</h4>
+                <h4 style="margin-top:2em;">Access Control Lists I Manage</h4>
                 <ul ng-repeat="item in ctrl.aclList" style="margin-bottom:1em; margin-left:0"><span style="font-weight: bold; color: darkred; font-size:1.3em;">{{item.acl.name}}</span>
+                    <li><span style="font-weight: bold;">Permission:</span> {{item.acl.permission}}</li>
+                    <li><span style="font-weight: bold;">Members:</span> {{item.acl.members}}</li>
+                    <li><span style="font-weight: bold;">Documents:</span> {{item.acl.documents}}</li>
+
+                </ul>
+
+            </div>
+
+            <div id="acl-list">
+                <h4 style="margin-top:2em;">Access Control Lists I Belong To</h4>
+                <ul ng-repeat="item in ctrl.aclListBelongTo" style="margin-bottom:1em; margin-left:0"><span style="font-weight: bold; color: darkred; font-size:1.3em;">{{item.acl.name}}</span>
                     <li><span style="font-weight: bold;">Permission:</span> {{item.acl.permission}}</li>
                     <li><span style="font-weight: bold;">Members:</span> {{item.acl.members}}</li>
                     <li><span style="font-weight: bold;">Documents:</span> {{item.acl.documents}}</li>
@@ -61,7 +72,7 @@
             <br>
 
             <h4>Manage Access Control Lists</h4>
-            <div style="font-size:12pt;">
+            <div id="acl-list" style="font-size:10pt;">
                 <table>
                     <tr>
                         <td>

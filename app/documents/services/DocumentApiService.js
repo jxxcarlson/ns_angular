@@ -34,9 +34,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 DocumentService.setPermissions(permissions)
                 DocumentService.setCheckedOutTo(checkedOutTo)
 
-                console.log('DocumentApiService, permissions = ' + JSON.stringify(permissions))
-                console.log('DocumentApiService, checkedOutTo = ' + checkedOutTo)
-
                 DocumentService.update(documentHash)
                 var document = DocumentService.document()
 
