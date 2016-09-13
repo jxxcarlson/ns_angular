@@ -8,9 +8,12 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
+        DocumentService.setCurrentDocumentItem(id, 'not yet defined')
     } else {
         id = DocumentService.currentDocumentItem().id;
     }
+
+    console.log('EXX: id = ' + id + ', ' + DocumentService.currentDocumentItem().id)
 
     $scope.lastBackupNumber = 'none'
 
