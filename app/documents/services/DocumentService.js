@@ -342,7 +342,7 @@ module.exports = function($localStorage, UserService) {
         console.log('*** DS, params, author = ' + this.document().author)
 
         var _params = { 
-                    id: this.document().id,
+                    id: scope.id,
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
                     text: scope.editText,

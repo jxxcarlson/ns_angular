@@ -8,10 +8,13 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
-        DocumentService.setCurrentDocumentItem(id, 'not yet defined')
+        DocumentService.setCurrentDocumentItem(id, 'not_yet_defined')
     } else {
         id = DocumentService.currentDocumentItem().id;
     }
+
+    $scope.id = id
+    $scope.author = 'not_yet_defined'
 
     console.log('EXX: id = ' + id + ', ' + DocumentService.currentDocumentItem().id)
 

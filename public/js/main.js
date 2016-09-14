@@ -600,10 +600,13 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
-        DocumentService.setCurrentDocumentItem(id, 'not yet defined')
+        DocumentService.setCurrentDocumentItem(id, 'not_yet_defined')
     } else {
         id = DocumentService.currentDocumentItem().id;
     }
+
+    $scope.id = id
+    $scope.author = 'not_yet_defined'
 
     console.log('EXX: id = ' + id + ', ' + DocumentService.currentDocumentItem().id)
 
@@ -1993,7 +1996,7 @@ module.exports = function($localStorage, UserService) {
         console.log('*** DS, params, author = ' + this.document().author)
 
         var _params = { 
-                    id: this.document().id,
+                    id: scope.id,
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
                     text: scope.editText,
@@ -2942,7 +2945,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
-
+    // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
     envService.set('production');
 
   // ABCDEF
