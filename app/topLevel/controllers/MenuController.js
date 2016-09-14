@@ -44,10 +44,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.hotList = function () {
 
+
         var value = DocumentService.useHotList()
+        console.log('TOGGLE HOTLIST, value = ' + value)
         value = !value
-        DocumentService.setUseHotList(value)
-        console.log('** Set hot list to ' + value)
+        console.log('1. ** (toggle) value = ' + value)
+        DocumentService.setUseHotList(value, $scope)
+        console.log('2. ** (toggle) value = ' + value)
 
         if (value == true) {
 

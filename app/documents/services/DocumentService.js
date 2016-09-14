@@ -244,6 +244,7 @@ module.exports = function($localStorage, UserService) {
     this.setUseHotList = function(value, scope) {
 
         $localStorage.useHotList = value
+
         if (value == false) {
 
             if (scope.tocTitlePreferred != undefined) {

@@ -122,7 +122,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 if (DocumentService.useHotList()) {
 
                     scope.tocTitle = 'Hotlist'
-                    
+
                 } else if ( DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
 
                     if (scope.tocTitlePreferred != undefined) {

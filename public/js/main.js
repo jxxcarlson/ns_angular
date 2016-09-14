@@ -1380,7 +1380,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 if (DocumentService.useHotList()) {
 
                     scope.tocTitle = 'Hotlist'
-                    
+
                 } else if ( DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
 
                     if (scope.tocTitlePreferred != undefined) {
@@ -1908,6 +1908,7 @@ module.exports = function($localStorage, UserService) {
     this.setUseHotList = function(value, scope) {
 
         $localStorage.useHotList = value
+
         if (value == false) {
 
             if (scope.tocTitlePreferred != undefined) {
@@ -3024,10 +3025,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.hotList = function () {
 
+
         var value = DocumentService.useHotList()
+        console.log('TOGGLE HOTLIST, value = ' + value)
         value = !value
-        DocumentService.setUseHotList(value)
-        console.log('** Set hot list to ' + value)
+        console.log('1. ** (toggle) value = ' + value)
+        DocumentService.setUseHotList(value, $scope)
+        console.log('2. ** (toggle) value = ' + value)
 
         if (value == true) {
 
