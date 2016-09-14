@@ -64,23 +64,24 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.userDocuments = function () {
 
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
 
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.randomDocuments = function () {
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.publicDocuments = function () {
 
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 

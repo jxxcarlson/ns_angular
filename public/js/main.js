@@ -1380,11 +1380,21 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 if (DocumentService.useHotList()) {
 
                     scope.tocTitle = 'Hotlist'
+                    
+                } else if ( DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
 
-                } else if (DocumentService.parentId() != undefined && DocumentService.parentId() != 0) {
+                    if (scope.tocTitlePreferred != undefined) {
 
-                    scope.tocTitle = 'Contents'
+                        scope.tocTitle = scope.tocTitlePreferred
 
+                    } else {
+
+                        scope.tocTitle = 'Contents'
+                    }
+
+                } else {
+
+                    scope.tocTitlePreferred = 'Search results'
                 }
 
             })
@@ -1893,9 +1903,22 @@ module.exports = function($localStorage, UserService) {
 
     }
 
-    this.setUseHotList = function(value) {
+
+
+    this.setUseHotList = function(value, scope) {
 
         $localStorage.useHotList = value
+        if (value == false) {
+
+            if (scope.tocTitlePreferred != undefined) {
+
+                scope.tocTitle = scope.tocTitlePreferred
+
+            } else {
+
+                scope.tocTitle = 'Contents'
+            }
+        }
     }
 
 
@@ -3021,23 +3044,24 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.userDocuments = function () {
 
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
 
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.randomDocuments = function () {
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.publicDocuments = function () {
 
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 

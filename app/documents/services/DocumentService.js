@@ -239,9 +239,22 @@ module.exports = function($localStorage, UserService) {
 
     }
 
-    this.setUseHotList = function(value) {
+
+
+    this.setUseHotList = function(value, scope) {
 
         $localStorage.useHotList = value
+        if (value == false) {
+
+            if (scope.tocTitlePreferred != undefined) {
+
+                scope.tocTitle = scope.tocTitlePreferred
+
+            } else {
+
+                scope.tocTitle = 'Contents'
+            }
+        }
     }
 
 
