@@ -520,12 +520,22 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 
 // REFERENCE: https://github.com/gsklee/ngStorage
 
-module.exports = function ( $scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
+module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
                            DocumentService, UserService, MathJaxService) {
 
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
     // console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
+
+    if ($stateParams.id == undefined) {
+
+        DocumentService.setCurrentDocumentItem({id: $stateParams.id, title: 'note yet defined'})
+
+    } else {
+
+
+        }
+
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
@@ -542,7 +552,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
     $scope.tocTitle = 'Search results'
     console.log(DocumentService.title() + ': ' + DocumentService.parentId())
 
-    if(DocumentService.useHotList()) {
+    if (DocumentService.useHotList()) {
 
         $scope.tocTitle = 'Hotlist'
 
@@ -567,8 +577,6 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
     }
 
 
-
-
     $scope.author = function (doc) {
 
         if (doc['author'] != UserService.username()) {
@@ -582,7 +590,7 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
     }
 
-    if ( UserService.username() == undefined || UserService.username() == '') {
+    if (UserService.username() == undefined || UserService.username() == '') {
 
         console.log('Setting hotlist to false')
         DocumentService.setUseHotList(false)
