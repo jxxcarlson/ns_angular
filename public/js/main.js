@@ -559,7 +559,15 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
     } else {
 
-        $scope.tocTitle = 'Contents'
+        if (DocumentService.hasSubdocuments()) {
+
+            $scope.tocTitle = 'Contents'
+
+        } else {
+
+            $scope.tocTitle = 'Search results'
+        }
+
     }
 
 
