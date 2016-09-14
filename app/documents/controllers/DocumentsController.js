@@ -10,15 +10,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
     // console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
-
-    if ($stateParams.id == undefined) {
-
-        DocumentService.setCurrentDocumentItem({id: $stateParams.id, title: 'note yet defined'})
-
-    } else {
-
-
-        }
+    
 
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
