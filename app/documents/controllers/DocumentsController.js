@@ -43,6 +43,8 @@ module.exports = function ( $scope, $state, $window, $location, $timeout, $state
 
     } else {
 
+        console.log(DocumentService.title() + ': ' + DocumentService.parentId())
+
         if (DocumentService.parentId() != 0) {
 
             $scope.tocTitle = 'Contents'
