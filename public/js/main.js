@@ -1924,7 +1924,7 @@ module.exports = function($localStorage, UserService) {
 
         console.log('Document Service, update')
 
-        if (document == undefired) {
+        if (document == undefined) {
 
             console.log('WARNING: document is undefined')
 
