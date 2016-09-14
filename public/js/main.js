@@ -1922,13 +1922,13 @@ module.exports = function($localStorage, UserService) {
     
     this.update = function(document) {
 
-        console.log('Doc Service update')
+        console.log('Document Service, update')
 
         this.currentDocument = document
 
         $localStorage.currentDocument = document
         
-        this.setAuthor(document['author_name'] )
+        this.setAuthor(document['author'] )
         
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
@@ -2112,7 +2112,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
                 } else {
 
-                    // DocumentService.update(firstDocument)
+                    DocumentService.update(firstDocument)
                 }
 
 

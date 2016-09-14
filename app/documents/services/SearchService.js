@@ -30,7 +30,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
                 } else {
 
-                    // DocumentService.update(firstDocument)
+                    DocumentService.update(firstDocument)
                 }
 
 
