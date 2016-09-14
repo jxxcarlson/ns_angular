@@ -125,7 +125,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 } else if (DocumentService.parentId() != 0) {
 
-                    scope.tocTitle = 'Contents'
+                    // scope.tocTitle = 'Contents'
 
                 }
 
