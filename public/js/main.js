@@ -1922,7 +1922,7 @@ module.exports = function($localStorage, UserService) {
     
     this.update = function(document) {
 
-        console.log('EEE: Edit Controller, update')
+        console.log('Doc Service update')
 
         this.currentDocument = document
 
@@ -2108,11 +2108,11 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 DocumentService.setDocumentList(documents)
                 if (firstDocument == undefined) {
 
-                    console.log('ERROR: firstDocument ndt defined')
+                    console.log('ERROR: firstDocument not defined')
 
                 } else {
 
-                    DocumentService.update(firstDocument)
+                    // DocumentService.update(firstDocument)
                 }
 
 

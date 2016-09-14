@@ -279,7 +279,7 @@ module.exports = function($localStorage, UserService) {
     
     this.update = function(document) {
 
-        console.log('EEE: Edit Controller, update')
+        console.log('Doc Service update')
 
         this.currentDocument = document
 

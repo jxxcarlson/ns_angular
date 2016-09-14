@@ -26,11 +26,11 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 DocumentService.setDocumentList(documents)
                 if (firstDocument == undefined) {
 
-                    console.log('ERROR: firstDocument ndt defined')
+                    console.log('ERROR: firstDocument not defined')
 
                 } else {
 
-                    DocumentService.update(firstDocument)
+                    // DocumentService.update(firstDocument)
                 }
 
 
