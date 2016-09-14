@@ -541,18 +541,6 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
-    $scope.tocTitle = 'Search results'
-    console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
-
-    if (DocumentService.useHotList()) {
-
-        $scope.tocTitle = 'Hotlist'
-
-    } else if (DocumentService.parentId() != 0) {
-
-        $scope.tocTitle = 'Contents'
-
-    }
 
     // http://stackoverflow.com/questions/14502006/working-with-scope-emit-and-on
     // $scope.$emit('documentChosen', [1,2,3]);
@@ -1380,7 +1368,21 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                     scope.docArray = _documentList || []
                 }
+
                 /////////////
+
+                scope.tocTitle = 'Search results'
+                console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
+
+                if (DocumentService.useHotList()) {
+
+                    scope.tocTitle = 'Hotlist'
+
+                } else if (DocumentService.parentId() != 0) {
+
+                    scope.tocTitle = 'Contents'
+
+                }
 
             })
     } // End getDocument
