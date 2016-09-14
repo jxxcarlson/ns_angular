@@ -285,7 +285,7 @@ module.exports = function($localStorage, UserService) {
 
         $localStorage.currentDocument = document
         
-        this.setAuthor(document['author'] )
+        this.setAuthor(document['author_name'] )
         
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setTitle( document['title'] )
