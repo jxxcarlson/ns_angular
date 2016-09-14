@@ -10,7 +10,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
     // console.log('DDD, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
-    
+
 
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
@@ -26,7 +26,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
 
     $scope.tocTitle = 'Search results'
-    console.log(DocumentService.title() + ': ' + DocumentService.parentId())
+    console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
 
     if (DocumentService.useHotList()) {
 
