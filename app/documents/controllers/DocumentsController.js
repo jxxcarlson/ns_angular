@@ -57,7 +57,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     if (UserService.username() == undefined || UserService.username() == '') {
 
         console.log('Setting hotlist to false')
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false , $scope)
 
     } else {
 

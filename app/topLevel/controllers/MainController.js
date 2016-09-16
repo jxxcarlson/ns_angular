@@ -30,7 +30,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
   // ABCDEF
 

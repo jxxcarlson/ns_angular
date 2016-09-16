@@ -84,7 +84,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.publicDocuments = function () {
 
-        DocumentService.setUseHotList(false, $scope)
+        // DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 

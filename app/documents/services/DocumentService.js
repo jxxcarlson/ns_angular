@@ -243,6 +243,9 @@ module.exports = function($localStorage, UserService) {
 
     this.setUseHotList = function(value, scope) {
 
+        console.log('^^^ 1, setUseHotList')
+
+
         $localStorage.useHotList = value
 
         if (value == false) {
@@ -256,6 +259,8 @@ module.exports = function($localStorage, UserService) {
                 scope.tocTitle = 'Contents'
             }
         }
+
+        
     }
 
 

@@ -573,7 +573,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     if (UserService.username() == undefined || UserService.username() == '') {
 
         console.log('Setting hotlist to false')
-        DocumentService.setUseHotList(false)
+        DocumentService.setUseHotList(false , $scope)
 
     } else {
 
@@ -1907,6 +1907,9 @@ module.exports = function($localStorage, UserService) {
 
     this.setUseHotList = function(value, scope) {
 
+        console.log('^^^ 1, setUseHotList')
+
+
         $localStorage.useHotList = value
 
         if (value == false) {
@@ -1920,6 +1923,8 @@ module.exports = function($localStorage, UserService) {
                 scope.tocTitle = 'Contents'
             }
         }
+
+        
     }
 
 
@@ -2970,7 +2975,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
   // ABCDEF
 
@@ -3065,7 +3070,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.publicDocuments = function () {
 
-        DocumentService.setUseHotList(false, $scope)
+        // DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 
