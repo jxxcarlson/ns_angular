@@ -39,6 +39,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 scope.document = document
                 scope.docArray = DocumentService.documentList()
+                console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
                 scope.renderedText = function () {
 

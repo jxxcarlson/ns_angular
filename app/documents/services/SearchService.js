@@ -24,6 +24,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var firstDocument = jsonData['first_document']
 
                 DocumentService.setDocumentList(documents)
+
+
                 if (firstDocument == undefined) {
 
                     console.log('ERROR: firstDocument not defined')

@@ -196,6 +196,7 @@ module.exports = function($localStorage, UserService) {
     this.setDocumentList = function(array) {
 
         $localStorage.documentList = array
+        $localStorage.currentDocumentList = array
         $localStorage.documentId = array[0]
         this.currentDocumentList = array
 

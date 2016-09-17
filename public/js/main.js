@@ -1297,6 +1297,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 scope.document = document
                 scope.docArray = DocumentService.documentList()
+                console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
                 scope.renderedText = function () {
 
@@ -1886,6 +1887,7 @@ module.exports = function($localStorage, UserService) {
     this.setDocumentList = function(array) {
 
         $localStorage.documentList = array
+        $localStorage.currentDocumentList = array
         $localStorage.documentId = array[0]
         this.currentDocumentList = array
 
@@ -2192,6 +2194,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var firstDocument = jsonData['first_document']
 
                 DocumentService.setDocumentList(documents)
+
+
                 if (firstDocument == undefined) {
 
                     console.log('ERROR: firstDocument not defined')
