@@ -334,6 +334,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                     /* Update local storage */
                     DocumentService.update(document)
+                    $localStorage.currentDocumentItem.id = subdocument_id
+                    console.log('MOVE: ' + subdocument_id)
                     $location.path('editdocument/' + subdocument_id)
                     $state.go('editdocument', {}, {reload: true})
 
