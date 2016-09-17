@@ -66,25 +66,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
 
     $scope.userDocuments = function () {
-
+        DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
-
+        DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
-    $scope.randomDocuments = function () {
+    $scope.getRandomDocuments = function () {
+        console.log('TOCTITLE, randomDocuments')
+        DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.publicDocuments = function () {
-
-        // DocumentService.setUseHotList(false, $scope)
+        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 

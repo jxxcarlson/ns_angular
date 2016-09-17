@@ -1375,11 +1375,15 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 /////////////
 
                 scope.tocTitle = 'Search results'
+                scope.tocTitleClass = function () { return { color: 'black'}}
                 console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
 
+
+                /*****
                 if (DocumentService.useHotList()) {
 
                     scope.tocTitle = 'Hotlist'
+                    scope.tocTitleClass = function () { return { color: 'darkred'}}
 
                 } else if ( DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
 
@@ -1390,12 +1394,55 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     } else {
 
                         scope.tocTitle = 'Contents'
+                        scope.tocTitleClass = function () { return { color: 'blue'}}
                     }
 
                 } else {
 
                     scope.tocTitlePreferred = 'Search results'
                 }
+
+                *****/
+
+                // DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()
+
+                console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
+
+                scope.tocTitleClass = function () { return { color: 'black'}}
+
+                if (DocumentService.useHotList()) {
+
+                    console.log('2a. TOCTITLE: HOT')
+                    scope.tocTitle = 'Hotlist'
+                    scope.tocTitleClass = function () { return { color: 'darkred'}}
+
+                } else if ( DocumentService.tocTitlePreferred() != '' ) {
+
+                    scope.tocTitle = DocumentService.tocTitlePreferred()
+
+                    console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
+
+                    if (scope.tocTitle == 'Contente') {
+
+                        scope.tocTitleClass = function () { return { color: 'blue'}}
+                    }
+
+                } else if (DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
+
+                        console.log('2c. TOCTITLE: CONTENTS')
+
+                        scope.tocTitle = 'Contents'
+                        scope.tocTitleClass = function () { return { color: 'blue'}}
+
+                } else {
+
+                    console.log('2d. TOCTITLE: SEARCH RESULTS')
+                    scope.tocTitle = 'Search results'
+                }
+
+                DocumentService.setTocTitlePreferred('')
+
+
 
             })
     } // End getDocument
@@ -1924,7 +1971,20 @@ module.exports = function($localStorage, UserService) {
             }
         }
 
-        
+
+    }
+
+    this.setTocTitlePreferred = function(value) {
+
+        console.log('TOCTITLE PREFERRED, set to ' + value)
+
+        $localStorage.tocTitlePreferred = value
+    }
+
+    this.tocTitlePreferred = function() {
+
+       return $localStorage.tocTitlePreferred || ''
+
     }
 
 
@@ -2972,7 +3032,14 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.userIsAdmin = (UserService.username == 'c')
 
-    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
+    // $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
+
+    $scope.getRandomDocuments = function () {
+        console.log('TOCTITLE, randomDocuments')
+        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setUseHotList(false, $scope)
+        SearchService.query('random=10', $scope, 'documents')
+    }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
     envService.set('production');
@@ -3052,25 +3119,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
 
     $scope.userDocuments = function () {
-
+        DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
-
+        DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
-    $scope.randomDocuments = function () {
+    $scope.getRandomDocuments = function () {
+        console.log('TOCTITLE, randomDocuments')
+        DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.publicDocuments = function () {
-
-        // DocumentService.setUseHotList(false, $scope)
+        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 

@@ -260,7 +260,20 @@ module.exports = function($localStorage, UserService) {
             }
         }
 
-        
+
+    }
+
+    this.setTocTitlePreferred = function(value) {
+
+        console.log('TOCTITLE PREFERRED, set to ' + value)
+
+        $localStorage.tocTitlePreferred = value
+    }
+
+    this.tocTitlePreferred = function() {
+
+       return $localStorage.tocTitlePreferred || ''
+
     }
 
 

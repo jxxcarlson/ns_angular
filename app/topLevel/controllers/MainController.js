@@ -27,7 +27,14 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.userIsAdmin = (UserService.username == 'c')
 
-    $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
+    // $scope.randomDocuments = function(){ SearchService.query('random=10', $scope, 'documents') }
+
+    $scope.getRandomDocuments = function () {
+        console.log('TOCTITLE, randomDocuments')
+        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setUseHotList(false, $scope)
+        SearchService.query('random=10', $scope, 'documents')
+    }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
     envService.set('production');
