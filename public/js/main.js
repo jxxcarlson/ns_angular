@@ -1378,33 +1378,12 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 scope.tocTitleClass = function () { return { color: 'black'}}
                 console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
 
+                scope.activateContentsHeading = function() {
 
-                /*****
-                if (DocumentService.useHotList()) {
-
-                    scope.tocTitle = 'Hotlist'
-                    scope.tocTitleClass = function () { return { color: 'darkred'}}
-
-                } else if ( DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
-
-                    if (scope.tocTitlePreferred != undefined) {
-
-                        scope.tocTitle = scope.tocTitlePreferred
-
-                    } else {
-
-                        scope.tocTitle = 'Contents'
-                        scope.tocTitleClass = function () { return { color: 'blue'}}
-                    }
-
-                } else {
-
-                    scope.tocTitlePreferred = 'Search results'
+                    console.log('*** go up')
+                    DocumentService.setTocTitlePreferred('Contents')
+                    scope.tocTitleClass = function () { return { color: '#005FFF'} }
                 }
-
-                *****/
-
-                // DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()
 
                 console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
 
@@ -1422,7 +1401,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                     console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
 
-                    if (scope.tocTitle == 'Contente') {
+                    if (scope.tocTitle == 'Contents') {
 
                         scope.tocTitleClass = function () { return { color: 'blue'}}
                     }
@@ -1431,8 +1410,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                         console.log('2c. TOCTITLE: CONTENTS')
 
-                        scope.tocTitle = 'Contents'
-                        scope.tocTitleClass = function () { return { color: 'blue'}}
+                        // scope.tocTitle = 'Contents'
+                        // scope.tocTitleClass = function () { return { color: '#005FFF'}}
 
                 } else {
 
