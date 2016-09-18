@@ -29,6 +29,9 @@ app.controller('MainController', require('./controllers/MainController'))
 app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
+
+app.constant("mathJaxDelay", 600);
+
     // configure our routes
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {

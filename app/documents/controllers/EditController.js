@@ -1,6 +1,6 @@
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            DocumentService, DocumentApiService, UserService, envService,
-                           MathJaxService, PermissionService, hotkeys, $interval) {
+                           MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
     var keyStrokeCount = 0
@@ -229,7 +229,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                 MathJaxService.reload(DocumentService.kind(), message)
             },
-            500)
+            mathJaxDelay)
 
     }
 
@@ -248,7 +248,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                     MathJaxService.reload(DocumentService.kind(), message)
                 },
-                500)
+                mathJaxDelay)
             $scope.textDirty = false
         }
 
@@ -299,7 +299,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                     MathJaxService.reload(DocumentService.kind(), message)
                 },
-                500)
+                mathJaxDelay)
         } else {
             ////
             $scope.textDirty = true

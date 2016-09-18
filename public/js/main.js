@@ -521,7 +521,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, UserService, MathJaxService) {
+                           DocumentService, UserService, MathJaxService, mathJaxDelay) {
 
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
@@ -552,7 +552,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                 var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                 MathJaxService.reload(DocumentService.kind(), message)
             },
-            500)
+            mathJaxDelay)
 
     }
 
@@ -592,7 +592,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 },{}],11:[function(require,module,exports){
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            DocumentService, DocumentApiService, UserService, envService,
-                           MathJaxService, PermissionService, hotkeys, $interval) {
+                           MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
     var keyStrokeCount = 0
@@ -821,7 +821,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                 MathJaxService.reload(DocumentService.kind(), message)
             },
-            500)
+            mathJaxDelay)
 
     }
 
@@ -840,7 +840,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                     MathJaxService.reload(DocumentService.kind(), message)
                 },
-                500)
+                mathJaxDelay)
             $scope.textDirty = false
         }
 
@@ -891,7 +891,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                     MathJaxService.reload(DocumentService.kind(), message)
                 },
-                500)
+                mathJaxDelay)
         } else {
             ////
             $scope.textDirty = true
@@ -3382,6 +3382,9 @@ app.controller('MenuController', require('./controllers/MenuController'))
 app.controller('MainController', require('./controllers/MainController'))
 app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
+
+
+app.constant("mathJaxDelay", 600);
 
     // configure our routes
 

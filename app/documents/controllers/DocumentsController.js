@@ -5,7 +5,7 @@
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, UserService, MathJaxService) {
+                           DocumentService, UserService, MathJaxService, mathJaxDelay) {
 
     console.log('DDD, ENTER DOCS CONTROLLER')
     console.log('DDD, $stateParams.id: ' + $stateParams.id)
@@ -36,7 +36,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                 var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                 MathJaxService.reload(DocumentService.kind(), message)
             },
-            500)
+            mathJaxDelay)
 
     }
 
