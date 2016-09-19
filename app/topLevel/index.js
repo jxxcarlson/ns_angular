@@ -30,7 +30,7 @@ app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
 
-app.constant("mathJaxDelay", 600);
+app.constant("mathJaxDelay", 650);
 
     // configure our routes
 
