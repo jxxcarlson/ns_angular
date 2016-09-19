@@ -1,16 +1,11 @@
 module.exports = function ($http, $sce, $state, $location, $q,
                            DocumentService, envService, UserService, QueryParser) {
 
-
-    console.log('YYY, enter SEARCH SERVICE')
-
-    // var deferred = $q.defer();
-
-    console.log('SEARCH SERVICE(2)')
+    console.log('SSS, enter SEARCH SERVICE')
 
     this.query = function (searchText, scope, destination) {
 
-        console.log('-- query: ' + searchText)
+        console.log('SSS -- query: ' + searchText)
 
         var queryText = QueryParser.parse(searchText)
 
@@ -22,6 +17,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 var firstDocument = jsonData['first_document']
+
+                console.log('SSS; SearchController, first document: ' + JSON.stringify(firstDocument))
 
                 DocumentService.setDocumentList(documents)
 

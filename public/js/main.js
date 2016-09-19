@@ -12,10 +12,41 @@ module.exports = function(DocumentApiService) {
 
                     self.userList = response.data['list']
                     self.userCount = self.userList.length
+                    self.showUsers = true
+                    self.showACLs = false
 
                 }
             )
 
+    }
+
+    self.getACLs = function(owner_id) {
+
+        var request = 'acl?acls_of_owner=' + self.aclOwnerId
+        DocumentApiService.postRequest(request, {})
+            .then(
+                function (response) {
+
+                    self.aclList = JSON.parse(response.data['acl_list'])
+                    self.showACLs = true
+                    self.showUsers = false
+                }
+            )
+
+    }
+
+    self.stringOfArray = function(array) {
+
+        str = ""
+        array.forEach(function(item) { str += item + ", "})
+        return str
+    }
+
+    self.stringOfArray2 = function(array) {
+
+        str = ""
+        array.forEach(function(item) { str += item[1] + ", "})
+        return str
     }
 
     self.getUsers()
@@ -2173,16 +2204,11 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 module.exports = function ($http, $sce, $state, $location, $q,
                            DocumentService, envService, UserService, QueryParser) {
 
-
-    console.log('YYY, enter SEARCH SERVICE')
-
-    // var deferred = $q.defer();
-
-    console.log('SEARCH SERVICE(2)')
+    console.log('SSS, enter SEARCH SERVICE')
 
     this.query = function (searchText, scope, destination) {
 
-        console.log('-- query: ' + searchText)
+        console.log('SSS -- query: ' + searchText)
 
         var queryText = QueryParser.parse(searchText)
 
@@ -2194,6 +2220,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 var firstDocument = jsonData['first_document']
+
+                console.log('SSS; SearchController, first document: ' + JSON.stringify(firstDocument))
 
                 DocumentService.setDocumentList(documents)
 
