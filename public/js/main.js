@@ -3593,7 +3593,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
     
 },{"./controllers/AboutController":41,"./controllers/MainController":42,"./controllers/MenuController":43,"./controllers/UserPreferenceController":44,"angular":56}],46:[function(require,module,exports){
-module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $window,
+module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $localStorage,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
 

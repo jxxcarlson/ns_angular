@@ -1,4 +1,4 @@
-module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $window,
+module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $localStorage,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
 
