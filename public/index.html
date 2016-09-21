@@ -43,6 +43,21 @@
     <script src="/js/angular-environment.min.js"></script>
     <script src="/js/angular-confirm.min.js"></script>
     <script src="/js/main.js"></script>
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+  TeX: { extensions: ["mhchem.js"] }
+});
+</script>
 </head>
 <body ng-controller="MainController">
 
