@@ -24,8 +24,6 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
         }
 
 
-        console.log('&&& CAN EDIT, value = ' + value)
-
         return value
 
     }
