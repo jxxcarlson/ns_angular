@@ -45,11 +45,29 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
         if (doc['author'] != UserService.username()) {
 
-            return doc['author'] + ": "
+            if (doc['checked_out_to'] != '') {
+
+                return doc['author'] + "/" + doc['checked_out_to'] + ": "
+
+            } else {
+
+                return doc['author'] + ": "
+            }
+
+
 
         } else {
 
-            return ""
+            if (doc['checked_out_to'] != '') {
+
+                return doc['checked_out_to'] + ": "
+
+            } else {
+
+                return ""
+            }
+
+
         }
 
     }
