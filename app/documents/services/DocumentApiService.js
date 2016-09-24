@@ -40,7 +40,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 scope.document = document
 
                 // The document list reads from $localStorage.currentDocumentList
-                //
                 scope.docArray = DocumentService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
