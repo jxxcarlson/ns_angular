@@ -61,7 +61,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         DocumentService.setTocTitlePreferred('')
     }
 
-    var setDocumentList = function(scope) {
+    var setDocumentList = function(document, scope) {
+
+        console.log('yorick ')
 
         var links = document['links'] || {}
         var documents = links['documents'] || [] // JJJJ
@@ -102,82 +104,68 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         }
     }
 
+    var setupParent = function(document, scope) {
+
+        var links = document.links
+        var parent = links.parent || {}
+        if (parent == {}) {
+
+            scope.parentId = 0
+            scope.parentTitle = ''
+
+        } else {
+
+            scope.parentId = parent.id
+            scope.parentTitle = parent.title
+        }
+    }
+
+    var setupDocumentKind = function(document, scope) {
+
+        var kind = document.kind
+        scope.kind = kind
+
+        var imageRegex = new RegExp("image/")
+        var pdfRegex = new RegExp("application/pdf")
+
+        scope.imageKind = imageRegex.test(kind)
+        scope.pdfKind = pdfRegex.test(kind)
+        scope.textKind = (!scope.imageKind && !scope.pdfKind)
+
+        if (scope.imageKind || scope.pdfKind) {
+
+            scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
+
+        }
+    }
+
     this.getDocument = function (scope, id, queryObj) {
 
-
-        if (id == undefined) {
-            id = GlobalService.defaultDocumentID()
-        }
+        if (id == undefined) { id = GlobalService.defaultDocumentID() }
         var url = envService.read('apiUrl') + '/documents/' + id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
+
         return $http.get(url, options)
             .then(function (response) {
-
-                if (scope == undefined) {
-
-                    console.log('XXX(API) -- WARNING!!  ** scope ** is UNDEFINED')
-                }
-
-                var documentHash = response.data['document']
-                var permissions = response.data['permissions']
-                var checkedOutTo = response.data['checked_out_to']
-
-                DocumentService.setPermissions(permissions)
-                DocumentService.setCheckedOutTo(checkedOutTo)
-
-                DocumentService.update(documentHash)
+                
+                DocumentService.update(response.data['document'])
                 var document = DocumentService.document()
-
                 scope.document = document
+
+                DocumentService.setPermissions(response.data['permissions'])
+                DocumentService.setCheckedOutTo(response.data['checked_out_to'])
 
                 // The document list reads from $localStorage.currentDocumentList
                 scope.docArray = DocumentService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
-                scope.renderedText = function () {
 
-                    return $sce.trustAsHtml(document.rendered_text);
+                scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
 
-                }
-
-                var kind = document.kind
-                scope.kind = kind
-
-                var imageRegex = new RegExp("image/")
-                var pdfRegex = new RegExp("application/pdf")
-
-                scope.imageKind = imageRegex.test(kind)
-                scope.pdfKind = pdfRegex.test(kind)
-                scope.textKind = (!scope.imageKind && !scope.pdfKind)
-
-                if (scope.imageKind || scope.pdfKind) {
-
-                    scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
-
-                }
-
-                var links = document.links
-                var parent = links.parent || {}
-                if (parent == {}) {
-
-                    scope.parentId = 0
-                    scope.parentTitle = ''
-
-                } else {
-
-                    scope.parentId = parent.id
-                    scope.parentTitle = parent.title
-                }
-
-                // Set the document list
-                setDocumentList(scope)
-
-
-
-                /////////////
-
+                setupDocumentKind(document, scope)
+                setupParent(document, scope)
+                setDocumentList(document, scope)
                 setPreferredTocTitle(scope)
-
 
             })
     } // End getDocument
