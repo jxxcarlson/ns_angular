@@ -54,8 +54,6 @@ module.exports = function($localStorage, UserService) {
 
     this.checkedOutTo = function() {
 
-        console.log('** yada: checked out to ' + $localStorage.checkeOutTo)
-
         return $localStorage.checkeOutTo
     }
 
@@ -114,10 +112,6 @@ module.exports = function($localStorage, UserService) {
         $localStorage.backupText = data['backup_text']
         $localStorage.backupNumber = data['backup_number']
         $localStorage.backupDate = data['backup_date']
-
-        console.log('DS, putBackup, text: ' + $localStorage.backupText)
-        console.log('DS, putBackup, number: ' + $localStorage.backupNumber)
-        console.log('DS, putBackup, date: ' + $localStorage.backupDate)
     }
 
     this.getBackupText = function(text) {
@@ -197,7 +191,7 @@ module.exports = function($localStorage, UserService) {
 
         $localStorage.documentList = array
         $localStorage.currentDocumentList = array
-        $localStorage.documentId = array[0]
+        // $localStorage.documentId = array[0] // XXX: CUIDADO!!
         this.currentDocumentList = array
 
     }
@@ -388,10 +382,10 @@ module.exports = function($localStorage, UserService) {
 
    this.tocStyle = function(doc) {
 
-       // console.log(doc['title'] + " checked_out_to = " + doc['checked_out_to'])
-
+        var currentDocumentId = $localStorage.currentDocumentItem.id
         var css = {}
-        if (doc['id'] == $localStorage.currentDocumentItem.id) {
+
+        if (doc['id'] == currentDocumentId) {
             css["background-color"] = "#ddf"
         }
         if (doc['public'] == true ) {
@@ -400,13 +394,13 @@ module.exports = function($localStorage, UserService) {
        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
            css["background-color"] = "#fdd"
        }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == $localStorage.documentId ) {
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == currentDocumentId ) {
            css["background-color"] = "#fbb"
        }
        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
            css["background-color"] = "#dfd"
        }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == $localStorage.documentId  ) {
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == currentDocumentId  ) {
            css["background-color"] = "#8f8"
        }
 
