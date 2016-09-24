@@ -11,6 +11,44 @@
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
 
 
+    var setPreferredTocTitle = function(scope) {
+
+        scope.tocTitleClass = function () { return { color: 'black'}}
+
+        if (DocumentService.useHotList()) {
+
+            console.log('2a. TOCTITLE: HOT')
+            scope.tocTitle = 'Hotlist'
+            scope.tocTitleClass = function () { return { color: 'darkred'}}
+
+        } else if ( DocumentService.tocTitlePreferred() != '' ) {
+
+            scope.tocTitle = DocumentService.tocTitlePreferred()
+
+            console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
+
+            if (scope.tocTitle == 'Contents') {
+
+                scope.tocTitleClass = function () { return { color: 'blue'}}
+            }
+
+        } else if (DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
+
+            console.log('2c. TOCTITLE: CONTENTS')
+
+            // scope.tocTitle = 'Contents'
+            // scope.tocTitleClass = function () { return { color: '#005FFF'}}
+
+        } else {
+
+            console.log('2d. TOCTITLE: SEARCH RESULTS')
+            scope.tocTitle = 'Search results'
+        }
+
+        DocumentService.setTocTitlePreferred('')
+    }
+
+
     this.getDocument = function (scope, id, queryObj) {
 
 
@@ -133,40 +171,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
 
-                scope.tocTitleClass = function () { return { color: 'black'}}
-
-                if (DocumentService.useHotList()) {
-
-                    console.log('2a. TOCTITLE: HOT')
-                    scope.tocTitle = 'Hotlist'
-                    scope.tocTitleClass = function () { return { color: 'darkred'}}
-
-                } else if ( DocumentService.tocTitlePreferred() != '' ) {
-
-                    scope.tocTitle = DocumentService.tocTitlePreferred()
-
-                    console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
-
-                    if (scope.tocTitle == 'Contents') {
-
-                        scope.tocTitleClass = function () { return { color: 'blue'}}
-                    }
-
-                } else if (DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
-
-                        console.log('2c. TOCTITLE: CONTENTS')
-
-                        // scope.tocTitle = 'Contents'
-                        // scope.tocTitleClass = function () { return { color: '#005FFF'}}
-
-                } else {
-
-                    console.log('2d. TOCTITLE: SEARCH RESULTS')
-                    scope.tocTitle = 'Search results'
-                }
-
-                DocumentService.setTocTitlePreferred('')
-
+                setPreferredTocTitle(scope)
 
 
             })
