@@ -1315,6 +1315,19 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     var setPreferredTocTitle = function(scope) {
 
+        scope.tocTitle = 'Search results'
+        scope.tocTitleClass = function () { return { color: 'black'}}
+        console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
+
+        scope.activateContentsHeading = function() {
+
+            console.log('*** go up')
+            DocumentService.setTocTitlePreferred('Contents')
+            scope.tocTitleClass = function () { return { color: '#005FFF'} }
+        }
+
+        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
+
         scope.tocTitleClass = function () { return { color: 'black'}}
 
         if (DocumentService.useHotList()) {
@@ -1350,6 +1363,46 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         DocumentService.setTocTitlePreferred('')
     }
 
+    var setDocumentList = function(scope) {
+
+        var links = document['links'] || {}
+        var documents = links['documents'] || [] // JJJJ
+
+        // If the document has subdocuments, display them
+        // instead of the search results
+        if (documents.length > 0 && DocumentService.useHotList() == false) {
+            // if (documents.length > 0) {
+
+            DocumentService.setDocumentList(documents)
+
+        }
+
+
+        var _documentList = DocumentService.documentList()
+
+        if (_documentList == undefined) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
+        }
+
+        if (_documentList.length == 0) {
+
+            DocumentService.resetDocumentList()
+            _documentList = $localStorage.documentList
+        }
+
+        if (UserService.accessToken() == '') {
+
+            scope.docArray = _documentList.filter(function (x) {
+                    return x.public == true
+                }) || []
+        }
+        else {
+
+            scope.docArray = _documentList || []
+        }
+    }
 
     this.getDocument = function (scope, id, queryObj) {
 
@@ -1419,59 +1472,11 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 }
 
                 // Set the document list
-
-                var links = document['links'] || {}
-                var documents = links['documents'] || [] // JJJJ
-
-                // If the document has subdocuments, display them
-                // instead of the search results
-                if (documents.length > 0 && DocumentService.useHotList() == false) {
-                // if (documents.length > 0) {
-
-                    DocumentService.setDocumentList(documents)
-
-                }
+                setDocumentList(scope)
 
 
-                var _documentList = DocumentService.documentList()
-
-                if (_documentList == undefined) {
-
-                    DocumentService.resetDocumentList()
-                    _documentList = $localStorage.documentList
-                }
-
-                if (_documentList.length == 0) {
-
-                    DocumentService.resetDocumentList()
-                    _documentList = $localStorage.documentList
-                }
-
-                if (UserService.accessToken() == '') {
-
-                    scope.docArray = _documentList.filter(function (x) {
-                            return x.public == true
-                        }) || []
-                }
-                else {
-
-                    scope.docArray = _documentList || []
-                }
 
                 /////////////
-
-                scope.tocTitle = 'Search results'
-                scope.tocTitleClass = function () { return { color: 'black'}}
-                console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
-
-                scope.activateContentsHeading = function() {
-
-                    console.log('*** go up')
-                    DocumentService.setTocTitlePreferred('Contents')
-                    scope.tocTitleClass = function () { return { color: '#005FFF'} }
-                }
-
-                console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
 
                 setPreferredTocTitle(scope)
 
