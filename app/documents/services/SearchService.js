@@ -18,8 +18,6 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var documents = jsonData['documents']
                 var firstDocument = jsonData['first_document']
 
-                console.log('SSS; SearchController, first document: ' + JSON.stringify(firstDocument))
-
                 DocumentService.setDocumentList(documents)
 
 
