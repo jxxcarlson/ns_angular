@@ -10,22 +10,29 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
         } else {
 
-            value = (DocumentService.permissions().indexOf('edit') > -1)
 
+            if (DocumentService.author() == UserService.username()) {
 
-            var checkedOutTo = DocumentService.checkedOutTo()
+                value = true
 
-            if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
+            } else {
 
-                console.log('Access denied because document is checked out to ' + checkedOutTo)
+                var value = (DocumentService.permissions().indexOf('edit') > -1)
 
-                value = false
+                var checkedOutTo = DocumentService.checkedOutTo()
+
+                if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
+
+                    console.log('Access denied because document is checked out to ' + checkedOutTo)
+
+                    value = false
+                }
+
             }
+
         }
 
-
         return value
-
     }
 
     this.canRead = function () {
