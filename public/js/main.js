@@ -592,11 +592,29 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
         if (doc['author'] != UserService.username()) {
 
-            return doc['author'] + ": "
+            if (doc['checked_out_to'] != '') {
+
+                return doc['author'] + "/" + doc['checked_out_to'] + ": "
+
+            } else {
+
+                return doc['author'] + ": "
+            }
+
+
 
         } else {
 
-            return ""
+            if (doc['checked_out_to'] != '') {
+
+                return doc['checked_out_to'] + ": "
+
+            } else {
+
+                return ""
+            }
+
+
         }
 
     }
@@ -1327,6 +1345,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 var document = DocumentService.document()
 
                 scope.document = document
+
+                // The document list reads from $localStorage.currentDocumentList
+                //
                 scope.docArray = DocumentService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
@@ -1365,6 +1386,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     scope.parentTitle = parent.title
                 }
 
+                // Set the document list
 
                 var links = document['links'] || {}
                 var documents = links['documents'] || [] // JJJJ
@@ -1538,7 +1560,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     }
 
 
-    //// JJJJ ///
+    //// EDITOR ////
+
+
     this.update = function (params, scope) {
 
         console.log('Doc Api, update enter')
@@ -1636,6 +1660,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
+    //// BACKUP UTILITIES ////
+
     this.backupDocument = function () {
 
         console.log('API: backupDocument')
@@ -1653,6 +1679,33 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
             })
 
     }
+
+
+
+    this.getBackupText = function (backup_number) {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('backup view status: ' + response.data['status'])
+                console.log('  -- backup text length ' + response.data['backup_text'].length)
+
+                DocumentService.putBackup(response.data)
+                $location.path('backups/')
+                $state.go('backups', {}, {reload: true})
+
+
+            })
+
+    }
+
+
+    //// HTTP UTILITIES ////
 
     this.postRequest = function (request, scope) {
 
@@ -1694,28 +1747,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
         return $http.delete(url, options)
 
-
-    }
-
-    this.getBackupText = function (backup_number) {
-
-        console.log('API: backupDocument')
-
-        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
-        var options = {headers: {"accesstoken": UserService.accessToken()}}
-
-        $http.post(url, {}, options)
-            .then(function (response) {
-
-                console.log('backup view status: ' + response.data['status'])
-                console.log('  -- backup text length ' + response.data['backup_text'].length)
-
-                DocumentService.putBackup(response.data)
-                $location.path('backups/')
-                $state.go('backups', {}, {reload: true})
-
-
-            })
 
     }
 
@@ -1778,8 +1809,6 @@ module.exports = function($localStorage, UserService) {
 
     this.checkedOutTo = function() {
 
-        console.log('** yada: checked out to ' + $localStorage.checkeOutTo)
-
         return $localStorage.checkeOutTo
     }
 
@@ -1838,10 +1867,6 @@ module.exports = function($localStorage, UserService) {
         $localStorage.backupText = data['backup_text']
         $localStorage.backupNumber = data['backup_number']
         $localStorage.backupDate = data['backup_date']
-
-        console.log('DS, putBackup, text: ' + $localStorage.backupText)
-        console.log('DS, putBackup, number: ' + $localStorage.backupNumber)
-        console.log('DS, putBackup, date: ' + $localStorage.backupDate)
     }
 
     this.getBackupText = function(text) {
@@ -1921,7 +1946,7 @@ module.exports = function($localStorage, UserService) {
 
         $localStorage.documentList = array
         $localStorage.currentDocumentList = array
-        $localStorage.documentId = array[0]
+        // $localStorage.documentId = array[0] // XXX: CUIDADO!!
         this.currentDocumentList = array
 
     }
@@ -2112,10 +2137,10 @@ module.exports = function($localStorage, UserService) {
 
    this.tocStyle = function(doc) {
 
-       // console.log(doc['title'] + " checked_out_to = " + doc['checked_out_to'])
-
+        var currentDocumentId = $localStorage.currentDocumentItem.id
         var css = {}
-        if (doc['id'] == $localStorage.currentDocumentItem.id) {
+
+        if (doc['id'] == currentDocumentId) {
             css["background-color"] = "#ddf"
         }
         if (doc['public'] == true ) {
@@ -2124,13 +2149,13 @@ module.exports = function($localStorage, UserService) {
        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
            css["background-color"] = "#fdd"
        }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == $localStorage.documentId ) {
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == currentDocumentId ) {
            css["background-color"] = "#fbb"
        }
        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
            css["background-color"] = "#dfd"
        }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == $localStorage.documentId  ) {
+       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == currentDocumentId  ) {
            css["background-color"] = "#8f8"
        }
 
@@ -2173,22 +2198,29 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
         } else {
 
-            value = (DocumentService.permissions().indexOf('edit') > -1)
 
+            if (DocumentService.author() == UserService.username()) {
 
-            var checkedOutTo = DocumentService.checkedOutTo()
+                value = true
 
-            if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
+            } else {
 
-                console.log('Access denied because document is checked out to ' + checkedOutTo)
+                var value = (DocumentService.permissions().indexOf('edit') > -1)
 
-                value = false
+                var checkedOutTo = DocumentService.checkedOutTo()
+
+                if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
+
+                    console.log('Access denied because document is checked out to ' + checkedOutTo)
+
+                    value = false
+                }
+
             }
+
         }
 
-
         return value
-
     }
 
     this.canRead = function () {
@@ -2218,8 +2250,6 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 var firstDocument = jsonData['first_document']
-
-                console.log('SSS; SearchController, first document: ' + JSON.stringify(firstDocument))
 
                 DocumentService.setDocumentList(documents)
 
