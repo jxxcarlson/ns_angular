@@ -38,6 +38,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 var document = DocumentService.document()
 
                 scope.document = document
+
+                // The document list reads from $localStorage.currentDocumentList
+                //
                 scope.docArray = DocumentService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
@@ -76,6 +79,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                     scope.parentTitle = parent.title
                 }
 
+                // Set the document list
 
                 var links = document['links'] || {}
                 var documents = links['documents'] || [] // JJJJ
@@ -249,7 +253,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     }
 
 
-    //// JJJJ ///
+    //// EDITOR ////
+
+
     this.update = function (params, scope) {
 
         console.log('Doc Api, update enter')
@@ -347,6 +353,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     }
 
+    //// BACKUP UTILITIES ////
+
     this.backupDocument = function () {
 
         console.log('API: backupDocument')
@@ -364,6 +372,33 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
             })
 
     }
+
+
+
+    this.getBackupText = function (backup_number) {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('backup view status: ' + response.data['status'])
+                console.log('  -- backup text length ' + response.data['backup_text'].length)
+
+                DocumentService.putBackup(response.data)
+                $location.path('backups/')
+                $state.go('backups', {}, {reload: true})
+
+
+            })
+
+    }
+
+
+    //// HTTP UTILITIES ////
 
     this.postRequest = function (request, scope) {
 
@@ -405,28 +440,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
         return $http.delete(url, options)
 
-
-    }
-
-    this.getBackupText = function (backup_number) {
-
-        console.log('API: backupDocument')
-
-        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
-        var options = {headers: {"accesstoken": UserService.accessToken()}}
-
-        $http.post(url, {}, options)
-            .then(function (response) {
-
-                console.log('backup view status: ' + response.data['status'])
-                console.log('  -- backup text length ' + response.data['backup_text'].length)
-
-                DocumentService.putBackup(response.data)
-                $location.path('backups/')
-                $state.go('backups', {}, {reload: true})
-
-
-            })
 
     }
 
