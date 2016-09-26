@@ -23,7 +23,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
 
-    
+
     $scope.hotList = function() {
 
         HotListService.hotList($scope)

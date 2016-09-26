@@ -3193,7 +3193,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
 
-    
+
     $scope.hotList = function() {
 
         HotListService.hotList($scope)
@@ -3481,7 +3481,7 @@ app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
 
-app.constant("mathJaxDelay", 650);
+app.constant("mathJaxDelay", 800);
 
     // configure our routes
 
