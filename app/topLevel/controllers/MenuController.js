@@ -27,7 +27,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
         var request = 'hotlist/' + UserService.username()
 
-        DocumentService.stashDocumentList()
+        // DocumentService.stashDocumentList()
 
         DocumentApiService.getRequest(request, $scope)
             .then(function (request) {

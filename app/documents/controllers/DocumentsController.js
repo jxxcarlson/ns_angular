@@ -43,11 +43,15 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // user name is not displayed to the author himself
     $scope.author = function (doc) {
 
+        console.log(doc['title'] + ': ' + doc['author'] + '>> ' + doc['checked_out_to'])
+
+        var checked_out_to = doc['checked_out_to'] || ''
+
         if (doc['author'] != UserService.username()) {
 
-            if (doc['checked_out_to'] != '') {
+            if (checked_out_to != '') {
 
-                return doc['author'] + "/" + doc['checked_out_to'] + ": "
+                return doc['author'] + "/" + checked_out_to + ": "
 
             } else {
 
@@ -56,9 +60,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
         } else {
 
-            if (doc['checked_out_to'] != '') {
+            if (checked_out_to != "") {
 
-                return doc['checked_out_to'] + ": "
+                return checked_out_to + ": "
 
             } else {
 
