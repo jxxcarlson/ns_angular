@@ -35,6 +35,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
             mathJaxDelay)
     }
 
+    $scope.docUrl = '/documents/' + id
+
+
 
     // $scope.author displays the document author's
     // username and the username of anyone who has

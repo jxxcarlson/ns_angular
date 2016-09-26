@@ -582,6 +582,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
             mathJaxDelay)
     }
 
+    $scope.docUrl = '/documents/' + id
+
+
 
     // $scope.author displays the document author's
     // username and the username of anyone who has
@@ -1374,17 +1377,23 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         var links = document['links'] || {}
         var documents = links['documents'] || [] // JJJJ
 
+
+
         // If the document has subdocuments, display them
         // instead of the search results
-        if (documents.length > 0 && DocumentService.useHotList() == false) {
+        if (documents.length > 0 && !(DocumentService.useHotList() == true)) {
+        //if (documents.length > 0 ) {
             // if (documents.length > 0) {
 
+            console.log('YOR: Setting document list (subdocs): ' + documents.length)
             DocumentService.setDocumentList(documents)
 
         }
 
 
         var _documentList = DocumentService.documentList()
+
+        console.log('YOR: processing document list: ' + _documentList.length)
 
         if (_documentList == undefined) {
 
@@ -1446,6 +1455,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     }
 
     this.getDocument = function (scope, id, queryObj) {
+
+        console.log('DAC, getDocument, id: ' + id)
 
         if (id == undefined) { id = GlobalService.defaultDocumentID() }
         var url = envService.read('apiUrl') + '/documents/' + id
