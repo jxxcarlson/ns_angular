@@ -147,7 +147,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     this.getDocument = function (scope, id, queryObj) {
 
-        console.log('DAC, getDocument, id: ' + id)
+        console.log('DAS, getDocument, id: ' + id)
 
         if (id == undefined) { id = GlobalService.defaultDocumentID() }
         var url = envService.read('apiUrl') + '/documents/' + id

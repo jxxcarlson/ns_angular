@@ -1456,7 +1456,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
     this.getDocument = function (scope, id, queryObj) {
 
-        console.log('DAC, getDocument, id: ' + id)
+        console.log('DAS, getDocument, id: ' + id)
 
         if (id == undefined) { id = GlobalService.defaultDocumentID() }
         var url = envService.read('apiUrl') + '/documents/' + id
@@ -1858,7 +1858,23 @@ module.exports = function($localStorage, UserService) {
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
-    this.getPublic = function() { return this.document().public }
+    this.getPublic = function() {
+
+        // getPublic is called by the DocumentsController
+        // Under certain circumstances this call comes
+        // before this.document() is defined 
+        if (this.document() == undefined) {
+
+            return false
+
+        } else {
+
+            return this.document().public
+
+        }
+
+
+    }
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return this.document().renderedText }

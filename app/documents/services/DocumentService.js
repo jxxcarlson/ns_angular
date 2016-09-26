@@ -96,7 +96,23 @@ module.exports = function($localStorage, UserService) {
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
-    this.getPublic = function() { return this.document().public }
+    this.getPublic = function() {
+
+        // getPublic is called by the DocumentsController
+        // Under certain circumstances this call comes
+        // before this.document() is defined 
+        if (this.document() == undefined) {
+
+            return false
+
+        } else {
+
+            return this.document().public
+
+        }
+
+
+    }
     
     this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
     this.renderedText = function() { return this.document().renderedText }
