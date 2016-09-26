@@ -5,7 +5,7 @@
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, UserService, MathJaxService, mathJaxDelay) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
@@ -73,6 +73,13 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
             }
         }
     }
+
+    $scope.hotList = function() {
+
+        HotListService.hotList($scope)
+    }
+
+
 
     if (UserService.username() == undefined || UserService.username() == '') {
 
