@@ -3481,7 +3481,7 @@ app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
 
-app.constant("mathJaxDelay", 800);
+app.constant("mathJaxDelay", 900);
 
     // configure our routes
 
