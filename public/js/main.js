@@ -2773,18 +2773,6 @@ module.exports = function($localStorage) {
         $localStorage.contentType = contentType
         $localStorage.tags = tags
 
-        console.log('=================================')
-        console.log('PACKET (IMAGE SERVICE SET):')
-        console.log('===========================')
-        console.log('IMAGE = ' + JSON.stringify(image))
-        console.log('IMAGE ID = ' + id)
-        console.log('IMAGE TITLE = ' + title)
-        console.log('IMAGE URL = ' + url)
-        console.log('IMAGE STORAGE URL = ' + storageUrl)
-        console.log('IMAGE SOURCE = ' + source)
-        console.log('IMAGE CONTENT = ' + contentType)
-        console.log('IMAGE TAGS= ' + tags)
-        console.log('=================================')
     }
     
     this.setImageList = function(array) { 
@@ -2800,14 +2788,6 @@ module.exports = function($localStorage) {
         var source = firstImage['source']
         var contentType = firstImage['content_type']
         var tags = firstImage['tags']
-
-        console.log('SIL: FIRST ELEMENT = ' + JSON.stringify(firstImage))
-        console.log('SIL: ID OF FIRST ELEMENT = ' + id)
-        console.log('SIL: TITLE OF FIRST ELEMENT = ' + title)
-        console.log('SIL: URL OF FIRST ELEMENT = ' + url)
-        console.log('SIL: SOURCE FIRST ELEMENT = ' + source)
-        console.log('SIL: CONTENT TYPE FIRST ELEMENT = ' + contentType)
-        console.log('SIL: TAGS FIRST ELEMENT = ' + tags)
 
         
         $localStorage.imageId = id
