@@ -16,6 +16,7 @@ app.controller('editDocumentController', require('./controllers/EditController')
 app.controller('EditMenuController', require('./controllers/EditMenuController'))
 app.controller('DeleteDocumentController', require('./controllers/DeleteDocumentController'))
 app.controller('PrintDocumentController', require('./controllers/PrintDocumentController'))
+app.controller('ExportLatexController', require('./controllers/ExportLatexController'))
 app.controller('BackupManagerController', require('./controllers/BackupManagerController'))
 
 

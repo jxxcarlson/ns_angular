@@ -257,6 +257,43 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
             })
     }
 
+    this.exportLatexDocument = function (scope, id, queryObj) {
+
+        var deferred = $q.defer();
+
+        var url = envService.read('apiUrl') + '/exportlatex/' + id
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+        return $http.get(url, options)
+            .then(function (response) {
+                // promise is fulfilled
+                deferred.resolve(response.data);
+                var jsonData = response.data
+                var url = jsonData['tar_url']
+                console.log('EXX: jsondata = ' + JSON.stringify(jsonData))
+                console.log('EXX: latex url = ' + url)
+                scope.exportLatexUrl = url
+                DocumentService.setLatexExportUrl(url)
+
+                ////
+                scope.title = DocumentService.title()
+
+                console.log('exportLatexDocument controller: latexExportUrl = ' +  DocumentService.latexExportUrl() )
+
+                // $state.go('exportlatex')
+                $location.path('exportlatex')
+                ////
+
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+    }
+
 
     //// EDITOR ////
 

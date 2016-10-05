@@ -117,6 +117,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'PrintDocumentController'
         })
 
+        .state('exportlatex', {
+            url: '/exportlatex/:id',
+            templateUrl : 'pages/exportlatex.html',
+            controller  : 'ExportLatexController'
+        })
+
 
         .state('editdocument', {
             url: '/editdocument',
