@@ -3592,12 +3592,6 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'documentsController'
         })
 
-        .state('site2', {
-            url: '/:id',
-            templateUrl : 'pages/documents.html',
-            controller  : 'documentsController'
-        })
-
 
         .state('document', {
             url: '/documents/:id',
@@ -3669,6 +3663,17 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             url: '/userpreferences',
             templateUrl: 'pages/userpreferences.html',
             controller: 'UserPreferenceController'
+        })
+
+        // This following enables requests like
+        // http://www.manuscripta/jc.home
+        // http://www.manuscripta/jc.qft
+        // where jc.qft is the identifier of a document.
+        // these are namespace by the prefix USERNAME.
+        .state('site2', {
+            url: '/:id',
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
         })
 
         .state('backups', {
