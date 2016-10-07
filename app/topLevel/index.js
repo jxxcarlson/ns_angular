@@ -104,6 +104,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'documentsController'
         })
 
+        .state('site2', {
+            url: '/:id',
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
+        })
+
 
         .state('document', {
             url: '/documents/:id',
