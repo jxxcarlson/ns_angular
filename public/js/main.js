@@ -3196,7 +3196,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
   // ABCDEF
 
@@ -3540,6 +3540,14 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl : 'pages/about.html',
             controller  : 'AboutController'
         })
+
+        .state('user', {
+            url: '/user/:id',
+            templateUrl : 'pages/site.html',
+            controller  : 'SiteController'
+        })
+
+    /***
     
         .state('site', {
             url: '/public/:id', 
@@ -3547,12 +3555,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller  : 'SiteController'
         })
     
-        .state('user', {
-            url: '/user/:id', 
-            templateUrl : 'pages/site.html',
-            controller  : 'SiteController'
-        })
-    
+
         .state('siteDocument', {
             url: '/site/:site/:doc_id', 
             templateUrl : 'pages/site.html',
@@ -3570,6 +3573,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl : 'pages/about.html',
             controller  : 'AboutController'
         })
+
+     **/
     
     
         .state('signin', {
@@ -3670,8 +3675,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         // http://www.manuscripta/jc.qft
         // where jc.qft is the identifier of a document.
         // these are namespace by the prefix USERNAME.
-        .state('site2', {
-            url: '/:id',
+        .state('site', {
+            url: '/site/:id',
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
