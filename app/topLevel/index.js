@@ -183,12 +183,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         })
 
         // This following enables requests like
-        // http://www.manuscripta/jc.home
-        // http://www.manuscripta/jc.qft
-        // where jc.qft is the identifier of a document.
+        // http://www.manuscripta/go/jc.home
+        // http://www.manuscripta/go/jc.qft
+        // where jc.home, jc.qft is the identifier of a document.
         // these are namespace by the prefix USERNAME.
-        .state('site', {
-            url: '/site/:id',
+        .state('go', {
+            url: '/go/:id',
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
