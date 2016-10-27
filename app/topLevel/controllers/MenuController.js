@@ -184,6 +184,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         }
     });
 
+    hotkeys.add({
+        combo: 'ctrl+r',
+        description: 'Random documnets',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('GET RANDOM DOCUMENTS')
+            DocumentService.setTocTitlePreferred('Search results')
+            DocumentService.setUseHotList(false, $scope)
+            SearchService.query('random=10', $scope, 'documents')
+        }
+    });
+
     /////
 
 }
