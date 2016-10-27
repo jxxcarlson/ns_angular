@@ -49,6 +49,12 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         SearchService.query('random=50', $scope, 'documents')
     }
 
+    $scope.home = function () {
+        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setUseHotList(false, $scope)
+        SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
+    }
+
     $scope.getImages = function () {
         console.log('Get Images')
         SearchService.query('random=50', $scope, 'documents')
@@ -165,6 +171,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         callback: function () {
             console.log('LATEX EXPORT')
             $state.go('exportlatex')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+h',
+        description: 'Goto home page',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('Go to ' + UserService.username() + '.home')
+            SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
         }
     });
 
