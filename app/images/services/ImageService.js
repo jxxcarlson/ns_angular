@@ -71,9 +71,18 @@ module.exports = function($localStorage) {
 
     }
     
-    this.imageList = function() { return $localStorage.imageList }
-    
-    this.count = function() { return $localStorage.imageList.length }
+    this.imageList = function() {
+
+        return $localStorage.imageList || []
+
+    }
+
+
+
+    this.count = function() { return this.imageList().length }
+
+
+
     
    
     this.updateScope = function(scope) {
