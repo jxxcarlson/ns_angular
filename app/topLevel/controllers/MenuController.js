@@ -197,7 +197,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     });
 
     hotkeys.add({
-        combo: 'ctrl+b',
+        combo: 'ctrl+m',
         description: 'User Manual',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
