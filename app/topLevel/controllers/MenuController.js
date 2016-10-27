@@ -196,6 +196,28 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         }
     });
 
+    hotkeys.add({
+        combo: 'ctrl+b',
+        description: 'User Manual',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            DocumentService.setTocTitlePreferred('Search results')
+            DocumentService.setUseHotList(false, $scope)
+            SearchService.query('id=227', $scope, 'documents')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+a',
+        description: 'Asciidoc Guide',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            DocumentService.setTocTitlePreferred('Search results')
+            DocumentService.setUseHotList(false, $scope)
+            SearchService.query('id=152', $scope, 'documents')
+        }
+    });
+
     /////
 
 }
