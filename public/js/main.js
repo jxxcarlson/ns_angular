@@ -3256,6 +3256,11 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         SearchService.query('random=50', $scope, 'documents')
     }
 
+    $scope.getImages = function () {
+        console.log('Get Images')
+        SearchService.query('random=50', $scope, 'documents')
+    }
+
     $scope.publicDocuments = function () {
         DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
@@ -3282,12 +3287,6 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
 
-            console.log('*** author name = ' + DocumentService.document().author_name)
-            console.log('*** title = ' + DocumentService.document().title)
-            console.log('*** owner_id = ' + DocumentService.document().owner_id)
-            console.log('*** user name = ' + UserService.username())
-            console.log('*** user id = ' + UserService.username())
-
             if (PermissionService.canEdit()) {
                 $state.go('editdocument')
             }
@@ -3295,13 +3294,33 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     });
 
     hotkeys.add({
-        combo: 'ctrl+h',
+        combo: 'ctrl+l',
         description: 'Hot list',
         // allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('toggle hot lists ...')
             $scope.hotList()
             // $state.go('documents')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+i',
+        description: 'Images',
+        // allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('Go to images ...')
+            $state.go('images')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+j',
+        description: 'Images',
+        // allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('Go to images ...')
+            $state.go('imageupload')
         }
     });
 
@@ -3328,11 +3347,31 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     });
 
     hotkeys.add({
+        combo: 'ctrl+y',
+        description: 'Public documents',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('USER DOCUMENTs ...')
+            SearchService.query('scope=public', $scope, 'documents')
+        }
+    });
+
+    hotkeys.add({
         combo: 'ctrl+v',
         description: 'View docuemnt',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             $state.go('documents')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+t',
+        description: 'Export to Latex',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('LATEX EXPORT')
+            $state.go('exportlatex')
         }
     });
 

@@ -83,17 +83,19 @@ MathJax.Hub.Config({
                                 Tools <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="newdocument">New Document</a>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="newdocument">New Document <span style="position:absolute; left:160px">^N</span></a>
                                 </li>
                                 <li role="menuitem" ng-show="accessTokenValid" ng-click="doEditDocument()"><a href="#">Edit
-                                    Document</a></li>
+                                    Document <span style="position:absolute; left:160px">^E</span></a></li>
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents">View
+                                    Document <span style="position:absolute; left:160px">^V</span></a></li>
                                 <!-- <li role="menuitem" ng-show="documentCanShowSource"><a ui-sref="editdocument">Show -->
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="editdocument">Show
                                     Source</a></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="printdocument">Print
-                                Document</a></li>
+                                Document <span style="position:absolute; left:160px">^P</span></a></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="exportlatex">Export to
-                                    LaTeX</a></li>
+                                    LaTeX <span style="position:absolute; left:160px">^T</span></a></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="deletedocument">Delete
                                     Document</a></li>
                                 <!--<li role="menuitem" ng-show="accessTokenValid"><a ui-sref="deletedocument({ option: soft })">Delete
@@ -104,16 +106,16 @@ MathJax.Hub.Config({
                                 <li class="divider"></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="images">Images</a></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="imageupload">Upload
-                                    image/pdf</a></li>
+                                    image/pdf <span style="position:absolute; left:160px">^J</span></a></li>
                                 <li class="divider"></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents"
-                                                                                  ng-click="hotList()">Hot list
+                                                                                  ng-click="hotList()">Hot list <span style="position:absolute; left:160px">^L</span></a>
                                     </a></li>
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents"
                                                                                   ng-click="userDocuments()">User
-                                    documents</a></li>
+                                    documents <span style="position:absolute; left:160px">^U</span></a></li>
                                 <li role="menuitem"><a ui-sref="documents" ng-click="publicDocuments()">Public
-                                    documents</a></li>
+                                    documents <span style="position:absolute; left:160px">^Y</span></a></li>
                                 <!-- <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents"
                                                                                   ng-click="allDocuments()">All
                                     documents</a></li> -->
