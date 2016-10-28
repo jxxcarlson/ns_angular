@@ -3205,7 +3205,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
   // ABCDEF
 
@@ -3304,6 +3304,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
             if (PermissionService.canEdit()) {
                 $state.go('editdocument')
+            }
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+n',
+        description: 'New document',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+
+            if (PermissionService.canEdit()) {
+                $state.go('newdocument')
             }
         }
     });

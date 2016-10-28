@@ -93,6 +93,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     });
 
     hotkeys.add({
+        combo: 'ctrl+n',
+        description: 'New document',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+
+            if (PermissionService.canEdit()) {
+                $state.go('newdocument')
+            }
+        }
+    });
+
+    hotkeys.add({
         combo: 'ctrl+l',
         description: 'Hot list',
         // allowIn: ['INPUT', 'TEXTAREA'],
