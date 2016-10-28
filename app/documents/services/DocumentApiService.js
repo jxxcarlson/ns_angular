@@ -268,7 +268,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 // promise is fulfilled
                 deferred.resolve(response.data);
                 var jsonData = response.data
-                var url = jsonData['tar_url']
+                var  url = jsonData['tar_url']
                 console.log('EXX: jsondata = ' + JSON.stringify(jsonData))
                 console.log('EXX: latex url = ' + url)
                 scope.exportLatexUrl = url
