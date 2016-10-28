@@ -186,7 +186,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
 
     hotkeys.add({
         combo: 'ctrl+r',
-        description: 'Random documnets',
+        description: 'Random documents',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('GET RANDOM DOCUMENTS')
