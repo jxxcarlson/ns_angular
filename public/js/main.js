@@ -3768,16 +3768,24 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'UserPreferenceController'
         })
 
+        .state('imageupload', {
+            url: '/imageupload',
+            templateUrl : 'pages/imageupload.html',
+            controller  : 'ImageUploadController'
+        })
+
         // This following enables requests like
         // http://www.manuscripta/go/jc.home
         // http://www.manuscripta/go/jc.qft
         // where jc.home, jc.qft is the identifier of a document.
         // these are namespace by the prefix USERNAME.
+        /*
         .state('go', {
             url: '/:id',
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
+        */
 
         .state('backups', {
             url: '/backups',
@@ -3797,16 +3805,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'AdminController'
         })
 
-        .state('imageupload', {
-        url: '/imageupload',
-        templateUrl : 'pages/imageupload.html',
-        controller  : 'ImageUploadController'
-    });
+
     
-    $locationProvider.html5Mode({
-      enabled: true,
-      requireBase: false
-    });
+        $locationProvider.html5Mode({
+          enabled: true,
+          requireBase: false
+        });
     
 });
 
