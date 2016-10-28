@@ -3081,7 +3081,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 },{"./FileUpload":34,"./GlobalService":35,"./PSFileUpload":36,"./UtilityService":37,"./foo":38,"angular":58}],40:[function(require,module,exports){
-module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, UserService) {
+module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, DocumentApiService, UserService) {
     
     console.log('SITE CONTROLLER')
     
