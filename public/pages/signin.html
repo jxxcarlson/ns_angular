@@ -15,7 +15,7 @@
             <!-- SIGN OUT FORM -->
             <div ng-show="userStatus == 'signedIn'"
                  style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
-                <h1>Signed in as {{username}}</h1>
+                <h1><a ng-href="{{homepageUrl}}">{{homepage}}</a></h1>
                 <br/>
                 <div ng-controller="SignOutController">
                     <button ng-click="signout()">Sign out</button>
@@ -90,12 +90,9 @@
             <br>
             <div style="max-width:30em;">
 
-                <p>Advantages of <a href="/signup">signing up</a>: your own account, good format for printing documents,
-                    create and publish your own documents. You will see this and much more in the <strong>tools
-                        menu</strong>
-                    after you sign up.</p>
-
-                <p>New feature: <a href="http://www.manuscripta.io/documents/263">export documents to LaTeX.</a></p>
+                <p><a href="/signup">Sign up</a> for a Manuscripta.io account to create and
+                    publish your own documents.  You can now
+                    <a href="http://www.manuscripta.io/documents/263">export documents to LaTeX.</a></>
 
                 <br>
                 <p>Questions? Bugs? Feedback? Contact jxxcarlson at gmail</p>

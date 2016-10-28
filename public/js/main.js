@@ -1224,10 +1224,10 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         }
 
         var access_token = UserService.accessToken()
-        var parameter = JSON.stringify({
-            title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
-            current_document_id: self.currentDocument.id, parent_document_id: self.parent.id
-        });
+            var parameter = JSON.stringify({
+                title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
+                current_document_id: self.currentDocument.id, parent_document_id: self.parent.id
+            });
 
 
         console.log('**** parameter: ' + parameter)
@@ -3827,8 +3827,11 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     var deferred = $q.defer();
     $scope.message = ""
 
+
     if (UserService.username) {
         $scope.signinStatus = 'Signed in as ' + UserService.username()
+        $scope.homepage = UserService.username() + ".home"
+        $scope.homepageUrl = "documents/" + UserService.username() + ".home"
     } else {
         $scope.signinStatus = 'No one signed in'
     }

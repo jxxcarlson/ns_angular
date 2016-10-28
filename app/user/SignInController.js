@@ -6,8 +6,11 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     var deferred = $q.defer();
     $scope.message = ""
 
+
     if (UserService.username) {
         $scope.signinStatus = 'Signed in as ' + UserService.username()
+        $scope.homepage = UserService.username() + ".home"
+        $scope.homepageUrl = "documents/" + UserService.username() + ".home"
     } else {
         $scope.signinStatus = 'No one signed in'
     }

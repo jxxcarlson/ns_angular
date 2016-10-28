@@ -55,10 +55,10 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         }
 
         var access_token = UserService.accessToken()
-        var parameter = JSON.stringify({
-            title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
-            current_document_id: self.currentDocument.id, parent_document_id: self.parent.id
-        });
+            var parameter = JSON.stringify({
+                title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
+                current_document_id: self.currentDocument.id, parent_document_id: self.parent.id
+            });
 
 
         console.log('**** parameter: ' + parameter)
