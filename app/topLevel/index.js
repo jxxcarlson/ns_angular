@@ -188,7 +188,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
         // where jc.home, jc.qft is the identifier of a document.
         // these are namespace by the prefix USERNAME.
         .state('go', {
-            url: '/go/:id',
+            url: '/:id',
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
