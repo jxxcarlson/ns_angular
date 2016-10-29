@@ -572,10 +572,8 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
 
-    var shareDocumentRecipient = ""
-    var shareDocumentSubject = "Manuscripta.io"
-    var shareDocumentMessage = "You might be interested in " + DocumentService.document().title + " at http://www.manuscripta.io/" + id
-    $scope.shareDocumentUrl =  "mailto:" + shareDocumentRecipient  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
+    var shareDocumentMessage = "You might be interested in " + DocumentService.document().title + " at http://www.manuscripta.io/" + DocumentService.document().id
+    $scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
 
     // Reload MathJax so that mathematical text is propperly displayed.
     // Performance depends on just when it is called.  This is still flaky.
@@ -646,8 +644,10 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     // Used by editor to format "Public" button (??)
     if (DocumentService.getPublic()) {
+        $scope.isPublic = true
         $scope.statusPublic = 'public'
     } else {
+        $scope.isPublic = false
         $scope.statusPublic = 'private'
     }
 
