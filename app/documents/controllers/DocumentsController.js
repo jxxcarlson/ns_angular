@@ -24,6 +24,11 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
 
+    var shareDocumentRecipient = ""
+    var shareDocumentSubject = "Manuscripta.io"
+    var shareDocumentMessage = "You%20might%20be%20interested%20i%20" + DocumentService.document().title + "%20at%20http://www.manuscripta.io/" + id
+    $scope.shareDocumentUrl =  "mailto:" + shareDocumentRecipient  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
+
 
     // Reload MathJax so that mathematical text is propperly displayed.
     // Performance depends on just when it is called.  This is still flaky.

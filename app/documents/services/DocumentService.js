@@ -123,7 +123,7 @@ module.exports = function($localStorage, UserService) {
     this.setPrintUrl = function(url) { $localStorage.printUrl = url }
     this.printUrl = function() { return this.document().printUrl }
 
-    this.setLatexExportUrl = function(url) { $localStorage.latexExportUrl = url; console.log('**** setLatexExportUrl: '+ url) }
+    this.setLatexExportUrl = function(url) { $localStorage.latexExportUrl = url; console.log('****   setLatexExportUrl: '+ url) }
     this.latexExportUrl = function() { return this.document().latexExportUrl }
 
     this.putBackup = function(data) {
