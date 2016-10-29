@@ -11,6 +11,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
+    
 
     // Set the height to fill the windows.  It has to be set in this way wiith
     // a fixed (but computed) height so that scrolling will work
@@ -24,6 +25,10 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
 
+    var shareDocumentRecipient = ""
+    var shareDocumentSubject = "Manuscripta.io"
+    var shareDocumentMessage = "You might be interested in " + DocumentService.document().title + " at http://www.manuscripta.io/" + id
+    $scope.shareDocumentUrl =  "mailto:" + shareDocumentRecipient  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
 
     // Reload MathJax so that mathematical text is propperly displayed.
     // Performance depends on just when it is called.  This is still flaky.
