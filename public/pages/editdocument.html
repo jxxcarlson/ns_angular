@@ -169,8 +169,7 @@
                       ng-init="textDirty=false" style="width:90%;" ng-style="editorHeight"></textarea>
         </div>
 
-        <p ng-hide="showTools" style="margin-top:1em; margin-left:10px; font-style: italic">Word count:
-            {{wordCount}}, characters: {{documentCharacterCount}}</p>
+
     </div>
 
     <div class="col-md-5">
@@ -197,8 +196,13 @@
 
             </div>
         </div>
-        <p style="float:right; font-size: 1.3rem; color=#444">ID: {{documentId}}</p>
 
+
+    </div>
+
+    <div style="position: absolute; bottom:-30px; width:95%; margin-left: 4rem; margin-right: 4rem;  padding: 0.5rem; background-color: #eee">
+        <span style="margin-left:1rem; font-size: 1.3rem; color=#444">ID: {{documentId}}</span> <span ng-hide="showTools" style="margin-left:10px; font-style: italic">Word count:
+        {{wordCount}}, characters: {{documentCharacterCount}}</span>
     </div>
 
 </div>
