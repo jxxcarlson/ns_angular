@@ -14,6 +14,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     }
 
     $scope.id = id
+    $scope.documentId = id
     $scope.author = 'not_yet_defined'
 
     console.log('EXX: id = ' + id + ', ' + DocumentService.currentDocumentItem().id)
