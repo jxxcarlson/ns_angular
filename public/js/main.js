@@ -1595,7 +1595,10 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
         var deferred = $q.defer();
 
+        // url to send to server to generate latex:
         var url = envService.read('apiUrl') + '/exportlatex/' + id
+        // We already know the url of the tar file with the exported document:
+        scope.exportLatexUrl = "http://psurl.s3.amazonaws.com/latex/" + id + ".tar"
         var options = {headers: {"accesstoken": UserService.accessToken()}}
         return $http.get(url, options)
             .then(function (response) {
@@ -1603,21 +1606,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 deferred.resolve(response.data);
                 var jsonData = response.data
                 var  url = jsonData['tar_url']
-                console.log('EXX: jsondata = ' + JSON.stringify(jsonData))
-                console.log('EXX: latex url = ' + url)
-                scope.exportLatexUrl = url
-                DocumentService.setLatexExportUrl(url)
-
-                ////
+                // return the title of the document. This is the signal
+                // that the tar file is ready
                 scope.title = DocumentService.title()
-
-                console.log('exportLatexDocument controller: latexExportUrl = ' +  DocumentService.latexExportUrl() )
-
-                // $state.go('exportlatex')
-                $location.path('exportlatex')
-                ////
-
-
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -3205,7 +3196,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
   // ABCDEF
 
@@ -3638,17 +3629,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     
     $stateProvider
 
-    // This following enables requests like
-    // http://www.manuscripta/go/jc.home
-    // http://www.manuscripta/go/jc.qft
-    // where jc.home, jc.qft is the identifier of a document.
-    // these are namespace by the prefix USERNAME.
 
-        .state('go', {
-            url: 'go/:id',
-            templateUrl : 'pages/documents.html',
-            controller  : 'documentsController'
-        })
 
         // route for the home page
         .state('home', {
@@ -3815,6 +3796,18 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             url: '/admin',
             templateUrl: 'pages/admin.html',
             controller: 'AdminController'
+        })
+
+        // This following enables requests like
+        // http://www.manuscripta/go/jc.home
+        // http://www.manuscripta/go/jc.qft
+        // where jc.home, jc.qft is the identifier of a document.
+        // these are namespace by the prefix USERNAME.
+
+        .state('go', {
+            url: '/:id',
+            templateUrl : 'pages/documents.html',
+            controller  : 'documentsController'
         })
 
     
