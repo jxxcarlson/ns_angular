@@ -593,7 +593,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // user name is not displayed to the author himself
     $scope.author = function (doc) {
 
-        console.log(doc['title'] + ': ' + doc['author'] + '>> ' + doc['checked_out_to'])
+        // console.log(doc['title'] + ': ' + doc['author'] + '>> ' + doc['checked_out_to'])
 
         var checked_out_to = doc['checked_out_to'] || ''
 
@@ -3838,8 +3838,14 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 
     if (UserService.username) {
         $scope.signinStatus = 'Signed in as ' + UserService.username()
+
         $scope.homepage = UserService.username() + ".home"
         $scope.homepageUrl = "documents/" + UserService.username() + ".home"
+
+        $scope.userDocoumentsUrl = "user/" + UserService.username()
+
+        $scope.lastDocumentUrl = "documents/" + UserService.lastDocumentId()
+        $scope.lastDocumentTitle = UserService.lastDocumentTitle()
     } else {
         $scope.signinStatus = 'No one signed in'
     }
@@ -3858,7 +3864,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
                         UserService.signin($scope)
                         SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                             function () {
-                                $state.go('documents', {}, {reload: true})
+                                $state.go('signin', {}, {reload: true})
                             })
                     } else {
                         UserService.signout()
@@ -3956,6 +3962,10 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
                 $localStorage.loginStatus = data['status']
                 $localStorage.username = username
                 $localStorage.user_id = data['user_id']
+
+                $localStorage.lastDocumentId = data['last_document_id']
+                $localStorage.lastDocumentTitle = data['last_document_title']
+                console.log('Last document: ' + data['last_document_id'] +', ' + data['last_document_title'])
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -4180,6 +4190,16 @@ State variables:
       return this.preferences || {}
 
   }
+
+  this.lastDocumentId = function() {
+
+      return $localStorage.lastDocumentId
+  }
+
+  this.lastDocumentTitle = function() {
+
+        return $localStorage.lastDocumentTitle
+    }
  
 }
 },{}],54:[function(require,module,exports){

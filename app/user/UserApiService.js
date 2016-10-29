@@ -13,6 +13,10 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
                 $localStorage.loginStatus = data['status']
                 $localStorage.username = username
                 $localStorage.user_id = data['user_id']
+
+                $localStorage.lastDocumentId = data['last_document_id']
+                $localStorage.lastDocumentTitle = data['last_document_title']
+                console.log('Last document: ' + data['last_document_id'] +', ' + data['last_document_title'])
                 // promise is returned
                 return deferred.promise;
             }, function (response) {

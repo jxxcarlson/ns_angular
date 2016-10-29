@@ -9,8 +9,14 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 
     if (UserService.username) {
         $scope.signinStatus = 'Signed in as ' + UserService.username()
+
         $scope.homepage = UserService.username() + ".home"
         $scope.homepageUrl = "documents/" + UserService.username() + ".home"
+
+        $scope.userDocoumentsUrl = "user/" + UserService.username()
+
+        $scope.lastDocumentUrl = "documents/" + UserService.lastDocumentId()
+        $scope.lastDocumentTitle = UserService.lastDocumentTitle()
     } else {
         $scope.signinStatus = 'No one signed in'
     }
@@ -29,7 +35,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
                         UserService.signin($scope)
                         SearchService.query('user=' + UserService.username(), $scope, 'documents').then(
                             function () {
-                                $state.go('documents', {}, {reload: true})
+                                $state.go('signin', {}, {reload: true})
                             })
                     } else {
                         UserService.signout()

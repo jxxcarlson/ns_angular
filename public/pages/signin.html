@@ -16,6 +16,8 @@
             <div ng-show="userStatus == 'signedIn'"
                  style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
                 <h1><a ng-href="{{homepageUrl}}">{{homepage}}</a></h1>
+                <p><a ng-href="{{userDocoumentsUrl}}">Documents</a> </p>
+                <p style="font-size: 2rem;"><a ng-href="{{lastDocumentUrl}}">Last doc: {{lastDocumentTitle}}</a> </p>
                 <br/>
                 <div ng-controller="SignOutController">
                     <button ng-click="signout()">Sign out</button>

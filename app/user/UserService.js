@@ -130,5 +130,15 @@ State variables:
       return this.preferences || {}
 
   }
+
+  this.lastDocumentId = function() {
+
+      return $localStorage.lastDocumentId
+  }
+
+  this.lastDocumentTitle = function() {
+
+        return $localStorage.lastDocumentTitle
+    }
  
 }

@@ -46,7 +46,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // user name is not displayed to the author himself
     $scope.author = function (doc) {
 
-        console.log(doc['title'] + ': ' + doc['author'] + '>> ' + doc['checked_out_to'])
+        // console.log(doc['title'] + ': ' + doc['author'] + '>> ' + doc['checked_out_to'])
 
         var checked_out_to = doc['checked_out_to'] || ''
 
