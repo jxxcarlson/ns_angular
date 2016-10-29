@@ -77,7 +77,7 @@ require('angular-route');
 
 var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment', 
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
-                                         'cfp.hotkeys', 'angular-confirm']).
+                                         'cfp.hotkeys', 'angular-confirm', 'uz.mailto']).
     config(function(envServiceProvider) {
         // set the domains and variables for each environment 
         envServiceProvider.config({
@@ -552,7 +552,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, Mailto) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
@@ -575,6 +575,16 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     var shareDocumentSubject = "Manuscripta.io"
     var shareDocumentMessage = "You%20might%20be%20interested%20i%20" + DocumentService.document().title + "%20at%20http://www.manuscripta.io/" + id
     $scope.shareDocumentUrl =  "mailto:" + shareDocumentRecipient  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
+
+    var recipient = ""
+    var options = {
+        cc: "",
+        bcc: "",
+        subject: "Manuscripta document",
+        body: "I thought that you might be interested in " + DocumentService.document().title + ". Please see http://www.manuscripta.io/" + id
+    };
+
+    // $scope.shareDocumentUrl = Mailto.url(recipient, options);
 
 
     // Reload MathJax so that mathematical text is propperly displayed.
@@ -3206,7 +3216,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
   // ABCDEF
 

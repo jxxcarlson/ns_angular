@@ -5,7 +5,7 @@
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay ) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
@@ -28,6 +28,16 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     var shareDocumentSubject = "Manuscripta.io"
     var shareDocumentMessage = "You%20might%20be%20interested%20i%20" + DocumentService.document().title + "%20at%20http://www.manuscripta.io/" + id
     $scope.shareDocumentUrl =  "mailto:" + shareDocumentRecipient  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
+
+    var recipient = ""
+    var options = {
+        cc: "",
+        bcc: "",
+        subject: "Manuscripta document",
+        body: "I thought that you might be interested in " + DocumentService.document().title + ". Please see http://www.manuscripta.io/" + id
+    };
+
+    // $scope.shareDocumentUrl = Mailto.url(recipient, options);
 
 
     // Reload MathJax so that mathematical text is propperly displayed.
