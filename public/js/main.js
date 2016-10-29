@@ -3399,6 +3399,15 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     });
 
     hotkeys.add({
+        combo: 'ctrl+g',
+        description: 'Goto signin page',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            $state.go('signin')
+        }
+    });
+
+    hotkeys.add({
         combo: 'ctrl+h',
         description: 'Goto home page',
         allowIn: ['INPUT', 'TEXTAREA'],
