@@ -22,6 +22,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
+    $scope.documentId = id
 
 
     // Reload MathJax so that mathematical text is propperly displayed.

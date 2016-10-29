@@ -569,6 +569,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
+    $scope.documentId = id
 
 
     // Reload MathJax so that mathematical text is propperly displayed.
@@ -1253,9 +1254,11 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                         if (self.parent.id == 0) {
 
-                            SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
+                            // SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
                             $scope.parentTitle = self.parent.title
                             $scope.parentId = self.parent.id
+                            $state.go('editdocument', {}, {reload: true})
+
 
                         } else {
 
@@ -1264,7 +1267,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                     } else {
 
-                        SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                        // SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                        $state.go('editdocument', {}, {reload: true})
                     }
 
                 } else {
@@ -3196,7 +3200,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
   // ABCDEF
 

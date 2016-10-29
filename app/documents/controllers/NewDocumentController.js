@@ -84,9 +84,11 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                         if (self.parent.id == 0) {
 
-                            SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
+                            // SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
                             $scope.parentTitle = self.parent.title
                             $scope.parentId = self.parent.id
+                            $state.go('editdocument', {}, {reload: true})
+
 
                         } else {
 
@@ -95,7 +97,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                     } else {
 
-                        SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                        // SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                        $state.go('editdocument', {}, {reload: true})
                     }
 
                 } else {
