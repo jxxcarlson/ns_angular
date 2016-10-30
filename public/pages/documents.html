@@ -57,7 +57,7 @@
 
     <div style=" width:95%; margin-left: 4rem; margin-right: 4rem;  padding: 0.5rem; background-color: #eee">
         <span style="margin-left:1rem; font-size: 1.3rem; color=#444">ID: {{documentId}}</span>
-        <span ng-show="isPublic" style="margin-left: 2em;"> <a href="{{shareDocumentUrl}}" target="_top">Share Document</a> </span>
+        <span ng-show="isPublic" style="margin-left: 2em;"><a ng-click="shareDocument()" href="" >Share Document</a></span>
     </div>
 
 </div>

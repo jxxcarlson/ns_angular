@@ -57,7 +57,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.shareDocument = function () {
-        
+
         MailService.shareCurrentDocument()
 
     }

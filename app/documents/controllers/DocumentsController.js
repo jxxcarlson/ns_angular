@@ -5,7 +5,7 @@
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
@@ -24,6 +24,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
+    $scope.shareDocument = MailService.shareCurrentDocument
 
     // Reload MathJax so that mathematical text is propperly displayed.
     // Performance depends on just when it is called.  This is still flaky.

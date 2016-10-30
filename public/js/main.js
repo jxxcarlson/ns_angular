@@ -552,7 +552,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
@@ -571,6 +571,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
+    $scope.shareDocument = MailService.shareCurrentDocument
 
     // Reload MathJax so that mathematical text is propperly displayed.
     // Performance depends on just when it is called.  This is still flaky.
@@ -1514,9 +1515,11 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
 
+                /**
                 var documentItem = DocumentService.currentDocumentItem()
                 var shareDocumentMessage = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
                 scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
+                 **/
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
@@ -2317,15 +2320,17 @@ module.exports = function ($window, DocumentService) {
     };
 
     this.shareCurrentDocument = function(){
-        var subject = '' // 'Manuscripta.io document'
-        var recipient = ''
         var documentItem = DocumentService.currentDocumentItem()
+        var subject = documentItem.title // 'Manuscripta.io document'
         var message = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
-        this.send(recipient, subject, message)
-        $window.open("mailto:"+ emailId + "?subject=" + subject+"&body="+message,"_self");
+        message += "0D%0A%0D%0Ahttp://www.manuscripta.io is a site for creating and sharing documents online."
+        message += "%0D%0AMathematics, Physics, Poetry, you name it."
+        // this.send(recipient, subject, message)
+        $window.open("mailto:" + "?subject=" + subject+"&body="+message,"_self");
     };
 
 }
+
 
 
 },{}],22:[function(require,module,exports){
@@ -3298,7 +3303,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.shareDocument = function () {
-        
+
         MailService.shareCurrentDocument()
 
     }
