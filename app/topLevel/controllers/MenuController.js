@@ -1,6 +1,6 @@
 module.exports = function ($scope, $rootScope, $log, $location, $state,
                            UserService, SearchService,
-                           DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys) {
+                           DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys, MailService) {
     $scope.items = [
         'The first choice!',
         'And another choice for you.',
@@ -50,9 +50,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.home = function () {
+        console.log('GO HOME')
         DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
+    }
+
+    $scope.shareDocument = function () {
+        console.log('SHARE DOCUMENT')
+        var documentItem = DocumentService.currentDocumentItem()
+        var message = 'You might be interested in ' + documentItem.title + ' at http://www.manuscripta.io/documents/' + documentItem.id
+        // MailService.send('', 'Manuscripta.io document', 'http://www.manuscripta.io/documents/' + DocumentService.currentDocumentItem().id)
+        MailService.send('', 'Manuscripta.io document', message)
     }
 
     $scope.getImages = function () {
@@ -202,6 +211,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         callback: function () {
             console.log('Go to ' + UserService.username() + '.home')
             SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+s',
+        description: 'Share document',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('SHARE CURRENT DOCUMENT')
+            MailService.shareCurrentDocument()
         }
     });
 

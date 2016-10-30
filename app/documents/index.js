@@ -8,6 +8,7 @@ app.service('MathJaxService', require('./services/MathJaxService'));
 app.service('SearchService', require('./services/SearchService'));
 app.service('PermissionService', require('./services/PermissionService'));
 app.service('HotListService', require('./services/HotListService'));
+app.service('MailService', require('./services/MailService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))
