@@ -1514,7 +1514,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
 
-                var shareDocumentMessage = "You might be interested in " + DocumentService.document().title + " at http://www.manuscripta.io/" + DocumentService.document().id
+                var documentItem = DocumentService.currentDocumentItem()
+                var shareDocumentMessage = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
                 scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
 
                 setupDocumentKind(document, scope)
@@ -2319,7 +2320,7 @@ module.exports = function ($window, DocumentService) {
         var subject = '' // 'Manuscripta.io document'
         var recipient = ''
         var documentItem = DocumentService.currentDocumentItem()
-        var message = 'You might be interested in ' + documentItem.title + ' at http://www.manuscripta.io/documents/' + documentItem.id
+        var message = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
         this.send(recipient, subject, message)
         $window.open("mailto:"+ emailId + "?subject=" + subject+"&body="+message,"_self");
     };
@@ -3297,11 +3298,9 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.shareDocument = function () {
-        console.log('SHARE DOCUMENT')
-        var documentItem = DocumentService.currentDocumentItem()
-        var message = 'You might be interested in ' + documentItem.title + ' at http://www.manuscripta.io/documents/' + documentItem.id
-        // MailService.send('', 'Manuscripta.io document', 'http://www.manuscripta.io/documents/' + DocumentService.currentDocumentItem().id)
-        MailService.send('', 'Manuscripta.io document', message)
+        
+        MailService.shareCurrentDocument()
+
     }
 
     $scope.getImages = function () {

@@ -57,11 +57,9 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.shareDocument = function () {
-        console.log('SHARE DOCUMENT')
-        var documentItem = DocumentService.currentDocumentItem()
-        var message = 'You might be interested in ' + documentItem.title + ' at http://www.manuscripta.io/documents/' + documentItem.id
-        // MailService.send('', 'Manuscripta.io document', 'http://www.manuscripta.io/documents/' + DocumentService.currentDocumentItem().id)
-        MailService.send('', 'Manuscripta.io document', message)
+        
+        MailService.shareCurrentDocument()
+
     }
 
     $scope.getImages = function () {

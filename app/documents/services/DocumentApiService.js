@@ -172,7 +172,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
 
-                var shareDocumentMessage = "You might be interested in " + DocumentService.document().title + " at http://www.manuscripta.io/" + DocumentService.document().id
+                var documentItem = DocumentService.currentDocumentItem()
+                var shareDocumentMessage = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
                 scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
 
                 setupDocumentKind(document, scope)
