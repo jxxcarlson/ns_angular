@@ -136,9 +136,19 @@ State variables:
       return $localStorage.lastDocumentId
   }
 
+  this.setLastDocumentId = function(id) {
+
+        $localStorage.lastDocumentId = id
+    }
+
   this.lastDocumentTitle = function() {
 
         return $localStorage.lastDocumentTitle
+    }
+
+    this.setLastDocumentTitle = function(title) {
+
+        $localStorage.lastDocumentTitle = title
     }
  
 }

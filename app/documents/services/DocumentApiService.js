@@ -162,6 +162,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 DocumentService.setPermissions(response.data['permissions'])
                 DocumentService.setCheckedOutTo(response.data['checked_out_to'])
+                UserService.setLastDocumentId(id)
+                UserService.setLastDocumentTitle(document.title)
 
                 // The document list reads from $localStorage.currentDocumentList
                 scope.docArray = DocumentService.documentList()
