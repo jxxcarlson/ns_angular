@@ -1,6 +1,6 @@
-module.exports = function ($scope, $rootScope, $log, $location, $state,
+module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
                            UserService, SearchService,
-                           DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys) {
+                           DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys, MailService) {
     $scope.items = [
         'The first choice!',
         'And another choice for you.',
@@ -50,9 +50,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
     }
 
     $scope.home = function () {
+        console.log('GO HOME')
         DocumentService.setTocTitlePreferred('Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
+    }
+
+    $scope.shareDocument = function () {
+
+        MailService.shareCurrentDocument()
+
     }
 
     $scope.getImages = function () {
@@ -91,6 +98,21 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
             }
         }
     });
+
+
+
+    hotkeys.add({
+        combo: 'ctrl+b',
+        description: 'Go to blog',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+
+            //$window.location.href = 'http://manuscriptablog.org';
+            $window.open('https://manuscriptablog.org', '_blank')
+        }
+    });
+
+
 
     hotkeys.add({
         combo: 'ctrl+n',
@@ -202,6 +224,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
         callback: function () {
             console.log('Go to ' + UserService.username() + '.home')
             SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+s',
+        description: 'Share document',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('SHARE CURRENT DOCUMENT')
+            MailService.shareCurrentDocument()
         }
     });
 

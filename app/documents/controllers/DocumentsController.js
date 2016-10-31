@@ -5,12 +5,14 @@
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay ) {
+
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
+    
 
     // Set the height to fill the windows.  It has to be set in this way wiith
     // a fixed (but computed) height so that scrolling will work
@@ -24,20 +26,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
 
-    var shareDocumentRecipient = ""
-    var shareDocumentSubject = "Manuscripta.io"
-    var shareDocumentMessage = "You%20might%20be%20interested%20i%20" + DocumentService.document().title + "%20at%20http://www.manuscripta.io/" + id
-    $scope.shareDocumentUrl =  "mailto:" + shareDocumentRecipient  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
-
-    var recipient = ""
-    var options = {
-        cc: "",
-        bcc: "",
-        subject: "Manuscripta document",
-        body: "I thought that you might be interested in " + DocumentService.document().title + ". Please see http://www.manuscripta.io/" + id
-    };
-
-    // $scope.shareDocumentUrl = Mailto.url(recipient, options);
+    $scope.shareDocument = MailService.shareCurrentDocument
 
 
     // Reload MathJax so that mathematical text is propperly displayed.
@@ -62,7 +51,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // user name is not displayed to the author himself
     $scope.author = function (doc) {
 
-        // console.log(doc['title'] + ': ' + doc['author'] + '>> ' + doc['checked_out_to'])
+        // console.log(doc['title'] + ': ' + doc['author'] + '>>>>> ' + doc['checked_out_to'])
 
         var checked_out_to = doc['checked_out_to'] || ''
 
@@ -109,8 +98,10 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     // Used by editor to format "Public" button (??)
     if (DocumentService.getPublic()) {
+        $scope.isPublic = true
         $scope.statusPublic = 'public'
     } else {
+        $scope.isPublic = false
         $scope.statusPublic = 'private'
     }
 

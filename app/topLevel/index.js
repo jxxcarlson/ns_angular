@@ -30,7 +30,9 @@ app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
 
-app.constant("mathJaxDelay", 1100);
+app.constant("mathJaxDelay", 1100)
+app.constant("notFoundErrorDocumentId", 11)
+app.constant("notFoundErrorDocumentTitle", 11)
 
     // configure our routes
 

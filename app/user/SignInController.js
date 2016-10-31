@@ -2,7 +2,6 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
 
-
     var deferred = $q.defer();
     $scope.message = ""
 
@@ -17,6 +16,8 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 
         $scope.lastDocumentUrl = "documents/" + UserService.lastDocumentId()
         $scope.lastDocumentTitle = UserService.lastDocumentTitle()
+
+
     } else {
         $scope.signinStatus = 'No one signed in'
     }
