@@ -4298,7 +4298,7 @@ State variables:
 
   this.lastDocumentId = function() {
 
-      return $localStorage.lastDocumentId || notFoundErrorDocumentId
+      return $localStorage.lastDocumentId // || notFoundErrorDocumentId
   }
 
   this.setLastDocumentId = function(id) {
