@@ -5,6 +5,8 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     var deferred = $q.defer();
     $scope.message = ""
 
+    console.log('Sign in controller, HELLO!!')
+
 
     if (UserService.username) {
         $scope.signinStatus = 'Signed in as ' + UserService.username()
@@ -23,7 +25,8 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     }
 
 
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+    // MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+    MathJaxService.reload(DocumentService.kind(), "Calling MathJax in Signin controller")
 
 
     $scope.submit = function () {
