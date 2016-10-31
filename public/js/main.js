@@ -3959,7 +3959,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 
 
     // MathJax.Hub.Queue(["Typeset", MathJax.Hub])
-    MathJaxService.reload(DocumentService.kind(), "Calling MathJax in Signin controller")
+    MathJaxService.reload('asciidoc-latex', "Calling MathJax in Signin controller")
 
 
     $scope.submit = function () {
