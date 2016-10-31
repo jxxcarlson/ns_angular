@@ -39,7 +39,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
                 $location.path('documents/' + currentDocument.id + '?toc')
 
-                
+
                 if (destination == 'editdocument') {
 
                     $state.go('editdocument', {}, {reload: true})

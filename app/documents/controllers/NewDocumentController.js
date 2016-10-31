@@ -54,6 +54,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
         }
 
+        var title = $scope.title || 'Untitled document  '
+
         var access_token = UserService.accessToken()
             var parameter = JSON.stringify({
                 title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
@@ -84,10 +86,10 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                         if (self.parent.id == 0) {
 
-                            // SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
                             $scope.parentTitle = self.parent.title
                             $scope.parentId = self.parent.id
-                            $state.go('editdocument', {}, {reload: true})
+                            // $state.go('editdocument', {}, {reload: true})
+                            SearchService.query('id=' + newdocumentId, $scope, 'editdocument')
 
 
                         } else {
@@ -97,8 +99,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                     } else {
 
-                        // SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
-                        $state.go('editdocument', {}, {reload: true})
+                        SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                        // $state.go('editdocument', {}, {reload: true})
                     }
 
                 } else {
