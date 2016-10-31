@@ -1179,15 +1179,23 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
 
     var self = this
+
+
     self.currentDocument = DocumentService.document()
+
+    if (self.currentDocument == undefined) {
+        
+        self.currentDocument = {'id': 0, 'title': ''}
+    }
+
     self.parent = self.currentDocument.links.parent || {'id': 0, 'title': 'null'}
 
 
     var setupScope = function(document) {
 
 
-        $scope.currentDocumentTitle = self.currentDocument.title || ""
-        $scope.parentDocumentTitle = self.parent.title || ""
+        $scope.currentDocumentTitle = self.currentDocument.title
+        $scope.parentDocumentTitle = self.parent.title
 
 
         if (self.parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
