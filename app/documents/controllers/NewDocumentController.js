@@ -43,6 +43,9 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
     $scope.formData = {'child': false, 'position': 'null'}
 
     $scope.submit = function () {
+        console.log('I WANT TO CREATE A NEW DOCUMENT')
+        console.log('THE TITLE IS ' + $scope.title)
+
 
         if ($scope.formData.child == false && $scope.formData.position == 'null') {
 
@@ -55,7 +58,7 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         }
 
         var access_token = UserService.accessToken()
-            var parameter = JSON.stringify({
+        var parameter = JSON.stringify({
                 title: $scope.title, token: access_token, options: JSON.stringify($scope.formData),
                 current_document_id: self.currentDocument.id, parent_document_id: self.parent.id
             });
@@ -97,8 +100,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
 
                     } else {
 
-                        // SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
-                        $state.go('editdocument', {}, {reload: true})
+                        SearchService.query('id=' + newDocument.id, $scope, 'editdocument')
+                        // $state.go('editdocument', {}, {reload: true})
                     }
 
                 } else {
