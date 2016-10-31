@@ -4,9 +4,11 @@ module.exports = function() {
     this.parse = function(query) {
         
         
-        var isStandardTerm = function(str) { return (str.includes('=')) }
-        var isBareTerm = function(str) { return !(str.includes('=')) }
-        
+        // var isStandardTerm = function(str) { return (str.includes('=')) }
+        var isStandardTerm = function(str) { return (str.indexOf("=") > -1) }
+        // var isBareTerm = function(str) { return !(str.includes('=')) }
+        var isBareTerm = function(str) { return (str.indexOf("=") == -1) }
+
         var terms = query.split(' ')
         console.log(terms.length + ' QUERY TERMS: ' + terms)
         
