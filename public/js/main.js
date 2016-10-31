@@ -77,7 +77,7 @@ require('angular-route');
 
 var app = angular.module('noteshareApp', ['ui.router', 'ngStorage', 'environment', 
                                           'ngFileUpload', , 'ui.bootstrap',  'ngAnimate',
-                                         'cfp.hotkeys', 'angular-confirm', 'uz.mailto']).
+                                         'cfp.hotkeys', 'angular-confirm']).
     config(function(envServiceProvider) {
         // set the domains and variables for each environment 
         envServiceProvider.config({
@@ -552,7 +552,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 // REFERENCE: https://github.com/gsklee/ngStorage
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, Mailto) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay ) {
 
     console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
 
@@ -2415,7 +2415,17 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 console.log('SSS: data is valid = ' + dataValid)
 
                 $location.path('documents/' + currentDocument.id + '?toc')
-                $state.go('documents', {}, {reload: true})
+
+                
+                if (destination == 'editdocument') {
+
+                    $state.go('editdocument', {}, {reload: true})
+
+                } else {
+
+                    $state.go('documents', {}, {reload: true})
+                }
+
 
 
             })
@@ -3216,7 +3226,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
   // ABCDEF
 

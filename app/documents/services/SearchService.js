@@ -38,7 +38,17 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 console.log('SSS: data is valid = ' + dataValid)
 
                 $location.path('documents/' + currentDocument.id + '?toc')
-                $state.go('documents', {}, {reload: true})
+
+                
+                if (destination == 'editdocument') {
+
+                    $state.go('editdocument', {}, {reload: true})
+
+                } else {
+
+                    $state.go('documents', {}, {reload: true})
+                }
+
 
 
             })
