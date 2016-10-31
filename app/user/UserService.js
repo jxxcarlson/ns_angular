@@ -1,4 +1,4 @@
-module.exports = function($localStorage) {
+module.exports = function($localStorage, notFoundErrorDocumentId) {
     
 /*****
 
@@ -133,7 +133,7 @@ State variables:
 
   this.lastDocumentId = function() {
 
-      return $localStorage.lastDocumentId
+      return $localStorage.lastDocumentId || notFoundErrorDocumentId
   }
 
   this.setLastDocumentId = function(id) {
@@ -143,7 +143,7 @@ State variables:
 
   this.lastDocumentTitle = function() {
 
-        return $localStorage.lastDocumentTitle
+        return $localStorage.lastDocumentTitle || 'Not yet defined'
     }
 
     this.setLastDocumentTitle = function(title) {

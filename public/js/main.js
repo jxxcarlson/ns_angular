@@ -3244,7 +3244,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 }
 
 },{}],46:[function(require,module,exports){
-module.exports = function ($scope, $rootScope, $log, $location, $state,
+module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
                            UserService, SearchService,
                            DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys, MailService) {
     $scope.items = [
@@ -3344,6 +3344,21 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
             }
         }
     });
+
+
+
+    hotkeys.add({
+        combo: 'ctrl+b',
+        description: 'Go to blog',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+
+            //$window.location.href = 'http://manuscriptablog.org';
+            $window.open('https://manuscriptablog.org', '_blank')
+        }
+    });
+
+
 
     hotkeys.add({
         combo: 'ctrl+n',
@@ -3684,7 +3699,9 @@ app.controller('AboutController', require('./controllers/AboutController'))
 app.controller('UserPreferenceController', require('./controllers/UserPreferenceController'))
 
 
-app.constant("mathJaxDelay", 1100);
+app.constant("mathJaxDelay", 1100)
+app.constant("notFoundErrorDocumentId", 11)
+app.constant("notFoundErrorDocumentTitle", 11)
 
     // configure our routes
 
@@ -3896,7 +3913,6 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
 
-
     var deferred = $q.defer();
     $scope.message = ""
 
@@ -3911,6 +3927,8 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
 
         $scope.lastDocumentUrl = "documents/" + UserService.lastDocumentId()
         $scope.lastDocumentTitle = UserService.lastDocumentTitle()
+
+
     } else {
         $scope.signinStatus = 'No one signed in'
     }
@@ -4123,7 +4141,7 @@ module.exports = function($scope, UserService) {
 }
 
 },{}],54:[function(require,module,exports){
-module.exports = function($localStorage) {
+module.exports = function($localStorage, notFoundErrorDocumentId) {
     
 /*****
 
@@ -4258,7 +4276,7 @@ State variables:
 
   this.lastDocumentId = function() {
 
-      return $localStorage.lastDocumentId
+      return $localStorage.lastDocumentId || notFoundErrorDocumentId
   }
 
   this.setLastDocumentId = function(id) {
@@ -4268,7 +4286,7 @@ State variables:
 
   this.lastDocumentTitle = function() {
 
-        return $localStorage.lastDocumentTitle
+        return $localStorage.lastDocumentTitle || 'Not yet defined'
     }
 
     this.setLastDocumentTitle = function(title) {

@@ -1,4 +1,4 @@
-module.exports = function ($scope, $rootScope, $log, $location, $state,
+module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
                            UserService, SearchService,
                            DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys, MailService) {
     $scope.items = [
@@ -98,6 +98,21 @@ module.exports = function ($scope, $rootScope, $log, $location, $state,
             }
         }
     });
+
+
+
+    hotkeys.add({
+        combo: 'ctrl+b',
+        description: 'Go to blog',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+
+            //$window.location.href = 'http://manuscriptablog.org';
+            $window.open('https://manuscriptablog.org', '_blank')
+        }
+    });
+
+
 
     hotkeys.add({
         combo: 'ctrl+n',
