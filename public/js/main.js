@@ -1186,8 +1186,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
     var setupScope = function(document) {
 
 
-        $scope.currentDocumentTitle = self.currentDocument.title
-        $scope.parentDocumentTitle = self.parent.title
+        $scope.currentDocumentTitle = self.currentDocument.title || ""
+        $scope.parentDocumentTitle = self.parent.title || ""
 
 
         if (self.parent.id != 0 && $scope.parentDocumentTitle != $scope.currentDocumentTitle) {
