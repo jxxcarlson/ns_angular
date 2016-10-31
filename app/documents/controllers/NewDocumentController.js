@@ -7,8 +7,8 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
     self.currentDocument = DocumentService.document()
 
     if (self.currentDocument == undefined) {
-        
-        self.currentDocument = {'id': 0, 'title': ''}
+
+        self.currentDocument = {'id': 0, 'title': '', links: {}}
     }
 
     self.parent = self.currentDocument.links.parent || {'id': 0, 'title': 'null'}
