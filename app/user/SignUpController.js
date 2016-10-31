@@ -15,7 +15,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
                 $state.go('documents', {}, {reload: true})
               } else {
 
-                $scope.message = 'Sorry'
+                $scope.message = 'Sorry, there was an error -- could not create your account'
               }
                 // promise was fullfilled (regardless of outcome)
                 // checks for information will be peformed here
