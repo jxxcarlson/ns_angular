@@ -471,7 +471,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     }
 
-    id = id || id || notFoundErrorDocumentId
+    id = id || id2 || notFoundErrorDocumentId
     // end validate
 
     var queryObj = $location.search()
