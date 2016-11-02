@@ -19,7 +19,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     if ( idPattern.test(id) == false ) {
 
-        console.log('DEBUG: id is invalid: ' + id)
+        console.log('DEBUG, FIXIT: id is invalid: ' + id)
         id = undefined
 
     }
@@ -28,7 +28,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     if ( idPattern.test(id2) == false ) {
 
-        console.log('DEBUG: DocumentService.currentDocumentItem()["id"] is invalid: ' + id)
+        console.log('DEBUG, FIXIT: DocumentService.currentDocumentItem()["id"] is invalid: ' + id)
         id2 = undefined
 
     }
