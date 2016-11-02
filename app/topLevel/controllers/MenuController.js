@@ -106,6 +106,16 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     }
 
+    $scope.getUserManual = function() {
+
+        SearchService.query('id=227', $scope, 'documents')
+    }
+
+    $scope.getAsciidocGuide = function() {
+
+        SearchService.query('id=152', $scope, 'documents')
+    }
+
     /////
     //$scope.$on('someEvent', function(event, data) { console.log('WWW' + data); });
 
@@ -290,7 +300,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         callback: function () {
             DocumentService.setTocTitlePreferred('Search results')
             DocumentService.setUseHotList(false, $scope)
-            SearchService.query('id=227', $scope, 'documents')
+            $scope.getUserManual()
         }
     });
 
@@ -301,7 +311,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         callback: function () {
             DocumentService.setTocTitlePreferred('Search results')
             DocumentService.setUseHotList(false, $scope)
-            SearchService.query('id=152', $scope, 'documents')
+            $scope.getAsciidocGuide()
         }
     });
 
