@@ -444,13 +444,39 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
 
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService) {
+                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
     console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
-    var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
+
+    // Validate id and ensure valid value
+    var id = $stateParams.id
+
+    var idPattern = /^[A-Za-z0-9\.\?=]*$/
+
+    if ( idPattern.test(id) == false ) {
+
+        console.log('DEBUG: id is invalid: ' + id)
+        id = undefined
+
+    }
+
+    var id2 = DocumentService.currentDocumentItem()['id']
+
+    if ( idPattern.test(id2) == false ) {
+
+        console.log('DEBUG: DocumentService.currentDocumentItem()["id"] is invalid: ' + id)
+        id2 = undefined
+
+    }
+
+    id = id || id || notFoundErrorDocumentId
+    // end validate
+
     var queryObj = $location.search()
+
+
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
     console.log('1. queryObj[arg] = ' + queryObj['show_source'])
