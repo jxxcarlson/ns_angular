@@ -160,6 +160,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 var document = DocumentService.document()
                 scope.document = document
 
+                console.log("DEBUG: DAS, get, response.data['permissions'] = " + response.data['permissions'])
+
                 DocumentService.setPermissions(response.data['permissions'])
                 DocumentService.setCheckedOutTo(response.data['checked_out_to'])
                 UserService.setLastDocumentId(id)
