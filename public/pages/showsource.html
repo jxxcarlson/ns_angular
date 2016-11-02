@@ -1,71 +1,67 @@
-<div class="row">
+<div clase="container fill">
 
-    <div class="col-md-2">
-        <div style="margin-left:1em;">
+    <div class="row">
 
+        <div class="col-md-3">
+            <div style="margin-left:2em;">
 
-            <h3> Contents ({{ documentCount }})</h3>
-
-            <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a
-                    ng-href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
-
-        </div>
-    </div>
-
-    <!-- SOURCE TEXT -->
-    <div class="col-md-5">
-        <div>
-
-        <div ng-hide="showTools" style="margin-left:1em;">
-            <div style="margin-bottom: 3px;">
-            <span>
-              <input class="input-box" style="width: 400px; vertical-align: middle;" ng-model="editableTitle"
-                     type="text" id="editableTitle">
-            </span>
-
-                <span style="display:inline-block; vertical-align: top">
-                <button style="height:30px;" ng-click="updateDocument()">Save</button>
-            </span>
-            </div>
-            <br/>
-            <textarea id="edit-text" ng-model="editText" ng-keyUp="refreshText()" ng-model="textDirty"
-                      ng-init="textDirty=false" style="width:90%;" ng-style="editorHeight"></textarea>
-        </div>
-
-
-    </div>
-
-    <div class="col-md-5">
-
-        <!-- RENDERED TEXT -->
-        <div style="margin-left:1em;">
-            <h4><a ng-hide="hideParent" ng-click="activateContentsHeading()" ng-href="editdocument/{{parentId}}">{{ parentTitle }}</a></h4>
-            <h3>{{ title }}</h3>
-            <br/>
-            <!-- <div style="width:90%;" ng-if="renderedText()" ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div> -->
-            <div elem-ready="reloadMathJax()" ng-show="textKind" style="width:90%;padding-bottom:500px;"
-                 ng-bind-html="renderedText()"
-                 id="rendered-text"></div>
-
-            <div ng-show="imageKind" class="container fill">
-                <img src="{{attachmentUrl}}"/>
-            </div>
-
-            <div ng-show="pdfKind" class="container fill">
-                <p><a ng-href="{{attachmentUrl}}" target="_blank">Link</a></p>
-                <iframe id="pdf-iframe" src={{attachmentUrl}} style="width:300px; height:400px;"><p>Your browser does
-                    not support iframes.</p>
-                </iframe>
+                <h3 ng-click="hotList()" ng-style="tocTitleClass()"> {{tocTitle}} ({{ docArray.length }}) </h3>
+                <br/>
+                <div id="toc">
+                    <p class="toc-item " ng-click="activateContentsHeading()" ng-repeat="doc in docArray"
+                       ng-style="docStyle(doc)"><i ng-show="hasSubdocument(doc)" class="fa fa-caret-right">&nbsp;</i><a
+                            href="{{doc['url']}}?toc"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a>
+                    </p>
+                </div>
 
             </div>
         </div>
 
+        <div class="col-md-9">
+            <div style="margin-left:1em;">
+                <div class="container fill">
+                    <h3>
+                        <a ng-hide="hideParent" ng-click="activateContentsHeading()" ng-href="documents/{{parentId}}?toc">{{
+                            parentTitle }}</a>
+                    </h3>
+                    <h2> {{ title }} </h2>
+                    <br/>
+                </div>
+
+                <div ng-show="textKind" class="container fill">
+                    <div elem-ready="reloadMathJax()" ng-bind-html="renderedText()" id="rendered-text"></div>
+                    <!-- <div elem-ready="reloadMathJax()"  id="rendered-text">{{title}}</div> -->
+                </div>
+
+                <div ng-show="imageKind" class="container fill">
+                    <img src="{{attachmentUrl}}"/>
+                </div>
+
+                <div ng-show="pdfKind" class="container fill">
+                    <p><a ng-href="{{attachmentUrl}}" target="_blank">Link</a></p>
+                    <iframe id="pdf-iframe" src={{attachmentUrl}} style="width:700px; height:900px;"><p>Your browser does
+                        not support iframes.</p>
+                    </iframe>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
 
     </div>
 
-    <div style="position: absolute; bottom:0px; width:95%; margin-left: 4rem; margin-right: 4rem;  padding: 0.5rem; background-color: #eee">
-        <span style="margin-left:1rem; font-size: 1.3rem; color=#444">ID: {{documentId}}</span> <span ng-hide="showTools" style="margin-left:10px; font-style: italic">Word count:
-        {{wordCount}}, characters: {{documentCharacterCount}}</span>
+    <div class="row">
+
+        <div style=" width:95%; margin-left: 4rem; margin-right: 4rem;  padding: 0.5rem; background-color: #eee">
+
+            <span style="margin-left:1rem; font-size: 1.3rem; color=#444">ID: {{documentId}}</span>
+            <span ng-show="isPublic" style="margin-left: 2em;"><a ng-click="shareDocument()" href="" >Share Document</a></span>
+
+        </div>
+
     </div>
 
 </div>

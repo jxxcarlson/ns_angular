@@ -134,115 +134,6 @@ require('./admin')
 
 
 
-/**
-
-MENU
-
->>> https://angular-ui.github.io/bootstrap/ 
-
-EDITOR
-
-WOW! >>> https://github.com/sachinchoolur/angular-trix
-     >>> http://plnkr.co/edit/hSzwlzUmRQoUtZJke2C4?p=preview
-     
->>> https://github.com/fraywing/textAngular
->>> https://vitalets.github.io/angular-xeditable/
->>> https://docs.angularjs.org/api/ng/directive/textarea
-
-FILE UPLOAD
-Cheyne Wallace post, new version: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
-http://stackoverflow.com/questions/31590424/cant-upload-files-to-amazon-s3-using-angularjs-with-pre-signed-url
-
-// LOOKS PROMISING >>> DRAG AND DROP UPLOADS ALSO!
-// NG-FILE-UPLOAD  >>> https://github.com/danialfarid/ng-file-upload/wiki/Direct-S3-upload-and-Node-signing-example
-//                 >>> https://github.com/danialfarid/ng-file-upload
-//                 >>> https://angular-file-upload.appspot.com/
-
-MODULARIZATION
-
->>> Google: split angularjs into files node browserify
-
->>> https://omarfouad.com/
-
->>> https://blog.codecentric.de/en/2014/08/angularjs-browserify/
->>> https://github.com/twilson63/angular-browserify-example
-
->>> GOOD >>> http://henriquat.re/modularizing-angularjs/modularizing-angular-applications/modularizing-angular-applications.html
->>> http://henriquat.re/
-
-^^^ GOOD::: REQUIRING VS BROSERIFYING: http://developer.telerik.com/featured/requiring-vs-browerifying-angular/
-
-ORGANIZING CODE
-
-https://medium.com/opinionated-angularjs/scalable-code-organization-in-angularjs-9f01b594bf06#.gsrzlad9h
-
-https://medium.com/@dickeyxxx/best-practices-for-building-angular-js-apps-266c1a4a6917#.m95vfp6g3
-
-TESTING
-
-^^^ BRADONCODE: http://www.bradoncode.com/blog/2015/02/27/karma-tutorial/
-
-https://www.smashingmagazine.com/2014/10/introduction-to-unit-testing-in-angularjs/
-::: https://github.com/mhevery/jasmine-node
-::: http://blog.teamtreehouse.com/26017-2
-::: http://webpack.github.io/docs/motivation.html
-::: COMMON JS ::: http://www.commonjs.org/   
-    :::   http://arstechnica.com/business/2009/12/commonjs-effort-sets-javascript-on-path-for-world-domination/
-
-https://karma-runner.github.io/latest/intro/installation.html
-https://www.npmjs.com/package/karma
-
-https://github.com/sitepoint-editors/angular-js-unit-testing-services-controllers-providers/blob/master/tests/serviceSpec.js
-
-http://www.bradoncode.com/blog/2015/02/27/karma-tutorial/
-http://jasmine.github.io/2.0/introduction.html
-
-CONTROLLERS
-
-http://www.w3schools.com/angular/angular_controllers.asp
-
-DIRECTIVES
-
-https://www.sitepoint.com/practical-guide-angularjs-directives/
-child controlers >>> https://rclayton.silvrback.com/parent-child-controller-communication
-
-SERVICES
-
-http://www.w3schools.com/angular/angular_services.asp
-http://www.ng-newsletter.com/posts/beginner2expert-services.html
-http://blog.thoughtram.io/angular/2015/07/07/service-vs-factory-once-and-for-all.html
-https://docs.angularjs.org/guide/services
-http://stackoverflow.com/questions/13013772/how-do-i-test-an-angularjs-service-with-jasmine
-
-VIEW
-
-toggle >> http://jsfiddle.net/geniuscarrier/tKZjZ/
-
-QUERY STRINGS
-
-http://www.suleski.name/getting-query-string-parameters-with-angularjs/
-
-SCOPES
-
-http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html  << GOOD
-
-WATCH
-
-http://tutorials.jenkov.com/angularjs/watch-digest-apply.html
-
-CORS
-
-http://stackoverflow.com/questions/23823010/how-to-enable-cors-in-angularjs
-http://stackoverflow.com/questions/29547003/angularjs-no-access-control-allow-origin-header-is-present-on-the-requested-r
-
-NG-STORAGE
-https://www.npmjs.com/package/ng-storage
-
-**/
-
-
-
-
 
 },{"./admin":2,"./directives":7,"./documents":17,"./images":28,"./search":33,"./services":40,"./site":43,"./topLevel":48,"./user":55,"angular":59,"angular-route":57}],4:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
@@ -559,6 +450,28 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
+
+    console.log('queryObj = ' + JSON.stringify(queryObj))
+    console.log('1. queryObj[arg] = ' + queryObj['show_source'])
+    console.log('2. queryObj[arg] = ' + queryObj.show_source)
+
+
+    if (queryObj['option'] == 'showsource') {
+
+        console.log('SHOW SOURCE')
+        $scope.showSource = true
+        $scope.renderedTextStyle = "col-md-9"
+        $scope.sourceText  = DocumentService.document().text
+        $scope.showSourceUrl = "documents/" + id + "?show_source=yes"
+
+    } else {
+
+        console.log('DO NOT SHOW SOURCE')
+
+        $scope.showSource = false
+        $scope.renderedTextStyle = "col-md-5"
+
+    }
     
 
     // Set the height to fill the windows.  It has to be set in this way wiith
@@ -566,6 +479,11 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
+    // document.getElementById("sourcetext").style.height = (innerHeight - 200) + 'px'
+    $scope.sourceTextHeight = function() { return 'height: ' + (innerHeight - 220) + 'px' }
+
+
+
 
     DocumentApiService.getDocument($scope, id, queryObj)
 
@@ -576,7 +494,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.shareDocument = MailService.shareCurrentDocument
 
 
-    // Reload MathJax so that mathematical text is propperly displayed.
+    // Reload MathJax so that mathematical text is properly displayed.
     // Performance depends on just when it is called.  This is still flaky.
     $scope.reloadMathJax = function () {
         $timeout(
@@ -1326,7 +1244,14 @@ module.exports = function($scope, SearchService) {
 
         $scope.doSearch = function(){
 
-            SearchService.query($scope.searchText, $scope, 'documents')
+            console.log('In doSearch, $scope.searchText = ' + $scope.searchText)
+
+            if ($scope.searchText != '') {
+
+                SearchService.query($scope.searchText, $scope, 'documents')
+
+            }
+
 
       }
     }                                      
@@ -1530,6 +1455,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 scope.title = document.title
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
+                scope.sourceText = document.text
 
                 /**
                 var documentItem = DocumentService.currentDocumentItem()
@@ -2418,6 +2344,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
     this.query = function (searchText, scope, destination) {
 
         console.log('SSS -- query: ' + searchText)
+        console.log('SSS -- destination: ' + destination)
 
         var queryText = QueryParser.parse(searchText)
 
@@ -3307,6 +3234,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         HotListService.hotList($scope)
     }
 
+    $scope.showDocumentSource = function() {
+
+        console.log('showDocumentSource clicked')
+        var path = 'documents/' + DocumentService.currentDocumentItem().id + '?show_source=yes'
+        var idAndQuery =  DocumentService.currentDocumentItem().id + '?show_source=yes'
+        console.log('path = ' + path)
+        console.log('idAndQuery = ' + idAndQuery)
+        $location.path(path)
+        $state.go('documents', {id: idAndQuery})
+
+    }
+
 
     $scope.userDocuments = function () {
         DocumentService.setTocTitlePreferred('Search results')
@@ -3334,9 +3273,21 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
 
+
     $scope.shareDocument = function () {
 
         MailService.shareCurrentDocument()
+
+    }
+
+    $scope.showSource = function() {
+
+        var id = DocumentService.currentDocumentItem().id
+        var path = 'documents/' + id + '?option=showsource'
+        console.log('MenuController, showSource; path = ' + path)
+        $location.path(path)
+        var obj = {id: id + '?option=showsource'}
+        $state.go('.showSource')
 
     }
 
@@ -3506,12 +3457,22 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     });
 
     hotkeys.add({
-        combo: 'ctrl+s',
+        combo: 'ctrl+d',
         description: 'Share document',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('SHARE CURRENT DOCUMENT')
             MailService.shareCurrentDocument()
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+s',
+        description: 'Show source',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('SHARE CURRENT DOCUMENT')
+           showSource()
         }
     });
 

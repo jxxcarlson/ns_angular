@@ -29,6 +29,18 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         HotListService.hotList($scope)
     }
 
+    $scope.showDocumentSource = function() {
+
+        console.log('showDocumentSource clicked')
+        var path = 'documents/' + DocumentService.currentDocumentItem().id + '?show_source=yes'
+        var idAndQuery =  DocumentService.currentDocumentItem().id + '?show_source=yes'
+        console.log('path = ' + path)
+        console.log('idAndQuery = ' + idAndQuery)
+        $location.path(path)
+        $state.go('documents', {id: idAndQuery})
+
+    }
+
 
     $scope.userDocuments = function () {
         DocumentService.setTocTitlePreferred('Search results')
@@ -56,9 +68,21 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
 
+
     $scope.shareDocument = function () {
 
         MailService.shareCurrentDocument()
+
+    }
+
+    $scope.showSource = function() {
+
+        var id = DocumentService.currentDocumentItem().id
+        var path = 'documents/' + id + '?option=showsource'
+        console.log('MenuController, showSource; path = ' + path)
+        $location.path(path)
+        var obj = {id: id + '?option=showsource'}
+        $state.go('.showSource')
 
     }
 
@@ -228,12 +252,22 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     });
 
     hotkeys.add({
-        combo: 'ctrl+s',
+        combo: 'ctrl+d',
         description: 'Share document',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('SHARE CURRENT DOCUMENT')
             MailService.shareCurrentDocument()
+        }
+    });
+
+    hotkeys.add({
+        combo: 'ctrl+s',
+        description: 'Show source',
+        allowIn: ['INPUT', 'TEXTAREA'],
+        callback: function () {
+            console.log('SHARE CURRENT DOCUMENT')
+           showSource()
         }
     });
 

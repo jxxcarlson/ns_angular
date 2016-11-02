@@ -171,6 +171,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 scope.title = document.title
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
+                scope.sourceText = document.text
 
                 /**
                 var documentItem = DocumentService.currentDocumentItem()

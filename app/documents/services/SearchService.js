@@ -6,6 +6,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
     this.query = function (searchText, scope, destination) {
 
         console.log('SSS -- query: ' + searchText)
+        console.log('SSS -- destination: ' + destination)
 
         var queryText = QueryParser.parse(searchText)
 

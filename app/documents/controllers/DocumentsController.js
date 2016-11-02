@@ -12,6 +12,28 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
+
+    console.log('queryObj = ' + JSON.stringify(queryObj))
+    console.log('1. queryObj[arg] = ' + queryObj['show_source'])
+    console.log('2. queryObj[arg] = ' + queryObj.show_source)
+
+
+    if (queryObj['option'] == 'showsource') {
+
+        console.log('SHOW SOURCE')
+        $scope.showSource = true
+        $scope.renderedTextStyle = "col-md-9"
+        $scope.sourceText  = DocumentService.document().text
+        $scope.showSourceUrl = "documents/" + id + "?show_source=yes"
+
+    } else {
+
+        console.log('DO NOT SHOW SOURCE')
+
+        $scope.showSource = false
+        $scope.renderedTextStyle = "col-md-5"
+
+    }
     
 
     // Set the height to fill the windows.  It has to be set in this way wiith
@@ -19,6 +41,11 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     var innerHeight = $window.innerHeight
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 220) + 'px'
+    // document.getElementById("sourcetext").style.height = (innerHeight - 200) + 'px'
+    $scope.sourceTextHeight = function() { return 'height: ' + (innerHeight - 220) + 'px' }
+
+
+
 
     DocumentApiService.getDocument($scope, id, queryObj)
 
@@ -29,7 +56,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.shareDocument = MailService.shareCurrentDocument
 
 
-    // Reload MathJax so that mathematical text is propperly displayed.
+    // Reload MathJax so that mathematical text is properly displayed.
     // Performance depends on just when it is called.  This is still flaky.
     $scope.reloadMathJax = function () {
         $timeout(

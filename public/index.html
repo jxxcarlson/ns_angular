@@ -87,14 +87,23 @@ MathJax.Hub.Config({
 
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="newdocument">New Document <span style="position:absolute; left:160px">^N</span></a>
                                 </li>
+
                                 <li role="menuitem" ng-show="accessTokenValid" ng-click="doEditDocument()"><a href="#">Edit
                                     Document <span style="position:absolute; left:160px">^E</span></a></li>
+
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents">View
                                     Document <span style="position:absolute; left:160px">^V</span></a></li>
+
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="deletedocument">Delete
                                     Document</a></li>
+
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="shareDocument()">Share
                                     Document <span style="position:absolute; left:160px">^S</span></a></li>
+
+                                <!--
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" ng-click="showSource()">Show
+                                    Source <span style="position:absolute; left:160px">^U</span></a></li>
+                                    -->
 
                                 <li class="divider"></li>
 
