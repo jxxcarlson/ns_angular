@@ -484,7 +484,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
 
 
-
+    console.log('DEBUG: In DocumentController, call DocumentApiService.getDocument for id = ' + id)
     DocumentApiService.getDocument($scope, id, queryObj)
 
     $scope.docStyle = DocumentService.tocStyle
