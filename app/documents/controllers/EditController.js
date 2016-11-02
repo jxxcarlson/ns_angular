@@ -33,7 +33,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         this.checkedOutTo = data['checked_out_to']
         this.canShowSource = data['can_show_source']
 
-        console.log('In EditController, setPermissions = ' + data['permissions'])
+        console.log('1. DEBUG: In EditController, setPermissions, permissions = ' + data['permissions'])
 
         DocumentService.setPermissions(permissions)
         DocumentService.setCheckedOutTo(checkedOutTo)
@@ -194,6 +194,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $http.get(url, options)
         .then(function (response) {
 
+            console.log('2. DEBUG: In EditController, setPermissions, permissions = ' + response.data['permissions'])
             setPermissions(response.data)
             var document = response.data['document']
 

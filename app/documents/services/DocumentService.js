@@ -38,7 +38,7 @@ module.exports = function($localStorage, UserService) {
 
     this.setPermissions = function(permissions) {
 
-        console.log('in Document Serivce, setPermissions, permissions = ' + permissions)
+        console.log('DEBUG: in Document Service, setPermissions, permissions = ' + permissions)
 
         $localStorage.permissions = permissions
     }
