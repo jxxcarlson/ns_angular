@@ -446,7 +446,8 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
                            DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService) {
 
-    console.log('ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
+    console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
+    console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
 
     var id = $stateParams.id || DocumentService.currentDocumentItem()['id']
     var queryObj = $location.search()
