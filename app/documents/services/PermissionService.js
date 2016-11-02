@@ -6,6 +6,8 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
         if (DocumentService.permissions() == undefined) {
 
+            console.log('DEBUG permissionService: DocumentService.permissions() gives undefined result')
+
             value = false
 
         } else {
@@ -13,11 +15,15 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
             if (DocumentService.author() == UserService.username()) {
 
+                console.log('DEBUG permissionService: user == author')
+
                 value = true
 
             } else {
 
                 var value = (DocumentService.permissions().indexOf('edit') > -1)
+
+                console.log('DEBUG permissionService: edit flag = ' + value)
 
                 var checkedOutTo = DocumentService.checkedOutTo()
 
