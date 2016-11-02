@@ -33,6 +33,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         this.checkedOutTo = data['checked_out_to']
         this.canShowSource = data['can_show_source']
 
+        console.log('In EditController, setPermissions = ' + data['permissions'])
+
         DocumentService.setPermissions(permissions)
         DocumentService.setCheckedOutTo(checkedOutTo)
         DocumentService.setCanShowSource(canShowSource)
