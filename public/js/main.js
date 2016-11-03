@@ -447,7 +447,15 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                            DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
-    console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
+    if (DocumentService.currentDocumentItem() == undefined) {
+
+        console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem is undefined')
+
+    } else {
+
+        console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
+    }
+
 
 
     // Validate id and ensure valid value
@@ -462,19 +470,26 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     }
 
-    var id2 = DocumentService.currentDocumentItem()['id']
+    if ( DocumentService.currentDocumentItem() != undefined) {
 
-    if ( idPattern.test(id2) == false ) {
+        var id2 = DocumentService.currentDocumentItem()['id']
 
-        console.log('DEBUG, FIXIT: DocumentService.currentDocumentItem()["id"] is invalid: ' + id)
-        id2 = undefined
+        if ( idPattern.test(id2) == false ) {
 
+            console.log('DEBUG, FIXIT: DocumentService.currentDocumentItem()["id"] is invalid: ' + id)
+            id2 = undefined
+
+        }
     }
+
 
     id = id || id2 || notFoundErrorDocumentId
     // end validate
 
     var queryObj = $location.search()
+
+    console.log('DEBUG: In DocumentController, call DocumentApiService.getDocument for id = ' + id)
+    DocumentApiService.getDocument($scope, id, queryObj)
 
 
 
@@ -510,9 +525,8 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.sourceTextHeight = function() { return 'height: ' + (innerHeight - 220) + 'px' }
 
 
+    // HERE //
 
-    console.log('DEBUG: In DocumentController, call DocumentApiService.getDocument for id = ' + id)
-    DocumentApiService.getDocument($scope, id, queryObj)
 
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
