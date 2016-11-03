@@ -262,7 +262,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     });
 
     hotkeys.add({
-        combo: 'ctrl+d',
+        combo: 'ctrl+s',
         description: 'Share document',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
@@ -271,6 +271,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         }
     });
 
+    /**
     hotkeys.add({
         combo: 'ctrl+s',
         description: 'Show source',
@@ -280,6 +281,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
            showSource()
         }
     });
+     **/
 
     hotkeys.add({
         combo: 'ctrl+r',
