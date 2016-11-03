@@ -3827,7 +3827,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
         // route for the contact page
         .state('documents', {
-            url: '/documents', 
+            url: '/documents/:id?option',
             templateUrl : 'pages/documents.html',
             controller  : 'documentsController'
         })
