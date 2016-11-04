@@ -228,7 +228,9 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'View docuemnt',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            $state.go('documents')
+            var id = DocumentService.currentDocumentItem().id
+            // $location.path('/documents/' + DocumentService.currentDocumentItem().id + '?option=none')
+            $state.go('documents', {id: id, option: 'none'}, {reload: true})
         }
     });
 

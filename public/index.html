@@ -72,7 +72,7 @@ MathJax.Hub.Config({
             </div>
 
             <ul class="nav navbar-nav navbar-left">
-                <li><a ui-sref="documents">DOCUMENTS</a></li>
+                <li><a ui-sref="documents" target="_self">DOCUMENTS</a></li>
 
 
                 <li style="margin-top:10px;">
@@ -91,7 +91,7 @@ MathJax.Hub.Config({
                                 <li role="menuitem" ng-show="accessTokenValid" ng-click="doEditDocument()"><a href="#">Edit
                                     Document <span style="position:absolute; left:160px">^E</span></a></li>
 
-                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents">View
+                                <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="documents" target="_self">View
                                     Document <span style="position:absolute; left:160px">^V</span></a></li>
 
                                 <li role="menuitem" ng-show="accessTokenValid"><a ui-sref="deletedocument">Delete

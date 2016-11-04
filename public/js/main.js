@@ -494,9 +494,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
-    console.log('1. queryObj[arg] = ' + queryObj['show_source'])
-    console.log('2. queryObj[arg] = ' + queryObj.show_source)
-
+    console.log('1. queryObj[option] = ' + queryObj['option'])
 
     if (queryObj['option'] == 'showsource') {
 
@@ -3492,7 +3490,9 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'View docuemnt',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            $state.go('documents')
+            var id = DocumentService.currentDocumentItem().id
+            // $location.path('/documents/' + DocumentService.currentDocumentItem().id + '?option=none')
+            $state.go('documents', {id: id, option: 'none'}, {reload: true})
         }
     });
 

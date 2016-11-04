@@ -56,9 +56,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
-    console.log('1. queryObj[arg] = ' + queryObj['show_source'])
-    console.log('2. queryObj[arg] = ' + queryObj.show_source)
-
+    console.log('1. queryObj[option] = ' + queryObj['option'])
 
     if (queryObj['option'] == 'showsource') {
 
