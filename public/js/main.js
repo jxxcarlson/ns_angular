@@ -461,7 +461,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // Validate id and ensure valid value
     var id = $stateParams.id
 
-    var idPattern = /^[A-Za-z0-9\.\?=]*$/
+    var idPattern = /^[A-Za-z0-9\.\?=_]*$/
 
     if ( idPattern.test(id) == false ) {
 
