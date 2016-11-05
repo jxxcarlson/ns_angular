@@ -1512,7 +1512,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
-                if (DocumentService.hasSubdocuments() && queryObj['toc']) { setDocumentList(document, scope) }
+                if (DocumentService.hasSubdocuments() && (queryObj['toc'] || $stateParams.option == 'toc' )) { setDocumentList(document, scope) }
 
                 setPreferredTocTitle(scope)
 
@@ -2461,12 +2461,12 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     console.log('GO: documents')
                     if (documents.length > 0) {
                         var id = documents[0]['id']
-                        $state.go('documents', {id: id + "?toc"}, {reload: true})
+                        $state.go('documents', {id: id}, {reload: true})
+                    } else if ( searchText.indexOf('id=') > -1) {
+                        $state.go('documents', {id: id}, {reload: true})
                     } else {
                         $state.go('documents', {}, {reload: true})
                     }
-
-
 
                 }
 
@@ -3272,7 +3272,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
   // ABCDEF
 
@@ -3396,7 +3396,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.getAsciidocGuide = function() {
 
-        SearchService.query('id=152', $scope, 'documents')
+        // SearchService.query('id=152', $scope, 'documents')
+        $state.go('documents', {id: '152', option: 'toc'}, {reload: true})
     }
 
     /////

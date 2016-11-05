@@ -113,7 +113,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.getAsciidocGuide = function() {
 
-        SearchService.query('id=152', $scope, 'documents')
+        // SearchService.query('id=152', $scope, 'documents')
+        $state.go('documents', {id: '152', option: 'toc'}, {reload: true})
     }
 
     /////

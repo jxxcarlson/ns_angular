@@ -185,7 +185,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
-                if (DocumentService.hasSubdocuments() && queryObj['toc']) { setDocumentList(document, scope) }
+                if (DocumentService.hasSubdocuments() && (queryObj['toc'] || $stateParams.option == 'toc' )) { setDocumentList(document, scope) }
 
                 setPreferredTocTitle(scope)
 
