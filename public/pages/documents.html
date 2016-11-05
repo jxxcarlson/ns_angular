@@ -10,7 +10,7 @@
             <div id="toc">
                 <p class="toc-item " ng-click="activateContentsHeading()" ng-repeat="doc in docArray"
                    ng-style="docStyle(doc)"><i ng-show="hasSubdocument(doc)" class="fa fa-caret-right">&nbsp;</i><a
-                        href="{{doc['url']}}?toc"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a>
+                        href="{{doc['url']}}?toc" target="_self"><span style="font-weight:bold">{{author(doc)}}</span>{{doc['title']}}</a>
                 </p>
             </div>
 
