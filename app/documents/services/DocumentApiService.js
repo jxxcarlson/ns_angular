@@ -203,6 +203,18 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 }
 
+
+                if (scope.docArray == undefined) {
+
+                    scope.tocHeading = 'X'
+
+                } else {
+
+                    scope.tocHeading = DocumentService.tocTitle() + ' (' + scope.docArray.length + ')'
+
+                }
+
+
             })
     } // End getDocument
 

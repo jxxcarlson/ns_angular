@@ -56,6 +56,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     $scope.tocTitle = DocumentService.tocTitle()
 
+    /**
     if (DocumentService.documentList() == undefined) {
 
         $scope.tocHeading = 'X'
@@ -65,6 +66,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
         $scope.tocHeading = DocumentService.tocTitle() + ' (' + DocumentService.documentList().length + ')'
 
     }
+     */
 
 
 
