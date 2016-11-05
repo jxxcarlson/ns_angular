@@ -108,12 +108,12 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.getUserManual = function() {
 
-        SearchService.query('id=227', $scope, 'documents')
+        // SearchService.query('id=227', $scope, 'documents')
+        $state.go('documents', {id: '227', option: 'toc'}, {reload: true})
     }
 
     $scope.getAsciidocGuide = function() {
 
-        // SearchService.query('id=152', $scope, 'documents')
         $state.go('documents', {id: '152', option: 'toc'}, {reload: true})
     }
 
