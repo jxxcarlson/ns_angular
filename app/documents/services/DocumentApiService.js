@@ -8,7 +8,7 @@
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -73,7 +73,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
         // If the document has subdocuments, display them
         // instead of the search results
         if (documents.length > 0 && !(DocumentService.useHotList() == true)) {
-        //if (documents.length > 0 ) {
+            //if (documents.length > 0 ) {
             // if (documents.length > 0) {
 
             console.log('YOR: Setting document list (subdocs): ' + documents.length)
@@ -148,6 +148,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
     this.getDocument = function (scope, id, queryObj) {
 
         console.log('DAS, getDocument, id: ' + id)
+        console.log("DEBUG, in DAS, getDocument, $stateParams: " + JSON.stringify($stateParams))
+        console.log("DEBUG, in DAS, getDocument, queryObj: " + JSON.stringify(queryObj))
 
         if (id == undefined) { id = GlobalService.defaultDocumentID() }
         var url = envService.read('apiUrl') + '/documents/' + id
@@ -155,7 +157,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
         return $http.get(url, options)
             .then(function (response) {
-                
+
                 DocumentService.update(response.data['document'])
                 var document = DocumentService.document()
                 scope.document = document
@@ -176,14 +178,14 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
                 scope.sourceText = document.text
 
                 /**
-                var documentItem = DocumentService.currentDocumentItem()
-                var shareDocumentMessage = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
-                scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
+                 var documentItem = DocumentService.currentDocumentItem()
+                 var shareDocumentMessage = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
+                 scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
                  **/
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
-                if (DocumentService.hasSubdocuments()) { setDocumentList(document, scope) }
+                if (DocumentService.hasSubdocuments() && queryObj['toc']) { setDocumentList(document, scope) }
 
                 setPreferredTocTitle(scope)
 
