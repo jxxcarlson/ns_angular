@@ -56,6 +56,19 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     $scope.tocTitle = DocumentService.tocTitle()
 
+    if (DocumentService.documentList() == undefined) {
+
+        $scope.tocHeading = 'X'
+
+    } else {
+
+        $scope.tocHeading = DocumentService.tocTitle() + ' (' + DocumentService.documentList().length + ')'
+
+    }
+
+
+
+
     console.log('queryObj = ' + JSON.stringify(queryObj))
     console.log('1. queryObj[option] = ' + queryObj['option'])
 
