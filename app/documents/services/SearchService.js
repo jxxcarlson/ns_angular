@@ -5,8 +5,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
     this.query = function (searchText, scope, destination) {
 
-        console.log('SSS -- query: ' + searchText)
-        console.log('SSS -- destination: ' + destination)
+        console.log('DEBUG -- query: ' + searchText)
+        console.log('DEBUG -- destination: ' + destination)
 
         var queryText = QueryParser.parse(searchText)
 
@@ -18,6 +18,12 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 var firstDocument = jsonData['first_document']
+
+                console.log('DEBUG, number of documents: ' + documents.length)
+                if (documents.length > 0) {
+                    console.log('DEBUG, first documents id: ' + documents[0]['id'])
+                }
+
 
                 DocumentService.setDocumentList(documents)
 
@@ -50,9 +56,15 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 } else {
 
                     console.log('GO: documents')
-                    // $location.path('documents/' + currentDocument.id + '?toc')
-                    $location.path('documents/')
-                    $state.go('documents', {}, {reload: true})
+                    if (documents.length > 0) {
+                        var id = documents[0]['id']
+                        $state.go('documents', {id: id}, {reload: true})
+                    } else {
+                        $state.go('documents', {}, {reload: true})
+                    }
+
+
+
                 }
 
 

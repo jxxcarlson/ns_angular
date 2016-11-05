@@ -183,13 +183,16 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
-                setDocumentList(document, scope)
+                if (DocumentService.hasSubdocuments()) { setDocumentList(document, scope) }
+
                 setPreferredTocTitle(scope)
 
             })
     } // End getDocument
 
     this.getDocumentList = function (scope) {
+
+        console.log('DEBUG: getting document list')
 
         var _documentList = DocumentService.documentList()
 
@@ -223,6 +226,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
 
     this.search = function (searchText) {
+
+        console.log("DEBUG: DAS, search called")
 
         var deferred = $q.defer();
 

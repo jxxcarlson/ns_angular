@@ -1288,6 +1288,7 @@ module.exports = function($scope, SearchService) {
 
             console.log('In doSearch, $scope.searchText = ' + $scope.searchText)
 
+
             if ($scope.searchText != '') {
 
                 SearchService.query($scope.searchText, $scope, 'documents')
@@ -1509,13 +1510,16 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
-                setDocumentList(document, scope)
+                if (DocumentService.hasSubdocuments()) { setDocumentList(document, scope) }
+
                 setPreferredTocTitle(scope)
 
             })
     } // End getDocument
 
     this.getDocumentList = function (scope) {
+
+        console.log('DEBUG: getting document list')
 
         var _documentList = DocumentService.documentList()
 
@@ -1549,6 +1553,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $lo
 
 
     this.search = function (searchText) {
+
+        console.log("DEBUG: DAS, search called")
 
         var deferred = $q.defer();
 
@@ -2400,8 +2406,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
     this.query = function (searchText, scope, destination) {
 
-        console.log('SSS -- query: ' + searchText)
-        console.log('SSS -- destination: ' + destination)
+        console.log('DEBUG -- query: ' + searchText)
+        console.log('DEBUG -- destination: ' + destination)
 
         var queryText = QueryParser.parse(searchText)
 
@@ -2413,6 +2419,12 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 var jsonData = response.data
                 var documents = jsonData['documents']
                 var firstDocument = jsonData['first_document']
+
+                console.log('DEBUG, number of documents: ' + documents.length)
+                if (documents.length > 0) {
+                    console.log('DEBUG, first documents id: ' + documents[0]['id'])
+                }
+
 
                 DocumentService.setDocumentList(documents)
 
@@ -2445,9 +2457,15 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 } else {
 
                     console.log('GO: documents')
-                    // $location.path('documents/' + currentDocument.id + '?toc')
-                    $location.path('documents/')
-                    $state.go('documents', {}, {reload: true})
+                    if (documents.length > 0) {
+                        var id = documents[0]['id']
+                        $state.go('documents', {id: id}, {reload: true})
+                    } else {
+                        $state.go('documents', {}, {reload: true})
+                    }
+
+
+
                 }
 
 

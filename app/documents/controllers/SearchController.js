@@ -4,6 +4,7 @@ module.exports = function($scope, SearchService) {
 
             console.log('In doSearch, $scope.searchText = ' + $scope.searchText)
 
+
             if ($scope.searchText != '') {
 
                 SearchService.query($scope.searchText, $scope, 'documents')
