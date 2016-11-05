@@ -1548,7 +1548,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 }
 
 
-                if (scope.docArray == undefined) {
+                if (scope.docArray == undefined || scope.docArray.length == 0) {
 
                     scope.tocHeading = 'X'
 
