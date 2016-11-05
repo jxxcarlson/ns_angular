@@ -68,6 +68,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
         var links = document['links'] || {}
         var documents = links['documents'] || [] // JJJJ
 
+        console.log('DEBUG: links: ' + links.length)
+
 
 
         // If the document has subdocuments, display them
