@@ -229,6 +229,14 @@ module.exports = function($localStorage, UserService) {
 
     }
 
+    this.clearDocumentList = function() {
+
+        console.log("DEBUG: clearDocumentList")
+        $localStorage.documentList = []
+        $localStorage.currentDocumentList = []
+
+    }
+
 
     this.documentList = function() {
 
@@ -266,21 +274,7 @@ module.exports = function($localStorage, UserService) {
 
         console.log('^^^ 1, setUseHotList')
 
-
         $localStorage.useHotList = value
-
-        if (value == false) {
-
-            if (scope.tocTitlePreferred != undefined) {
-
-                scope.tocTitle = scope.tocTitlePreferred
-
-            } else {
-
-                scope.tocTitle = '3. Contents'
-            }
-        }
-
 
     }
 

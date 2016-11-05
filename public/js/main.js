@@ -1384,7 +1384,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
             // scope.tocTitle = 'Search results'
-            DocumentService.setTocTitle('Contents**')
+            DocumentService.setTocTitle('Links')
         }
 
         DocumentService.setTocTitlePreferred('')
@@ -1516,9 +1516,19 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
-                if (DocumentService.hasSubdocuments() && (queryObj['toc'] || $stateParams.option == 'toc' )) { setDocumentList(document, scope) }
+                if (queryObj['toc'] == 'no') {
 
-                setPreferredTocTitle(scope)
+                    console.log("x1x1: CLEARING DOCUMENT LIST")
+
+                    // setDocumentList(document, scope)
+                    DocumentService.clearDocumentList()
+                    scope.docArray = []
+
+                } else if (DocumentService.hasSubdocuments() && (queryObj['toc'] || $stateParams.option == 'toc' )) {
+
+                    setDocumentList(document, scope)
+
+                }
 
             })
     } // End getDocument
@@ -2059,6 +2069,14 @@ module.exports = function($localStorage, UserService) {
 
     }
 
+    this.clearDocumentList = function() {
+
+        console.log("DEBUG: clearDocumentList")
+        $localStorage.documentList = []
+        $localStorage.currentDocumentList = []
+
+    }
+
 
     this.documentList = function() {
 
@@ -2096,21 +2114,7 @@ module.exports = function($localStorage, UserService) {
 
         console.log('^^^ 1, setUseHotList')
 
-
         $localStorage.useHotList = value
-
-        if (value == false) {
-
-            if (scope.tocTitlePreferred != undefined) {
-
-                scope.tocTitle = scope.tocTitlePreferred
-
-            } else {
-
-                scope.tocTitle = '3. Contents'
-            }
-        }
-
 
     }
 
@@ -3298,7 +3302,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
   // ABCDEF
 
