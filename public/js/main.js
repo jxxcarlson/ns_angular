@@ -1525,8 +1525,11 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                     DocumentService.clearDocumentList()
                     scope.docArray = []
 
-                } else if (DocumentService.hasSubdocuments() && (queryObj['toc'] || $stateParams.option == 'toc' )) {
+                }
 
+                if ((DocumentService.hasSubdocuments() || document.parentId != 0) && (queryObj['toc'] || $stateParams.option == 'toc' )) {
+
+                    DocumentService.setTocTitle('Contents')
                     setDocumentList(document, scope)
 
                 }
