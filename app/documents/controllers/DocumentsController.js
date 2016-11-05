@@ -107,7 +107,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
-    $scope.documentIdentifier = DocumentService.document().identifier
+
 
     $scope.shareDocument = MailService.shareCurrentDocument
 

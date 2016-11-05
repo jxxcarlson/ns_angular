@@ -545,7 +545,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     $scope.docStyle = DocumentService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
-    $scope.documentIdentifier = DocumentService.document().identifier
+
 
     $scope.shareDocument = MailService.shareCurrentDocument
 
@@ -1520,6 +1520,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 scope.docArray = DocumentService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
+                scope.documentIdentifier = document.identifier
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
                 scope.sourceText = document.text
