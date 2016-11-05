@@ -54,6 +54,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     DocumentApiService.getDocument($scope, id, queryObj)
 
 
+    $scope.tocTitle = DocumentService.tocTitle()
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
     console.log('1. queryObj[option] = ' + queryObj['option'])

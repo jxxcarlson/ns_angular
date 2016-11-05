@@ -31,7 +31,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitle('E. Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=10', $scope, 'documents')
     }

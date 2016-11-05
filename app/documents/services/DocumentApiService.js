@@ -13,14 +13,14 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
     var setPreferredTocTitle = function(scope) {
 
-        scope.tocTitle = 'Search results'
+        // scope.tocTitle = 'Search results'
         scope.tocTitleClass = function () { return { color: 'black'}}
         console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
 
         scope.activateContentsHeading = function() {
 
             console.log('*** go up')
-            DocumentService.setTocTitlePreferred('Contents')
+            DocumentService.setTocTitle('Contents')
             scope.tocTitleClass = function () { return { color: '#005FFF'} }
         }
 
@@ -49,13 +49,14 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2c. TOCTITLE: CONTENTS')
 
-            // scope.tocTitle = 'Contents'
+            DocumentService.setTocTitle('Contents')
             // scope.tocTitleClass = function () { return { color: '#005FFF'}}
 
         } else {
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
-            scope.tocTitle = 'Search results'
+            // scope.tocTitle = 'Search results'
+            DocumentService.setTocTitle('Contents')
         }
 
         DocumentService.setTocTitlePreferred('')

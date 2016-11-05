@@ -277,11 +277,23 @@ module.exports = function($localStorage, UserService) {
 
             } else {
 
-                scope.tocTitle = 'Contents'
+                scope.tocTitle = '3. Contents'
             }
         }
 
 
+    }
+
+
+    this.setTocTitle = function(title) {
+
+        $localStorage.tocTitle = title
+    }
+
+
+    this.tocTitle = function() {
+
+        return $localStorage.tocTitle || '0. Search Results'
     }
 
     this.setTocTitlePreferred = function(value) {

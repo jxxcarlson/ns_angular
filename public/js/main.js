@@ -492,6 +492,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     DocumentApiService.getDocument($scope, id, queryObj)
 
 
+    $scope.tocTitle = DocumentService.tocTitle()
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
     console.log('1. queryObj[option] = ' + queryObj['option'])
@@ -1340,14 +1341,14 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
     var setPreferredTocTitle = function(scope) {
 
-        scope.tocTitle = 'Search results'
+        // scope.tocTitle = 'Search results'
         scope.tocTitleClass = function () { return { color: 'black'}}
         console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
 
         scope.activateContentsHeading = function() {
 
             console.log('*** go up')
-            DocumentService.setTocTitlePreferred('Contents')
+            DocumentService.setTocTitle('Contents')
             scope.tocTitleClass = function () { return { color: '#005FFF'} }
         }
 
@@ -1376,13 +1377,14 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2c. TOCTITLE: CONTENTS')
 
-            // scope.tocTitle = 'Contents'
+            DocumentService.setTocTitle('Contents')
             // scope.tocTitleClass = function () { return { color: '#005FFF'}}
 
         } else {
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
-            scope.tocTitle = 'Search results'
+            // scope.tocTitle = 'Search results'
+            DocumentService.setTocTitle('Contents')
         }
 
         DocumentService.setTocTitlePreferred('')
@@ -2105,11 +2107,23 @@ module.exports = function($localStorage, UserService) {
 
             } else {
 
-                scope.tocTitle = 'Contents'
+                scope.tocTitle = '3. Contents'
             }
         }
 
 
+    }
+
+
+    this.setTocTitle = function(title) {
+
+        $localStorage.tocTitle = title
+    }
+
+
+    this.tocTitle = function() {
+
+        return $localStorage.tocTitle || '0. Search Results'
     }
 
     this.setTocTitlePreferred = function(value) {
@@ -2463,10 +2477,13 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     console.log('GO: documents')
                     if (documents.length > 0) {
                         var id = documents[0]['id']
+                        DocumentService.setTocTitle('Search Results')
                         $state.go('documents', {id: id, option: 'none'}, {reload: true})
                     } else if ( searchText.indexOf('id=') > -1) {
+                        DocumentService.setTocTitle('B: Search Results')
                         $state.go('documents', {id: id}, {reload: true})
                     } else {
+                        DocumentService.setTocTitle('C: Search Results')
                         $state.go('documents', {}, {reload: true})
                     }
 
@@ -3268,7 +3285,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitle('E. Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=10', $scope, 'documents')
     }
@@ -3328,27 +3345,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
 
     $scope.userDocuments = function () {
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitle('F. Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitle('G. Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitle('R. Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.home = function () {
         console.log('GO HOME')
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitlePreferred('H. Search results')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
@@ -3377,7 +3394,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     }
 
     $scope.publicDocuments = function () {
-        DocumentService.setTocTitlePreferred('Search results')
+        DocumentService.setTocTitle('Public documents')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
@@ -3394,11 +3411,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.getUserManual = function() {
 
         // SearchService.query('id=227', $scope, 'documents')
+        DocumentService.setTocTitle('Contents')
         $state.go('documents', {id: '227', option: 'toc'}, {reload: true})
     }
 
     $scope.getAsciidocGuide = function() {
 
+        DocumentService.setTocTitle('Contents')
         $state.go('documents', {id: '152', option: 'toc'}, {reload: true})
     }
 
@@ -3576,8 +3595,6 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'Random documents',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            console.log('GET RANDOM DOCUMENTS')
-            DocumentService.setTocTitlePreferred('Search results')
             DocumentService.setUseHotList(false, $scope)
             SearchService.query('random=10', $scope, 'documents')
         }
@@ -3588,7 +3605,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'User Manual',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setTocTitlePreferred('Search results')
+            DocumentService.setTocTitle('L. Search results')
             DocumentService.setUseHotList(false, $scope)
             $scope.getUserManual()
         }
@@ -3599,7 +3616,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'Asciidoc Guide',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setTocTitlePreferred('Search results')
+            DocumentService.setTocTitle('BB. Contents')
             DocumentService.setUseHotList(false, $scope)
             $scope.getAsciidocGuide()
         }

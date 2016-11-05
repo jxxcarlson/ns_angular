@@ -58,10 +58,13 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     console.log('GO: documents')
                     if (documents.length > 0) {
                         var id = documents[0]['id']
+                        DocumentService.setTocTitle('Search Results')
                         $state.go('documents', {id: id, option: 'none'}, {reload: true})
                     } else if ( searchText.indexOf('id=') > -1) {
+                        DocumentService.setTocTitle('B: Search Results')
                         $state.go('documents', {id: id}, {reload: true})
                     } else {
+                        DocumentService.setTocTitle('C: Search Results')
                         $state.go('documents', {}, {reload: true})
                     }
 
