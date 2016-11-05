@@ -50,7 +50,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 } else {
 
                     console.log('GO: documents')
-                    $location.path('documents/' + currentDocument.id + '?toc')
+                    // $location.path('documents/' + currentDocument.id + '?toc')
+                    $location.path('documents/')
                     $state.go('documents', {}, {reload: true})
                 }
 

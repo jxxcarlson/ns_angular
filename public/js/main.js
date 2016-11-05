@@ -2445,7 +2445,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 } else {
 
                     console.log('GO: documents')
-                    $location.path('documents/' + currentDocument.id + '?toc')
+                    // $location.path('documents/' + currentDocument.id + '?toc')
+                    $location.path('documents/')
                     $state.go('documents', {}, {reload: true})
                 }
 
@@ -3491,7 +3492,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             var id = DocumentService.currentDocumentItem().id
-            // $location.path('/documents/' + DocumentService.currentDocumentItem().id + '?option=none')
+            $location.path('/documents/' + DocumentService.currentDocumentItem().id + '?option=none')
             $state.go('documents', {id: id, option: 'none'}, {reload: true})
         }
     });
