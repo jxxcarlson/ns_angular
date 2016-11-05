@@ -2461,7 +2461,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     console.log('GO: documents')
                     if (documents.length > 0) {
                         var id = documents[0]['id']
-                        $state.go('documents', {id: id}, {reload: true})
+                        $state.go('documents', {id: id + "?toc"}, {reload: true})
                     } else {
                         $state.go('documents', {}, {reload: true})
                     }
