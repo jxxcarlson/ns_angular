@@ -56,7 +56,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
             // scope.tocTitle = 'Search results'
-            DocumentService.setTocTitle('Contents')
+            DocumentService.setTocTitle('Contents**')
         }
 
         DocumentService.setTocTitlePreferred('')

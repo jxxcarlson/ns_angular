@@ -43,7 +43,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
 
     $scope.userDocuments = function () {
-        DocumentService.setTocTitle('F. Search results')
+        console.log('DEBUG: User documents:override')
+        DocumentService.setTocTitle('User documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
@@ -56,7 +57,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('R. Search results')
+        DocumentService.setTocTitle('Random documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
@@ -92,7 +93,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     }
 
     $scope.publicDocuments = function () {
-        DocumentService.setTocTitle('Public documents')
+        console.log('DEBUG: Public documents:override')
+        DocumentService.setTocTitle('Public documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
@@ -212,6 +214,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
+            DocumentService.setTocTitle('User documents:override')
             SearchService.query('user=' + UserService.username(), $scope)
         }
     });
@@ -222,6 +225,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
+            DocumentService.setTocTitle('Public documents:override')
             SearchService.query('scope=public', $scope, 'documents')
         }
     });

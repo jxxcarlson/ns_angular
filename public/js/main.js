@@ -1384,7 +1384,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
             // scope.tocTitle = 'Search results'
-            DocumentService.setTocTitle('Contents')
+            DocumentService.setTocTitle('Contents**')
         }
 
         DocumentService.setTocTitlePreferred('')
@@ -2464,7 +2464,17 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 console.log('SSS: data is valid = ' + dataValid)
 
 
+                var searchTitle = 'Search Results'
+                var tocTitle = DocumentService.tocTitle()
+                if (tocTitle.indexOf(':override') > -1) {
+                    searchTitle = tocTitle.replace(':override', '')
+                    console.log('DEBUG: override (1)')
+                    DocumentService.setTocTitle(searchTitle)
+                } else {
 
+                    console.log('DEBUG: DO NOT override (1)')
+                    DocumentService.setTocTitle('Search Results')
+                }
 
                 if (destination == 'editdocument') {
 
@@ -2477,13 +2487,10 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     console.log('GO: documents')
                     if (documents.length > 0) {
                         var id = documents[0]['id']
-                        DocumentService.setTocTitle('Search Results')
                         $state.go('documents', {id: id, option: 'none'}, {reload: true})
                     } else if ( searchText.indexOf('id=') > -1) {
-                        DocumentService.setTocTitle('B: Search Results')
                         $state.go('documents', {id: id}, {reload: true})
                     } else {
-                        DocumentService.setTocTitle('C: Search Results')
                         $state.go('documents', {}, {reload: true})
                     }
 
@@ -3285,7 +3292,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('E. Search results')
+        DocumentService.setTocTitle('Random documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=10', $scope, 'documents')
     }
@@ -3345,7 +3352,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
 
     $scope.userDocuments = function () {
-        DocumentService.setTocTitle('F. Search results')
+        console.log('DEBUG: User documents:override')
+        DocumentService.setTocTitle('User documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
@@ -3358,7 +3366,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('R. Search results')
+        DocumentService.setTocTitle('Random documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
@@ -3394,7 +3402,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     }
 
     $scope.publicDocuments = function () {
-        DocumentService.setTocTitle('Public documents')
+        console.log('DEBUG: Public documents:override')
+        DocumentService.setTocTitle('Public documents:override')
         DocumentService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
@@ -3514,6 +3523,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
+            DocumentService.setTocTitle('User documents:override')
             SearchService.query('user=' + UserService.username(), $scope)
         }
     });
@@ -3524,6 +3534,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
+            DocumentService.setTocTitle('Public documents:override')
             SearchService.query('scope=public', $scope, 'documents')
         }
     });
