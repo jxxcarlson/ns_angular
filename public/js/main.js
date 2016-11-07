@@ -2388,6 +2388,7 @@ module.exports = function ($window, DocumentService) {
 module.exports = function() {
     
     this.reload = function(documentKind, message) {
+        /**
         console.log('* MathJaxService, documentKind = ' + documentKind)
         if (documentKind == 'asciidoc-latex') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
@@ -2395,7 +2396,19 @@ module.exports = function() {
         } else {
             console.log(message + ": skipping MathJax reload ");
         }
+         **/
         
+    }
+
+    this.reload2 = function(documentKind, message) {
+        console.log('* MathJaxService, documentKind = ' + documentKind)
+        if (documentKind == 'asciidoc-latex' || true ) {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            console.log(message + "2. reloadMathJax called ");
+        } else {
+            console.log(message + "2. skipping MathJax reload ");
+        }
+
     }
     
 }
@@ -3295,7 +3308,8 @@ module.exports = function($scope, foo, envService) {
 },{}],45:[function(require,module,exports){
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
-                                          foo, UserService, SearchService, envService, DocumentService, PermissionService) {
+                                          foo, UserService, SearchService, envService,
+                          DocumentService, PermissionService, MathJaxService) {
 
     var accessTokenValid = UserService.accessTokenValid()
 
@@ -3332,9 +3346,14 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
-  // ABCDEF
+    $scope.refreshMathJax = function() {
+
+        // var documentKind = DocumentService.kind()
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, "documentKind = " + documentKind)
+    }
 
 
 
