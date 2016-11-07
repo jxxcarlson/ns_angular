@@ -228,6 +228,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
           enabled: true,
           requireBase: false
         });
+
+
     
 });
 

@@ -51,10 +51,12 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     searchTitle = tocTitle.replace(':override', '')
                     console.log('DEBUG: override (1)')
                     DocumentService.setTocTitle(searchTitle)
+                    $state.go('documents', {}, {reload: true})
                 } else {
 
                     console.log('DEBUG: DO NOT override (1)')
                     DocumentService.setTocTitle('Search Results')
+                    $state.go('documents', {}, {reload: true})
                 }
 
                 if (destination == 'editdocument') {

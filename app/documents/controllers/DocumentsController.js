@@ -115,13 +115,50 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // Reload MathJax so that mathematical text is properly displayed.
     // Performance depends on just when it is called.  This is still flaky.
     $scope.reloadMathJax = function () {
+
+        /**
         $timeout(
             function () {
-                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                MathJaxService.reload(DocumentService.kind(), message)
+                var message = ' (AA), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload2(DocumentService.kind(), message)
             },
             mathJaxDelay)
+         **/
     }
+
+    $scope.refreshMathJax = function() {
+        /*
+
+        // var documentKind = DocumentService.kind()
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, " (BB), reload mathjax")
+        */
+
+
+    }
+
+    /**
+    $scope.$on('$viewContentLoaded', function(){
+
+        console.log(' (XX), content loaded')
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, " (CC), reload mathjax")
+
+    });
+     **/
+
+    $scope.$on('$viewContentLoaded', function(){
+
+        console.log(' (XX), content loaded')
+        $timeout(
+            function () {
+                var message = ' (CC), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload2(DocumentService.kind(), message)
+            },
+            mathJaxDelay)
+
+    });
+
 
     $scope.docUrl = '/documents/' + id
 

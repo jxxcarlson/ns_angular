@@ -39,7 +39,7 @@
 
             <div ng-show="textKind" class="container fill">
                 <div elem-ready="reloadMathJax()" ng-bind-html="renderedText()" id="rendered-text"></div>
-                <!-- <div elem-ready="reloadMathJax()"  id="rendered-text">{{title}}</div> -->
+                <!-- <div ng-bind-html="renderedText()" id="rendered-text"></div> -->
             </div>
 
             <div ng-show="imageKind" class="container fill">
@@ -76,3 +76,5 @@
 </div>
 
 </div>
+
+<div ng-init="refreshMathJax()"></div>

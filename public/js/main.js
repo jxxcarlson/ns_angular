@@ -553,13 +553,50 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // Reload MathJax so that mathematical text is properly displayed.
     // Performance depends on just when it is called.  This is still flaky.
     $scope.reloadMathJax = function () {
+
+        /**
         $timeout(
             function () {
-                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                MathJaxService.reload(DocumentService.kind(), message)
+                var message = ' (AA), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload2(DocumentService.kind(), message)
             },
             mathJaxDelay)
+         **/
     }
+
+    $scope.refreshMathJax = function() {
+        /*
+
+        // var documentKind = DocumentService.kind()
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, " (BB), reload mathjax")
+        */
+
+
+    }
+
+    /**
+    $scope.$on('$viewContentLoaded', function(){
+
+        console.log(' (XX), content loaded')
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, " (CC), reload mathjax")
+
+    });
+     **/
+
+    $scope.$on('$viewContentLoaded', function(){
+
+        console.log(' (XX), content loaded')
+        $timeout(
+            function () {
+                var message = ' (CC), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
+                MathJaxService.reload2(DocumentService.kind(), message)
+            },
+            mathJaxDelay)
+
+    });
+
 
     $scope.docUrl = '/documents/' + id
 
@@ -2388,25 +2425,24 @@ module.exports = function ($window, DocumentService) {
 module.exports = function() {
     
     this.reload = function(documentKind, message) {
-        /**
+
         console.log('* MathJaxService, documentKind = ' + documentKind)
         if (documentKind == 'asciidoc-latex') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]); 
-            console.log(message + ": reloadMathJax called ");
+            console.log(message + " 1: reloadMathJax called ");
         } else {
-            console.log(message + ": skipping MathJax reload ");
+            console.log(message + " 1: skipping MathJax reload ");
         }
-         **/
-        
+
     }
 
     this.reload2 = function(documentKind, message) {
         console.log('* MathJaxService, documentKind = ' + documentKind)
         if (documentKind == 'asciidoc-latex' || true ) {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            console.log(message + "2. reloadMathJax called ");
+            console.log(message + " 2. reloadMathJax called ");
         } else {
-            console.log(message + "2. skipping MathJax reload ");
+            console.log(message + " 2. skipping MathJax reload ");
         }
 
     }
@@ -2517,10 +2553,12 @@ module.exports = function ($http, $sce, $state, $location, $q,
                     searchTitle = tocTitle.replace(':override', '')
                     console.log('DEBUG: override (1)')
                     DocumentService.setTocTitle(searchTitle)
+                    $state.go('documents', {}, {reload: true})
                 } else {
 
                     console.log('DEBUG: DO NOT override (1)')
                     DocumentService.setTocTitle('Search Results')
+                    $state.go('documents', {}, {reload: true})
                 }
 
                 if (destination == 'editdocument') {
@@ -3326,6 +3364,13 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.message = ''
 
+    $scope.refreshMathJax = function() {
+
+        // var documentKind = DocumentService.kind()
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, " reload mathjax (AA) ")
+    }
+
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
@@ -3348,12 +3393,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
     envService.set('production');
 
-    $scope.refreshMathJax = function() {
 
-        // var documentKind = DocumentService.kind()
-        var documentKind = 'asciidoc-latex'
-        MathJaxService.reload2(documentKind, "documentKind = " + documentKind)
-    }
 
 
 
@@ -4066,6 +4106,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
           enabled: true,
           requireBase: false
         });
+
+
     
 });
 

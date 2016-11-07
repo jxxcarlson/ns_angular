@@ -18,6 +18,13 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.message = ''
 
+    $scope.refreshMathJax = function() {
+
+        // var documentKind = DocumentService.kind()
+        var documentKind = 'asciidoc-latex'
+        MathJaxService.reload2(documentKind, " reload mathjax (AA) ")
+    }
+
     foo.myFunc('MainController')
     $scope.currentSite = UserService.getCurrentSite()
     $scope.currentSiteURL = "site/"+UserService.getCurrentSite()
@@ -40,12 +47,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
     envService.set('production');
 
-    $scope.refreshMathJax = function() {
 
-        // var documentKind = DocumentService.kind()
-        var documentKind = 'asciidoc-latex'
-        MathJaxService.reload2(documentKind, "documentKind = " + documentKind)
-    }
 
 
 
