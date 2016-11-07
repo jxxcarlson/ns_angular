@@ -593,7 +593,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                 var message = ' (CC), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
                 MathJaxService.reload2(DocumentService.kind(), message)
             },
-            500)
+            250)
 
     });
 
