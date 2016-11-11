@@ -6,7 +6,7 @@
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
 
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
+                           DocumentService, PermissionService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
     if (DocumentService.document() == undefined) {
@@ -210,7 +210,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     if (UserService.username() == undefined || UserService.username() == '') {
 
         console.log('Setting hotlist to false')
-        DocumentService.setUseHotList(false , $scope)
+        HotListService.setUseHotList(false , $scope)
 
     } else {
 

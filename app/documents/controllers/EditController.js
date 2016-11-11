@@ -37,9 +37,9 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         console.log('1. DEBUG: In EditController, setPermissions, permissions = ' + data['permissions'])
 
-        DocumentService.setPermissions(permissions)
-        DocumentService.setCheckedOutTo(checkedOutTo)
-        DocumentService.setCanShowSource(canShowSource)
+        PermissionService.setPermissions(permissions)
+        PermissionService.setCheckedOutTo(checkedOutTo)
+        PermissionService.setCanShowSource(canShowSource)
 
         if (this.permissions.indexOf('edit') == -1 && this.canShowSource == 'no') {
 
@@ -406,14 +406,14 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.setKind = function (kk) {
 
         //console.log('*** kk ' + kk)
-        var id = DocumentService.documentId()
+        var id = DocumentService.document().id
         var params = {id: id, kind: kk, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
     }
 
     $scope.setParams = function (kk) {
 
-        var id = DocumentService.documentId()
+        var id = DocumentService.document().id
         var params = {
             id: id, tags: $scope.tags,
             identifier: $scope.identifier, author_name: DocumentService.document().author

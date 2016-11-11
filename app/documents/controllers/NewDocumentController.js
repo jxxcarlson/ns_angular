@@ -82,7 +82,7 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         // Add the newly created document to the document list
         // of the current document
         if (hasSubdocuments) {
-            url += '?append=' + DocumentService.documentId()
+            url += '?append=' + DocumentService.document().id
         }
 
         // Create document

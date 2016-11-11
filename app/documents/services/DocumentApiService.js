@@ -8,7 +8,8 @@
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService,
+                           PermissionService, SearchService, UserService, GlobalService, envService, MathJaxService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -167,8 +168,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 console.log("DEBUG: DAS, get, response.data['permissions'] = " + response.data['permissions'])
 
-                DocumentService.setPermissions(response.data['permissions'])
-                DocumentService.setCheckedOutTo(response.data['checked_out_to'])
+                PermissionService.setPermissions(response.data['permissions'])
+                PermissionService.setCheckedOutTo(response.data['checked_out_to'])
                 UserService.setLastDocumentId(id)
                 UserService.setLastDocumentTitle(document.title)
 

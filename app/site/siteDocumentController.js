@@ -12,7 +12,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     DocumentApiService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
-        if (doc['id'] == DocumentService.documentId() ) {
+        if (doc['id'] == DocumentService.document().id ) {
             return { "background-color" : "#fee" }
         }
     }

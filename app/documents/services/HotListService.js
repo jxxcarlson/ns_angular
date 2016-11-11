@@ -7,7 +7,7 @@ module.exports = function($state, UserService, DocumentService, DocumentApiServi
         console.log('TOGGLE HOTLIST, value = ' + value)
         value = !value
         console.log('1. ** (toggle) value = ' + value)
-        DocumentService.setUseHotList(value, scope)
+        this.setUseHotList(value, scope)
         console.log('2. ** (toggle) value = ' + value)
 
         if (value == true) {
@@ -39,6 +39,32 @@ module.exports = function($state, UserService, DocumentService, DocumentApiServi
                 $state.go('documents', {}, {'reload': true})
 
             })
+    }
+
+
+    this.setUseHotList = function(value, scope) {
+
+        console.log('^^^ 1, setUseHotList')
+
+        $localStorage.useHotList = value
+
+    }
+
+    this.useHotList = function() {
+
+        return $localStorage.useHotList
+    }
+
+    this.stashDocumentList = function() {
+
+        $localStorage.stashedDocumentList = $localStorage.documentList
+    }
+
+    this.popDocumentList = function(scope) {
+
+        $localStorage.documentList = $localStorage.stashedDocumentList
+        this.setDocumentList($localStorage.documentList)
+
     }
 
 }

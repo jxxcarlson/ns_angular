@@ -24,7 +24,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
         $scope.site = id
         DocumentApiService.getDocumentList($scope)
         $scope.docStyle = function(doc) {
-            if (doc['id'] == DocumentService.documentId()) { return { "background-color" : "#fee" }}
+            if (doc['id'] == DocumentService.document().id) { return { "background-color" : "#fee" }}
         }
     }).then(function(result){
         if (segment1 == 'user') {

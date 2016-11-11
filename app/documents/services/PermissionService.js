@@ -1,12 +1,10 @@
-module.exports = function (DocumentService, DocumentApiService, UserService, $state ) {
+module.exports = function (DocumentService, UserService, $localStorage ) {
 
 
     this.canEdit = function () {
 
 
-        if (DocumentService.permissions() == undefined) {
-
-            console.log('DEBUG permissionService: DocumentService.permissions() gives undefined result')
+        if (this.permissions() == undefined) {
 
             value = false
 
@@ -15,21 +13,17 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
             if (DocumentService.document().author == UserService.username()) {
 
-                console.log('DEBUG permissionService: user == author')
-
                 value = true
 
             } else {
 
-                var value = (DocumentService.permissions().indexOf('edit') > -1)
+                var value = (this.permissions().indexOf('edit') > -1)
 
-                console.log('DEBUG permissionService: edit flag = ' + value)
+                var checkedOutToVar = this.checkedOutTo()
 
-                var checkedOutTo = DocumentService.checkedOutTo()
+                if ( checkedOutToVar != undefined && checkedOutToVar != '' && checkedOutToVar != UserService.username()) {
 
-                if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
-
-                    console.log('Access denied because document is checked out to ' + checkedOutTo)
+                    console.log('Access denied because document is checked out to ' + checkedOutToVar)
 
                     value = false
                 }
@@ -43,7 +37,42 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
     this.canRead = function () {
 
-        (DocumentService.permissions().indexOf('read') > -1)
+        (this.permissions().indexOf('read') > -1)
 
+    }
+
+    // PERMISSIONS
+
+    this.setPermissions = function(permissions) {
+
+        $localStorage.permissions = permissions
+    }
+
+
+    this.permissions = function() {
+
+
+        return $localStorage.permissions
+    }
+
+    this.setCheckedOutTo = function(value) {
+
+        $localStorage.checkeOutTo = value
+    }
+
+    this.checkedOutTo = function() {
+
+        return $localStorage.checkeOutTo
+    }
+
+
+    this.setCanShowSource = function(value) {
+
+        $localStorage.canShowSource = value
+    }
+
+    this.canShowSource = function() {
+
+        return $localStorage.canShowSource
     }
 }

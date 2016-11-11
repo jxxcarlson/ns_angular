@@ -444,7 +444,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
 
-                           DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
+                           DocumentService, PermissionService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
     if (DocumentService.document() == undefined) {
@@ -648,7 +648,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     if (UserService.username() == undefined || UserService.username() == '') {
 
         console.log('Setting hotlist to false')
-        DocumentService.setUseHotList(false , $scope)
+        HotListService.setUseHotList(false , $scope)
 
     } else {
 
@@ -706,9 +706,9 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         console.log('1. DEBUG: In EditController, setPermissions, permissions = ' + data['permissions'])
 
-        DocumentService.setPermissions(permissions)
-        DocumentService.setCheckedOutTo(checkedOutTo)
-        DocumentService.setCanShowSource(canShowSource)
+        PermissionService.setPermissions(permissions)
+        PermissionService.setCheckedOutTo(checkedOutTo)
+        PermissionService.setCanShowSource(canShowSource)
 
         if (this.permissions.indexOf('edit') == -1 && this.canShowSource == 'no') {
 
@@ -1075,14 +1075,14 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.setKind = function (kk) {
 
         //console.log('*** kk ' + kk)
-        var id = DocumentService.documentId()
+        var id = DocumentService.document().id
         var params = {id: id, kind: kk, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
     }
 
     $scope.setParams = function (kk) {
 
-        var id = DocumentService.documentId()
+        var id = DocumentService.document().id
         var params = {
             id: id, tags: $scope.tags,
             identifier: $scope.identifier, author_name: DocumentService.document().author
@@ -1276,7 +1276,7 @@ module.exports = function ($scope, $location, $state, $http, $localStorage, envS
         // Add the newly created document to the document list
         // of the current document
         if (hasSubdocuments) {
-            url += '?append=' + DocumentService.documentId()
+            url += '?append=' + DocumentService.document().id
         }
 
         // Create document
@@ -1392,7 +1392,8 @@ app.controller('BackupManagerController', require('./controllers/BackupManagerCo
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService, SearchService, UserService, GlobalService, envService, MathJaxService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService,
+                           PermissionService, SearchService, UserService, GlobalService, envService, MathJaxService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -1551,8 +1552,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 console.log("DEBUG: DAS, get, response.data['permissions'] = " + response.data['permissions'])
 
-                DocumentService.setPermissions(response.data['permissions'])
-                DocumentService.setCheckedOutTo(response.data['checked_out_to'])
+                PermissionService.setPermissions(response.data['permissions'])
+                PermissionService.setCheckedOutTo(response.data['checked_out_to'])
                 UserService.setLastDocumentId(id)
                 UserService.setLastDocumentTitle(document.title)
 
@@ -1930,13 +1931,6 @@ module.exports = function($localStorage, UserService) {
 
     // ID:
 
-    this.documentId = function() {
-        var id = this.currentDocumentItem().id
-        console.log('*** NOTE! this.documentId = ' + id)
-        return id
-    }
-
-
     this.parentId = function() {
 
 
@@ -1952,48 +1946,6 @@ module.exports = function($localStorage, UserService) {
 
         }
 
-    }
-
-
-    // PERMISSIONS
-
-    this.setPermissions = function(permissions) {
-
-        console.log('DEBUG: in Document Service, setPermissions, permissions = ' + permissions)
-
-        $localStorage.permissions = permissions
-
-        console.log('DEBUG: in Document Service, setPermissions, $localStorage.permissions = ' + $localStorage.permissions)
-    }
-
-
-    this.permissions = function() {
-
-
-        console.log('DEBUG: in Document Service, this.permissions, $localStorage.permissions = ' + $localStorage.permissions)
-
-        return $localStorage.permissions
-    }
-
-    this.setCheckedOutTo = function(value) {
-
-        $localStorage.checkeOutTo = value
-    }
-
-    this.checkedOutTo = function() {
-
-        return $localStorage.checkeOutTo
-    }
-
-
-    this.setCanShowSource = function(value) {
-
-        $localStorage.canShowSource = value
-    }
-
-    this.canShowSource = function() {
-
-        return $localStorage.canShowSource
     }
 
 
@@ -2123,35 +2075,6 @@ module.exports = function($localStorage, UserService) {
 
         }
 
-
-    }
-
-
-
-    // HOTLIST
-
-    this.setUseHotList = function(value, scope) {
-
-        console.log('^^^ 1, setUseHotList')
-
-        $localStorage.useHotList = value
-
-    }
-
-    this.useHotList = function() {
-
-        return $localStorage.useHotList
-    }
-
-    this.stashDocumentList = function() {
-
-        $localStorage.stashedDocumentList = $localStorage.documentList
-    }
-
-    this.popDocumentList = function(scope) {
-
-        $localStorage.documentList = $localStorage.stashedDocumentList
-        this.setDocumentList($localStorage.documentList)
 
     }
 
@@ -2321,7 +2244,7 @@ module.exports = function($state, UserService, DocumentService, DocumentApiServi
         console.log('TOGGLE HOTLIST, value = ' + value)
         value = !value
         console.log('1. ** (toggle) value = ' + value)
-        DocumentService.setUseHotList(value, scope)
+        this.setUseHotList(value, scope)
         console.log('2. ** (toggle) value = ' + value)
 
         if (value == true) {
@@ -2353,6 +2276,32 @@ module.exports = function($state, UserService, DocumentService, DocumentApiServi
                 $state.go('documents', {}, {'reload': true})
 
             })
+    }
+
+
+    this.setUseHotList = function(value, scope) {
+
+        console.log('^^^ 1, setUseHotList')
+
+        $localStorage.useHotList = value
+
+    }
+
+    this.useHotList = function() {
+
+        return $localStorage.useHotList
+    }
+
+    this.stashDocumentList = function() {
+
+        $localStorage.stashedDocumentList = $localStorage.documentList
+    }
+
+    this.popDocumentList = function(scope) {
+
+        $localStorage.documentList = $localStorage.stashedDocumentList
+        this.setDocumentList($localStorage.documentList)
+
     }
 
 }
@@ -2405,15 +2354,13 @@ module.exports = function() {
     
 }
 },{}],23:[function(require,module,exports){
-module.exports = function (DocumentService, DocumentApiService, UserService, $state ) {
+module.exports = function (DocumentService, UserService, $localStorage ) {
 
 
     this.canEdit = function () {
 
 
-        if (DocumentService.permissions() == undefined) {
-
-            console.log('DEBUG permissionService: DocumentService.permissions() gives undefined result')
+        if (this.permissions() == undefined) {
 
             value = false
 
@@ -2422,21 +2369,17 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
             if (DocumentService.document().author == UserService.username()) {
 
-                console.log('DEBUG permissionService: user == author')
-
                 value = true
 
             } else {
 
-                var value = (DocumentService.permissions().indexOf('edit') > -1)
+                var value = (this.permissions().indexOf('edit') > -1)
 
-                console.log('DEBUG permissionService: edit flag = ' + value)
+                var checkedOutToVar = this.checkedOutTo()
 
-                var checkedOutTo = DocumentService.checkedOutTo()
+                if ( checkedOutToVar != undefined && checkedOutToVar != '' && checkedOutToVar != UserService.username()) {
 
-                if ( checkedOutTo != undefined && checkedOutTo != '' && checkedOutTo != UserService.username()) {
-
-                    console.log('Access denied because document is checked out to ' + checkedOutTo)
+                    console.log('Access denied because document is checked out to ' + checkedOutToVar)
 
                     value = false
                 }
@@ -2450,8 +2393,43 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
 
     this.canRead = function () {
 
-        (DocumentService.permissions().indexOf('read') > -1)
+        (this.permissions().indexOf('read') > -1)
 
+    }
+
+    // PERMISSIONS
+
+    this.setPermissions = function(permissions) {
+
+        $localStorage.permissions = permissions
+    }
+
+
+    this.permissions = function() {
+
+
+        return $localStorage.permissions
+    }
+
+    this.setCheckedOutTo = function(value) {
+
+        $localStorage.checkeOutTo = value
+    }
+
+    this.checkedOutTo = function() {
+
+        return $localStorage.checkeOutTo
+    }
+
+
+    this.setCanShowSource = function(value) {
+
+        $localStorage.canShowSource = value
+    }
+
+    this.canShowSource = function() {
+
+        return $localStorage.canShowSource
     }
 }
 
@@ -3241,7 +3219,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
         $scope.site = id
         DocumentApiService.getDocumentList($scope)
         $scope.docStyle = function(doc) {
-            if (doc['id'] == DocumentService.documentId()) { return { "background-color" : "#fee" }}
+            if (doc['id'] == DocumentService.document().id) { return { "background-color" : "#fee" }}
         }
     }).then(function(result){
         if (segment1 == 'user') {
@@ -3271,7 +3249,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     DocumentApiService.getDocument($scope, doc_id, queryObj)
     
     $scope.docStyle = function(doc) {
-        if (doc['id'] == DocumentService.documentId() ) {
+        if (doc['id'] == DocumentService.document().id ) {
             return { "background-color" : "#fee" }
         }
     }
@@ -3303,7 +3281,7 @@ module.exports = function($scope, foo, envService) {
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
                                           foo, UserService, SearchService, envService,
-                          DocumentService, PermissionService, MathJaxService) {
+                          DocumentService, HotListService, PermissionService, MathJaxService) {
 
     var accessTokenValid = UserService.accessTokenValid()
 
@@ -3342,7 +3320,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
         DocumentService.setTocTitle('Random documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('random=10', $scope, 'documents')
     }
 
@@ -3403,27 +3381,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.userDocuments = function () {
         console.log('DEBUG: User documents:override')
         DocumentService.setTocTitle('User documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
         DocumentService.setTocTitle('G. Search results')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
         DocumentService.setTocTitle('Random documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.home = function () {
         console.log('GO HOME')
         DocumentService.setTocTitlePreferred('H. Search results')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
 
@@ -3453,7 +3431,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.publicDocuments = function () {
         console.log('DEBUG: Public documents:override')
         DocumentService.setTocTitle('Public documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 
@@ -3655,7 +3633,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'Random documents',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setUseHotList(false, $scope)
+            HotListService.setUseHotList(false, $scope)
             SearchService.query('random=10', $scope, 'documents')
         }
     });
@@ -3666,7 +3644,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             DocumentService.setTocTitle('L. Search results')
-            DocumentService.setUseHotList(false, $scope)
+            HotListService.setUseHotList(false, $scope)
             $scope.getUserManual()
         }
     });
@@ -3677,7 +3655,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             DocumentService.setTocTitle('BB. Contents')
-            DocumentService.setUseHotList(false, $scope)
+            HotListService.setUseHotList(false, $scope)
             $scope.getAsciidocGuide()
         }
     });

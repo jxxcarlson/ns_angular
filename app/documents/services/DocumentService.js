@@ -20,13 +20,6 @@ module.exports = function($localStorage, UserService) {
 
     // ID:
 
-    this.documentId = function() {
-        var id = this.currentDocumentItem().id
-        console.log('*** NOTE! this.documentId = ' + id)
-        return id
-    }
-
-
     this.parentId = function() {
 
 
@@ -42,48 +35,6 @@ module.exports = function($localStorage, UserService) {
 
         }
 
-    }
-
-
-    // PERMISSIONS
-
-    this.setPermissions = function(permissions) {
-
-        console.log('DEBUG: in Document Service, setPermissions, permissions = ' + permissions)
-
-        $localStorage.permissions = permissions
-
-        console.log('DEBUG: in Document Service, setPermissions, $localStorage.permissions = ' + $localStorage.permissions)
-    }
-
-
-    this.permissions = function() {
-
-
-        console.log('DEBUG: in Document Service, this.permissions, $localStorage.permissions = ' + $localStorage.permissions)
-
-        return $localStorage.permissions
-    }
-
-    this.setCheckedOutTo = function(value) {
-
-        $localStorage.checkeOutTo = value
-    }
-
-    this.checkedOutTo = function() {
-
-        return $localStorage.checkeOutTo
-    }
-
-
-    this.setCanShowSource = function(value) {
-
-        $localStorage.canShowSource = value
-    }
-
-    this.canShowSource = function() {
-
-        return $localStorage.canShowSource
     }
 
 
@@ -213,35 +164,6 @@ module.exports = function($localStorage, UserService) {
 
         }
 
-
-    }
-
-
-
-    // HOTLIST
-
-    this.setUseHotList = function(value, scope) {
-
-        console.log('^^^ 1, setUseHotList')
-
-        $localStorage.useHotList = value
-
-    }
-
-    this.useHotList = function() {
-
-        return $localStorage.useHotList
-    }
-
-    this.stashDocumentList = function() {
-
-        $localStorage.stashedDocumentList = $localStorage.documentList
-    }
-
-    this.popDocumentList = function(scope) {
-
-        $localStorage.documentList = $localStorage.stashedDocumentList
-        this.setDocumentList($localStorage.documentList)
 
     }
 

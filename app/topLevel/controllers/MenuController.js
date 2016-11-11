@@ -45,27 +45,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.userDocuments = function () {
         console.log('DEBUG: User documents:override')
         DocumentService.setTocTitle('User documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
         DocumentService.setTocTitle('G. Search results')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
         DocumentService.setTocTitle('Random documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.home = function () {
         console.log('GO HOME')
         DocumentService.setTocTitlePreferred('H. Search results')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
 
@@ -95,7 +95,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.publicDocuments = function () {
         console.log('DEBUG: Public documents:override')
         DocumentService.setTocTitle('Public documents:override')
-        DocumentService.setUseHotList(false, $scope)
+        HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
 
@@ -297,7 +297,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'Random documents',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setUseHotList(false, $scope)
+            HotListService.setUseHotList(false, $scope)
             SearchService.query('random=10', $scope, 'documents')
         }
     });
@@ -308,7 +308,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             DocumentService.setTocTitle('L. Search results')
-            DocumentService.setUseHotList(false, $scope)
+            HotListService.setUseHotList(false, $scope)
             $scope.getUserManual()
         }
     });
@@ -319,7 +319,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             DocumentService.setTocTitle('BB. Contents')
-            DocumentService.setUseHotList(false, $scope)
+            HotListService.setUseHotList(false, $scope)
             $scope.getAsciidocGuide()
         }
     });
