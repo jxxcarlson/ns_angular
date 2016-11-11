@@ -6,7 +6,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
    //  console.log('**** params = ' + JSON.stringify(params))
 
 
-    $confirm({text: 'Are you sure you want to delete ' + DocumentService.currentDocumentItem().title + '?'})
+    $confirm({text: 'Are you sure you want to delete ' + DocumentService.document().title + '?'})
         .then(function() {
             $scope.deletedConfirm = 'Deleted';
             doDelete()
@@ -22,10 +22,10 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 
 
 
-        console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
+        console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.document().id + ': ' + DocumentService.document().title )
         console.log('DDD, parentId  = ' + parentId)
 
-        var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id + '?mode=soft'
+        var url = envService.read('apiUrl') + '/documents/' + DocumentService.document().id + '?mode=soft'
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         console.log('access token: ' + UserService.accessToken())
 

@@ -44,25 +44,6 @@ module.exports = function($localStorage, UserService) {
 
     }
 
-    // An item is an object with fields id and a title
-    this.makeDocumentItem = function(id, title) {
-
-        var obj = {}
-        obj.id = id
-        obj.title = title
-
-        return obj
-    }
-
-    this.setCurrentDocumentItem = function(id, title) {
-        var item = this.makeDocumentItem(id,title)
-        $localStorage.currentDocumentItem = item
-    }
-    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-
-
-
-
 
     // PERMISSIONS
 
@@ -358,9 +339,6 @@ module.exports = function($localStorage, UserService) {
         this.currentDocument = document
         // .. and mirror it "on disk"
         $localStorage.currentDocument = document
-        
-        // These are eventually to be eliminated in favor of setDocumentItem
-        this.setCurrentDocumentItem(document['id'], document['title'])
         
         var links = document['links'] || {}
         var resources = links['resources']

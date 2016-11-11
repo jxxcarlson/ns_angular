@@ -8,16 +8,18 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
-        DocumentService.setCurrentDocumentItem(id, 'not_yet_defined')
+        console.log('ERROR: $stateParams.id NOT DEFINED') //TROUBLE//
+        id = 11 //TROUBLE//
+        // DocumentService.setCurrentDocumentItem(id, 'not_yet_defined')
     } else {
-        id = DocumentService.currentDocumentItem().id;
+        id = DocumentService.document().id;
     }
 
     $scope.id = id
     $scope.documentId = id
     $scope.author = 'not_yet_defined'
 
-    console.log('EXX: id = ' + id + ', ' + DocumentService.currentDocumentItem().id)
+    console.log('EXX: id = ' + id + ', ' + DocumentService.document().id)
 
     $scope.lastBackupNumber = 'none'
 
@@ -91,7 +93,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         /////
 
-        $scope.text = DocumentService.text() // for word count
+        $scope.text = DocumentService.document().text // for word count
         $scope.wordCount = $scope.text.split(' ').length
         $scope.documentCharacterCount = $scope.text.length
         $scope.ifParentExists = true
@@ -342,7 +344,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.toggleCheckoutDocument = function () {
 
         console.log('*** CHECK IN/OUT')
-        var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
+        var request = 'checkout?toggle=' + DocumentService.document().id + '&user=' + UserService.username()
         DocumentApiService.postRequest(request, $scope)
             .then(function (response) {
 
@@ -421,7 +423,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.attachDocument = function () {
 
-        var id = DocumentService.currentDocumentItem().id
+        var id = DocumentService.document().id
         var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
 

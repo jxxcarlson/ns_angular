@@ -437,7 +437,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         console.log('API: backupDocument')
 
-        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.currentDocumentItem().id
+        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.document().id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         $http.post(url, {}, options)
@@ -457,7 +457,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         console.log('API: backupDocument')
 
-        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
+        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.document().id + '&number=' + backup_number
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         $http.post(url, {}, options)

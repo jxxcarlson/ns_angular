@@ -9,13 +9,13 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                            DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
-    if (DocumentService.currentDocumentItem() == undefined) {
+    if (DocumentService.document() == undefined) {
 
         console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem is undefined')
 
     } else {
 
-        console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
+        console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.document()[id]: ' + DocumentService.document().id)
     }
 
 
@@ -32,9 +32,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     }
 
-    if ( DocumentService.currentDocumentItem() != undefined) {
+    if ( DocumentService.document() != undefined) {
 
-        var id2 = DocumentService.currentDocumentItem()['id']
+        var id2 = DocumentService.document().id
 
         if ( idPattern.test(id2) == false ) {
 

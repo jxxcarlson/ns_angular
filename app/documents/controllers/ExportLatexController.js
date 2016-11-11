@@ -3,7 +3,7 @@ module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService
 
     console.log('EXX: controller ExportLaTeXt')
 
-    var id = DocumentService.currentDocumentItem().id
+    var id = DocumentService.document().id
 
 
     console.log('  -- EXX: id =' + id)

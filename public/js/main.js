@@ -375,7 +375,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
    //  console.log('**** params = ' + JSON.stringify(params))
 
 
-    $confirm({text: 'Are you sure you want to delete ' + DocumentService.currentDocumentItem().title + '?'})
+    $confirm({text: 'Are you sure you want to delete ' + DocumentService.document().title + '?'})
         .then(function() {
             $scope.deletedConfirm = 'Deleted';
             doDelete()
@@ -391,10 +391,10 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 
 
 
-        console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.currentDocumentItem())
+        console.log('DDD, DocumentService.currentDocumentItem()= ' + DocumentService.document().id + ': ' + DocumentService.document().title )
         console.log('DDD, parentId  = ' + parentId)
 
-        var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id + '?mode=soft'
+        var url = envService.read('apiUrl') + '/documents/' + DocumentService.document().id + '?mode=soft'
         var options = { headers: { "accesstoken": UserService.accessToken() }}
         console.log('access token: ' + UserService.accessToken())
 
@@ -447,13 +447,13 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
                            DocumentService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
-    if (DocumentService.currentDocumentItem() == undefined) {
+    if (DocumentService.document() == undefined) {
 
         console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem is undefined')
 
     } else {
 
-        console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.currentDocumentItem()[id]: ' + DocumentService.currentDocumentItem()['id'])
+        console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.document()[id]: ' + DocumentService.document().id)
     }
 
 
@@ -470,9 +470,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 
     }
 
-    if ( DocumentService.currentDocumentItem() != undefined) {
+    if ( DocumentService.document() != undefined) {
 
-        var id2 = DocumentService.currentDocumentItem()['id']
+        var id2 = DocumentService.document().id
 
         if ( idPattern.test(id2) == false ) {
 
@@ -677,16 +677,18 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
-        DocumentService.setCurrentDocumentItem(id, 'not_yet_defined')
+        console.log('ERROR: $stateParams.id NOT DEFINED') //TROUBLE//
+        id = 11 //TROUBLE//
+        // DocumentService.setCurrentDocumentItem(id, 'not_yet_defined')
     } else {
-        id = DocumentService.currentDocumentItem().id;
+        id = DocumentService.document().id;
     }
 
     $scope.id = id
     $scope.documentId = id
     $scope.author = 'not_yet_defined'
 
-    console.log('EXX: id = ' + id + ', ' + DocumentService.currentDocumentItem().id)
+    console.log('EXX: id = ' + id + ', ' + DocumentService.document().id)
 
     $scope.lastBackupNumber = 'none'
 
@@ -760,7 +762,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         /////
 
-        $scope.text = DocumentService.text() // for word count
+        $scope.text = DocumentService.document().text // for word count
         $scope.wordCount = $scope.text.split(' ').length
         $scope.documentCharacterCount = $scope.text.length
         $scope.ifParentExists = true
@@ -1011,7 +1013,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.toggleCheckoutDocument = function () {
 
         console.log('*** CHECK IN/OUT')
-        var request = 'checkout?toggle=' + DocumentService.currentDocumentItem().id + '&user=' + UserService.username()
+        var request = 'checkout?toggle=' + DocumentService.document().id + '&user=' + UserService.username()
         DocumentApiService.postRequest(request, $scope)
             .then(function (response) {
 
@@ -1090,7 +1092,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.attachDocument = function () {
 
-        var id = DocumentService.currentDocumentItem().id
+        var id = DocumentService.document().id
         var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
 
@@ -1179,7 +1181,7 @@ module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService
 
     console.log('EXX: controller ExportLaTeXt')
 
-    var id = DocumentService.currentDocumentItem().id
+    var id = DocumentService.document().id
 
 
     console.log('  -- EXX: id =' + id)
@@ -1321,7 +1323,7 @@ module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService
 
     console.log('PP: controller PrintDocument')
 
-    var id = DocumentService.currentDocumentItem().id
+    var id = DocumentService.document().id
 
 
     console.log('  -- PP: id =' + id)
@@ -1819,7 +1821,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         console.log('API: backupDocument')
 
-        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.currentDocumentItem().id
+        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.document().id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         $http.post(url, {}, options)
@@ -1839,7 +1841,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         console.log('API: backupDocument')
 
-        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.currentDocumentItem().id + '&number=' + backup_number
+        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.document().id + '&number=' + backup_number
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
         $http.post(url, {}, options)
@@ -1951,25 +1953,6 @@ module.exports = function($localStorage, UserService) {
         }
 
     }
-
-    // An item is an object with fields id and a title
-    this.makeDocumentItem = function(id, title) {
-
-        var obj = {}
-        obj.id = id
-        obj.title = title
-
-        return obj
-    }
-
-    this.setCurrentDocumentItem = function(id, title) {
-        var item = this.makeDocumentItem(id,title)
-        $localStorage.currentDocumentItem = item
-    }
-    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-
-
-
 
 
     // PERMISSIONS
@@ -2267,9 +2250,6 @@ module.exports = function($localStorage, UserService) {
         // .. and mirror it "on disk"
         $localStorage.currentDocument = document
         
-        // These are eventually to be eliminated in favor of setDocumentItem
-        this.setCurrentDocumentItem(document['id'], document['title'])
-        
         var links = document['links'] || {}
         var resources = links['resources']
         if (resources != undefined) {
@@ -2385,8 +2365,7 @@ module.exports = function ($window, DocumentService) {
     };
 
     this.shareCurrentDocument = function(){
-        var documentItem = DocumentService.currentDocumentItem()
-        var subject = documentItem.title // 'Manuscripta.io document'
+        var subject = DocumentService.document().title // 'Manuscripta.io document'
         var message = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
         message += "0D%0A%0D%0Ahttp://www.manuscripta.io is a site for creating and sharing documents online."
         message += "%0D%0AMathematics, Physics, Poetry, you name it."
@@ -3411,8 +3390,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.showDocumentSource = function() {
 
         console.log('showDocumentSource clicked')
-        var path = 'documents/' + DocumentService.currentDocumentItem().id + '?show_source=yes'
-        var idAndQuery =  DocumentService.currentDocumentItem().id + '?show_source=yes'
+        var path = 'documents/' + DocumentService.document().id + '?show_source=yes'
+        var idAndQuery =  DocumentService.document().id + '?show_source=yes'
         console.log('path = ' + path)
         console.log('idAndQuery = ' + idAndQuery)
         $location.path(path)
@@ -3457,7 +3436,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.showSource = function() {
 
-        var id = DocumentService.currentDocumentItem().id
+        var id = DocumentService.document().id
         var path = 'documents/' + id + '?option=showsource'
         console.log('MenuController, showSource; path = ' + path)
         $location.path(path)
@@ -3581,7 +3560,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('PRINT DOCUMENTs ...')
-            DocumentApiService.printDocument($scope, DocumentService.currentDocumentItem().id, {})
+            DocumentApiService.printDocument($scope, DocumentService.document().id, {})
             $state.go('printdocument')
         }
     });
@@ -3614,8 +3593,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'View docuemnt',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            var id = DocumentService.currentDocumentItem().id
-            $location.path('/documents/' + DocumentService.currentDocumentItem().id + '?option=none')
+            var id = DocumentService.document().id
+            $location.path('/documents/' + DocumentService.document().id + '?option=none')
             $state.go('documents', {id: id, option: 'none'}, {reload: true})
         }
     });

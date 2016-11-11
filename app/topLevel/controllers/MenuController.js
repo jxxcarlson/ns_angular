@@ -32,8 +32,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.showDocumentSource = function() {
 
         console.log('showDocumentSource clicked')
-        var path = 'documents/' + DocumentService.currentDocumentItem().id + '?show_source=yes'
-        var idAndQuery =  DocumentService.currentDocumentItem().id + '?show_source=yes'
+        var path = 'documents/' + DocumentService.document().id + '?show_source=yes'
+        var idAndQuery =  DocumentService.document().id + '?show_source=yes'
         console.log('path = ' + path)
         console.log('idAndQuery = ' + idAndQuery)
         $location.path(path)
@@ -78,7 +78,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.showSource = function() {
 
-        var id = DocumentService.currentDocumentItem().id
+        var id = DocumentService.document().id
         var path = 'documents/' + id + '?option=showsource'
         console.log('MenuController, showSource; path = ' + path)
         $location.path(path)
@@ -202,7 +202,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('PRINT DOCUMENTs ...')
-            DocumentApiService.printDocument($scope, DocumentService.currentDocumentItem().id, {})
+            DocumentApiService.printDocument($scope, DocumentService.document().id, {})
             $state.go('printdocument')
         }
     });
@@ -235,8 +235,8 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'View docuemnt',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            var id = DocumentService.currentDocumentItem().id
-            $location.path('/documents/' + DocumentService.currentDocumentItem().id + '?option=none')
+            var id = DocumentService.document().id
+            $location.path('/documents/' + DocumentService.document().id + '?option=none')
             $state.go('documents', {id: id, option: 'none'}, {reload: true})
         }
     });
