@@ -1,7 +1,14 @@
 module.exports = function($localStorage) {
 
 
-    // DOCUMENT LIST
+    var state = $localStorage.tocState ||
+        {
+            tocHeading: 'Search Results',
+            useHotList: 'no',
+            title: 'Undefined'
+        }
+
+
 
     this.documentCount = function() {
 
@@ -76,23 +83,33 @@ module.exports = function($localStorage) {
 
     this.setTocTitle = function(title) {
 
-        $localStorage.tocTitle = title
+        state.title = title
+
+        console.log('Refactor, set title = ' + title)
+
+        $localStorage.tocState = state
     }
 
 
     this.tocTitle = function() {
 
-        return $localStorage.tocTitle || '0. Search Results'
+        console.log('Refactor, title = ' + state.title)
+
+        return state.title
     }
 
-    this.setTocTitlePreferred = function(value) {
+    this.setTocTitlePreferred = function(title) {
 
-        $localStorage.tocTitlePreferred = value
+        state.preferredTitle = title
+
+        console.log('Refactor, set title = ' + title)
+
+        $localStorage.tocState = state
     }
 
     this.tocTitlePreferred = function() {
 
-        return $localStorage.tocTitlePreferred || ''
+        return state.preferredTitle
 
     }
 

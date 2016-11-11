@@ -10,7 +10,7 @@
  *****/
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
                            DocumentService, TableOfContentsService, PermissionService, SearchService,
-                           UserService, GlobalService, envService, BackupService) {
+                           UserService, GlobalService, envService, BackupService, HotListService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -77,7 +77,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         // If the document has subdocuments, display them
         // instead of the search results
-        if (documents.length > 0 && !(DocumentService.useHotList() == true)) {
+        if (documents.length > 0 && !(HotListService.useHotList() == true)) {
             //if (documents.length > 0 ) {
             // if (documents.length > 0) {
 
@@ -209,7 +209,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 if (scope.docArray == undefined || scope.docArray.length == 0) {
 
-                    scope.tocHeading = ''
+                    scope.tocHeading = 'XX'
 
                 } else {
 
@@ -478,50 +478,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
     }
 
 
-    //// HTTP UTILITIES ////
 
-    this.postRequest = function (request, scope) {
-
-        console.log('API: postRequest: ' + request)
-
-        var url = envService.read('apiUrl') + '/' + request
-        var options = {headers: {"accesstoken": UserService.accessToken()}}
-
-        return $http.post(url, {}, options)
-
-
-    }
-
-    this.getRequest = function (request, scope) {
-
-        console.log('API: getRequest: ' + request)
-
-        var url = envService.read('apiUrl') + '/' + request
-        var options = {headers: {"accesstoken": UserService.accessToken()}}
-
-        return $http.get(url, {}, options)
-
-
-    }
-
-    this.deleteRequest = function (request, scope) {
-
-        console.log('API: deleteRequest: ' + request)
-
-        var url = envService.read('apiUrl') + '/' + request
-        console.log('URL: ' + url)
-        var options = { headers: { "accesstoken": UserService.accessToken() }}
-
-        // var url = envService.read('apiUrl') + '/documents/' + DocumentService.currentDocumentItem().id + '?mode=soft'
-
-
-        console.log('ACCESS TOKEN: ' + UserService.accessToken())
-
-
-        return $http.delete(url, options)
-
-
-    }
 
 
 }

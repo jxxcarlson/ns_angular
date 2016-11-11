@@ -1,11 +1,11 @@
-module.exports = function(DocumentApiService) {
+module.exports = function(DocumentApiService, HttpService) {
 
     var self = this
 
     self.getUsers = function() {
 
         var request = 'manage_users?list=all'
-        DocumentApiService.postRequest(request, {})
+        HttpService.postRequest(request, {})
             .then(
                 function (response) {
 
@@ -22,7 +22,7 @@ module.exports = function(DocumentApiService) {
     self.getACLs = function(owner_id) {
 
         var request = 'acl?acls_of_owner=' + self.aclOwnerId
-        DocumentApiService.postRequest(request, {})
+        HttpService.postRequest(request, {})
             .then(
                 function (response) {
 

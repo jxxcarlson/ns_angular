@@ -1,4 +1,4 @@
-module.exports = function($state, $localStorage, UserService, DocumentService, TableOfContentsService, DocumentApiService) {
+module.exports = function($state, $localStorage, UserService, DocumentService, TableOfContentsService, HttpService) {
 
 
     var self = this
@@ -57,7 +57,7 @@ module.exports = function($state, $localStorage, UserService, DocumentService, T
 
         // DocumentService.stashDocumentList()
 
-        DocumentApiService.getRequest(request, scope)
+        HttpService.getRequest(request, scope)
             .then(function (request) {
 
                 var hotlist = request.data['hotlist']

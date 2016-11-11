@@ -1,4 +1,4 @@
-module.exports = function(DocumentApiService, UserService, $location, $confirm) {
+module.exports = function(DocumentApiService, UserService, $location, $confirm, HttpService) {
 
 
     var self = this
@@ -10,7 +10,7 @@ module.exports = function(DocumentApiService, UserService, $location, $confirm) 
     self.getLogForId = function(id) {
 
         var request = 'backup?log_as_json=' + self.username + '&title=' + id
-        DocumentApiService.postRequest(request, {})
+        HttpService.postRequest(request, {})
             .then(
                 function(response) {
 
@@ -49,7 +49,7 @@ module.exports = function(DocumentApiService, UserService, $location, $confirm) 
     self.getLog = function() {
 
         var request = 'backup?log_as_json=' + self.username + '&title=' + self.backupTitle
-        DocumentApiService.postRequest(request, {})
+        HttpService.postRequest(request, {})
             .then(
                 function(response) {
 
@@ -66,7 +66,7 @@ module.exports = function(DocumentApiService, UserService, $location, $confirm) 
     self.getBackup = function(id, backupNumber) {
 
         var request = 'backup?view=' + id + '&number=' + backupNumber
-        DocumentApiService.postRequest(request, {})
+        HttpService.postRequest(request, {})
             .then(
                 function(response) {
 
@@ -94,7 +94,7 @@ module.exports = function(DocumentApiService, UserService, $location, $confirm) 
 
 
         var request = 'documents?deleted=' + UserService.username()
-        DocumentApiService.getRequest(request, {})
+        HttpService.getRequest(request, {})
             .then(
                 function (response) {
 
@@ -122,7 +122,7 @@ module.exports = function(DocumentApiService, UserService, $location, $confirm) 
 
         console.log('Trash document ' + id)
         var url = 'documents/' + id + '?mode=hard'
-        DocumentApiService.deleteRequest(url, {})
+        HttpService.deleteRequest(url, {})
             .then(
                 function(response) {
 
@@ -139,7 +139,7 @@ module.exports = function(DocumentApiService, UserService, $location, $confirm) 
 
         console.log('Undelete document ' + id)
         var url = 'documents/' + id + '?mode=undelete'
-        DocumentApiService.deleteRequest(url, {})
+        HttpService.deleteRequest(url, {})
             .then(
                 function(response) {
 

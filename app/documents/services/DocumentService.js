@@ -1,24 +1,6 @@
 module.exports = function($localStorage, UserService) {
     
-    
-    /**********
-    
-    State variables:
-    
-        documentId
-        title
-        text
-        renderedText
-        documentKind
-        public
-        
-        documentList
-        documentCount
-    
-    
-    ***********/
 
-    // ID:
 
     this.parentId = function() {
 
@@ -39,7 +21,7 @@ module.exports = function($localStorage, UserService) {
 
 
     // SUBDOCUMENTS:
-    
+
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }

@@ -1,4 +1,4 @@
-module.exports = function (DocumentApiService, DocumentService, UserService) {
+module.exports = function (DocumentApiService, DocumentService, HttpService) {
 
     var self = this
 
@@ -12,7 +12,7 @@ module.exports = function (DocumentApiService, DocumentService, UserService) {
     self.getBackup = function (id, backupNumber) {
 
         var request = 'backup?view=' + id + '&number=' + backupNumber
-        DocumentApiService.postRequest(request, {})
+        HttpService.postRequest(request, {})
             .then(
                 function (response) {
 

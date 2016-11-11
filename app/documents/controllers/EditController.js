@@ -1,5 +1,5 @@
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
-                           DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
+                           HttpService, DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
                            MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
@@ -345,7 +345,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         console.log('*** CHECK IN/OUT')
         var request = 'checkout?toggle=' + DocumentService.document().id + '&user=' + UserService.username()
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then(function (response) {
 
                 console.log('  -- reply: ' + response.data['reply'])
