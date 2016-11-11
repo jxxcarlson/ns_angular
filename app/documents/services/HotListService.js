@@ -1,13 +1,42 @@
-module.exports = function($state, $localStorage, UserService, DocumentService, DocumentApiService) {
-
-    this.hotList = function (scope) {
+module.exports = function($state, $localStorage, UserService, DocumentService, TableOfContentsService, DocumentApiService) {
 
 
-        var value = DocumentService.useHotList()
+    var self = this
+
+
+    self.setUseHotList = function(value, scope) {
+
+        console.log('^^^ 1, setUseHotList')
+
+        $localStorage.useHotList = value
+
+    }
+
+    self.useHotList = function() {
+
+        return $localStorage.useHotList
+    }
+
+    self.stashDocumentList = function() {
+
+        $localStorage.stashedDocumentList = $localStorage.documentList
+    }
+
+    self.popDocumentList = function(scope) {
+
+        $localStorage.documentList = $localStorage.stashedDocumentList
+        TableOfContentsService.setDocumentList($localStorage.documentList)
+
+    }
+
+    self.hotList = function (scope) {
+
+
+        var value = self.useHotList()
         console.log('TOGGLE HOTLIST, value = ' + value)
         value = !value
         console.log('1. ** (toggle) value = ' + value)
-        this.setUseHotList(value, scope)
+        self.setUseHotList(value, scope)
         console.log('2. ** (toggle) value = ' + value)
 
         if (value == true) {
@@ -16,7 +45,7 @@ module.exports = function($state, $localStorage, UserService, DocumentService, D
 
         } else {
 
-            DocumentService.popDocumentList(scope)
+            self.popDocumentList(scope)
             $state.go('documents', {}, {'reload': true})
         }
 
@@ -34,37 +63,13 @@ module.exports = function($state, $localStorage, UserService, DocumentService, D
                 var hotlist = request.data['hotlist']
 
                 console.log('HOTLIST: ' + JSON.stringify(hotlist))
-                DocumentService.stashDocumentList()
-                DocumentService.setDocumentList(hotlist)
+                self.stashDocumentList()
+                TableOfContentsService.setDocumentList(hotlist)
                 $state.go('documents', {}, {'reload': true})
 
             })
     }
 
 
-    this.setUseHotList = function(value, scope) {
-
-        console.log('^^^ 1, setUseHotList')
-
-        $localStorage.useHotList = value
-
-    }
-
-    this.useHotList = function() {
-
-        return $localStorage.useHotList
-    }
-
-    this.stashDocumentList = function() {
-
-        $localStorage.stashedDocumentList = $localStorage.documentList
-    }
-
-    this.popDocumentList = function(scope) {
-
-        $localStorage.documentList = $localStorage.stashedDocumentList
-        this.setDocumentList($localStorage.documentList)
-
-    }
 
 }

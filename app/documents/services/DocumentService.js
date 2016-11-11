@@ -39,8 +39,7 @@ module.exports = function($localStorage, UserService) {
 
 
     // SUBDOCUMENTS:
-
-    // Subdocuments of current document
+    
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }
@@ -67,81 +66,6 @@ module.exports = function($localStorage, UserService) {
 
         return $localStorage.attachmentUrl
     }
-
-
-    
-    // DOCUMENT LIST
-
-    this.documentCount = function() { 
-        
-        if (this.documentList() == undefined) {
-            
-            return 0
-        }
-        else {
-            
-            return this.documentList().length
-        }    
-    }
-
-    // Results of search
-    this.setDocumentList = function(array) {
-
-        $localStorage.documentList = array
-        $localStorage.currentDocumentList = array
-        // $localStorage.documentId = array[0] // XXX: CUIDADO!!
-        this.currentDocumentList = array
-
-    }
-
-    this.resetDocumentList = function() {
-
-        this.currentDocumentList = $localStorage.documentList
-        // $localStorage.documentId = $localStorage.documentList[0]
-
-    }
-
-    this.clearDocumentList = function() {
-
-        console.log("DEBUG: clearDocumentList")
-        $localStorage.documentList = []
-        $localStorage.currentDocumentList = []
-
-    }
-
-
-    this.documentList = function() {
-
-        if (this.currentDocumentList == undefined) {
-
-            if ($localStorage.currentDocumentList == undefined) {
-
-                return []
-
-            } else {
-
-                return $localStorage.currentDocumentList
-            }
-        }
-        else {
-
-            if (this.currentDocumentList.length == 0) {
-
-                return $localStorage.currentDocumentList
-
-            } else {
-
-                return this.currentDocumentList
-            }
-
-
-        }
-
-
-    }
-
-
-
 
 
 

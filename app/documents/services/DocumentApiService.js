@@ -82,24 +82,24 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
             // if (documents.length > 0) {
 
             console.log('YOR: Setting document list (subdocs): ' + documents.length)
-            DocumentService.setDocumentList(documents)
+            TableOfContentsService.setDocumentList(documents)
 
         }
 
 
-        var _documentList = DocumentService.documentList()
+        var _documentList = TableOfContentsService.documentList()
 
         console.log('YOR: processing document list: ' + _documentList.length)
 
         if (_documentList == undefined) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
         if (_documentList.length == 0) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
@@ -175,7 +175,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 UserService.setLastDocumentTitle(document.title)
 
                 // The document list reads from $localStorage.currentDocumentList
-                scope.docArray = DocumentService.documentList()
+                scope.docArray = TableOfContentsService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
                 scope.documentIdentifier = document.identifier
@@ -196,7 +196,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                     console.log("x1x1: CLEARING DOCUMENT LIST")
 
                     // setDocumentList(document, scope)
-                    DocumentService.clearDocumentList()
+                    TableOfContentsService.clearDocumentList()
                     scope.docArray = []
 
                 } else if ((DocumentService.hasSubdocuments() || document.parentId != 0) && (queryObj['toc'] || $stateParams.option == 'toc' )) {
@@ -225,12 +225,12 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         console.log('DEBUG: getting document list')
 
-        var _documentList = DocumentService.documentList()
+        var _documentList = TableOfContentsService.documentList()
 
 
         if (_documentList.length == 0) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
@@ -270,7 +270,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 deferred.resolve(response.data);
                 var jsonData = response.data
                 var documents = jsonData['documents']
-                DocumentService.setDocumentList(documents)
+                TableOfContentsService.setDocumentList(documents)
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -408,7 +408,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                     var documents = links['documents'] || []
                     if (documents.length > 0) {
 
-                        DocumentService.setDocumentList(documents)
+                        TableOfContentsService.setDocumentList(documents)
                     }
 
                     /* Update $scope */

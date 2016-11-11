@@ -79,8 +79,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
         $scope.identifier = document.identifier
         $scope.tags = document.tags
-        $scope.docArray = DocumentService.documentList()
-        $scope.documentCount = DocumentService.documentCount()
+        $scope.docArray = TableOfContentsService.documentList()
+        $scope.documentCount = TableOfContentsService.documentCount()
 
         // if (DocumentService.getPublic()) {
 
@@ -184,7 +184,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (_documentList.length == 0) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 

@@ -25,7 +25,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 }
 
 
-                DocumentService.setDocumentList(documents)
+                TableOfContentsService.setDocumentList(documents)
 
 
                 if (firstDocument == undefined) {

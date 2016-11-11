@@ -733,8 +733,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         $scope.attachmentUrl = $sce.trustAsResourceUrl(DocumentService.attachmentUrl())
         $scope.identifier = document.identifier
         $scope.tags = document.tags
-        $scope.docArray = DocumentService.documentList()
-        $scope.documentCount = DocumentService.documentCount()
+        $scope.docArray = TableOfContentsService.documentList()
+        $scope.documentCount = TableOfContentsService.documentCount()
 
         // if (DocumentService.getPublic()) {
 
@@ -838,7 +838,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (_documentList.length == 0) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
@@ -1484,24 +1484,24 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
             // if (documents.length > 0) {
 
             console.log('YOR: Setting document list (subdocs): ' + documents.length)
-            DocumentService.setDocumentList(documents)
+            TableOfContentsService.setDocumentList(documents)
 
         }
 
 
-        var _documentList = DocumentService.documentList()
+        var _documentList = TableOfContentsService.documentList()
 
         console.log('YOR: processing document list: ' + _documentList.length)
 
         if (_documentList == undefined) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
         if (_documentList.length == 0) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
@@ -1577,7 +1577,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 UserService.setLastDocumentTitle(document.title)
 
                 // The document list reads from $localStorage.currentDocumentList
-                scope.docArray = DocumentService.documentList()
+                scope.docArray = TableOfContentsService.documentList()
                 console.log('docArray length = ' + scope.docArray.length)
                 scope.title = document.title
                 scope.documentIdentifier = document.identifier
@@ -1598,7 +1598,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                     console.log("x1x1: CLEARING DOCUMENT LIST")
 
                     // setDocumentList(document, scope)
-                    DocumentService.clearDocumentList()
+                    TableOfContentsService.clearDocumentList()
                     scope.docArray = []
 
                 } else if ((DocumentService.hasSubdocuments() || document.parentId != 0) && (queryObj['toc'] || $stateParams.option == 'toc' )) {
@@ -1627,12 +1627,12 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         console.log('DEBUG: getting document list')
 
-        var _documentList = DocumentService.documentList()
+        var _documentList = TableOfContentsService.documentList()
 
 
         if (_documentList.length == 0) {
 
-            DocumentService.resetDocumentList()
+            TableOfContentsService.resetDocumentList()
             _documentList = $localStorage.documentList
         }
 
@@ -1672,7 +1672,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 deferred.resolve(response.data);
                 var jsonData = response.data
                 var documents = jsonData['documents']
-                DocumentService.setDocumentList(documents)
+                TableOfContentsService.setDocumentList(documents)
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -1810,7 +1810,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                     var documents = links['documents'] || []
                     if (documents.length > 0) {
 
-                        DocumentService.setDocumentList(documents)
+                        TableOfContentsService.setDocumentList(documents)
                     }
 
                     /* Update $scope */
@@ -1969,8 +1969,7 @@ module.exports = function($localStorage, UserService) {
 
 
     // SUBDOCUMENTS:
-
-    // Subdocuments of current document
+    
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
     }
@@ -1997,81 +1996,6 @@ module.exports = function($localStorage, UserService) {
 
         return $localStorage.attachmentUrl
     }
-
-
-    
-    // DOCUMENT LIST
-
-    this.documentCount = function() { 
-        
-        if (this.documentList() == undefined) {
-            
-            return 0
-        }
-        else {
-            
-            return this.documentList().length
-        }    
-    }
-
-    // Results of search
-    this.setDocumentList = function(array) {
-
-        $localStorage.documentList = array
-        $localStorage.currentDocumentList = array
-        // $localStorage.documentId = array[0] // XXX: CUIDADO!!
-        this.currentDocumentList = array
-
-    }
-
-    this.resetDocumentList = function() {
-
-        this.currentDocumentList = $localStorage.documentList
-        // $localStorage.documentId = $localStorage.documentList[0]
-
-    }
-
-    this.clearDocumentList = function() {
-
-        console.log("DEBUG: clearDocumentList")
-        $localStorage.documentList = []
-        $localStorage.currentDocumentList = []
-
-    }
-
-
-    this.documentList = function() {
-
-        if (this.currentDocumentList == undefined) {
-
-            if ($localStorage.currentDocumentList == undefined) {
-
-                return []
-
-            } else {
-
-                return $localStorage.currentDocumentList
-            }
-        }
-        else {
-
-            if (this.currentDocumentList.length == 0) {
-
-                return $localStorage.currentDocumentList
-
-            } else {
-
-                return this.currentDocumentList
-            }
-
-
-        }
-
-
-    }
-
-
-
 
 
 
@@ -2174,16 +2098,45 @@ module.exports = function($localStorage, UserService) {
 
 }
 },{}],21:[function(require,module,exports){
-module.exports = function($state, $localStorage, UserService, DocumentService, DocumentApiService) {
-
-    this.hotList = function (scope) {
+module.exports = function($state, $localStorage, UserService, DocumentService, TableOfContentsService, DocumentApiService) {
 
 
-        var value = DocumentService.useHotList()
+    var self = this
+
+
+    self.setUseHotList = function(value, scope) {
+
+        console.log('^^^ 1, setUseHotList')
+
+        $localStorage.useHotList = value
+
+    }
+
+    self.useHotList = function() {
+
+        return $localStorage.useHotList
+    }
+
+    self.stashDocumentList = function() {
+
+        $localStorage.stashedDocumentList = $localStorage.documentList
+    }
+
+    self.popDocumentList = function(scope) {
+
+        $localStorage.documentList = $localStorage.stashedDocumentList
+        TableOfContentsService.setDocumentList($localStorage.documentList)
+
+    }
+
+    self.hotList = function (scope) {
+
+
+        var value = self.useHotList()
         console.log('TOGGLE HOTLIST, value = ' + value)
         value = !value
         console.log('1. ** (toggle) value = ' + value)
-        this.setUseHotList(value, scope)
+        self.setUseHotList(value, scope)
         console.log('2. ** (toggle) value = ' + value)
 
         if (value == true) {
@@ -2192,7 +2145,7 @@ module.exports = function($state, $localStorage, UserService, DocumentService, D
 
         } else {
 
-            DocumentService.popDocumentList(scope)
+            self.popDocumentList(scope)
             $state.go('documents', {}, {'reload': true})
         }
 
@@ -2210,38 +2163,14 @@ module.exports = function($state, $localStorage, UserService, DocumentService, D
                 var hotlist = request.data['hotlist']
 
                 console.log('HOTLIST: ' + JSON.stringify(hotlist))
-                DocumentService.stashDocumentList()
-                DocumentService.setDocumentList(hotlist)
+                self.stashDocumentList()
+                TableOfContentsService.setDocumentList(hotlist)
                 $state.go('documents', {}, {'reload': true})
 
             })
     }
 
 
-    this.setUseHotList = function(value, scope) {
-
-        console.log('^^^ 1, setUseHotList')
-
-        $localStorage.useHotList = value
-
-    }
-
-    this.useHotList = function() {
-
-        return $localStorage.useHotList
-    }
-
-    this.stashDocumentList = function() {
-
-        $localStorage.stashedDocumentList = $localStorage.documentList
-    }
-
-    this.popDocumentList = function(scope) {
-
-        $localStorage.documentList = $localStorage.stashedDocumentList
-        this.setDocumentList($localStorage.documentList)
-
-    }
 
 }
 },{}],22:[function(require,module,exports){
@@ -2400,7 +2329,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
                 }
 
 
-                DocumentService.setDocumentList(documents)
+                TableOfContentsService.setDocumentList(documents)
 
 
                 if (firstDocument == undefined) {
@@ -2461,6 +2390,79 @@ module.exports = function ($http, $sce, $state, $location, $q,
 }
 },{}],26:[function(require,module,exports){
 module.exports = function($localStorage) {
+
+
+    // DOCUMENT LIST
+
+    this.documentCount = function() {
+
+        if (this.documentList() == undefined) {
+
+            return 0
+        }
+        else {
+
+            return this.documentList().length
+        }
+    }
+
+    // Results of search
+    this.setDocumentList = function(array) {
+
+        $localStorage.documentList = array
+        $localStorage.currentDocumentList = array
+        // $localStorage.documentId = array[0] // XXX: CUIDADO!!
+        this.currentDocumentList = array
+
+    }
+
+    this.resetDocumentList = function() {
+
+        this.currentDocumentList = $localStorage.documentList
+        // $localStorage.documentId = $localStorage.documentList[0]
+
+    }
+
+    this.clearDocumentList = function() {
+
+        console.log("DEBUG: clearDocumentList")
+        $localStorage.documentList = []
+        $localStorage.currentDocumentList = []
+
+    }
+
+
+    this.documentList = function() {
+
+        if (this.currentDocumentList == undefined) {
+
+            if ($localStorage.currentDocumentList == undefined) {
+
+                return []
+
+            } else {
+
+                return $localStorage.currentDocumentList
+            }
+        }
+        else {
+
+            if (this.currentDocumentList.length == 0) {
+
+                return $localStorage.currentDocumentList
+
+            } else {
+
+                return this.currentDocumentList
+            }
+
+
+        }
+
+
+    }
+
+
 
 
     this.setTocTitle = function(title) {
