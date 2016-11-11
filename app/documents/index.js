@@ -9,6 +9,7 @@ app.service('SearchService', require('./services/SearchService'));
 app.service('PermissionService', require('./services/PermissionService'));
 app.service('HotListService', require('./services/HotListService'));
 app.service('MailService', require('./services/MailService'));
+app.service('BackupService', require('./services/BackupService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))

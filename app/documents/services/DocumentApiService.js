@@ -9,7 +9,7 @@
 
  *****/
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService,
-                           PermissionService, SearchService, UserService, GlobalService, envService, MathJaxService) {
+                           PermissionService, SearchService, UserService, GlobalService, envService, BackupService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -467,7 +467,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 console.log('backup view status: ' + response.data['status'])
                 console.log('  -- backup text length ' + response.data['backup_text'].length)
 
-                DocumentService.putBackup(response.data)
+                BackupService.putBackup(response.data)
                 $location.path('backups/')
                 $state.go('backups', {}, {reload: true})
 
