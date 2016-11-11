@@ -82,24 +82,11 @@ module.exports = function($localStorage, UserService) {
         console.log('*** NOTE! this.documentId = ' + id)
         return id
     }
-    
-    this.setTitle = function(title) { $localStorage.title = title}
-    this.title = function() { return this.document().title }
 
-
-    this.setIdentifier = function(identifier) { $localStorage.identifier = identifier}
-    this.identifier = function() { return this.document().identifier }
-
-
-    this.setAuthor = function(author) { $localStorage.author = author}
-    this.author = function() { return this.document().author }
     
     this.setText = function(text) { $localStorage.text = text }
     this.text = function() { return this.document().text }
-    
-    this.setKind = function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return $localStorage.documentKind }
-    
+
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
@@ -351,14 +338,10 @@ module.exports = function($localStorage, UserService) {
 
         $localStorage.currentDocument = document
         
-        this.setAuthor(document['author'] )
-        
         // These are eventually to be eliminated in favor of setDocumentItem
-        this.setTitle( document['title'] )
         this.setCurrentDocumentItem(document['id'], document['title'])
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
-        this.setKind( document['kind'])
         this.setPublic(document['public'])
         
         var links = document['links'] || {}
@@ -383,7 +366,6 @@ module.exports = function($localStorage, UserService) {
         var tags = document['tags'] || {}
 
         this.setTags(tags)
-        this.setIdentifier(document['identifier'])
         this.setSubdocuments(subdocuments)
         this.setHasSubdocuments(document['has_subdocuments'])
         return document['rendered_text']
@@ -405,7 +387,7 @@ module.exports = function($localStorage, UserService) {
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
                     text: scope.editText,
-                    author_name: this.author()
+                    author_name: this.document().author
                  }
         
         return _params

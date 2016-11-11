@@ -230,8 +230,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.reloadMathJax = function () {
         $timeout(
             function () {
-                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                MathJaxService.reload(DocumentService.kind(), message)
+                var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                MathJaxService.reload(DocumentService.document().kind, message)
             },
             mathJaxDelay)
 
@@ -249,8 +249,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
-                    var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                    MathJaxService.reload(DocumentService.kind(), message)
+                    var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                    MathJaxService.reload(DocumentService.document().kind, message)
                 },
                 mathJaxDelay)
             $scope.textDirty = false
@@ -260,7 +260,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     }
 
 
-    if (DocumentService.kind() == 'asciidoc-latex') {
+    if (DocumentService.document().kind == 'asciidoc-latex') {
 
         var periodicUpdate = $interval(callAtInterval, 60 * 1000);  // 1 minute
 
@@ -300,8 +300,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
-                    var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                    MathJaxService.reload(DocumentService.kind(), message)
+                    var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                    MathJaxService.reload(DocumentService.document().kind, message)
                 },
                 mathJaxDelay)
         } else {
@@ -333,9 +333,9 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.toggleParameterEditor = function () {
 
-        $scope.identifier = DocumentService.identifier()
+        $scope.identifier = DocumentService.document().identifier
         $scope.tags = DocumentService.tags()
-        $scope.kind = DocumentService.kind()
+        $scope.kind = DocumentService.document().kind
         $scope.showTools = !$scope.showTools
     }
 
@@ -389,7 +389,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if ($scope.editDocument) {
 
-            if (kk == DocumentService.kind()) {
+            if (kk == DocumentService.document().kind) {
                 return {"background-color": "#efe"}
             } else {
                 return {}
@@ -405,7 +405,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         //console.log('*** kk ' + kk)
         var id = DocumentService.documentId()
-        var params = {id: id, kind: kk, author_name: DocumentService.author()}
+        var params = {id: id, kind: kk, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
     }
 
@@ -414,7 +414,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         var id = DocumentService.documentId()
         var params = {
             id: id, tags: $scope.tags,
-            identifier: $scope.identifier, author_name: DocumentService.author()
+            identifier: $scope.identifier, author_name: DocumentService.document().author()
         }
         DocumentApiService.update(params, $scope)
     }
@@ -422,7 +422,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.attachDocument = function () {
 
         var id = DocumentService.currentDocumentItem().id
-        var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
+        var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
 
     }

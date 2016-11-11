@@ -15,7 +15,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         // scope.tocTitle = 'Search results'
         scope.tocTitleClass = function () { return { color: 'black'}}
-        console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
+        console.log('**** ' + DocumentService.document().title + ': ' + DocumentService.parentId())
 
         scope.activateContentsHeading = function() {
 
@@ -319,7 +319,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 var  url = jsonData['tar_url']
                 // return the title of the document. This is the signal
                 // that the tar file is ready
-                scope.title = DocumentService.title()
+                scope.title = DocumentService.document().title
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -391,7 +391,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
     this.move_subdocument = function (parent_id, subdocument_id, command, scope) {
 
-        var parameter = JSON.stringify({author_name: DocumentService.author()});
+        var parameter = JSON.stringify({author_name: DocumentService.document().author});
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 

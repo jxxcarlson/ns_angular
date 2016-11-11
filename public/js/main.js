@@ -591,8 +591,8 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
         console.log(' (XX), content loaded')
         $timeout(
             function () {
-                var message = ' (CC), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                MathJaxService.reload2(DocumentService.kind(), message)
+                var message = ' (CC), DC for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                MathJaxService.reload2(DocumentService.document().kind, message)
             },
             mathJaxDelay)
 
@@ -899,8 +899,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.reloadMathJax = function () {
         $timeout(
             function () {
-                var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                MathJaxService.reload(DocumentService.kind(), message)
+                var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                MathJaxService.reload(DocumentService.document().kind, message)
             },
             mathJaxDelay)
 
@@ -918,8 +918,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
-                    var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                    MathJaxService.reload(DocumentService.kind(), message)
+                    var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                    MathJaxService.reload(DocumentService.document().kind, message)
                 },
                 mathJaxDelay)
             $scope.textDirty = false
@@ -929,7 +929,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     }
 
 
-    if (DocumentService.kind() == 'asciidoc-latex') {
+    if (DocumentService.document().kind == 'asciidoc-latex') {
 
         var periodicUpdate = $interval(callAtInterval, 60 * 1000);  // 1 minute
 
@@ -969,8 +969,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
-                    var message = 'MMM, doc ctrl for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                    MathJaxService.reload(DocumentService.kind(), message)
+                    var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                    MathJaxService.reload(DocumentService.document().kind, message)
                 },
                 mathJaxDelay)
         } else {
@@ -1002,9 +1002,9 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     $scope.toggleParameterEditor = function () {
 
-        $scope.identifier = DocumentService.identifier()
+        $scope.identifier = DocumentService.document().identifier
         $scope.tags = DocumentService.tags()
-        $scope.kind = DocumentService.kind()
+        $scope.kind = DocumentService.document().kind
         $scope.showTools = !$scope.showTools
     }
 
@@ -1058,7 +1058,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if ($scope.editDocument) {
 
-            if (kk == DocumentService.kind()) {
+            if (kk == DocumentService.document().kind) {
                 return {"background-color": "#efe"}
             } else {
                 return {}
@@ -1074,7 +1074,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         //console.log('*** kk ' + kk)
         var id = DocumentService.documentId()
-        var params = {id: id, kind: kk, author_name: DocumentService.author()}
+        var params = {id: id, kind: kk, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
     }
 
@@ -1083,7 +1083,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         var id = DocumentService.documentId()
         var params = {
             id: id, tags: $scope.tags,
-            identifier: $scope.identifier, author_name: DocumentService.author()
+            identifier: $scope.identifier, author_name: DocumentService.document().author()
         }
         DocumentApiService.update(params, $scope)
     }
@@ -1091,7 +1091,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.attachDocument = function () {
 
         var id = DocumentService.currentDocumentItem().id
-        var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.author()}
+        var params = {id: id, query_string: 'attach_to=' + $scope.childOf, author_name: DocumentService.document().author}
         DocumentApiService.update(params, $scope)
 
     }
@@ -1397,7 +1397,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
         // scope.tocTitle = 'Search results'
         scope.tocTitleClass = function () { return { color: 'black'}}
-        console.log('**** ' + DocumentService.title() + ': ' + DocumentService.parentId())
+        console.log('**** ' + DocumentService.document().title + ': ' + DocumentService.parentId())
 
         scope.activateContentsHeading = function() {
 
@@ -1701,7 +1701,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
                 var  url = jsonData['tar_url']
                 // return the title of the document. This is the signal
                 // that the tar file is ready
-                scope.title = DocumentService.title()
+                scope.title = DocumentService.document().title
                 // promise is returned
                 return deferred.promise;
             }, function (response) {
@@ -1773,7 +1773,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
     this.move_subdocument = function (parent_id, subdocument_id, command, scope) {
 
-        var parameter = JSON.stringify({author_name: DocumentService.author()});
+        var parameter = JSON.stringify({author_name: DocumentService.document().author});
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
@@ -1990,24 +1990,11 @@ module.exports = function($localStorage, UserService) {
         console.log('*** NOTE! this.documentId = ' + id)
         return id
     }
-    
-    this.setTitle = function(title) { $localStorage.title = title}
-    this.title = function() { return this.document().title }
 
-
-    this.setIdentifier = function(identifier) { $localStorage.identifier = identifier}
-    this.identifier = function() { return this.document().identifier }
-
-
-    this.setAuthor = function(author) { $localStorage.author = author}
-    this.author = function() { return this.document().author }
     
     this.setText = function(text) { $localStorage.text = text }
     this.text = function() { return this.document().text }
-    
-    this.setKind = function(kind) { $localStorage.documentKind = kind }
-    this.kind = function() { return $localStorage.documentKind }
-    
+
     this.setPublic= function(value) { 
         $localStorage.public = value 
     }
@@ -2259,14 +2246,10 @@ module.exports = function($localStorage, UserService) {
 
         $localStorage.currentDocument = document
         
-        this.setAuthor(document['author'] )
-        
         // These are eventually to be eliminated in favor of setDocumentItem
-        this.setTitle( document['title'] )
         this.setCurrentDocumentItem(document['id'], document['title'])
         this.setText( document['text'] )
         this.setRenderedText( document['rendered_text'] )
-        this.setKind( document['kind'])
         this.setPublic(document['public'])
         
         var links = document['links'] || {}
@@ -2291,7 +2274,6 @@ module.exports = function($localStorage, UserService) {
         var tags = document['tags'] || {}
 
         this.setTags(tags)
-        this.setIdentifier(document['identifier'])
         this.setSubdocuments(subdocuments)
         this.setHasSubdocuments(document['has_subdocuments'])
         return document['rendered_text']
@@ -2313,7 +2295,7 @@ module.exports = function($localStorage, UserService) {
                     title: scope.editableTitle, 
                     public: scope.statusPublic,
                     text: scope.editText,
-                    author_name: this.author()
+                    author_name: this.document().author
                  }
         
         return _params
@@ -2465,7 +2447,7 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
         } else {
 
 
-            if (DocumentService.author() == UserService.username()) {
+            if (DocumentService.document().author == UserService.username()) {
 
                 console.log('DEBUG permissionService: user == author')
 
@@ -3354,7 +3336,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     try {
 
-        var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.author() != UserService.username())
+        var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.document().author != UserService.username())
 
     }
     catch(err) {

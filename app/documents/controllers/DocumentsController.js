@@ -153,8 +153,8 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
         console.log(' (XX), content loaded')
         $timeout(
             function () {
-                var message = ' (CC), DC for ' + DocumentService.title() + ', kind = ' + DocumentService.kind()
-                MathJaxService.reload2(DocumentService.kind(), message)
+                var message = ' (CC), DC for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                MathJaxService.reload2(DocumentService.document().kind, message)
             },
             mathJaxDelay)
 

@@ -7,7 +7,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     try {
 
-        var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.author() != UserService.username())
+        var documentCanShowSource = (UserService.accessTokenValid() && DocumentService.document().author != UserService.username())
 
     }
     catch(err) {

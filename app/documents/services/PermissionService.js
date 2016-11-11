@@ -13,7 +13,7 @@ module.exports = function (DocumentService, DocumentApiService, UserService, $st
         } else {
 
 
-            if (DocumentService.author() == UserService.username()) {
+            if (DocumentService.document().author == UserService.username()) {
 
                 console.log('DEBUG permissionService: user == author')
 
