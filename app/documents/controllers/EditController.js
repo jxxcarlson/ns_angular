@@ -245,7 +245,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         if ($scope.textDirty) {
             updateCount += 1
             // console.log('callAtInterval:  UPDATE')
-            $scope.wordCount = DocumentService.text().split(' ').length
+            $scope.wordCount = DocumentService.document().text.split(' ').length
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
@@ -296,7 +296,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (event.keyCode == 27) {
             // console.log('ESCAPE pressed -- saving document')
-            $scope.wordCount = DocumentService.text().split(' ').length
+            $scope.wordCount = DocumentService.document().text.split(' ').length
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
@@ -316,7 +316,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 keyStrokeCount = 0
                 //console.log('Calling API service, update')
                 DocumentApiService.update(DocumentService.params($scope), $scope)
-                $scope.wordCount = DocumentService.text().split(' ').length
+                $scope.wordCount = DocumentService.document().text.split(' ').length
                 $scope.textDirty = false
             } else {
 
@@ -334,7 +334,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.toggleParameterEditor = function () {
 
         $scope.identifier = DocumentService.document().identifier
-        $scope.tags = DocumentService.tags()
+        $scope.tags = DocumentService.document().tags
         $scope.kind = DocumentService.document().kind
         $scope.showTools = !$scope.showTools
     }
@@ -414,7 +414,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         var id = DocumentService.documentId()
         var params = {
             id: id, tags: $scope.tags,
-            identifier: $scope.identifier, author_name: DocumentService.document().author()
+            identifier: $scope.identifier, author_name: DocumentService.document().author
         }
         DocumentApiService.update(params, $scope)
     }

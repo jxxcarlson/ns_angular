@@ -914,7 +914,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         if ($scope.textDirty) {
             updateCount += 1
             // console.log('callAtInterval:  UPDATE')
-            $scope.wordCount = DocumentService.text().split(' ').length
+            $scope.wordCount = DocumentService.document().text.split(' ').length
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
@@ -965,7 +965,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (event.keyCode == 27) {
             // console.log('ESCAPE pressed -- saving document')
-            $scope.wordCount = DocumentService.text().split(' ').length
+            $scope.wordCount = DocumentService.document().text.split(' ').length
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
@@ -985,7 +985,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 keyStrokeCount = 0
                 //console.log('Calling API service, update')
                 DocumentApiService.update(DocumentService.params($scope), $scope)
-                $scope.wordCount = DocumentService.text().split(' ').length
+                $scope.wordCount = DocumentService.document().text.split(' ').length
                 $scope.textDirty = false
             } else {
 
@@ -1003,7 +1003,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.toggleParameterEditor = function () {
 
         $scope.identifier = DocumentService.document().identifier
-        $scope.tags = DocumentService.tags()
+        $scope.tags = DocumentService.document().tags
         $scope.kind = DocumentService.document().kind
         $scope.showTools = !$scope.showTools
     }
@@ -1083,7 +1083,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         var id = DocumentService.documentId()
         var params = {
             id: id, tags: $scope.tags,
-            identifier: $scope.identifier, author_name: DocumentService.document().author()
+            identifier: $scope.identifier, author_name: DocumentService.document().author
         }
         DocumentApiService.update(params, $scope)
     }
@@ -1926,6 +1926,14 @@ module.exports = function($localStorage, UserService) {
     
     ***********/
 
+    // ID:
+
+    this.documentId = function() {
+        var id = this.currentDocumentItem().id
+        console.log('*** NOTE! this.documentId = ' + id)
+        return id
+    }
+
 
     this.parentId = function() {
 
@@ -1943,6 +1951,28 @@ module.exports = function($localStorage, UserService) {
         }
 
     }
+
+    // An item is an object with fields id and a title
+    this.makeDocumentItem = function(id, title) {
+
+        var obj = {}
+        obj.id = id
+        obj.title = title
+
+        return obj
+    }
+
+    this.setCurrentDocumentItem = function(id, title) {
+        var item = this.makeDocumentItem(id,title)
+        $localStorage.currentDocumentItem = item
+    }
+    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
+
+
+
+
+
+    // PERMISSIONS
 
     this.setPermissions = function(permissions) {
 
@@ -1973,8 +2003,6 @@ module.exports = function($localStorage, UserService) {
     }
 
 
-
-
     this.setCanShowSource = function(value) {
 
         $localStorage.canShowSource = value
@@ -1985,48 +2013,9 @@ module.exports = function($localStorage, UserService) {
         return $localStorage.canShowSource
     }
 
-    this.documentId = function() {
-        var id = this.currentDocumentItem().id
-        console.log('*** NOTE! this.documentId = ' + id)
-        return id
-    }
-
-    
-    this.setText = function(text) { $localStorage.text = text }
-    this.text = function() { return this.document().text }
-
-    this.setPublic= function(value) { 
-        $localStorage.public = value 
-    }
-    this.getPublic = function() {
-
-        // getPublic is called by the DocumentsController
-        // Under certain circumstances this call comes
-        // before this.document() is defined 
-        if (this.document() == undefined) {
-
-            return false
-
-        } else {
-
-            return this.document().public
-
-        }
 
 
-    }
-    
-    this.setRenderedText = function(renderedText) { $localStorage.renderedText = renderedText}
-    this.renderedText = function() { return this.document().renderedText }
-
-    this.setTags = function(tags) { $localStorage.tags = tags}
-    this.tags = function() { return  this.document().tags  }
-
-    this.setPrintUrl = function(url) { $localStorage.printUrl = url }
-    this.printUrl = function() { return this.document().printUrl }
-
-    this.setLatexExportUrl = function(url) { $localStorage.latexExportUrl = url; console.log('****   setLatexExportUrl: '+ url) }
-    this.latexExportUrl = function() { return this.document().latexExportUrl }
+    // BACKUP:
 
     this.putBackup = function(data) {
 
@@ -2050,7 +2039,10 @@ module.exports = function($localStorage, UserService) {
         return $localStorage.backupDate
     }
 
-    //// SPECIAL (JJJJ) ////
+
+
+    // SUBDOCUEMNTS:
+
     // Subdocuments of current document
     this.setSubdocuments = function(subdocumentArray) { 
         $localStorage.subdocuments = subdocumentArray
@@ -2060,6 +2052,14 @@ module.exports = function($localStorage, UserService) {
 
     this.setHasSubdocuments = function(value) { $localStorage.hasSubdocuments = value }
     this.hasSubdocuments = function() { return ($localStorage.hasSubdocuments || false)  }
+
+    this.showThatItHasSubdocuments = function(doc) {
+
+        return doc['has_subdocuments']
+    }
+
+
+    //  ATTACHMENTS
 
     this.setAttachmentUrl = function(url) {
 
@@ -2073,23 +2073,7 @@ module.exports = function($localStorage, UserService) {
 
 
     
-    
-    // An item is an object with fields id and a title
-    this.makeDocumentItem = function(id, title) {
-        
-        var obj = {}
-        obj.id = id
-        obj.title = title
-        
-        return obj
-    }
-
-    this.setCurrentDocumentItem = function(id, title) { 
-        var item = this.makeDocumentItem(id,title)
-        $localStorage.currentDocumentItem = item  
-    }
-    this.currentDocumentItem = function() { return $localStorage.currentDocumentItem }
-    
+    // DOCUMENT LIST
 
     this.documentCount = function() { 
         
@@ -2102,10 +2086,6 @@ module.exports = function($localStorage, UserService) {
             return this.documentList().length
         }    
     }
-    
-
-
-    /// BEGIN MAIN STRUCTURE (JJJJ) ///
 
     // Results of search
     this.setDocumentList = function(array) {
@@ -2165,6 +2145,8 @@ module.exports = function($localStorage, UserService) {
 
 
 
+    // HOTLIST
+
     this.setUseHotList = function(value, scope) {
 
         console.log('^^^ 1, setUseHotList')
@@ -2172,6 +2154,28 @@ module.exports = function($localStorage, UserService) {
         $localStorage.useHotList = value
 
     }
+
+    this.useHotList = function() {
+
+        return $localStorage.useHotList
+    }
+
+    this.stashDocumentList = function() {
+
+        $localStorage.stashedDocumentList = $localStorage.documentList
+    }
+
+    this.popDocumentList = function(scope) {
+
+        $localStorage.documentList = $localStorage.stashedDocumentList
+        this.setDocumentList($localStorage.documentList)
+
+    }
+
+
+
+
+    // TABLE OF CONTENTS
 
 
     this.setTocTitle = function(title) {
@@ -2199,25 +2203,40 @@ module.exports = function($localStorage, UserService) {
     }
 
 
-    this.useHotList = function() {
+    this.tocStyle = function(doc) {
 
-        return $localStorage.useHotList
+        var currentDocumentId = $localStorage.currentDocumentItem.id
+        var css = {}
+
+        if (doc['id'] == currentDocumentId) {
+            css["background-color"] = "#ddf"
+        }
+        if (doc['public'] == true ) {
+            css["font-style"] = "italic"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
+            css["background-color"] = "#fdd"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == currentDocumentId ) {
+            css["background-color"] = "#fbb"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
+            css["background-color"] = "#dfd"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == currentDocumentId  ) {
+            css["background-color"] = "#8f8"
+        }
+
+        return css
     }
 
-    this.stashDocumentList = function() {
 
-        $localStorage.stashedDocumentList = $localStorage.documentList
-    }
+    // DOCUMENT
 
-    this.popDocumentList = function(scope) {
-
-        $localStorage.documentList = $localStorage.stashedDocumentList
-        this.setDocumentList($localStorage.documentList)
-
-    }
 
     this.document = function() {
 
+        // Fallback  if page is reloaded:
         if (this.currentDocument == undefined) {
 
             return $localStorage.currentDocument
@@ -2235,6 +2254,7 @@ module.exports = function($localStorage, UserService) {
 
         console.log('Document Service, update')
 
+        // GUARD:
         if (document == undefined) {
 
             console.log('WARNING: document is undefined')
@@ -2242,18 +2262,15 @@ module.exports = function($localStorage, UserService) {
             return
         }
 
+        // Set document in memory
         this.currentDocument = document
-
+        // .. and mirror it "on disk"
         $localStorage.currentDocument = document
         
         // These are eventually to be eliminated in favor of setDocumentItem
         this.setCurrentDocumentItem(document['id'], document['title'])
-        this.setText( document['text'] )
-        this.setRenderedText( document['rendered_text'] )
-        this.setPublic(document['public'])
         
         var links = document['links'] || {}
-        var subdocuments = links['documents'] || []
         var resources = links['resources']
         if (resources != undefined) {
 
@@ -2271,24 +2288,36 @@ module.exports = function($localStorage, UserService) {
             }
         }
 
-        var tags = document['tags'] || {}
-
-        this.setTags(tags)
+        var subdocuments = links['documents'] || []
         this.setSubdocuments(subdocuments)
         this.setHasSubdocuments(document['has_subdocuments'])
+
+
         return document['rendered_text']
         
     }
 
-    /// END MAIN STRUCTURE ///
-    
+    // DOCUMENT PROPERTIES
+
+
+    this.getPublic = function() {
+
+        // getPublic is called by the DocumentsController
+        // Under certain circumstances this call comes
+        // before this.document() is defined
+        if (this.document() == undefined) {
+
+            return false
+
+        } else {
+
+            return this.document().public
+
+        }
+
+    }
+
     this.params = function(scope) {
-
-
-        console.log('*** DS, params')
-        console.log('*** DS, params, id = ' + this.document().id)
-        console.log('*** DS, params, title = ' + this.document().title)
-        console.log('*** DS, params, author = ' + this.document().author)
 
         var _params = { 
                     id: scope.id,
@@ -2300,41 +2329,6 @@ module.exports = function($localStorage, UserService) {
         
         return _params
     }
-
-
-   this.tocStyle = function(doc) {
-
-        var currentDocumentId = $localStorage.currentDocumentItem.id
-        var css = {}
-
-        if (doc['id'] == currentDocumentId) {
-            css["background-color"] = "#ddf"
-        }
-        if (doc['public'] == true ) {
-            css["font-style"] = "italic"
-        }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
-           css["background-color"] = "#fdd"
-       }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == currentDocumentId ) {
-           css["background-color"] = "#fbb"
-       }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
-           css["background-color"] = "#dfd"
-       }
-       if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == currentDocumentId  ) {
-           css["background-color"] = "#8f8"
-       }
-
-        return css
-    }
-
-    this.showThatItHasSubdocuments = function(doc) {
-
-        return doc['has_subdocuments']
-    }
-
-    
 
 }
 },{}],20:[function(require,module,exports){
