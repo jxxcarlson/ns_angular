@@ -1,6 +1,6 @@
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            HttpService, DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
-                           MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
+                           BackupService, MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
     var keyStrokeCount = 0
@@ -112,7 +112,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
             $scope.lastBackupNumber = backupNumber
 
-            var t = DocumentService.document().dict['backup']['date'].split(':')
+            var t = DocumentService.document().dict['backup']['date'].split(':')  //FIX// //XX// date field can be undefined
             t = t[0] + ':' + t[1]
             t = t.replace('T', ', ')
 
@@ -180,7 +180,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     var setupDocArray = function() {
 
-        var _documentList = DocumentService.documentList()
+        var _documentList = TableOfContentsService.documentList()
 
         if (_documentList.length == 0) {
 
@@ -454,7 +454,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.backupDocument = function () {
 
         console.log('Controller: backupDocument')
-        DocumentApiService.backupDocument()
+        BackupService.backupDocument()
 
     }
 

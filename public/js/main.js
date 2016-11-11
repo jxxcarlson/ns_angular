@@ -834,7 +834,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     var setupDocArray = function() {
 
-        var _documentList = DocumentService.documentList()
+        var _documentList = TableOfContentsService.documentList()
 
         if (_documentList.length == 0) {
 
