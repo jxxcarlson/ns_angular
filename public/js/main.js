@@ -585,6 +585,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     });
      **/
 
+    // https://www.bennadel.com/blog/2548-don-t-forget-to-cancel-timeout-timers-in-your-destroy-events-in-angularjs.htm
     $scope.$on('$viewContentLoaded', function(){
 
         console.log(' (XX), content loaded')
@@ -3391,7 +3392,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('production');
+    envService.set('development');
 
 
 
