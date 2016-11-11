@@ -6,7 +6,7 @@
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
 
-                           DocumentService, PermissionService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
+                           DocumentService, TableOfContentsService, PermissionService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
     if (DocumentService.document() == undefined) {
@@ -54,22 +54,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     DocumentApiService.getDocument($scope, id, queryObj)
 
 
-    $scope.tocTitle = DocumentService.tocTitle()
-
-    /**
-    if (DocumentService.documentList() == undefined) {
-
-        $scope.tocHeading = 'X'
-
-    } else {
-
-        $scope.tocHeading = DocumentService.tocTitle() + ' (' + DocumentService.documentList().length + ')'
-
-    }
-     */
-
-
-
+    $scope.tocTitle = TableOfContentsService.tocTitle()
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
     console.log('1. queryObj[option] = ' + queryObj['option'])
@@ -104,7 +89,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // HERE //
 
 
-    $scope.docStyle = DocumentService.tocStyle
+    $scope.docStyle = TableOfContentsService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
 

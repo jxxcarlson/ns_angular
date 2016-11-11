@@ -1,5 +1,5 @@
 module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
-                           UserService, SearchService,
+                           UserService, SearchService, TableOfContentsService,
                            DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys, MailService) {
     $scope.items = [
         'The first choice!',
@@ -44,27 +44,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.userDocuments = function () {
         console.log('DEBUG: User documents:override')
-        DocumentService.setTocTitle('User documents:override')
+        TableOfContentsService.setTocTitle('User documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
-        DocumentService.setTocTitle('G. Search results')
+        TableOfContentsService.setTocTitle('G. Search results')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('Random documents:override')
+        TableOfContentsService.setTocTitle('Random documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.home = function () {
         console.log('GO HOME')
-        DocumentService.setTocTitlePreferred('H. Search results')
+        TableOfContentsService.setTocTitlePreferred('H. Search results')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
@@ -94,7 +94,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.publicDocuments = function () {
         console.log('DEBUG: Public documents:override')
-        DocumentService.setTocTitle('Public documents:override')
+        TableOfContentsService.setTocTitle('Public documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
@@ -111,13 +111,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.getUserManual = function() {
 
         // SearchService.query('id=227', $scope, 'documents')
-        DocumentService.setTocTitle('Contents')
+        TableOfContentsService.setTocTitle('Contents')
         $state.go('documents', {id: '227', option: 'toc'}, {reload: true})
     }
 
     $scope.getAsciidocGuide = function() {
 
-        DocumentService.setTocTitle('Contents')
+        TableOfContentsService.setTocTitle('Contents')
         $state.go('documents', {id: '152', option: 'toc'}, {reload: true})
     }
 
@@ -214,7 +214,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
-            DocumentService.setTocTitle('User documents:override')
+            TableOfContentsService.setTocTitle('User documents:override')
             SearchService.query('user=' + UserService.username(), $scope)
         }
     });
@@ -225,7 +225,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
-            DocumentService.setTocTitle('Public documents:override')
+            TableOfContentsService.setTocTitle('Public documents:override')
             SearchService.query('scope=public', $scope, 'documents')
         }
     });
@@ -307,7 +307,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'User Manual',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setTocTitle('L. Search results')
+            TableOfContentsService.setTocTitle('L. Search results')
             HotListService.setUseHotList(false, $scope)
             $scope.getUserManual()
         }
@@ -318,7 +318,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'Asciidoc Guide',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setTocTitle('BB. Contents')
+            TableOfContentsService.setTocTitle('BB. Contents')
             HotListService.setUseHotList(false, $scope)
             $scope.getAsciidocGuide()
         }

@@ -10,6 +10,7 @@ app.service('PermissionService', require('./services/PermissionService'));
 app.service('HotListService', require('./services/HotListService'));
 app.service('MailService', require('./services/MailService'));
 app.service('BackupService', require('./services/BackupService'));
+app.service('TableOfContentsService', require('./services/TableOfContentsService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))

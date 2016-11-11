@@ -65,7 +65,7 @@ app.controller('AdminController', require('./controllers/AdminController'))
 
 /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/AdminController":1,"angular":60}],3:[function(require,module,exports){
+},{"./controllers/AdminController":1,"angular":61}],3:[function(require,module,exports){
 // http://henriquat.re/modularizing-angularjs/modularizing-angular-applications/modularizing-angular-applications.html
 // http://henriquat.re/
 // https://www.safaribooksonline.com/blog/2014/03/27/13-step-guide-angularjs-modularization/
@@ -135,7 +135,7 @@ require('./admin')
 
 
 
-},{"./admin":2,"./directives":7,"./documents":17,"./images":29,"./search":34,"./services":41,"./site":44,"./topLevel":49,"./user":56,"angular":60,"angular-route":58}],4:[function(require,module,exports){
+},{"./admin":2,"./directives":7,"./documents":17,"./images":30,"./search":35,"./services":42,"./site":45,"./topLevel":50,"./user":57,"angular":61,"angular-route":59}],4:[function(require,module,exports){
 // UPLOAD TO S3: http://www.cheynewallace.com/uploading-to-s3-with-angularjs-and-pre-signed-urls/
 
 module.exports = function() {
@@ -212,7 +212,7 @@ app.directive('file', require('./File'))
   
 
 
-},{"./File":4,"./elemReady":5,"./enterOnKeyPress":6,"angular":60}],8:[function(require,module,exports){
+},{"./File":4,"./elemReady":5,"./enterOnKeyPress":6,"angular":61}],8:[function(require,module,exports){
 module.exports = function(DocumentApiService, UserService, $location, $confirm) {
 
 
@@ -444,7 +444,7 @@ module.exports = function($scope, $stateParams, $confirm, $location, $state, $ht
 
 module.exports = function ($scope, $state, $window, $location, $timeout, $stateParams, $state, $sce, DocumentApiService,
 
-                           DocumentService, PermissionService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
+                           DocumentService, TableOfContentsService, PermissionService, HotListService, UserService, MathJaxService, mathJaxDelay, MailService, notFoundErrorDocumentId) {
 
     console.log('DEBUG: ENTER DOCS CONTROLLER, $stateParams.id: ' + $stateParams.id)
     if (DocumentService.document() == undefined) {
@@ -492,22 +492,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     DocumentApiService.getDocument($scope, id, queryObj)
 
 
-    $scope.tocTitle = DocumentService.tocTitle()
-
-    /**
-    if (DocumentService.documentList() == undefined) {
-
-        $scope.tocHeading = 'X'
-
-    } else {
-
-        $scope.tocHeading = DocumentService.tocTitle() + ' (' + DocumentService.documentList().length + ')'
-
-    }
-     */
-
-
-
+    $scope.tocTitle = TableOfContentsService.tocTitle()
 
     console.log('queryObj = ' + JSON.stringify(queryObj))
     console.log('1. queryObj[option] = ' + queryObj['option'])
@@ -542,7 +527,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
     // HERE //
 
 
-    $scope.docStyle = DocumentService.tocStyle
+    $scope.docStyle = TableOfContentsService.tocStyle
     $scope.hasSubdocument = DocumentService.showThatItHasSubdocuments
     $scope.documentId = id
 
@@ -668,7 +653,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 }
 },{}],11:[function(require,module,exports){
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
-                           DocumentService, DocumentApiService, UserService, envService,
+                           DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
                            MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
@@ -1044,7 +1029,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             })
     }
 
-    $scope.docStyle = DocumentService.tocStyle
+    $scope.docStyle = TableOfContentsService.tocStyle
 
     $scope.publicStyle = function () {
 
@@ -1368,6 +1353,7 @@ app.service('PermissionService', require('./services/PermissionService'));
 app.service('HotListService', require('./services/HotListService'));
 app.service('MailService', require('./services/MailService'));
 app.service('BackupService', require('./services/BackupService'));
+app.service('TableOfContentsService', require('./services/TableOfContentsService'));
 
 app.controller('newDocumentController', require('./controllers/NewDocumentController'))
 app.controller('documentsController', require('./controllers/DocumentsController'))
@@ -1382,7 +1368,7 @@ app.controller('BackupManagerController', require('./controllers/BackupManagerCo
 
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
-},{"./controllers/BackupManagerController":8,"./controllers/DeleteDocumentController":9,"./controllers/DocumentsController":10,"./controllers/EditController":11,"./controllers/EditMenuController":12,"./controllers/ExportLatexController":13,"./controllers/NewDocumentController":14,"./controllers/PrintDocumentController":15,"./controllers/SearchController":16,"./services//DocumentService":20,"./services/BackupService":18,"./services/DocumentApiService":19,"./services/HotListService":21,"./services/MailService":22,"./services/MathJaxService":23,"./services/PermissionService":24,"./services/SearchService":25,"angular":60}],18:[function(require,module,exports){
+},{"./controllers/BackupManagerController":8,"./controllers/DeleteDocumentController":9,"./controllers/DocumentsController":10,"./controllers/EditController":11,"./controllers/EditMenuController":12,"./controllers/ExportLatexController":13,"./controllers/NewDocumentController":14,"./controllers/PrintDocumentController":15,"./controllers/SearchController":16,"./services//DocumentService":20,"./services/BackupService":18,"./services/DocumentApiService":19,"./services/HotListService":21,"./services/MailService":22,"./services/MathJaxService":23,"./services/PermissionService":24,"./services/SearchService":25,"./services/TableOfContentsService":26,"angular":61}],18:[function(require,module,exports){
 module.exports = function($localStorage) {
 
 
@@ -1424,8 +1410,9 @@ module.exports = function($localStorage) {
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService,
-                           PermissionService, SearchService, UserService, GlobalService, envService, BackupService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
+                           DocumentService, TableOfContentsService, PermissionService, SearchService,
+                           UserService, GlobalService, envService, BackupService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -1437,11 +1424,11 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
         scope.activateContentsHeading = function() {
 
             console.log('*** go up')
-            DocumentService.setTocTitle('Contents')
+            TableOfContentsService.setTocTitle('Contents')
             scope.tocTitleClass = function () { return { color: '#005FFF'} }
         }
 
-        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
+        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + TableOfContentsService.tocTitlePreferred())
 
         scope.tocTitleClass = function () { return { color: 'black'}}
 
@@ -1451,9 +1438,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
             scope.tocTitle = 'Hotlist'
             scope.tocTitleClass = function () { return { color: 'darkred'}}
 
-        } else if ( DocumentService.tocTitlePreferred() != '' ) {
+        } else if ( TableOfContentsService.tocTitlePreferred() != '' ) {
 
-            scope.tocTitle = DocumentService.tocTitlePreferred()
+            scope.tocTitle = TableOfContentsService.tocTitlePreferred()
 
             console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
 
@@ -1466,17 +1453,17 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2c. TOCTITLE: CONTENTS')
 
-            DocumentService.setTocTitle('Contents')
+            TableOfContentsService.setTocTitle('Contents')
             // scope.tocTitleClass = function () { return { color: '#005FFF'}}
 
         } else {
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
             // scope.tocTitle = 'Search results'
-            DocumentService.setTocTitle('Links')
+            TableOfContentsService.setTocTitle('Links')
         }
 
-        DocumentService.setTocTitlePreferred('')
+        TableOfContentsService.setTocTitlePreferred('')
     }
 
     var setDocumentList = function(document, scope) {
@@ -1616,7 +1603,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 } else if ((DocumentService.hasSubdocuments() || document.parentId != 0) && (queryObj['toc'] || $stateParams.option == 'toc' )) {
 
-                    DocumentService.setTocTitle('Contents')
+                    TableOfContentsService.setTocTitle('Contents')
                     setDocumentList(document, scope)
 
                 }
@@ -1628,7 +1615,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 } else {
 
-                    scope.tocHeading = DocumentService.tocTitle() + ' (' + scope.docArray.length + ')'
+                    scope.tocHeading = TableOfContentsService.tocTitle() + ' (' + scope.docArray.length + ')'
 
                 }
 
@@ -2086,60 +2073,7 @@ module.exports = function($localStorage, UserService) {
 
 
 
-    // TABLE OF CONTENTS
 
-
-    this.setTocTitle = function(title) {
-
-        $localStorage.tocTitle = title
-    }
-
-
-    this.tocTitle = function() {
-
-        return $localStorage.tocTitle || '0. Search Results'
-    }
-
-    this.setTocTitlePreferred = function(value) {
-
-        console.log('TOCTITLE PREFERRED, set to ' + value)
-
-        $localStorage.tocTitlePreferred = value
-    }
-
-    this.tocTitlePreferred = function() {
-
-       return $localStorage.tocTitlePreferred || ''
-
-    }
-
-
-    this.tocStyle = function(doc) {
-
-        var currentDocumentId = $localStorage.currentDocumentItem.id
-        var css = {}
-
-        if (doc['id'] == currentDocumentId) {
-            css["background-color"] = "#ddf"
-        }
-        if (doc['public'] == true ) {
-            css["font-style"] = "italic"
-        }
-        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
-            css["background-color"] = "#fdd"
-        }
-        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == currentDocumentId ) {
-            css["background-color"] = "#fbb"
-        }
-        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
-            css["background-color"] = "#dfd"
-        }
-        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == currentDocumentId  ) {
-            css["background-color"] = "#8f8"
-        }
-
-        return css
-    }
 
 
     // DOCUMENT
@@ -2240,7 +2174,7 @@ module.exports = function($localStorage, UserService) {
 
 }
 },{}],21:[function(require,module,exports){
-module.exports = function($state, UserService, DocumentService, DocumentApiService) {
+module.exports = function($state, $localStorage, UserService, DocumentService, DocumentApiService) {
 
     this.hotList = function (scope) {
 
@@ -2440,7 +2374,7 @@ module.exports = function (DocumentService, UserService, $localStorage ) {
 
 },{}],25:[function(require,module,exports){
 module.exports = function ($http, $sce, $state, $location, $q,
-                           DocumentService, envService, UserService, QueryParser) {
+                           DocumentService, TableOfContentsService, envService, UserService, QueryParser) {
 
     console.log('SSS, enter SEARCH SERVICE')
 
@@ -2487,16 +2421,16 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
 
                 var searchTitle = 'Search Results'
-                var tocTitle = DocumentService.tocTitle()
+                var tocTitle = TableOfContentsService.tocTitle()
                 if (tocTitle.indexOf(':override') > -1) {
                     searchTitle = tocTitle.replace(':override', '')
                     console.log('DEBUG: override (1)')
-                    DocumentService.setTocTitle(searchTitle)
+                    TableOfContentsService.setTocTitle(searchTitle)
                     $state.go('documents', {}, {reload: true})
                 } else {
 
                     console.log('DEBUG: DO NOT override (1)')
-                    DocumentService.setTocTitle('Search Results')
+                    TableOfContentsService.setTocTitle('Search Results')
                     $state.go('documents', {}, {reload: true})
                 }
 
@@ -2526,6 +2460,60 @@ module.exports = function ($http, $sce, $state, $location, $q,
     }
 }
 },{}],26:[function(require,module,exports){
+module.exports = function($localStorage) {
+
+
+    this.setTocTitle = function(title) {
+
+        $localStorage.tocTitle = title
+    }
+
+
+    this.tocTitle = function() {
+
+        return $localStorage.tocTitle || '0. Search Results'
+    }
+
+    this.setTocTitlePreferred = function(value) {
+
+        $localStorage.tocTitlePreferred = value
+    }
+
+    this.tocTitlePreferred = function() {
+
+        return $localStorage.tocTitlePreferred || ''
+
+    }
+
+
+    this.tocStyle = function(doc) {
+
+        var currentDocumentId = $localStorage.currentDocumentItem.id
+        var css = {}
+
+        if (doc['id'] == currentDocumentId) {
+            css["background-color"] = "#ddf"
+        }
+        if (doc['public'] == true ) {
+            css["font-style"] = "italic"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined) {
+            css["background-color"] = "#fdd"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['id'] == currentDocumentId ) {
+            css["background-color"] = "#fbb"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() ) {
+            css["background-color"] = "#dfd"
+        }
+        if (doc['checked_out_to'] != '' && doc['checked_out_to'] != undefined && doc['author'] == UserService.username() && doc['id'] == currentDocumentId  ) {
+            css["background-color"] = "#8f8"
+        }
+
+        return css
+    }
+}
+},{}],27:[function(require,module,exports){
 module.exports = function($scope, $state, $location, $http, ImageService, QueryParser, ImageApiService, envService, UserService) {
     
         $scope.doImageSearch = function(){
@@ -2562,7 +2550,7 @@ module.exports = function($scope, $state, $location, $http, ImageService, QueryP
     
     }
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 
 /*****
 
@@ -2657,7 +2645,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjectPreSignedURLRubySDK.h
 }
  
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 /*
 GET /images
@@ -2729,7 +2717,7 @@ module.exports = function($scope, $stateParams, $state, $location, $sce, $window
 
     
 }
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -2745,7 +2733,7 @@ app.service('ImageSearchService', require('./services/ImageSearchService'));
 
 
 
-},{"./controllers/ImageSearchController":26,"./controllers/ImageUploadController":27,"./controllers/ImagesController":28,"./services/ImageApiService":30,"./services/ImageRouteService":31,"./services/ImageSearchService":32,"./services/ImageService":33,"angular":60}],30:[function(require,module,exports){
+},{"./controllers/ImageSearchController":27,"./controllers/ImageUploadController":28,"./controllers/ImagesController":29,"./services/ImageApiService":31,"./services/ImageRouteService":32,"./services/ImageSearchService":33,"./services/ImageService":34,"angular":61}],31:[function(require,module,exports){
 module.exports = function($http, $q, ImageService, envService, UserService) {
 
     
@@ -2825,7 +2813,7 @@ module.exports = function($http, $q, ImageService, envService, UserService) {
     }
     
       }
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 
 module.exports = function(ImageService, ImageApiService, $state) {
     
@@ -2863,7 +2851,7 @@ module.exports = function(ImageService, ImageApiService, $state) {
 
     }
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function($http, $state, ImageService, ImageApiService, QueryParser, envService, UserService) {
 
     
@@ -2898,7 +2886,7 @@ module.exports = function($http, $state, ImageService, ImageApiService, QueryPar
     }
 }
                   
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function($localStorage) {
     
     
@@ -3001,14 +2989,14 @@ module.exports = function($localStorage) {
     
        
 }
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
 
 app.service('QueryParser', require('./services/QueryParser'))
 
-},{"./services/QueryParser":35,"angular":60}],35:[function(require,module,exports){
+},{"./services/QueryParser":36,"angular":61}],36:[function(require,module,exports){
 module.exports = function() {
     
    
@@ -3067,7 +3055,7 @@ module.exports = function() {
     
     
     }
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // http://www.tutorialspoint.com/angularjs/angularjs_upload_file.htm
 
 module.exports = function ($http) {
@@ -3092,7 +3080,7 @@ module.exports = function ($http) {
 
     
  }
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = function() {
 
     // this.clientServer = function() { return "localhost:3000" }
@@ -3112,7 +3100,7 @@ module.exports = function() {
 }
 
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 
 // Cheyne Wallace article >>> http://www.cheynewallace.com/uploading-to-s3-with-angularjs/
 // Demo: http://cheynewallace.github.io/angular-s3-upload/
@@ -3161,7 +3149,7 @@ module.exports = function(file) {
     });
 
 }
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function(Math) {
      
     this.reportTime = function() {
@@ -3174,7 +3162,7 @@ module.exports = function(Math) {
         return sec + "::" + ms
     }
 }
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
    module.exports = function() {
         this.myFunc = function (x) {
             var val = 'foobar: ' + x;
@@ -3182,7 +3170,7 @@ module.exports = function(Math) {
             return val;
         }
     }
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -3197,7 +3185,7 @@ app.service('UtilityService', require('./UtilityService'))
 
 
 
-},{"./FileUpload":36,"./GlobalService":37,"./PSFileUpload":38,"./UtilityService":39,"./foo":40,"angular":60}],42:[function(require,module,exports){
+},{"./FileUpload":37,"./GlobalService":38,"./PSFileUpload":39,"./UtilityService":40,"./foo":41,"angular":61}],43:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, SearchService, DocumentService, DocumentApiService, UserService) {
     
     console.log('SITE CONTROLLER')
@@ -3239,7 +3227,7 @@ module.exports = function($stateParams, $state, $scope, $location, SearchService
        
     })       
 }
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function($stateParams, $state, $scope, $location, DocumentService) {
     
     console.log('SITE DOCUMENT CONTROLLER')
@@ -3260,7 +3248,7 @@ module.exports = function($stateParams, $state, $scope, $location, DocumentServi
     }
     
 }
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -3268,7 +3256,7 @@ var app = require('angular').module('noteshareApp');
 app.controller('SiteController', require('./SiteController'))
 app.controller('SiteDocumentController', require('./SiteDocumentController'))
 
-},{"./SiteController":42,"./SiteDocumentController":43,"angular":60}],45:[function(require,module,exports){
+},{"./SiteController":43,"./SiteDocumentController":44,"angular":61}],46:[function(require,module,exports){
 
 module.exports = function($scope, foo, envService) {
 
@@ -3282,11 +3270,11 @@ module.exports = function($scope, foo, envService) {
 }
 
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
                                           foo, UserService, SearchService, envService,
-                          DocumentService, HotListService, PermissionService, MathJaxService) {
+                          DocumentService, TableOfContentsService, HotListService, PermissionService, MathJaxService) {
 
     var accessTokenValid = UserService.accessTokenValid()
 
@@ -3324,7 +3312,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('Random documents:override')
+        TableOfContentsService.setTocTitle('Random documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('random=10', $scope, 'documents')
     }
@@ -3338,9 +3326,9 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
 }
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
-                           UserService, SearchService,
+                           UserService, SearchService, TableOfContentsService,
                            DocumentApiService, DocumentService, HotListService, PermissionService, hotkeys, MailService) {
     $scope.items = [
         'The first choice!',
@@ -3385,27 +3373,27 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.userDocuments = function () {
         console.log('DEBUG: User documents:override')
-        DocumentService.setTocTitle('User documents:override')
+        TableOfContentsService.setTocTitle('User documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('user=' + UserService.username(), $scope, 'documents')
     }
 
     $scope.allDocuments = function () {
-        DocumentService.setTocTitle('G. Search results')
+        TableOfContentsService.setTocTitle('G. Search results')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=all', $scope, 'documents')
     }
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('Random documents:override')
+        TableOfContentsService.setTocTitle('Random documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('random=50', $scope, 'documents')
     }
 
     $scope.home = function () {
         console.log('GO HOME')
-        DocumentService.setTocTitlePreferred('H. Search results')
+        TableOfContentsService.setTocTitlePreferred('H. Search results')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('user.title=' + UserService.username() + '.home', $scope, 'documents')
     }
@@ -3435,7 +3423,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
 
     $scope.publicDocuments = function () {
         console.log('DEBUG: Public documents:override')
-        DocumentService.setTocTitle('Public documents:override')
+        TableOfContentsService.setTocTitle('Public documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('scope=public', $scope, 'documents')
     }
@@ -3452,13 +3440,13 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     $scope.getUserManual = function() {
 
         // SearchService.query('id=227', $scope, 'documents')
-        DocumentService.setTocTitle('Contents')
+        TableOfContentsService.setTocTitle('Contents')
         $state.go('documents', {id: '227', option: 'toc'}, {reload: true})
     }
 
     $scope.getAsciidocGuide = function() {
 
-        DocumentService.setTocTitle('Contents')
+        TableOfContentsService.setTocTitle('Contents')
         $state.go('documents', {id: '152', option: 'toc'}, {reload: true})
     }
 
@@ -3555,7 +3543,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
-            DocumentService.setTocTitle('User documents:override')
+            TableOfContentsService.setTocTitle('User documents:override')
             SearchService.query('user=' + UserService.username(), $scope)
         }
     });
@@ -3566,7 +3554,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
             console.log('USER DOCUMENTs ...')
-            DocumentService.setTocTitle('Public documents:override')
+            TableOfContentsService.setTocTitle('Public documents:override')
             SearchService.query('scope=public', $scope, 'documents')
         }
     });
@@ -3648,7 +3636,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'User Manual',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setTocTitle('L. Search results')
+            TableOfContentsService.setTocTitle('L. Search results')
             HotListService.setUseHotList(false, $scope)
             $scope.getUserManual()
         }
@@ -3659,7 +3647,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
         description: 'Asciidoc Guide',
         allowIn: ['INPUT', 'TEXTAREA'],
         callback: function () {
-            DocumentService.setTocTitle('BB. Contents')
+            TableOfContentsService.setTocTitle('BB. Contents')
             HotListService.setUseHotList(false, $scope)
             $scope.getAsciidocGuide()
         }
@@ -3668,7 +3656,7 @@ module.exports = function ($scope, $rootScope, $log, $location, $state, $window,
     /////
 
 }
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = function ($scope, UserService, UserApiService, DocumentApiService) {
 
     var self = this
@@ -3814,7 +3802,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
     }
 
 }
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /***********
 
 Advanced routing and resolves
@@ -4058,7 +4046,7 @@ app.controller('stageController', function ($scope) { $scope.repeat = 5; });
 
 
     
-},{"./controllers/AboutController":45,"./controllers/MainController":46,"./controllers/MenuController":47,"./controllers/UserPreferenceController":48,"angular":60}],50:[function(require,module,exports){
+},{"./controllers/AboutController":46,"./controllers/MainController":47,"./controllers/MenuController":48,"./controllers/UserPreferenceController":49,"angular":61}],51:[function(require,module,exports){
 module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, $location, $localStorage,
                            UserApiService, UserService, DocumentService, MathJaxService,
                            SearchService) {
@@ -4130,7 +4118,7 @@ module.exports = function ($state, $scope, $window, $timeout, $q, $stateParams, 
     }
 }
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = function($scope, $state, $stateParams, UserService, DocumentService, $localStorage) {
 
     console.log('Sign out ...')
@@ -4149,7 +4137,7 @@ module.exports = function($scope, $state, $stateParams, UserService, DocumentSer
         
 }
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 
 
 module.exports = function($scope, $localStorage, $state, SearchService, UserApiService, UserService) {
@@ -4182,7 +4170,7 @@ module.exports = function($scope, $localStorage, $state, SearchService, UserApiS
 }
     
     
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 module.exports = function ($http, $q, $localStorage, envService, UserService) {
 
     var deferred = $q.defer();
@@ -4280,7 +4268,7 @@ module.exports = function ($http, $q, $localStorage, envService, UserService) {
 }
 
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = function($scope, UserService) {
        
     $scope.username = UserService.username()
@@ -4293,7 +4281,7 @@ module.exports = function($scope, UserService) {
             
 }
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = function($localStorage, notFoundErrorDocumentId) {
     
 /*****
@@ -4448,7 +4436,7 @@ State variables:
     }
  
 }
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('noteshareApp');
@@ -4464,7 +4452,7 @@ app.controller('UserController', require('./UserController'))
 
 
 
-},{"./SignInController":50,"./SignOutController":51,"./SignUpController":52,"./UserApiService":53,"./UserController":54,"./UserService":55,"angular":60}],57:[function(require,module,exports){
+},{"./SignInController":51,"./SignOutController":52,"./SignUpController":53,"./UserApiService":54,"./UserController":55,"./UserService":56,"angular":61}],58:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -5535,11 +5523,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":57}],59:[function(require,module,exports){
+},{"./angular-route":58}],60:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -37308,8 +37296,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":59}]},{},[3]);
+},{"./angular":60}]},{},[3]);

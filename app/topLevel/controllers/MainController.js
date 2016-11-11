@@ -1,7 +1,7 @@
 
 module.exports = function($scope, $http, $state, $location, $localStorage,
                                           foo, UserService, SearchService, envService,
-                          DocumentService, HotListService, PermissionService, MathJaxService) {
+                          DocumentService, TableOfContentsService, HotListService, PermissionService, MathJaxService) {
 
     var accessTokenValid = UserService.accessTokenValid()
 
@@ -39,7 +39,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
 
     $scope.getRandomDocuments = function () {
         console.log('TOCTITLE, randomDocuments')
-        DocumentService.setTocTitle('Random documents:override')
+        TableOfContentsService.setTocTitle('Random documents:override')
         HotListService.setUseHotList(false, $scope)
         SearchService.query('random=10', $scope, 'documents')
     }

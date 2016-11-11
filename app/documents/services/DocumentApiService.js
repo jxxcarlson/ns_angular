@@ -8,8 +8,9 @@
  performing the standard CRUD functons
 
  *****/
-module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location, DocumentService,
-                           PermissionService, SearchService, UserService, GlobalService, envService, BackupService) {
+module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
+                           DocumentService, TableOfContentsService, PermissionService, SearchService,
+                           UserService, GlobalService, envService, BackupService) {
 
 
     var setPreferredTocTitle = function(scope) {
@@ -21,11 +22,11 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
         scope.activateContentsHeading = function() {
 
             console.log('*** go up')
-            DocumentService.setTocTitle('Contents')
+            TableOfContentsService.setTocTitle('Contents')
             scope.tocTitleClass = function () { return { color: '#005FFF'} }
         }
 
-        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + DocumentService.tocTitlePreferred())
+        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + TableOfContentsService.tocTitlePreferred())
 
         scope.tocTitleClass = function () { return { color: 'black'}}
 
@@ -35,9 +36,9 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
             scope.tocTitle = 'Hotlist'
             scope.tocTitleClass = function () { return { color: 'darkred'}}
 
-        } else if ( DocumentService.tocTitlePreferred() != '' ) {
+        } else if ( TableOfContentsService.tocTitlePreferred() != '' ) {
 
-            scope.tocTitle = DocumentService.tocTitlePreferred()
+            scope.tocTitle = TableOfContentsService.tocTitlePreferred()
 
             console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
 
@@ -50,17 +51,17 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
             console.log('2c. TOCTITLE: CONTENTS')
 
-            DocumentService.setTocTitle('Contents')
+            TableOfContentsService.setTocTitle('Contents')
             // scope.tocTitleClass = function () { return { color: '#005FFF'}}
 
         } else {
 
             console.log('2d. TOCTITLE: SEARCH RESULTS')
             // scope.tocTitle = 'Search results'
-            DocumentService.setTocTitle('Links')
+            TableOfContentsService.setTocTitle('Links')
         }
 
-        DocumentService.setTocTitlePreferred('')
+        TableOfContentsService.setTocTitlePreferred('')
     }
 
     var setDocumentList = function(document, scope) {
@@ -200,7 +201,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 } else if ((DocumentService.hasSubdocuments() || document.parentId != 0) && (queryObj['toc'] || $stateParams.option == 'toc' )) {
 
-                    DocumentService.setTocTitle('Contents')
+                    TableOfContentsService.setTocTitle('Contents')
                     setDocumentList(document, scope)
 
                 }
@@ -212,7 +213,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 } else {
 
-                    scope.tocHeading = DocumentService.tocTitle() + ' (' + scope.docArray.length + ')'
+                    scope.tocHeading = TableOfContentsService.tocTitle() + ' (' + scope.docArray.length + ')'
 
                 }
 

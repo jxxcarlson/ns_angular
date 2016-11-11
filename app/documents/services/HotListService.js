@@ -1,4 +1,4 @@
-module.exports = function($state, UserService, DocumentService, DocumentApiService) {
+module.exports = function($state, $localStorage, UserService, DocumentService, DocumentApiService) {
 
     this.hotList = function (scope) {
 

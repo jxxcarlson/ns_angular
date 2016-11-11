@@ -1,5 +1,5 @@
 module.exports = function ($http, $sce, $state, $location, $q,
-                           DocumentService, envService, UserService, QueryParser) {
+                           DocumentService, TableOfContentsService, envService, UserService, QueryParser) {
 
     console.log('SSS, enter SEARCH SERVICE')
 
@@ -46,16 +46,16 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
 
                 var searchTitle = 'Search Results'
-                var tocTitle = DocumentService.tocTitle()
+                var tocTitle = TableOfContentsService.tocTitle()
                 if (tocTitle.indexOf(':override') > -1) {
                     searchTitle = tocTitle.replace(':override', '')
                     console.log('DEBUG: override (1)')
-                    DocumentService.setTocTitle(searchTitle)
+                    TableOfContentsService.setTocTitle(searchTitle)
                     $state.go('documents', {}, {reload: true})
                 } else {
 
                     console.log('DEBUG: DO NOT override (1)')
-                    DocumentService.setTocTitle('Search Results')
+                    TableOfContentsService.setTocTitle('Search Results')
                     $state.go('documents', {}, {reload: true})
                 }
 

@@ -1,5 +1,5 @@
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
-                           DocumentService, DocumentApiService, UserService, envService,
+                           DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
                            MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
@@ -375,7 +375,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             })
     }
 
-    $scope.docStyle = DocumentService.tocStyle
+    $scope.docStyle = TableOfContentsService.tocStyle
 
     $scope.publicStyle = function () {
 
