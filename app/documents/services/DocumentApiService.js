@@ -156,6 +156,13 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
         console.log("DEBUG, in DAS, getDocument, $stateParams: " + JSON.stringify($stateParams))
         console.log("DEBUG, in DAS, getDocument, queryObj: " + JSON.stringify(queryObj))
 
+        if (queryObj.toc == true) {
+
+            console.log('refactor: queryObj.toc == true)')
+            TableOfContentsService.setMode('toc')
+
+        }
+
         if (id == undefined) { id = GlobalService.defaultDocumentID() }
         var url = envService.read('apiUrl') + '/documents/' + id
         var options = {headers: {"accesstoken": UserService.accessToken()}}

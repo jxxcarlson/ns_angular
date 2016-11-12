@@ -10,6 +10,8 @@ module.exports = function ($http, $sce, $state, $location, $q,
 
         var queryText = QueryParser.parse(searchText)
 
+
+
         var url = envService.read('apiUrl') + '/documents' + '?' + queryText
         var options = {headers: {"accesstoken": UserService.accessToken()}}
         return $http.get(url, options)

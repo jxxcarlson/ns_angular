@@ -106,7 +106,10 @@ module.exports = function($localStorage) {
             case 'search':
                 state.tocHeading = 'Search results'
                 break;
-            default:state.tocHeading = 'Contents'
+            case 'toc':
+                state.tocHeading = 'Contents'
+                break;
+            default:state.tocHeading = '---'
         }
 
         return state.tocHeading
