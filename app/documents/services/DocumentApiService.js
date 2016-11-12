@@ -138,7 +138,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
                 scope.sourceText = document.text
-                
+
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
                 if (queryObj['toc'] == 'no') {
