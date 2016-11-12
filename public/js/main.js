@@ -2345,7 +2345,7 @@ module.exports = function ($http, $sce, $state, $location, $q,
     }
 }
 },{}],27:[function(require,module,exports){
-module.exports = function($localStorage) {
+module.exports = function($localStorage, DocumentService) {
 
     var self = this
 
@@ -2495,7 +2495,7 @@ module.exports = function($localStorage) {
 
     self.tocStyle = function(doc) {
 
-        var currentDocumentId = $localStorage.currentDocumentItem.id
+        var currentDocumentId = DocumentService.document().id
         var css = {}
 
         if (doc['id'] == currentDocumentId) {
