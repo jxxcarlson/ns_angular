@@ -1,16 +1,23 @@
 module.exports = function($localStorage) {
 
+    var self = this
+
 
     var state = $localStorage.tocState ||
         {
             tocHeading: 'Search Results',
             useHotList: 'no',
-            title: 'Undefined'
+            mode: 'search' // search, toc, hotlist
         }
 
 
+    self.setMode = function(mode) {
 
-    this.documentCount = function() {
+        state.mode = mode
+        console.log('Refactor: state.mode = ' + mode)
+    }
+
+    self.documentCount = function() {
 
         if (this.documentList() == undefined) {
 
@@ -23,7 +30,7 @@ module.exports = function($localStorage) {
     }
 
     // Results of search
-    this.setDocumentList = function(array) {
+    self.setDocumentList = function(array) {
 
         $localStorage.documentList = array
         $localStorage.currentDocumentList = array
@@ -32,14 +39,14 @@ module.exports = function($localStorage) {
 
     }
 
-    this.resetDocumentList = function() {
+    self.resetDocumentList = function() {
 
         this.currentDocumentList = $localStorage.documentList
         // $localStorage.documentId = $localStorage.documentList[0]
 
     }
 
-    this.clearDocumentList = function() {
+    self.clearDocumentList = function() {
 
         console.log("DEBUG: clearDocumentList")
         $localStorage.documentList = []
@@ -48,7 +55,7 @@ module.exports = function($localStorage) {
     }
 
 
-    this.documentList = function() {
+    self.documentList = function() {
 
         if (this.currentDocumentList == undefined) {
 
@@ -81,7 +88,7 @@ module.exports = function($localStorage) {
 
 
 
-    this.setTocTitle = function(title) {
+    self.setTocTitle = function(title) {
 
         state.title = title
 
@@ -91,14 +98,21 @@ module.exports = function($localStorage) {
     }
 
 
-    this.tocTitle = function() {
+    self.tocTitle = function() {
 
         console.log('Refactor, title = ' + state.title)
 
-        return state.title
+        switch(state.mode) {
+            case 'search':
+                state.tocHeading = 'Search results'
+                break;
+            default:state.tocHeading = 'Contents'
+        }
+
+        return state.tocHeading
     }
 
-    this.setTocTitlePreferred = function(title) {
+    self.setTocTitlePreferred = function(title) {
 
         state.preferredTitle = title
 
@@ -107,14 +121,14 @@ module.exports = function($localStorage) {
         $localStorage.tocState = state
     }
 
-    this.tocTitlePreferred = function() {
+    self.tocTitlePreferred = function() {
 
         return state.preferredTitle
 
     }
 
 
-    this.tocStyle = function(doc) {
+    self.tocStyle = function(doc) {
 
         var currentDocumentId = $localStorage.currentDocumentItem.id
         var css = {}

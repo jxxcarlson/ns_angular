@@ -654,7 +654,7 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 },{}],11:[function(require,module,exports){
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            HttpService, DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
-                           MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
+                           BackupService, MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
     ''
     var id
     var keyStrokeCount = 0
@@ -766,7 +766,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
             $scope.lastBackupNumber = backupNumber
 
-            var t = DocumentService.document().dict['backup']['date'].split(':')
+            var t = DocumentService.document().dict['backup']['date'].split(':')  //FIX// //XX// date field can be undefined
             t = t[0] + ':' + t[1]
             t = t.replace('T', ', ')
 
@@ -1108,7 +1108,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.backupDocument = function () {
 
         console.log('Controller: backupDocument')
-        DocumentApiService.backupDocument()
+        BackupService.backupDocument()
 
     }
 
@@ -1324,11 +1324,13 @@ module.exports = function($scope, $stateParams, $state, $sce, DocumentApiService
 
 }
 },{}],16:[function(require,module,exports){
-module.exports = function($scope, SearchService) {
+module.exports = function($scope, SearchService, TableOfContentsService) {
 
         $scope.doSearch = function(){
 
             console.log('In doSearch, $scope.searchText = ' + $scope.searchText)
+
+            TableOfContentsService.setMode('search')
 
 
             if ($scope.searchText != '') {
@@ -1396,6 +1398,49 @@ module.exports = function($localStorage) {
         return $localStorage.backupDate
     }
 
+    //// BACKUP UTILITIES ////
+
+    this.backupDocument = function () {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.document().id
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('  -- backup, status: ' + response.data['status'])
+                $state.go('editdocument', {}, {reload: true})
+
+
+            })
+
+    }
+
+
+
+    this.getBackupText = function (backup_number) {
+
+        console.log('API: backupDocument')
+
+        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.document().id + '&number=' + backup_number
+        var options = {headers: {"accesstoken": UserService.accessToken()}}
+
+        $http.post(url, {}, options)
+            .then(function (response) {
+
+                console.log('backup view status: ' + response.data['status'])
+                console.log('  -- backup text length ' + response.data['backup_text'].length)
+
+                BackupService.putBackup(response.data)
+                $location.path('backups/')
+                $state.go('backups', {}, {reload: true})
+
+
+            })
+
+    }
 
 
 
@@ -1835,52 +1880,6 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
             })
 
     }
-
-    //// BACKUP UTILITIES ////
-
-    this.backupDocument = function () {
-
-        console.log('API: backupDocument')
-
-        var url = envService.read('apiUrl') + '/backup?put=' + DocumentService.document().id
-        var options = {headers: {"accesstoken": UserService.accessToken()}}
-
-        $http.post(url, {}, options)
-            .then(function (response) {
-
-                console.log('  -- backup, status: ' + response.data['status'])
-                $state.go('editdocument', {}, {reload: true})
-
-
-            })
-
-    }
-
-
-
-    this.getBackupText = function (backup_number) {
-
-        console.log('API: backupDocument')
-
-        var url = envService.read('apiUrl') + '/backup?view=' + DocumentService.document().id + '&number=' + backup_number
-        var options = {headers: {"accesstoken": UserService.accessToken()}}
-
-        $http.post(url, {}, options)
-            .then(function (response) {
-
-                console.log('backup view status: ' + response.data['status'])
-                console.log('  -- backup text length ' + response.data['backup_text'].length)
-
-                BackupService.putBackup(response.data)
-                $location.path('backups/')
-                $state.go('backups', {}, {reload: true})
-
-
-            })
-
-    }
-
-
 
 
 
@@ -2381,17 +2380,24 @@ module.exports = function ($http, $sce, $state, $location, $q,
 },{}],27:[function(require,module,exports){
 module.exports = function($localStorage) {
 
+    var self = this
+
 
     var state = $localStorage.tocState ||
         {
             tocHeading: 'Search Results',
             useHotList: 'no',
-            title: 'Undefined'
+            mode: 'search' // search, toc, hotlist
         }
 
 
+    self.setMode = function(mode) {
 
-    this.documentCount = function() {
+        state.mode = mode
+        console.log('Refactor: state.mode = ' + mode)
+    }
+
+    self.documentCount = function() {
 
         if (this.documentList() == undefined) {
 
@@ -2404,7 +2410,7 @@ module.exports = function($localStorage) {
     }
 
     // Results of search
-    this.setDocumentList = function(array) {
+    self.setDocumentList = function(array) {
 
         $localStorage.documentList = array
         $localStorage.currentDocumentList = array
@@ -2413,14 +2419,14 @@ module.exports = function($localStorage) {
 
     }
 
-    this.resetDocumentList = function() {
+    self.resetDocumentList = function() {
 
         this.currentDocumentList = $localStorage.documentList
         // $localStorage.documentId = $localStorage.documentList[0]
 
     }
 
-    this.clearDocumentList = function() {
+    self.clearDocumentList = function() {
 
         console.log("DEBUG: clearDocumentList")
         $localStorage.documentList = []
@@ -2429,7 +2435,7 @@ module.exports = function($localStorage) {
     }
 
 
-    this.documentList = function() {
+    self.documentList = function() {
 
         if (this.currentDocumentList == undefined) {
 
@@ -2462,7 +2468,7 @@ module.exports = function($localStorage) {
 
 
 
-    this.setTocTitle = function(title) {
+    self.setTocTitle = function(title) {
 
         state.title = title
 
@@ -2472,14 +2478,21 @@ module.exports = function($localStorage) {
     }
 
 
-    this.tocTitle = function() {
+    self.tocTitle = function() {
 
         console.log('Refactor, title = ' + state.title)
 
-        return state.title
+        switch(state.mode) {
+            case 'search':
+                state.tocHeading = 'Search results'
+                break;
+            default:state.tocHeading = 'Contents'
+        }
+
+        return state.tocHeading
     }
 
-    this.setTocTitlePreferred = function(title) {
+    self.setTocTitlePreferred = function(title) {
 
         state.preferredTitle = title
 
@@ -2488,14 +2501,14 @@ module.exports = function($localStorage) {
         $localStorage.tocState = state
     }
 
-    this.tocTitlePreferred = function() {
+    self.tocTitlePreferred = function() {
 
         return state.preferredTitle
 
     }
 
 
-    this.tocStyle = function(doc) {
+    self.tocStyle = function(doc) {
 
         var currentDocumentId = $localStorage.currentDocumentItem.id
         var css = {}
@@ -3327,7 +3340,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
 
 
