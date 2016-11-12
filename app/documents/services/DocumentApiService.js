@@ -11,7 +11,7 @@
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
                            DocumentService, TableOfContentsService, PermissionService, SearchService,
                            UserService, GlobalService, envService, BackupService, HotListService) {
-    
+
 
     var setDocumentList = function(document, scope) {
 
@@ -138,13 +138,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                 scope.renderedText = function () { return $sce.trustAsHtml(document.rendered_text); }
                 scope.sourceText = document.text
-
-                /**
-                 var documentItem = DocumentService.currentDocumentItem()
-                 var shareDocumentMessage = 'You might be interested in%0D%0A%0D%0A        ' + documentItem.title + '%0D%0A%0D%0Aat http://www.manuscripta.io/documents/' + documentItem.id
-                 scope.shareDocumentUrl =  "mailto:" + ""  + "?body=" + shareDocumentMessage // + " ?subject=" + shareDocumentSubject
-                 **/
-
+                
                 setupDocumentKind(document, scope)
                 setupParent(document, scope)
                 if (queryObj['toc'] == 'no') {
