@@ -2054,6 +2054,13 @@ module.exports = function($state, $localStorage, UserService, DocumentService, T
 
         console.log('^^^ 1, setUseHotList')
 
+        if (value == true) {
+
+            TableOfContentsService.setMode('hotlist')
+
+        }
+
+
         $localStorage.useHotList = value
 
     }
@@ -2497,6 +2504,9 @@ module.exports = function($localStorage) {
                 break;
             case 'toc':
                 state.tocHeading = 'Contents'
+                break;
+            case 'hotlist':
+                state.tocHeading = 'Hot list'
                 break;
             default:state.tocHeading = '---'
         }

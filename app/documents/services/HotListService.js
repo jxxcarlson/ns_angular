@@ -8,6 +8,13 @@ module.exports = function($state, $localStorage, UserService, DocumentService, T
 
         console.log('^^^ 1, setUseHotList')
 
+        if (value == true) {
+
+            TableOfContentsService.setMode('hotlist')
+
+        }
+
+
         $localStorage.useHotList = value
 
     }

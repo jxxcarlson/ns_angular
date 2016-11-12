@@ -109,6 +109,9 @@ module.exports = function($localStorage) {
             case 'toc':
                 state.tocHeading = 'Contents'
                 break;
+            case 'hotlist':
+                state.tocHeading = 'Hot list'
+                break;
             default:state.tocHeading = '---'
         }
 
