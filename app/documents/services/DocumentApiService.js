@@ -11,58 +11,7 @@
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
                            DocumentService, TableOfContentsService, PermissionService, SearchService,
                            UserService, GlobalService, envService, BackupService, HotListService) {
-
-
-    var setPreferredTocTitle = function(scope) {
-
-        // scope.tocTitle = 'Search results'
-        scope.tocTitleClass = function () { return { color: 'black'}}
-        console.log('**** ' + DocumentService.document().title + ': ' + DocumentService.parentId())
-
-        scope.activateContentsHeading = function() {
-
-            console.log('*** go up')
-            TableOfContentsService.setTocTitle('Contents')
-            scope.tocTitleClass = function () { return { color: '#005FFF'} }
-        }
-
-        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + TableOfContentsService.tocTitlePreferred())
-
-        scope.tocTitleClass = function () { return { color: 'black'}}
-
-        if (DocumentService.useHotList()) {
-
-            console.log('2a. TOCTITLE: HOT')
-            scope.tocTitle = 'Hotlist'
-            scope.tocTitleClass = function () { return { color: 'darkred'}}
-
-        } else if ( TableOfContentsService.tocTitlePreferred() != '' ) {
-
-            scope.tocTitle = TableOfContentsService.tocTitlePreferred()
-
-            console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
-
-            if (scope.tocTitle == 'Contents') {
-
-                scope.tocTitleClass = function () { return { color: 'blue'}}
-            }
-
-        } else if (DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
-
-            console.log('2c. TOCTITLE: CONTENTS')
-
-            TableOfContentsService.setTocTitle('Contents')
-            // scope.tocTitleClass = function () { return { color: '#005FFF'}}
-
-        } else {
-
-            console.log('2d. TOCTITLE: SEARCH RESULTS')
-            // scope.tocTitle = 'Search results'
-            TableOfContentsService.setTocTitle('Links')
-        }
-
-        TableOfContentsService.setTocTitlePreferred('')
-    }
+    
 
     var setDocumentList = function(document, scope) {
 

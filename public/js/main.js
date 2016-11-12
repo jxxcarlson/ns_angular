@@ -456,6 +456,13 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
         console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.document()[id]: ' + DocumentService.document().id)
     }
 
+    $scope.tocTitleClass = function () {
+
+        return TableOfContentsService.tocHeadingClass()
+
+
+    }
+
 
 
     // Validate id and ensure valid value
@@ -1459,58 +1466,7 @@ module.exports = function($localStorage) {
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
                            DocumentService, TableOfContentsService, PermissionService, SearchService,
                            UserService, GlobalService, envService, BackupService, HotListService) {
-
-
-    var setPreferredTocTitle = function(scope) {
-
-        // scope.tocTitle = 'Search results'
-        scope.tocTitleClass = function () { return { color: 'black'}}
-        console.log('**** ' + DocumentService.document().title + ': ' + DocumentService.parentId())
-
-        scope.activateContentsHeading = function() {
-
-            console.log('*** go up')
-            TableOfContentsService.setTocTitle('Contents')
-            scope.tocTitleClass = function () { return { color: '#005FFF'} }
-        }
-
-        console.log('1. TOCTITLE, DocumentService.tocTitlePreferred() = ' + TableOfContentsService.tocTitlePreferred())
-
-        scope.tocTitleClass = function () { return { color: 'black'}}
-
-        if (DocumentService.useHotList()) {
-
-            console.log('2a. TOCTITLE: HOT')
-            scope.tocTitle = 'Hotlist'
-            scope.tocTitleClass = function () { return { color: 'darkred'}}
-
-        } else if ( TableOfContentsService.tocTitlePreferred() != '' ) {
-
-            scope.tocTitle = TableOfContentsService.tocTitlePreferred()
-
-            console.log('2b. TOCTITLE: OVERRIDE, ' + scope.tocTitle)
-
-            if (scope.tocTitle == 'Contents') {
-
-                scope.tocTitleClass = function () { return { color: 'blue'}}
-            }
-
-        } else if (DocumentService.parentId() > 0 || DocumentService.hasSubdocuments()) {
-
-            console.log('2c. TOCTITLE: CONTENTS')
-
-            TableOfContentsService.setTocTitle('Contents')
-            // scope.tocTitleClass = function () { return { color: '#005FFF'}}
-
-        } else {
-
-            console.log('2d. TOCTITLE: SEARCH RESULTS')
-            // scope.tocTitle = 'Search results'
-            TableOfContentsService.setTocTitle('Links')
-        }
-
-        TableOfContentsService.setTocTitlePreferred('')
-    }
+    
 
     var setDocumentList = function(document, scope) {
 
@@ -2406,6 +2362,18 @@ module.exports = function($localStorage) {
             mode: 'search' // search, toc, hotlist
         }
 
+    self.tocHeadingClass = function() {
+
+        if (state.mode == 'hotlist') {
+
+            return { color: 'darkred'}
+
+        } else {
+
+            return { color: 'black'}
+        }
+    }
+
 
     self.setMode = function(mode) {
 
@@ -2486,17 +2454,17 @@ module.exports = function($localStorage) {
 
     self.setTocTitle = function(title) {
 
-        state.title = title
+        //state.title = title
 
-        console.log('Refactor, set title = ' + title)
+        //console.log('Refactor, set title = ' + title)
 
-        $localStorage.tocState = state
+        //$localStorage.tocState = state
     }
 
 
     self.tocTitle = function() {
 
-        console.log('Refactor, title = ' + state.title)
+        // console.log('Refactor, title = ' + state.title)
 
         switch(state.mode) {
             case 'search':

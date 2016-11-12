@@ -10,6 +10,18 @@ module.exports = function($localStorage) {
             mode: 'search' // search, toc, hotlist
         }
 
+    self.tocHeadingClass = function() {
+
+        if (state.mode == 'hotlist') {
+
+            return { color: 'darkred'}
+
+        } else {
+
+            return { color: 'black'}
+        }
+    }
+
 
     self.setMode = function(mode) {
 
@@ -90,17 +102,17 @@ module.exports = function($localStorage) {
 
     self.setTocTitle = function(title) {
 
-        state.title = title
+        //state.title = title
 
-        console.log('Refactor, set title = ' + title)
+        //console.log('Refactor, set title = ' + title)
 
-        $localStorage.tocState = state
+        //$localStorage.tocState = state
     }
 
 
     self.tocTitle = function() {
 
-        console.log('Refactor, title = ' + state.title)
+        // console.log('Refactor, title = ' + state.title)
 
         switch(state.mode) {
             case 'search':

@@ -18,6 +18,13 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
         console.log('DEBUG: ENTER DOCS CONTROLLER, DocumentService.document()[id]: ' + DocumentService.document().id)
     }
 
+    $scope.tocTitleClass = function () {
+
+        return TableOfContentsService.tocHeadingClass()
+
+
+    }
+
 
 
     // Validate id and ensure valid value
