@@ -3325,7 +3325,7 @@ module.exports = function($scope, $http, $state, $location, $localStorage,
     }
 
     // console.log('EVENT: ' + JSON.stringify($event.currentTarget))
-    envService.set('development');
+    envService.set('production');
 
 
 
