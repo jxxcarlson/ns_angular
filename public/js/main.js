@@ -1379,7 +1379,7 @@ app.controller('BackupManagerController', require('./controllers/BackupManagerCo
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
 },{"./controllers/BackupManagerController":8,"./controllers/DeleteDocumentController":9,"./controllers/DocumentsController":10,"./controllers/EditController":11,"./controllers/EditMenuController":12,"./controllers/ExportLatexController":13,"./controllers/NewDocumentController":14,"./controllers/PrintDocumentController":15,"./controllers/SearchController":16,"./services//DocumentService":20,"./services/BackupService":18,"./services/DocumentApiService":19,"./services/HotListService":21,"./services/HttpService":22,"./services/MailService":23,"./services/MathJaxService":24,"./services/PermissionService":25,"./services/SearchService":26,"./services/TableOfContentsService":27,"angular":62}],18:[function(require,module,exports){
-module.exports = function($localStorage, envService, DocumentService, UserService, $http) {
+module.exports = function($localStorage, envService, DocumentService, UserService, $http, $state) {
 
 
 
