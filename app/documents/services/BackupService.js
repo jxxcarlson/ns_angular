@@ -1,4 +1,4 @@
-module.exports = function($localStorage) {
+module.exports = function($localStorage, envService) {
 
 
 
