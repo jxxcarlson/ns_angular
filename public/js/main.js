@@ -768,12 +768,14 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (document.dict && document.dict['backup']) {
 
+            var backupdata = document.dict['backup']
 
-            var backupNumber = document.dict['backup']['number']
+
+            var backupNumber = backupdata['number']
 
             $scope.lastBackupNumber = backupNumber
 
-            var t = DocumentService.document().dict['backup']['date'].split(':')  //FIX// //XX// date field can be undefined
+            var t = backupdata['date'].split(':')  //FIX// //XX// date field can be undefined
             t = t[0] + ':' + t[1]
             t = t.replace('T', ', ')
 
@@ -1379,7 +1381,8 @@ app.controller('BackupManagerController', require('./controllers/BackupManagerCo
  /* REFERENCE: https://github.com/gsklee/ngStorage */
 
 },{"./controllers/BackupManagerController":8,"./controllers/DeleteDocumentController":9,"./controllers/DocumentsController":10,"./controllers/EditController":11,"./controllers/EditMenuController":12,"./controllers/ExportLatexController":13,"./controllers/NewDocumentController":14,"./controllers/PrintDocumentController":15,"./controllers/SearchController":16,"./services//DocumentService":20,"./services/BackupService":18,"./services/DocumentApiService":19,"./services/HotListService":21,"./services/HttpService":22,"./services/MailService":23,"./services/MathJaxService":24,"./services/PermissionService":25,"./services/SearchService":26,"./services/TableOfContentsService":27,"angular":62}],18:[function(require,module,exports){
-module.exports = function($localStorage, envService, DocumentService, UserService, $http, $state) {
+module.exports = function($localStorage, envService, DocumentService, UserService, $http, $state
+) {
 
 
 

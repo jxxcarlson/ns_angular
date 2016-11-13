@@ -1,4 +1,5 @@
-module.exports = function($localStorage, envService, DocumentService, UserService, $http, $state) {
+module.exports = function($localStorage, envService, DocumentService, UserService, $http, $state
+) {
 
 
 

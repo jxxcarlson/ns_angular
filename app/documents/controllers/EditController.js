@@ -107,12 +107,14 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (document.dict && document.dict['backup']) {
 
+            var backupdata = document.dict['backup']
 
-            var backupNumber = document.dict['backup']['number']
+
+            var backupNumber = backupdata['number']
 
             $scope.lastBackupNumber = backupNumber
 
-            var t = DocumentService.document().dict['backup']['date'].split(':')  //FIX// //XX// date field can be undefined
+            var t = backupdata['date'].split(':')  //FIX// //XX// date field can be undefined
             t = t[0] + ':' + t[1]
             t = t.replace('T', ', ')
 
