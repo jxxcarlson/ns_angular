@@ -760,6 +760,18 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         $scope.ifParentExists = true
         $scope.showTools = false
 
+        $scope.$on('$viewContentLoaded', function(){
+
+            console.log(' (XX), content loaded')
+            $timeout(
+                function () {
+                    var message = ' (CC), DC for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                    MathJaxService.reload2(DocumentService.document().kind, message)
+                },
+                mathJaxDelay)
+
+        });
+
     }
 
     var setupBackup = function(document) {
