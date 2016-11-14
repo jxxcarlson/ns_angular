@@ -234,6 +234,10 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     var innerHeight = $window.innerHeight
     document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
+    document.getElementById("toc").style.height = (innerHeight - 400) + 'px'
+
+
+
 
 
 
