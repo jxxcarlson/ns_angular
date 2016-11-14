@@ -1,7 +1,7 @@
 <div class="row">
 
-    <div class="col-md-2">
-        <div id = "toc" style="margin-left:1em;">
+    <div class="col-md-2" style="background-color:#f5f5f9">
+        <div style="margin-left:1em;">
 
 
             <h3> Contents ({{ documentCount }})</h3>
@@ -35,8 +35,10 @@
             <br/>
             <br/>
 
-            <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a
-                    ng-href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+            <div id="toc">
+                <p class="toc-item" ng-repeat="doc in docArray" ng-style="docStyle(doc)"><a
+                        ng-href="editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+            </div>
 
         </div>
     </div>
