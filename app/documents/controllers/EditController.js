@@ -324,17 +324,23 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 function () {
                     var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
                     MathJaxService.reload(DocumentService.document().kind, message)
+                    var d = new Date()
+                    console.log('(scroll) MathJax called at ' + (d.getTime() % 100000))
                 },
                 mathJaxDelay)
             $timeout(
                 function () {
-                    // document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
-                    document.getElementById("rendered-text").du-scrollTo(0, DocumentService.getScrollTop())
+                    // document.getElementById("rendered-text").du-scrollTo(0, DocumentService.getScrollTop())
+                    //document.getElementById("rendered-text").du-scrollTo(0,1000)
+                    document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
+                    // document.getElementById("rendered-text").scrollTop = 5000
+
                     var st = document.getElementById("rendered-text").scrollTop
-                    console.log('RESTORE scrollTop: ' + DocumentService.getScrollTop() + ':: ' + document.getElementById("rendered-text").scrollTop)
-                    //console.log('scrollTop is now: ' + document.getElementById("rendered-text").scrollTop)
+                    console.log('RESTORE scrollTop: ' + DocumentService.getScrollTop() + ' :: ' + document.getElementById("rendered-text").scrollTop)
+                    var dd = new Date()
+                    console.log('scrollTop restored at ' + (dd.getTime() % 100000))
                 },
-                mathJaxDelay + 1000)
+                1.2*mathJaxDelay +100)
         } else {
             ////
             $scope.textDirty = true
