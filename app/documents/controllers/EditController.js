@@ -303,7 +303,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         console.log('refreshText')
         DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
-        console.log('Record scrollTop' + DocumentService.getScrollTop())
+        console.log('Record scrollTop: ' + DocumentService.getScrollTop())
 
         var strokesBeforeUpdate = 10
         // This is so that users can view source but
@@ -324,10 +324,17 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 function () {
                     var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
                     MathJaxService.reload(DocumentService.document().kind, message)
-                    document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
-                    console.log('RESTORE scrollTop' + DocumentService.getScrollTop())
                 },
                 mathJaxDelay)
+            $timeout(
+                function () {
+                    // document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
+                    document.getElementById("rendered-text").du-scrollTo(0, DocumentService.getScrollTop())
+                    var st = document.getElementById("rendered-text").scrollTop
+                    console.log('RESTORE scrollTop: ' + DocumentService.getScrollTop() + ':: ' + document.getElementById("rendered-text").scrollTop)
+                    //console.log('scrollTop is now: ' + document.getElementById("rendered-text").scrollTop)
+                },
+                mathJaxDelay + 1000)
         } else {
             ////
             $scope.textDirty = true

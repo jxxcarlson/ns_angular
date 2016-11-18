@@ -12,6 +12,7 @@ module.exports = function($localStorage, UserService) {
 
     this.setScrollTop = function(position) {
 
+        console.log('I set the scroll top to: ' + position)
         $localStorage.scrollTop = position
     }
 
