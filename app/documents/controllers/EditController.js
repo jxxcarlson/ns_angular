@@ -219,13 +219,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             setupCheckout()
             setupDocArray()
 
-            // WHY?
-            //DocumentService.update(document)
-            // $scope.refreshText()
-
-
-
-
         })  /// END OF GET DOCUMENT
 
 
@@ -234,7 +227,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 350) + 'px'
-    
+
 
 
 
@@ -260,22 +253,11 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         if ($scope.textDirty) {
 
             updateCount += 1
-            // console.log('callAtInterval:  UPDATE')
-            $scope.wordCount = DocumentService.document().text.split(' ').length
-            /*
-            DocumentApiService.update(DocumentService.params($scope), $scope)
-            $timeout(
-                function () {
-                    var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
-                    MathJaxService.reload(DocumentService.document().kind, message)
-                },
-                mathJaxDelay)
-                */
+
+            console.log("Call at interval (scroll): " + updateCount)
             basicRefreshText()
             $scope.textDirty = false
         }
-
-
     }
 
 
@@ -305,7 +287,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
         DocumentApiService.update(DocumentService.params($scope), $scope)
         $timeout(
             function () {
-                var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                var message = 'prescroll:  ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
                 MathJaxService.reload(DocumentService.document().kind, message)
                 var d = new Date()
                 console.log('(scroll) MathJax called at ' + (d.getTime() % 100000))
@@ -325,7 +307,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.refreshText = function () {
 
         console.log('refreshText')
-        // DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
+        DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
         console.log('Record scrollTop: ' + DocumentService.getScrollTop())
 
         var strokesBeforeUpdate = 10
