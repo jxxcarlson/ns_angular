@@ -964,7 +964,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         console.log('refreshText')
         DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
-        console.log('DocumentService.getScrollTop: ' + DocumentService.getScrollTop())
+        console.log('Record scrollTop' + DocumentService.getScrollTop())
 
         var strokesBeforeUpdate = 10
         // This is so that users can view source but
@@ -986,6 +986,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
                     MathJaxService.reload(DocumentService.document().kind, message)
                     document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
+                    console.log('RESTORE scrollTop' + DocumentService.getScrollTop())
                 },
                 mathJaxDelay)
         } else {
