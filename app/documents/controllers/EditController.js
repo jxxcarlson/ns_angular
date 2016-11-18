@@ -234,11 +234,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     document.getElementById("edit-text").style.height = (innerHeight - 200) + 'px'
     document.getElementById("rendered-text").style.height = (innerHeight - 220) + 'px'
     document.getElementById("toc").style.height = (innerHeight - 350) + 'px'
-
-
-
-
-
+    
 
 
 
@@ -266,6 +262,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
             updateCount += 1
             // console.log('callAtInterval:  UPDATE')
             $scope.wordCount = DocumentService.document().text.split(' ').length
+            /*
             DocumentApiService.update(DocumentService.params($scope), $scope)
             $timeout(
                 function () {
@@ -273,6 +270,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                     MathJaxService.reload(DocumentService.document().kind, message)
                 },
                 mathJaxDelay)
+                */
+            basicRefreshText()
             $scope.textDirty = false
         }
 
@@ -299,10 +298,34 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
     //// 2. REFRESH TEXT: update document command bound to key up for escape key ////
 
+    var basicRefreshText = function() {
+
+        DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
+        $scope.wordCount = DocumentService.document().text.split(' ').length
+        DocumentApiService.update(DocumentService.params($scope), $scope)
+        $timeout(
+            function () {
+                var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
+                MathJaxService.reload(DocumentService.document().kind, message)
+                var d = new Date()
+                console.log('(scroll) MathJax called at ' + (d.getTime() % 100000))
+            },
+            mathJaxDelay)
+        $timeout(
+            function () {
+                document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
+                var st = document.getElementById("rendered-text").scrollTop
+                console.log('RESTORE scrollTop: ' + DocumentService.getScrollTop() + ' :: ' + document.getElementById("rendered-text").scrollTop)
+                var dd = new Date()
+                console.log('scrollTop restored at ' + (dd.getTime() % 100000))
+            },
+            1.2*mathJaxDelay +100)
+    }
+
     $scope.refreshText = function () {
 
         console.log('refreshText')
-        DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
+        // DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
         console.log('Record scrollTop: ' + DocumentService.getScrollTop())
 
         var strokesBeforeUpdate = 10
@@ -318,29 +341,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
 
         if (event.keyCode == 27) {
             // console.log('ESCAPE pressed -- saving document')
-            $scope.wordCount = DocumentService.document().text.split(' ').length
-            DocumentApiService.update(DocumentService.params($scope), $scope)
-            $timeout(
-                function () {
-                    var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
-                    MathJaxService.reload(DocumentService.document().kind, message)
-                    var d = new Date()
-                    console.log('(scroll) MathJax called at ' + (d.getTime() % 100000))
-                },
-                mathJaxDelay)
-            $timeout(
-                function () {
-                    // document.getElementById("rendered-text").du-scrollTo(0, DocumentService.getScrollTop())
-                    //document.getElementById("rendered-text").du-scrollTo(0,1000)
-                    document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
-                    // document.getElementById("rendered-text").scrollTop = 5000
+            basicRefreshText()
 
-                    var st = document.getElementById("rendered-text").scrollTop
-                    console.log('RESTORE scrollTop: ' + DocumentService.getScrollTop() + ' :: ' + document.getElementById("rendered-text").scrollTop)
-                    var dd = new Date()
-                    console.log('scrollTop restored at ' + (dd.getTime() % 100000))
-                },
-                1.2*mathJaxDelay +100)
         } else {
             ////
             $scope.textDirty = true
@@ -360,8 +362,6 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 //console.log('---')
             }
 
-            /// }
-            ////
         }
     }
 
