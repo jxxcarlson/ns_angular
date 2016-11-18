@@ -9,7 +9,7 @@
 
  *****/
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
-                           DocumentService, TableOfContentsService, PermissionService, SearchService,
+                           $document, DocumentService, TableOfContentsService, PermissionService, SearchService,
                            UserService, GlobalService, envService, BackupService, HotListService) {
 
 

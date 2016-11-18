@@ -1,6 +1,24 @@
 module.exports = function($localStorage, UserService) {
-    
 
+    var self = this
+
+    /** State:
+       document
+       ---
+
+
+    
+    **/
+
+    this.setScrollTop = function(position) {
+
+        $localStorage.scrollTop = position
+    }
+
+    this.getScrollTop = function() {
+
+        return $localStorage.scrollTop
+    }
 
     this.parentId = function() {
 

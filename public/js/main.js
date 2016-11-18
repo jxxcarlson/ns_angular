@@ -662,10 +662,9 @@ module.exports = function ($scope, $state, $window, $location, $timeout, $stateP
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            HttpService, DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
                            BackupService, MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
-    ''
+
     var id
     var keyStrokeCount = 0
-
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
@@ -924,6 +923,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     var callAtInterval = function () {
 
         if ($scope.textDirty) {
+
             updateCount += 1
             // console.log('callAtInterval:  UPDATE')
             $scope.wordCount = DocumentService.document().text.split(' ').length
@@ -963,6 +963,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.refreshText = function () {
 
         console.log('refreshText')
+        DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
+        console.log('DocumentService.getScrollTop: ' + DocumentService.getScrollTop())
 
         var strokesBeforeUpdate = 10
         // This is so that users can view source but
@@ -983,6 +985,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 function () {
                     var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
                     MathJaxService.reload(DocumentService.document().kind, message)
+                    document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
                 },
                 mathJaxDelay)
         } else {
@@ -1483,7 +1486,7 @@ module.exports = function($localStorage, envService, DocumentService, UserServic
 
  *****/
 module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $stateParams, $location,
-                           DocumentService, TableOfContentsService, PermissionService, SearchService,
+                           $document, DocumentService, TableOfContentsService, PermissionService, SearchService,
                            UserService, GlobalService, envService, BackupService, HotListService) {
 
 
@@ -1862,8 +1865,26 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 }
 },{}],20:[function(require,module,exports){
 module.exports = function($localStorage, UserService) {
-    
 
+    var self = this
+
+    /** State:
+       document
+       ---
+
+
+    
+    **/
+
+    this.setScrollTop = function(position) {
+
+        $localStorage.scrollTop = position
+    }
+
+    this.getScrollTop = function() {
+
+        return $localStorage.scrollTop
+    }
 
     this.parentId = function() {
 

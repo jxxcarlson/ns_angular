@@ -1,10 +1,9 @@
 module.exports = function ($scope, $window, $location, $localStorage, $document, $stateParams, $state, $http, $sce, $timeout,
                            HttpService, DocumentService, TableOfContentsService, DocumentApiService, UserService, envService,
                            BackupService, MathJaxService, mathJaxDelay, PermissionService, hotkeys, $interval) {
-    ''
+
     var id
     var keyStrokeCount = 0
-
 
     if ($stateParams.id != undefined) {
         id = $stateParams.id
@@ -263,6 +262,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     var callAtInterval = function () {
 
         if ($scope.textDirty) {
+
             updateCount += 1
             // console.log('callAtInterval:  UPDATE')
             $scope.wordCount = DocumentService.document().text.split(' ').length
@@ -302,6 +302,8 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
     $scope.refreshText = function () {
 
         console.log('refreshText')
+        DocumentService.setScrollTop(document.getElementById("rendered-text").scrollTop)
+        console.log('DocumentService.getScrollTop: ' + DocumentService.getScrollTop())
 
         var strokesBeforeUpdate = 10
         // This is so that users can view source but
@@ -322,6 +324,7 @@ module.exports = function ($scope, $window, $location, $localStorage, $document,
                 function () {
                     var message = 'MMM, doc ctrl for ' + DocumentService.document().title + ', kind = ' + DocumentService.document().kind
                     MathJaxService.reload(DocumentService.document().kind, message)
+                    document.getElementById("rendered-text").scrollTop = DocumentService.getScrollTop()
                 },
                 mathJaxDelay)
         } else {
