@@ -1,4 +1,4 @@
-module.exports = function ($scope, UserService, UserApiService, DocumentApiService) {
+module.exports = function ($scope, UserService, UserApiService, HttpService) {
 
     var self = this
 
@@ -10,7 +10,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
     self.updateAclDisplay = function() {
 
         var request = 'acl?acls_of_owner=' + UserService.username()
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then(function (response) {
 
                 var data = JSON.parse(response.data['acl_list'])
@@ -91,7 +91,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
         console.log('add user ' + self.usernameForAcl + ' to acl ' + self.aclNameForUser)
 
         var request = 'acl?add_user=' + self.usernameForAcl +'&acl=' + self.aclNameForUser
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then( function() {self.updateAclDisplay()} )
 
 
@@ -101,7 +101,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
         console.log('remove user ' + self.usernameForAcl + ' from acl ' + self.aclNameForUser)
 
         var request = 'acl?remove_user=' + self.usernameForAcl +'&acl=' + self.aclNameForUser
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then( function() {self.updateAclDisplay()} )
     }
 
@@ -111,7 +111,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
 
         var request = 'acl?add_document=' + self.documentIdForAcl +'&acl=' + self.aclNameForDocument
         console.log("*** request = " + request)
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then( function() {self.updateAclDisplay()} )
 
     }
@@ -120,7 +120,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
         console.log('remove document ' + self.documentIdForAcl + ' from acl ' + self.aclNameForDocument)
 
         var request = 'acl?remove_document=' + self.documentIdForAcl +'&acl=' + self.aclNameForDocument
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then( function() {self.updateAclDisplay()} )
     }
 
@@ -129,7 +129,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
         console.log('create ACL ' + self.aclNameCD + ' with permission ' + self.permissionForAcl)
 
         var request = 'acl?create_acl=' + self.aclNameCD + '&permission=' + self.permissionForAcl
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then( function() {self.updateAclDisplay()} )
 
 }
@@ -138,7 +138,7 @@ module.exports = function ($scope, UserService, UserApiService, DocumentApiServi
         console.log('destroy ACL ' + self.aclNameCD)
 
         var request = 'acl?remove_acl=' + self.aclNameCD
-        DocumentApiService.postRequest(request, $scope)
+        HttpService.postRequest(request, $scope)
             .then( function() {self.updateAclDisplay()} )
     }
 
