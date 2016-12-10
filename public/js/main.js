@@ -1821,6 +1821,8 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
         var url = envService.read('apiUrl') + '/documents/' + parent_id + '?' + command + '=' + subdocument_id
         var options = {headers: {"accesstoken": UserService.accessToken()}}
 
+        console.log('URL for MOVE: ' + url)
+
         $http.post(url, parameter, options)
             .then(function (response) {
 
@@ -1844,7 +1846,7 @@ module.exports = function ($http, $timeout, $q, $sce, $localStorage, $state, $st
 
                     /* Update local storage */
                     DocumentService.update(document)
-                    $localStorage.currentDocumentItem.id = subdocument_id
+                    // $localStorage.currentDocumentItem.id = subdocument_id // PROBLEM: note defined
                     console.log('MOVE: ' + subdocument_id)
                     $location.path('editdocument/' + subdocument_id)
                     $state.go('editdocument', {}, {reload: true})
